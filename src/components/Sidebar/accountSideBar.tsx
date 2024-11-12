@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useState } from "react";
-import logo from "../../assets/logo.svg";
+import logo from "../../assets/login_logo.png";
 import useLogoClickHandler from "../../utils/useLogoClickHandler";
 import { IconButton } from "@mui/material";
 // Define types for menu items and submenu items
@@ -19,11 +19,14 @@ type SubMenuItem = {
   link?: string;
 };
 
-interface SidebarProps{
+interface SidebarProps {
   isSidebarOpen: boolean;
   setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
-const partnerSidebar: React.FC<SidebarProps> = ({isSidebarOpen,setSidebarOpen}) => {
+const partnerSidebar: React.FC<SidebarProps> = ({
+  isSidebarOpen,
+  setSidebarOpen,
+}) => {
   // Sample menu items data
   const menuItems: MenuItem[] = [
     {
@@ -167,13 +170,15 @@ const partnerSidebar: React.FC<SidebarProps> = ({isSidebarOpen,setSidebarOpen}) 
       id: 10,
       label: "Mark Attendance",
       link: "/#/mark-attendance",
-      svgIcon:"M7 11c-1.1 0-2-.9-2-2V8c0-1.1.9-2 2-2s2 .9 2 2v1c0 1.1-.9 2-2 2zm-2 6.993L9 18c.55 0 1-.45 1-1v-2c0-1.65-1.35-3-3-3s-3 1.35-3 3v2c0 .552.448.993 1 .993zM19 18h-6c-.553 0-1-.447-1-1s.447-1 1-1h6c.553 0 1 .447 1 1s-.447 1-1 1zm0-4h-6c-.553 0-1-.448-1-1s.447-1 1-1h6c.553 0 1 .448 1 1s-.447 1-1 1zm0-4h-6c-.553 0-1-.448-1-1s.447-1 1-1h6c.553 0 1 .448 1 1s-.447 1-1 1z"
+      svgIcon:
+        "M7 11c-1.1 0-2-.9-2-2V8c0-1.1.9-2 2-2s2 .9 2 2v1c0 1.1-.9 2-2 2zm-2 6.993L9 18c.55 0 1-.45 1-1v-2c0-1.65-1.35-3-3-3s-3 1.35-3 3v2c0 .552.448.993 1 .993zM19 18h-6c-.553 0-1-.447-1-1s.447-1 1-1h6c.553 0 1 .447 1 1s-.447 1-1 1zm0-4h-6c-.553 0-1-.448-1-1s.447-1 1-1h6c.553 0 1 .448 1 1s-.447 1-1 1zm0-4h-6c-.553 0-1-.448-1-1s.447-1 1-1h6c.553 0 1 .448 1 1s-.447 1-1 1z",
     },
     {
       id: 11,
       label: "Holiday List",
       link: "/#/hr/holidays",
-      svgIcon: "M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z",
+      svgIcon:
+        "M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z",
     },
   ];
 
@@ -198,18 +203,10 @@ const partnerSidebar: React.FC<SidebarProps> = ({isSidebarOpen,setSidebarOpen}) 
 
   return (
     <div
-    className={`${
-      isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-    } md:translate-x-0 sticky  top-0  z-20 md:flex flex-col w-60 bg-white h-screen shadow-lg border-r-2 border-[#FEF9F3] transition-transform delay-150 duration-200`}
-  >
-      <div className="flex items-center justify-center h-16 bg-white">
-        <img
-          src={logo}
-          onClick={handleLogoClick}
-          className="w-32 cursor-pointer"
-          alt="Logo"
-        />
-      </div>
+      className={`${
+        isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+      } md:translate-x-0 sticky  top-0  z-20 md:flex flex-col w-60 bg-white h-screen shadow-lg border-r-2 border-[#FEF9F3] transition-transform delay-150 duration-200`}
+    >
       <div className="md:hidden flex w-full justify-end">
         <IconButton onClick={() => setSidebarOpen((prev) => !prev)}>
           <svg
@@ -326,6 +323,15 @@ const partnerSidebar: React.FC<SidebarProps> = ({isSidebarOpen,setSidebarOpen}) 
             ))}
           </ul>
         </div>
+      </div>
+      <div className="mx-1">
+        <picture className="mb-1 flex justify-center items-center ">
+          <caption className="text-smfont-medium text-safekarolightOrange">
+            Powered By
+          </caption>
+          <source srcSet={logo} type="image/png" />
+          <img src={logo} className="w-32 mx-auto" alt="company Logo" />
+        </picture>
       </div>
     </div>
   );

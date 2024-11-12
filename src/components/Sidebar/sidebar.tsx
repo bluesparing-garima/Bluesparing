@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import logo from "../../assets/logo.svg";
+import logo from "../../assets/login_logo.png";
 import useLogoClickHandler from "../../utils/useLogoClickHandler";
-import {  IconButton } from "@mui/material";
+import { IconButton } from "@mui/material";
 type MenuItem = {
   id: number;
   label: string;
@@ -376,7 +376,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen, setSidebarOpen }) => {
   // Function to handle menu item click
   const handleMenuItemClick = (itemId: number) => {
     setActiveMenuItem(itemId === activeMenuItem ? null : itemId);
-  
   };
 
   // Function to toggle submenu open/close
@@ -395,14 +394,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen, setSidebarOpen }) => {
         isSidebarOpen ? "translate-x-0" : "-translate-x-full"
       } md:translate-x-0 sticky  top-0  z-20 md:flex flex-col w-60 bg-white h-screen shadow-lg border-r-2 border-[#FEF9F3] transition-transform delay-150 duration-200`}
     >
-      <div className="flex items-center justify-center h-16 bg-white">
-        <img
-          src={logo}
-          onClick={handleLogoClick}
-          className="w-32 cursor-pointer"
-          alt="Logo"
-        />
-      </div>
       <div className="md:hidden flex w-full justify-end">
         <IconButton onClick={() => setSidebarOpen((prev) => !prev)}>
           <svg
@@ -438,8 +429,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen, setSidebarOpen }) => {
                     <div
                       className={
                         activeMenuItem === item.id
-                          ? "flex text-sm items-center text-white px-2 py-1 cursor-pointer hover:bg-safekaroDarkBlue hover:text-white rounded-lg"
-                          : "flex text-sm items-center px-2 py-1 cursor-pointer hover:bg-safekaroDarkBlue hover:text-white rounded-lg"
+                          ? "flex text-sm items-center text-white px-2 py-1 cursor-pointer hover:bg-safekaroDarkOrange hover:text-white rounded-lg"
+                          : "flex text-sm items-center px-2 py-1 cursor-pointer hover:bg-safekaroDarkOrange hover:text-white rounded-lg"
                       }
                       onClick={() => toggleSubMenu(item.id)}
                     >
@@ -472,7 +463,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen, setSidebarOpen }) => {
                               <a
                                 href={subItem.link}
                                 onClick={() => handleMenuItemClick(subItem.id)}
-                                className="flex text-sm items-center px-2 py-1 text-gray-500 hover:bg-safekaroDarkBlue hover:text-white rounded-lg"
+                                className="flex text-sm items-center px-2 py-1 text-gray-500 hover:bg-safekaroOrange hover:text-white rounded-lg"
                               >
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
@@ -501,8 +492,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen, setSidebarOpen }) => {
                     onClick={() => handleMenuItemClick(item.id)}
                     className={
                       activeMenuItem === item.id
-                        ? "flex text-sm items-center px-2 py-1 ml-3 rounded-lg text-white hover:bg-safekaroDarkBlue hover:text-white"
-                        : "flex text-sm items-center px-2 py-1 ml-3 text-black hover:bg-safekaroDarkBlue hover:text-white rounded-lg"
+                        ? "flex text-sm items-center px-2 py-1 ml-3 rounded-lg text-white hover:bg-safekaroDarkOrange hover:text-white"
+                        : "flex text-sm items-center px-2 py-1 ml-3 text-black hover:bg-safekaroDarkOrange hover:text-white rounded-lg"
                     }
                   >
                     <svg
@@ -527,6 +518,15 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen, setSidebarOpen }) => {
             ))}
           </ul>
         </div>
+      </div>
+      <div className="mx-1">
+        <picture className="mb-1 flex justify-center items-center ">
+          <caption className="text-sm font-medium text-safekarolightOrange">
+            Powered By
+          </caption>
+          <source srcSet={logo} type="image/png" />
+          <img src={logo} className="w-32 mx-auto" alt="company Logo" />
+        </picture>
       </div>
     </div>
   );

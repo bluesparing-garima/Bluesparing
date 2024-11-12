@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import logo from "../../assets/logo.svg";
+import logo from "../../assets/login_logo.png";
 import useLogoClickHandler from "../../utils/useLogoClickHandler";
 import { IconButton } from "@mui/material";
 type MenuItem = {
@@ -138,14 +138,6 @@ const RMSidebar: React.FC<SidebarProps> = ({
         isSidebarOpen ? "translate-x-0" : "-translate-x-full"
       } md:translate-x-0 sticky  top-0  z-20 md:flex flex-col w-60 bg-white h-screen shadow-lg border-r-2 border-[#FEF9F3] transition-transform delay-150 duration-200`}
     >
-      <div className="flex items-center justify-center h-16 bg-white">
-        <img
-          src={logo}
-          onClick={handleLogoClick}
-          className="w-32 cursor-pointer"
-          alt="Logo"
-        />
-      </div>
       <div className="md:hidden flex w-full justify-end">
         <IconButton onClick={() => setSidebarOpen((prev) => !prev)}>
           <svg
@@ -262,6 +254,15 @@ const RMSidebar: React.FC<SidebarProps> = ({
             ))}
           </ul>
         </div>
+      </div>
+      <div className="mx-1">
+        <picture className="mb-1 flex justify-center items-center ">
+          <caption className="text-sm font-medium text-safekarolightOrange">
+            Powered By
+          </caption>
+          <source srcSet={logo} type="image/png" />
+          <img src={logo} className="w-32 mx-auto" alt="company Logo" />
+        </picture>
       </div>
     </div>
   );

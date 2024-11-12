@@ -1,17 +1,18 @@
 import React, { useState } from "react";
-import logo from "../assets/logo.svg";
-import { useNavigate } from "react-router-dom";
+import logo from "../assets/login_logo.png";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Form, Field } from "react-final-form";
 import { FORM_ERROR } from "final-form";
 import { ISignUp } from "./IAuth";
-import { Autocomplete, Button, Grid, TextField } from "@mui/material";
+import {  Button, Grid } from "@mui/material";
 import { header } from "../context/constant";
 import fetchInterceptor, { FetchOptions } from "../utils/fetchInterceptor ";
 
 const Signup = () => {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const navigate = useNavigate();
-  const [selectedRole, setSelectedRole] = useState("Admin");
+  const loc = useLocation().state as { form: string };
+  const role = loc.form.toLowerCase();
+
   const validate = (values: ISignUp) => {
     const errors: Partial<ISignUp> = {};
     if (!values.email) {
@@ -31,12 +32,19 @@ const Signup = () => {
     if (values.password !== values.confirmPassword) {
       errors.confirmPassword = "Passwords do not match";
     }
+    if (role === "partner" && !values.file) {
+      errors.file = "Please select a Logo";
+    } else if (role === "partner" && values.file) {
+      const maxSizeInBytes = 1 * 1024 * 1024;
 
+      if (values.file.size > maxSizeInBytes) {
+        errors.file = "Logo size should not exceed 1 MB";
+      }
+    }
     return errors;
   };
   const onSubmit = async (signUpData: ISignUp) => {
-    const { role } = signUpData;
-    signUpData.role = role.toLowerCase();
+    signUpData.role = role;
     signUpData.partnerId = "null";
     if (role === "admin") {
       signUpData.partnerCode = "Admin";
@@ -97,9 +105,17 @@ const Signup = () => {
           </div>
           <div className="lg:w-1/2 xl:w-6/12 p-3 sm:p-2 overflow-scroll">
             <div>
-              <img src={logo} className="w-32 mx-auto" alt="" />
+              <picture>
+                <source srcSet={logo} type="image/png" />
+                <img
+                  src={logo}
+                  className="w-56 mx-auto"
+                  alt="company Logo"
+                />
+              </picture>
             </div>
-            <div className="mt-4 flex flex-col items-center">
+
+            <div className="mt-3 flex flex-col items-center">
               <h1 className="text-2xl xl:text-3xl font-extrabold">Sign up</h1>
               <div className="w-full flex-1">
                 <div className="my-4 border-b text-center">
@@ -114,10 +130,10 @@ const Signup = () => {
                       <form onSubmit={handleSubmit}>
                         <Grid container spacing={2}>
                           <Grid item lg={12} md={12} sm={6} xs={12}>
-                            <div className="mb-2">
+                            <div className="mb-1">
                               <label
                                 htmlFor="email"
-                                className="mb-3 block text-base font-medium text-[#07074D]"
+                                className="mb-2 block text-base font-medium text-[#07074D]"
                               >
                                 Email
                               </label>
@@ -128,7 +144,7 @@ const Signup = () => {
                                       {...input}
                                       type="email"
                                       placeholder="Email"
-                                      className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-3 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                                      className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-3 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                                     />
                                     {meta.error && meta.touched && (
                                       <span className="text-safekaroDarkOrange">
@@ -141,10 +157,10 @@ const Signup = () => {
                             </div>
                           </Grid>
                           <Grid item lg={6} md={6} sm={6} xs={12}>
-                            <div className="mb-2">
+                            <div className="mb-1">
                               <label
                                 htmlFor="name"
-                                className="mb-3 block text-base font-medium text-[#07074D]"
+                                className="mb-2 block text-base font-medium text-[#07074D]"
                               >
                                 Name
                               </label>
@@ -155,7 +171,7 @@ const Signup = () => {
                                       {...input}
                                       type="text"
                                       placeholder="Name"
-                                      className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-3 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                                      className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-3 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                                     />
                                     {meta.error && meta.touched && (
                                       <span className="text-safekaroDarkOrange">
@@ -168,10 +184,10 @@ const Signup = () => {
                             </div>
                           </Grid>
                           <Grid item lg={6} md={6} sm={6} xs={12}>
-                            <div className="mb-2">
+                            <div className="mb-1">
                               <label
                                 htmlFor="phoneNumber"
-                                className="mb-3 block text-base font-medium text-[#07074D]"
+                                className="mb-2 block text-base font-medium text-[#07074D]"
                               >
                                 Phone Number
                               </label>
@@ -182,7 +198,7 @@ const Signup = () => {
                                       {...input}
                                       type="number"
                                       placeholder="Phone Number"
-                                      className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-3 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                                      className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-3 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                                     />
                                     {meta.error && meta.touched && (
                                       <span className="text-safekaroDarkOrange">
@@ -196,10 +212,10 @@ const Signup = () => {
                           </Grid>
 
                           <Grid item lg={6} md={6} sm={6} xs={12}>
-                            <div className="mb-2">
+                            <div className="mb-1">
                               <label
                                 htmlFor="password"
-                                className="mb-3 block text-base font-medium text-[#07074D]"
+                                className="mb-2 block text-base font-medium text-[#07074D]"
                               >
                                 Password
                               </label>
@@ -210,7 +226,7 @@ const Signup = () => {
                                       {...input}
                                       type="password"
                                       placeholder="Password"
-                                      className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-3 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                                      className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-3 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                                     />
                                     {meta.error && meta.touched && (
                                       <span className="text-safekaroDarkOrange">
@@ -224,10 +240,10 @@ const Signup = () => {
                           </Grid>
 
                           <Grid item lg={6} md={6} sm={6} xs={12}>
-                            <div className="mb-2">
+                            <div className="mb-1">
                               <label
                                 htmlFor="confirmPassword"
-                                className="mb-3 block text-base font-medium text-[#07074D]"
+                                className="mb-2 block text-base font-medium text-[#07074D]"
                               >
                                 Confirm Password
                               </label>
@@ -238,7 +254,7 @@ const Signup = () => {
                                       {...input}
                                       type="password"
                                       placeholder="Confirm Password"
-                                      className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-3 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                                      className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-3 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                                     />
                                     {meta.error && meta.touched && (
                                       <span className="text-safekaroDarkOrange">
@@ -250,38 +266,14 @@ const Signup = () => {
                               </Field>
                             </div>
                           </Grid>
-                          <Grid item lg={6} md={6} sm={6} xs={12}>
-                            <div className="mb-2">
-                              <label
-                                htmlFor="role"
-                                className="mb-3 block text-base font-medium text-[#07074D]"
-                              >
-                                Role
-                              </label>
-                              <Field name="role" initialValue="Admin">
-                                {({ input }) => (
-                                  <Autocomplete
-                                    {...input}
-                                    options={["Admin", "Partner"]}
-                                    defaultValue="Admin"
-                                    onChange={(event, value) => {
-                                      input.onChange(value);
-                                      setSelectedRole(value as string);
-                                    }}
-                                    renderInput={(params) => (
-                                      <TextField
-                                        {...params}
-                                        placeholder="Select role"
-                                        variant="outlined"
-                                      />
-                                    )}
-                                  />
-                                )}
-                              </Field>
-                            </div>
-                          </Grid>
-                          {selectedRole.toLowerCase() === "admin" && (
+                          {role === "admin" && (
                             <Grid item lg={12} md={12} xs={12}>
+                              <label
+                                htmlFor="Logo"
+                                className="mb-2 block text-base font-medium text-[#07074D]"
+                              >
+                                Upload Logo
+                              </label>
                               <Field name="file">
                                 {({ input, meta }) => (
                                   <div>
