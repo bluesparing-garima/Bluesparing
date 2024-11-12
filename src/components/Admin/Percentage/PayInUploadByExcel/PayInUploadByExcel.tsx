@@ -15,32 +15,25 @@ import PayInExcelService from "../../../../api/uploadExcel/PayInExcel/PayInExcel
 import { header } from "../../../../context/constant";
 import DownloadExcel from "../../../../utils/downloadExcel";
 import toast, { Toaster } from "react-hot-toast";
-
 const PayInUploadByExcel = () => {
   const title = "Upload PayIn Excel";
   const [excelUploaded, setExcelUploaded] = useState(false);
-
   const onSubmit = (values: FormValues) => {
     uploadFile(values.file);
   };
-
   const handleChangeUploadExcel = () => {
     setExcelUploaded(true);
   };
-
-  // // Reset upload after fetching updated data
   useEffect(() => {
     if (excelUploaded) {
       setExcelUploaded(false);
     }
   }, [excelUploaded]);
-
   const uploadFile = async (file: File | null) => {
     if (file) {
       try {
         const formData = new FormData();
-        formData.append("excel", file); // Ensure the key 'excel' matches the backend expectation
-
+        formData.append("excel", file);
         PayInExcelService({ header, excel: formData })
           .then((response) => {
             if (response.ok) {
@@ -61,11 +54,9 @@ const PayInUploadByExcel = () => {
       }
     }
   };
-
   interface FormValues {
     file: File | null;
   }
-
   const schema = yup.object().shape({
     file: yup
       .mixed()
@@ -80,7 +71,6 @@ const PayInUploadByExcel = () => {
               "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
       ),
   });
-
   const validate = (values: FormValues) => {
     try {
       schema.validateSync(values, { abortEarly: false });
@@ -95,7 +85,6 @@ const PayInUploadByExcel = () => {
       return validationErrors;
     }
   };
-
   return (
     <div className="bg-blue-200 p-2">
       <Paper
@@ -106,10 +95,8 @@ const PayInUploadByExcel = () => {
           <Typography className="text-safekaroDarkOrange" variant="h5">
             {title}
           </Typography>
-
           <DownloadExcel />
         </div>
-
         <Typography variant="h5" mb={2}>
           <Link to="/dashboard" className="text-addButton font-bold text-sm">
             Dashboard {" / "}
@@ -178,12 +165,10 @@ const PayInUploadByExcel = () => {
             />
           </CardContent>
         </Card>
-
         <PayInUploadByExcelData onExcelUploaded={handleChangeUploadExcel} />
       </Paper>
       <Toaster position="bottom-center" reverseOrder={false} />
     </div>
   );
 };
-
 export default PayInUploadByExcel;

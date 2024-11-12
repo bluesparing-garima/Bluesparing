@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import PayOutUploadByExcelData from "./payOutUploadByExcelData";
 import PayInUploadByExcelData from "./PayInUploadByExcelData";
-
 const ViewPercentage = () => {
   const title = "View Percentage";
   const [isLoading, setIsLoading] = useState(true);
@@ -17,8 +16,6 @@ const ViewPercentage = () => {
   const handleChangeUploadExcel = () => {
     setExcelUploaded(true);
   };
-
-  // // Reset upload after fetching updated data
   useEffect(() => {
     if (excelUploaded) {
       setExcelUploaded(false);
@@ -40,9 +37,7 @@ const ViewPercentage = () => {
             <Link to="/dashboard" className="text-addButton font-bold text-sm">
               Dashboard {" / "}
             </Link>
-
             <span className="text-grey-600 text-sm">{title}</span>
-            {/* Add a full-width grey line here */}
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
@@ -76,5 +71,4 @@ const ViewPercentage = () => {
     </>
   );
 };
-
 export default ViewPercentage;

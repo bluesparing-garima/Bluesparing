@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import React from "react";
 import { TextField, Button, Grid } from "@mui/material";
 import editCategoryService from "../../../../api/Category/EditCategory/editCategoryService";
@@ -11,11 +10,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { categoryPath } from "../../../../sitemap";
 import addCategoryServices from "../../../../api/Category/AddCategory/addCategoryServices";
 import toast, { Toaster } from "react-hot-toast";
-
 export interface addPolicyTypeFormProps {
   initialValues: ICategoryForm;
 }
-
 const AddCategoryForm = (props: addPolicyTypeFormProps) => {
   const { initialValues } = props;
   const navigate = useNavigate();
@@ -23,8 +20,6 @@ const AddCategoryForm = (props: addPolicyTypeFormProps) => {
   const pathName = location.pathname.split("/");
   const isAddEdit = pathName[pathName.length - 1] as string;
   const isAdd = isAddEdit === ADD;
-
-  // To be passed to React Final Form
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
       schema = schema();
@@ -35,11 +30,9 @@ const AddCategoryForm = (props: addPolicyTypeFormProps) => {
       const errors = err.inner.reduce((formError: any, innerError: any) => {
         return setIn(formError, innerError.path, innerError.message);
       }, {});
-
       return errors;
     }
   };
-
   const validationSchema = yup.object().shape({
     categoryName: yup
       .string()
@@ -47,9 +40,7 @@ const AddCategoryForm = (props: addPolicyTypeFormProps) => {
       .min(1, "Category must be at least 1 character")
       .max(100, "Category cannot exceed 100 characters"),
   });
-
   const validate = validateFormValues(validationSchema);
-
   const onSubmit = async (category: ICategoryForm) => {
     if (isAdd) {
       callAddCategoryAPI(category);
@@ -57,13 +48,11 @@ const AddCategoryForm = (props: addPolicyTypeFormProps) => {
       callEditCategoryAPI(category);
     }
   };
-
   const navigateToCategories = (message: string) => {
     navigate(categoryPath(), {
       state: message,
     });
   };
-
   const callAddCategoryAPI = async (category: ICategoryForm) => {
     try {
       const newCategory = await addCategoryServices({ header, category });
@@ -73,7 +62,6 @@ const AddCategoryForm = (props: addPolicyTypeFormProps) => {
       toast.error(err.message);
     }
   };
-
   const callEditCategoryAPI = async (category: ICategoryForm) => {
     try {
       const newCategory = await editCategoryService({ header, category });
@@ -83,7 +71,6 @@ const AddCategoryForm = (props: addPolicyTypeFormProps) => {
       toast.error(err.message);
     }
   };
-
   return (
     <>
       <Form
@@ -127,5 +114,4 @@ const AddCategoryForm = (props: addPolicyTypeFormProps) => {
     </>
   );
 };
-
 export default AddCategoryForm;

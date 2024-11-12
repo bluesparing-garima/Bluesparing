@@ -6,11 +6,9 @@ import {
   MAKE_STORAGE_KEY,
 } from "../../../../context/constant";
 import { IMakeForm, IMakes, IMakesVM } from "../IMake";
-//import dayjs from "dayjs";
 import { Button, IconButton, Paper, Tooltip, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { makeAddPath, makeEditPath } from "../../../../sitemap";
-import deleteMakeService from "../../../../api/Make/DeleteMake/deleteMakeService";
 import dayjs from "dayjs";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
@@ -30,7 +28,6 @@ const Makes = () => {
     pageSize: 10,
   });
   const navigate = useNavigate();
-
   const handleAddMakeClick = () => {
     savePaginationState(pagination, MAKE_STORAGE_KEY);
     navigate(makeAddPath());
@@ -47,7 +44,6 @@ const Makes = () => {
         }),
     []
   );
-
   useEffect(() => {
     const p = getPaginationState(MAKE_STORAGE_KEY);
     setPagination(p);
@@ -57,12 +53,10 @@ const Makes = () => {
   }, [GetMakes]);
   const callUpdateMakeAPI = async (make: IMakesVM) => {
     var convertMakeVMToMakeForm = convertIMakeVMToIMakeForm(make);
-
     const makeData: IMakeForm = {
       ...convertMakeVMToMakeForm,
       isActive: !convertMakeVMToMakeForm.isActive,
     };
-
     editMakeService({ header, make: makeData })
       .then(() => {
         GetMakes();
@@ -75,20 +69,14 @@ const Makes = () => {
         updateLoading();
       });
   };
-
   const handleClickChangeStatus = (make: IMakesVM) => {
     callUpdateMakeAPI(make);
   };
-  const [forcedRenderCount, setForcedRenderCount] = useState(0);
-  const forceRender = useCallback(
-    () => setForcedRenderCount(forcedRenderCount + 1),
-    [forcedRenderCount]
-  );
-  //should be memoized or stable
+  const forcedRenderCount = 0;
   const columns = useMemo<MRT_ColumnDef<IMakes>[]>(
     () => [
       {
-        accessorKey: "makeName", //normal accessorKey
+        accessorKey: "makeName",
         header: "Make Name",
         size: 200,
       },
@@ -105,7 +93,6 @@ const Makes = () => {
           );
         },
       },
-
       {
         header: "Created On",
         accessorKey: "createdOn",
@@ -114,7 +101,6 @@ const Makes = () => {
     ],
     []
   );
-
   const parsedData = useMemo(
     () =>
       makeData.map(
@@ -130,38 +116,15 @@ const Makes = () => {
       ) ?? [],
     [makeData, forcedRenderCount]
   );
-
   const updateLoading = useCallback(async () => {
-    // setIsLoading(true) when makes.length is 0, and setIsLoading(false) when makes.length is > 0
     setIsLoading(makeData.length >= 0 ? false : true);
   }, [makeData]);
-
   useEffect(() => {
     updateLoading();
   }, [updateLoading]);
-
-  const handleClickDeleteMake = (make: IMakesVM) => {
-    makeDeleteApiCall(make.id!);
-  };
   const handleClickEditMake = (make: IMakesVM) => {
     savePaginationState(pagination, MAKE_STORAGE_KEY);
     navigate(makeEditPath(make.id!));
-  };
-
-  const makeDeleteApiCall = async (makeId: string) => {
-    setIsLoading(true);
-    deleteMakeService({ header, makeId, makes: makeData })
-      .then((refreshedMakes) => {
-        setMakes(refreshedMakes);
-        forceRender();
-      })
-      .catch(async (error: any) => {
-        const err = await error;
-        toast.error(err.message);
-      })
-      .finally(() => {
-        updateLoading();
-      });
   };
   return (
     <>
@@ -189,7 +152,7 @@ const Makes = () => {
                 Add Make
               </Button>
             </div>
-            {/* Add a full-width grey line here */}
+           
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
@@ -264,5 +227,4 @@ const Makes = () => {
     </>
   );
 };
-
 export default Makes;

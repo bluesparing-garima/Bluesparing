@@ -6,7 +6,6 @@ import {
   header,
 } from "../../../../context/constant";
 import { IRankForm, IRanks, IRanksVM } from "../IRank";
-//import dayjs from "dayjs";
 import { Button, IconButton, Paper, Tooltip, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { rankEditPath, rankAddPath } from "../../../../sitemap";
@@ -22,7 +21,6 @@ import { convertIRankVMToIRankForm } from "../../../../api/Rank/convertIRankVMTo
 import editRankService from "../../../../api/Rank/EditRank/editRankService";
 import deleteRankService from "../../../../api/Rank/DeleteRank/deleteRankService";
 import getRankService from "../../../../api/Rank/GetRank/getRankService";
-
 const Ranks = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [ranks, setRanks] = useState<IRanks[]>([]);
@@ -30,7 +28,6 @@ const Ranks = () => {
     pageIndex: 0,
     pageSize: 10,
   });
-
   const navigate = useNavigate();
   const handleAddRankClick = () => {
     savePaginationState(pagination, BRANCH_STORAGE_KEY);
@@ -60,16 +57,15 @@ const Ranks = () => {
     () => setForcedRenderCount(forcedRenderCount + 1),
     [forcedRenderCount]
   );
-  //should be memoized or stable
   const columns = useMemo<MRT_ColumnDef<IRanks>[]>(
     () => [
       {
-        accessorKey: "rank", //normal accessorKey
+        accessorKey: "rank",
         header: "Rank Name",
         size: 200,
       },
       {
-        accessorKey: "count", //normal accessorKey
+        accessorKey: "count",
         header: "Policy Count",
         size: 200,
       },
@@ -94,7 +90,6 @@ const Ranks = () => {
     ],
     []
   );
-
   const parsedData = useMemo(
     () =>
       ranks.map(
@@ -111,16 +106,12 @@ const Ranks = () => {
       ) ?? [],
     [ranks, forcedRenderCount]
   );
-
   const updateLoading = useCallback(async () => {
-    // setIsLoading(true) when Ranks.length is 0, and setIsLoading(false) when Ranks.length is > 0
     setIsLoading(ranks.length >= 0 ? false : true);
   }, [ranks]);
-
   useEffect(() => {
     updateLoading();
   }, [updateLoading]);
-
   const handleClickDeleteRank = (rank: IRanksVM) => {
     rankDeleteApiCall(rank.id!);
   };
@@ -128,7 +119,6 @@ const Ranks = () => {
     savePaginationState(pagination, BRANCH_STORAGE_KEY);
     navigate(rankEditPath(rank.id!));
   };
-
   const rankDeleteApiCall = async (rankId: string) => {
     setIsLoading(true);
     deleteRankService({ header, rankId, ranks })
@@ -144,17 +134,14 @@ const Ranks = () => {
         updateLoading();
       });
   };
-
   const callUpdateRankAPI = async (rank: IRanksVM) => {
     var convertRankVMToRankForm = convertIRankVMToIRankForm(rank);
-
     const rankData: IRankForm = {
       id: convertRankVMToRankForm.id,
       rank: convertRankVMToRankForm.rank,
       count: convertRankVMToRankForm.count,
       isActive: !convertRankVMToRankForm.isActive,
     };
-
     editRankService({ header, rank: rankData })
       .then((updatedRank) => {
         GetRanks();
@@ -167,7 +154,6 @@ const Ranks = () => {
         updateLoading();
       });
   };
-
   const handleClickChangeStatus = (rank: IRanksVM) => {
     callUpdateRankAPI(rank);
   };
@@ -197,7 +183,7 @@ const Ranks = () => {
                 Add Rank
               </Button>
             </div>
-            {/* Add a full-width grey line here */}
+            {}
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
@@ -272,5 +258,4 @@ const Ranks = () => {
     </>
   );
 };
-
 export default Ranks;

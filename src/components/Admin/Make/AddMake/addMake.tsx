@@ -7,7 +7,6 @@ import AddMakeForm from "./addMakeForm";
 import getMakeDetailsService from "../../../../api/Make/GetMakeDetails/getMakeDetailsService";
 import { convertIMakeVMToIMakeForm } from "../../../../api/Make/convertIMakeVMToIMakeForm";
 import toast, { Toaster } from "react-hot-toast";
-
 const AddMake = () => {
   const { makeId } = useParams();
   const location = useLocation();
@@ -16,7 +15,6 @@ const AddMake = () => {
   const [editMakeDetails, setEditMakeDetails] = useState<IMakeForm | undefined>(
     undefined
   );
-
   useEffect(() => {
     if (!isAdd && makeId) {
       getMakeDetailsService({ header, makeId })
@@ -27,13 +25,10 @@ const AddMake = () => {
         .catch(async(error) => {
           const err = await error
           toast.error(err.message)
-          
         });
     }
   }, [isAdd, makeId]);
-
   const title = isAdd ? "Add Make" : "Update Make";
-
   return (
     <div className="bg-blue-200 md:p-7">
       <Paper
@@ -56,7 +51,6 @@ const AddMake = () => {
             style={{ width: "100%", borderColor: "grey-800" }}
           />
         </Typography>
-
         <AddMakeForm
           initialValues={{
             id: isAdd ? "0" : editMakeDetails?.id || "",
@@ -69,5 +63,4 @@ const AddMake = () => {
     </div>
   );
 };
-
 export default AddMake;

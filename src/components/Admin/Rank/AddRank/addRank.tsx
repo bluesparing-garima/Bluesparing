@@ -7,7 +7,6 @@ import AddRankForm from "./addRankForm";
 import getRankDetailsService from "../../../../api/Rank/GetRankDetails/getRankDetailsService";
 import { convertIRankVMToIRankForm } from "../../../../api/Rank/convertIRankVMToIRankForm";
 import toast, { Toaster } from "react-hot-toast";
-
 const AddRank = () => {
   const { rankId } = useParams();
   const location = useLocation();
@@ -16,7 +15,6 @@ const AddRank = () => {
   const [editRankDetails, setEditRankDetails] = useState<IRankForm | undefined>(
     undefined
   );
-
   useEffect(() => {
     if (!isAdd && rankId) {
       getRankDetailsService({ header, rankId })
@@ -30,9 +28,7 @@ const AddRank = () => {
         });
     }
   }, [isAdd, rankId]);
-
   const title = isAdd ? "Add Rank" : "Update Rank";
-
   return (
     <div className="bg-blue-200 md:p-7 ">
       <Paper
@@ -55,7 +51,6 @@ const AddRank = () => {
             style={{ width: "100%", borderColor: "grey-800" }}
           />
         </Typography>
-
         <AddRankForm
           initialValues={{
             id: isAdd ? "0" : editRankDetails?.id || "",
@@ -69,5 +64,4 @@ const AddRank = () => {
     </div>
   );
 };
-
 export default AddRank;

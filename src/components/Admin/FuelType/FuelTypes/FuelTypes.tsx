@@ -10,7 +10,6 @@ import dayjs from "dayjs";
 import { Button, IconButton, Paper, Tooltip, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { fuelTypesEditPath, fuelTypesAddPath } from "../../../../sitemap";
-import deleteFuelTypeService from "../../../../api/FuelType/DeleteFuelType/deleteFuelTypeService";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { convertIFuelTypeVMToIFuelTypeForm } from "../../../../api/FuelType/convertIFuelTypeVMToIFuelTypeForm";
@@ -21,7 +20,6 @@ import {
   getPaginationState,
   savePaginationState,
 } from "../../../../utils/PaginationHandler";
-
 const FuelTypes = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [fuelTypes, setFuelTypes] = useState<IFuelTypes[]>([]);
@@ -34,12 +32,7 @@ const FuelTypes = () => {
     savePaginationState(pagination, FUEL_TYPE_STORAGE_KEY);
     navigate(fuelTypesAddPath());
   };
-  const [forcedRenderCount, setForcedRenderCount] = useState(0);
-  const forceRender = useCallback(
-    () => setForcedRenderCount(forcedRenderCount + 1),
-    [forcedRenderCount]
-  );
-
+  const forcedRenderCount = 0 ;
   useEffect(() => {
     const p = getPaginationState(FUEL_TYPE_STORAGE_KEY);
     setPagination(p);
@@ -62,13 +55,11 @@ const FuelTypes = () => {
   const callUpdateFuelTypeAPI = async (fuelType: IFuelTypesVM) => {
     var convertFuelTypeVMToFuelTypeForm =
       convertIFuelTypeVMToIFuelTypeForm(fuelType);
-
     const fuelTypeData: IFuelTypeForm = {
       id: convertFuelTypeVMToFuelTypeForm.id,
       fuelType: convertFuelTypeVMToFuelTypeForm.fuelType,
       isActive: !convertFuelTypeVMToFuelTypeForm.isActive,
     };
-
     editFuelTypeService({ header, fuelType: fuelTypeData })
       .then((updatedFuelType) => {
         GetFuelTypes();
@@ -81,15 +72,13 @@ const FuelTypes = () => {
         updateLoading();
       });
   };
-
   const handleClickChangeStatus = (fuelType: IFuelTypesVM) => {
     callUpdateFuelTypeAPI(fuelType);
   };
-  // Define table columns
   const columns = useMemo<MRT_ColumnDef<IFuelTypes>[]>(
     () => [
       {
-        accessorKey: "fuelType", // accessor key for fuel type name
+        accessorKey: "fuelType",
         header: "Fuel Type",
         size: 200,
       },
@@ -119,8 +108,6 @@ const FuelTypes = () => {
     ],
     []
   );
-
-  // Parse and format the data for the table
   const parsedData = useMemo(
     () =>
       fuelTypes.map(
@@ -136,40 +123,16 @@ const FuelTypes = () => {
       ) ?? [],
     [fuelTypes, forcedRenderCount]
   );
-
   const updateLoading = useCallback(async () => {
-    // setIsLoading(true) when fuelTypes.length is 0, and setIsLoading(false) when fuelTypes.length is > 0
     setIsLoading(fuelTypes.length >= 0 ? false : true);
   }, [fuelTypes]);
-
   useEffect(() => {
     updateLoading();
   }, [updateLoading]);
-
-  const handleClickDeleteFuelType = (fuelType: IFuelTypesVM) => {
-    fuelTypeDeleteApiCall(fuelType.id!);
-  };
   const handleClickEditFuelType = (fuelType: IFuelTypesVM) => {
     savePaginationState(pagination, FUEL_TYPE_STORAGE_KEY);
     navigate(fuelTypesEditPath(fuelType.id!));
   };
-
-  const fuelTypeDeleteApiCall = async (fuelTypeId: string) => {
-    setIsLoading(true);
-    deleteFuelTypeService({ header, fuelTypeId, fuelTypes })
-      .then((refreshedFuelTypes) => {
-        setFuelTypes(refreshedFuelTypes);
-        forceRender();
-      })
-      .catch(async (error: any) => {
-        const err = await error;
-        toast.error(err.message);
-      })
-      .finally(() => {
-        updateLoading();
-      });
-  };
-
   return (
     <>
       <div className="bg-blue-200 md:p-7 p-2">
@@ -270,5 +233,4 @@ const FuelTypes = () => {
     </>
   );
 };
-
 export default FuelTypes;

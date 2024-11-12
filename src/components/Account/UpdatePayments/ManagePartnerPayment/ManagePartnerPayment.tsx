@@ -1,7 +1,6 @@
 import { Typography, Paper } from "@mui/material";
 import { Link } from "react-router-dom";
 import ManagePartnerPaymentForm from "./ManagePartnerPaymentForm";
-
 const ManagePartnerPayment = () => {
   const title = "Update Partner Distribution";
   return (
@@ -27,18 +26,16 @@ const ManagePartnerPayment = () => {
               Policies /
             </Link>
             <span className="text-grey-600 text-sm">{title}</span>
-            {/* Add a full-width grey line here */}
+           
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
             />
           </Typography>
-
           <ManagePartnerPaymentForm />
         </Paper>
       </div>
     </>
   );
 };
-
 export default ManagePartnerPayment;

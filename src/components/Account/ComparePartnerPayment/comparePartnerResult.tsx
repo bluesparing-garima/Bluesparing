@@ -10,13 +10,11 @@ interface ActivitiesProps {
   comparison?: ComparePartnerResultProps;
   onExcelUploaded?: () => void;
 }
-
 const ComparePartnerResult: React.FC<ActivitiesProps> = ({
   onExcelUploaded,
   comparison,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
-
   const downloadCsv = (filename: string, csv: string) => {
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const link = document.createElement("a");
@@ -30,13 +28,11 @@ const ComparePartnerResult: React.FC<ActivitiesProps> = ({
       document.body.removeChild(link);
     }
   };
-
   const handleExportRows = (rows: any[]) => {
     const rowData = rows.map((row) => row.original);
     const csv = Papa.unparse(rowData, { header: true });
     downloadCsv("partnerCompare.csv", csv);
   };
-  // Define table columns
   const safekarocolumns = useMemo<MRT_ColumnDef<IPolicyPartnerData>[]>(
     () => [
       {
@@ -67,8 +63,6 @@ const ComparePartnerResult: React.FC<ActivitiesProps> = ({
     ],
     []
   );
-
-  // Parse and format the data for the table
   const safekaroData = useMemo(
     () =>
       comparison!.data.map((payOut: IPolicyPartnerData) => ({
@@ -81,17 +75,13 @@ const ComparePartnerResult: React.FC<ActivitiesProps> = ({
       })) ?? [],
     [comparison]
   );
-
   const updateLoading = useCallback(async () => {
     setIsLoading(true);
-    // Example logic to set loading state
     setIsLoading(false);
   }, []);
-
   useEffect(() => {
     updateLoading();
   }, [updateLoading]);
-
   return (
     <>
       <div className="pt-2">
@@ -99,7 +89,6 @@ const ComparePartnerResult: React.FC<ActivitiesProps> = ({
           <Typography className="text-safekaroDarkOrange" variant="h5">
             Comparison Table of {comparison!.partner}
           </Typography>
-
           <Grid container>
             <MaterialReactTable
               state={{ isLoading }}
@@ -125,5 +114,4 @@ const ComparePartnerResult: React.FC<ActivitiesProps> = ({
     </>
   );
 };
-
 export default ComparePartnerResult;

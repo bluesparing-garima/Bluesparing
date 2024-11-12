@@ -1,7 +1,5 @@
-// src/components/PolicyColumns.ts
 import { MRT_ColumnDef } from "material-react-table";
 import { IViewPolicy } from "../../../Policy/IPolicy";
-
 const BrokerCreditColumns: MRT_ColumnDef<IViewPolicy>[] = [
   {
     accessorKey: "payInCommission",
@@ -182,5 +180,4 @@ const BrokerCreditColumns: MRT_ColumnDef<IViewPolicy>[] = [
     size: 50,
   },
 ];
-
 export default BrokerCreditColumns;

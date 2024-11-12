@@ -1,4 +1,3 @@
-// interfaces.ts
 export interface IPolicyBrokerData {
   policyNumber: string;
   db_payInCommission: number;

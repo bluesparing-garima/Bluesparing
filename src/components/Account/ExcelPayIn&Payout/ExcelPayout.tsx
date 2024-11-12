@@ -15,27 +15,22 @@ import * as yup from "yup";
 import { header } from "../../../context/constant";
 import toast, { Toaster } from "react-hot-toast";
 import ExcelPayOutService from "../../../api/uploadExcel/ExcelPayOutOdTp/ExcelPayOutService";
-import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 const ExcelPayout = () => {
   const title = "Upload PayOut Excel";
   const [excelUploaded, setExcelUploaded] = useState(false);
-
   const onSubmit = (values: FormValues) => {
     uploadFile(values.file);
   };
-
   useEffect(() => {
     if (excelUploaded) {
       setExcelUploaded(false);
     }
   }, [excelUploaded]);
-
   const uploadFile = async (file: File | null) => {
     if (file) {
       try {
         const formData = new FormData();
-        formData.append("excel", file); // Ensure the key 'excel' matches the backend expectation
-
+        formData.append("excel", file);
         ExcelPayOutService({ header, excel: formData })
           .then((response) => {
             if (response.status.toLowerCase() === "success") {
@@ -55,11 +50,9 @@ const ExcelPayout = () => {
       }
     }
   };
-
   interface FormValues {
     file: File | null;
   }
-
   const schema = yup.object().shape({
     file: yup
       .mixed()
@@ -74,7 +67,6 @@ const ExcelPayout = () => {
               "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
       ),
   });
-
   const validate = (values: FormValues) => {
     try {
       schema.validateSync(values, { abortEarly: false });
@@ -89,7 +81,6 @@ const ExcelPayout = () => {
       return validationErrors;
     }
   };
-
   return (
     <div className="bg-blue-200 ">
       <Paper
@@ -120,7 +111,6 @@ const ExcelPayout = () => {
             style={{ width: "100%", borderColor: "grey-800" }}
           />
         </Typography>
-
         <Card>
           <CardContent>
             <Form
@@ -184,5 +174,4 @@ const ExcelPayout = () => {
     </div>
   );
 };
-
 export default ExcelPayout;

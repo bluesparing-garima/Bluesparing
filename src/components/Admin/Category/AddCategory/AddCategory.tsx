@@ -7,7 +7,6 @@ import AddCategoryForm from "./AddCategoryForm";
 import getCategoryDetailsService from "../../../../api/Category/GetCategoryDetails/getCategoryDetailsService";
 import { convertICategoryVMToICategoryForm } from "../../../../api/Category/convertICategoryVMToICategoryForm";
 import toast, { Toaster } from "react-hot-toast";
-
 const AddCategory = () => {
   const { categoryId } = useParams();
   const location = useLocation();
@@ -16,7 +15,6 @@ const AddCategory = () => {
   const [editCategoryDetails, setEditCategoryDetails] = useState<
     ICategoryForm | undefined
   >(undefined);
-
   useEffect(() => {
     if (!isAdd && categoryId) {
       getCategoryDetailsService({ header, categoryId })
@@ -31,9 +29,7 @@ const AddCategory = () => {
         });
     }
   }, [isAdd, categoryId]);
-
   const title = isAdd ? "Add Category" : "Update Category";
-
   return (
     <div className="bg-blue-200 md:p-7 ">
       <Paper
@@ -56,7 +52,6 @@ const AddCategory = () => {
             style={{ width: "100%", borderColor: "grey-800" }}
           />
         </Typography>
-
         <AddCategoryForm
           initialValues={{
             id: isAdd ? "0" : editCategoryDetails?.id || "",
@@ -69,5 +64,4 @@ const AddCategory = () => {
     </div>
   );
 };
-
 export default AddCategory;

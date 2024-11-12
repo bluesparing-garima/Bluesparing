@@ -1,5 +1,3 @@
-// AddFuelType.tsx
-
 import React, { useEffect, useState } from "react";
 import { Typography, Paper } from "@mui/material";
 import { Link, useLocation, useParams } from "react-router-dom";
@@ -9,7 +7,6 @@ import AddFuelTypeForm from "./addFuelTypeForm";
 import getFuelTypeDetailsService from "../../../../api/FuelType/GetFuelTypeDetails/getFuelTypeDetailsService";
 import { convertIFuelTypeVMToIFuelTypeForm } from "../../../../api/FuelType/convertIFuelTypeVMToIFuelTypeForm";
 import toast, { Toaster } from "react-hot-toast";
-
 const AddFuelType = () => {
   const { fuelTypeId } = useParams();
   const location = useLocation();
@@ -18,7 +15,6 @@ const AddFuelType = () => {
   const [editFuelTypeDetails, setEditFuelTypeDetails] = useState<IFuelTypeForm | undefined>(
     undefined
   );
-
   useEffect(() => {
     if (!isAdd && fuelTypeId) {
       getFuelTypeDetailsService({ header, fuelTypeId })
@@ -29,13 +25,10 @@ const AddFuelType = () => {
         .catch(async(error) => {
           const err = await error
           toast.error(err.message)
-          
         });
     }
   }, [isAdd, fuelTypeId]);
-
   const title = isAdd ? "Add Fuel Type" : "Update Fuel Type";
-
   return (
     <div className="bg-blue-200 md:p-7">
       <Paper
@@ -58,7 +51,6 @@ const AddFuelType = () => {
             style={{ width: "100%", borderColor: "grey-800" }}
           />
         </Typography>
-
         <AddFuelTypeForm
           initialValues={{
             id: isAdd ? "0" : editFuelTypeDetails?.id || "",
@@ -71,5 +63,4 @@ const AddFuelType = () => {
     </div>
   );
 };
-
 export default AddFuelType;

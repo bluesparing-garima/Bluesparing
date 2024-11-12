@@ -8,20 +8,17 @@ import { IAccounts, IAccountsVM } from "../IAccounts";
 import getAccountService from "../../../api/Account/GetAccount/getAccountService";
 import { DAYJS_DISPLAY_FORMAT, header } from "../../../context/constant";
 import toast, { Toaster } from "react-hot-toast";
-
 const Accounts = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [accounts, setAccounts] = useState<IAccounts[]>([]);
   const navigate = useNavigate();
-
   const handleAddAccountClick = () => {
     navigate(accountsAddPath());
   };
-
   const GetAccounts = useCallback(() => {
     getAccountService({ header })
       .then((accountsDetails) => {
-        setAccounts(accountsDetails.data || []); // Ensure `accounts` is always an array
+        setAccounts(accountsDetails.data || []);
       })
       .catch(async (error) => {
         const err = await error;
@@ -29,11 +26,9 @@ const Accounts = () => {
         console.error("Failed to fetch account details", error);
       });
   }, []);
-
   useEffect(() => {
     GetAccounts();
   }, [GetAccounts]);
-
   const columns = useMemo<MRT_ColumnDef<IAccounts>[]>(
     () => [
       {
@@ -59,12 +54,10 @@ const Accounts = () => {
     ],
     []
   );
-
   const parsedData = useMemo(() => {
     if (!accounts || accounts.length === 0) {
       return []; 
     }
-
     return accounts.map((account: IAccounts) => ({
       id: account._id,
       bankName: account.bankName,
@@ -78,19 +71,15 @@ const Accounts = () => {
       updatedOn: dayjs(account.updatedOn).format(DAYJS_DISPLAY_FORMAT),
     } as IAccountsVM));
   }, [accounts]);
-
   const updateLoading = useCallback(() => {
     setIsLoading(accounts.length === 0);
   }, [accounts]);
-
   useEffect(() => {
     updateLoading();
   }, [updateLoading]);
-
   const handleClickViewCreditDebit = (account: IAccountsVM) => {
     navigate(accountCreditDebitViewPath(account.id!));
   };
-
   return (
     <>
       <div className="bg-blue-200 md:p-7 p-2">
@@ -169,5 +158,4 @@ const Accounts = () => {
     </>
   );
 };
-
 export default Accounts;

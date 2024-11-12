@@ -21,7 +21,7 @@ const CustomToast: React.FC<CustomToastProps> = ({ t, message }) => {
     >
       <div className="flex-1 w-0 p-4">
         <div className="flex items-start">
-          {}
+         
           <div className="flex-shrink-0 pt-0.5">
             <div className="h-10 w-10 bg-blue-500 rounded-full flex items-center justify-center text-lg font-bold text-white">
               <NotificationIcon />

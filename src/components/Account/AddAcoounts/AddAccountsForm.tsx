@@ -10,11 +10,9 @@ import * as yup from "yup";
 import addAccountService from "../../../api/Account/AddAccount/addAccountService";
 import editAccountService from "../../../api/Account/EditAccount/editAccountService";
 import toast, { Toaster } from "react-hot-toast";
-
 export interface addAccountFormProps {
   initialValues: IAccountForm;
 }
-
 const AddAccountsForm = (props: addAccountFormProps) => {
   let { initialValues } = props;
   const navigate = useNavigate();
@@ -24,26 +22,18 @@ const AddAccountsForm = (props: addAccountFormProps) => {
   const isAdd = isAddEdit === ADD;
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let userData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
-
   const onSubmit = (accountForm: IAccountForm, form: any) => {
-    //validate conditions
     let accountHolderName = accountForm.accountHolderName!.toUpperCase();
     let bankName = accountForm.bankName!.substring(0, 3);
     let accountNumber = accountForm.accountNumber!.slice(-3);
     accountForm.accountCode = bankName + accountHolderName + accountNumber;
-    // const formData = new FormData();
     accountForm.createdBy = userData.name;
-    // Object.keys(accountForm).forEach((key) => {
-    //   formData.append(key, accountForm[key as keyof IAccountForm]);
-    // });
-
     if (isAdd) {
       callAddAccountAPI(accountForm);
     } else {
       callEditAccountAPI(accountForm, accountForm.id!);
     }
   };
-
   const callAddAccountAPI = async (account: any) => {
     try {
       const accountResponse = await addAccountService({
@@ -55,14 +45,12 @@ const AddAccountsForm = (props: addAccountFormProps) => {
       } else {
         return { [FORM_ERROR]: `error` };
       }
-      //navigateToPolicies(`${accountResponse.message}`);
     } catch (error:any) {
       const err = await error
       toast.error(err.message)
       return { [FORM_ERROR]: `error` };
     }
   };
-
   const callEditAccountAPI = async (account: any, accountId: string) => {
     try {
       const accountResponse = await editAccountService({
@@ -78,11 +66,9 @@ const AddAccountsForm = (props: addAccountFormProps) => {
     } catch (error:any) {
       const err = await error
        toast.error(err.message)
-
       return { [FORM_ERROR]: `error` };
     }
   };
-  // To be passed to React Final Form
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
       schema = schema();
@@ -93,11 +79,9 @@ const AddAccountsForm = (props: addAccountFormProps) => {
       const errors = err.inner.reduce((formError: any, innerError: any) => {
         return setIn(formError, innerError.path, innerError.message);
       }, {});
-
       return errors;
     }
   };
-
   const validationSchema = yup.object().shape({
     accountNumber: yup
       .string()
@@ -116,9 +100,7 @@ const AddAccountsForm = (props: addAccountFormProps) => {
     amount: yup.number().nullable().required("Amount is required"),
     IFSCCode: yup.string().required("IFSC Code is required").nullable(),
   });
-
   const addValidate = validateFormValues(validationSchema);
-
   return (
     <>
       <React.Fragment>
@@ -214,7 +196,6 @@ const AddAccountsForm = (props: addAccountFormProps) => {
                       </Field>
                     </Grid>
                   </Grid>
-
                   <Grid container spacing={2} mt={2}>
                     <Grid item lg={12} md={12} sm={12} xs={12}>
                       {submitError && (

@@ -6,11 +6,9 @@ import {
   POLICY_TYPE_STORAGE_KEY,
 } from "../../../../context/constant";
 import { IPolicyTypeForm, IPolicyTypes, IPolicyTypesVM } from "../IPolicyType";
-//import dayjs from "dayjs";
 import { Button, IconButton, Paper, Tooltip, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { policyTypeEditPath, policyTypeAddPath } from "../../../../sitemap";
-import deletePolicyTypeService from "../../../../api/PolicyType/DeletePolicyType/deletePolicyTypeService";
 import dayjs from "dayjs";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
@@ -34,12 +32,7 @@ const PolicyTypes = () => {
     savePaginationState(pagination, POLICY_TYPE_STORAGE_KEY);
     navigate(policyTypeAddPath());
   };
-  const [forcedRenderCount, setForcedRenderCount] = useState(0);
-  const forceRender = useCallback(
-    () => setForcedRenderCount(forcedRenderCount + 1),
-    [forcedRenderCount]
-  );
-  //should be memoized or stable
+  const forcedRenderCount = 0 ;
   useEffect(() => {
     const p = getPaginationState(POLICY_TYPE_STORAGE_KEY);
     setPagination(p);
@@ -47,7 +40,7 @@ const PolicyTypes = () => {
   const columns = useMemo<MRT_ColumnDef<IPolicyTypes>[]>(
     () => [
       {
-        accessorKey: "policyType", //normal accessorKey
+        accessorKey: "policyType",
         header: "Policy Type",
         size: 200,
       },
@@ -75,7 +68,6 @@ const PolicyTypes = () => {
     ],
     []
   );
-
   const parsedData = useMemo(
     () =>
       policyTypes.map(
@@ -92,38 +84,15 @@ const PolicyTypes = () => {
       ) ?? [],
     [policyTypes, forcedRenderCount]
   );
-
   const updateLoading = useCallback(async () => {
-    // setIsLoading(true) when policyTypes.length is 0, and setIsLoading(false) when policyTypes.length is > 0
     setIsLoading(false);
   }, []);
-
   useEffect(() => {
     updateLoading();
   }, [updateLoading]);
-
-  const handleClickDeletePolicyType = (PolicyType: IPolicyTypesVM) => {
-    policyTypeDeleteApiCall(PolicyType.id!);
-  };
   const handleClickEditPolicy = (PolicyType: IPolicyTypesVM) => {
     savePaginationState(pagination, POLICY_TYPE_STORAGE_KEY);
     navigate(policyTypeEditPath(PolicyType.id!));
-  };
-
-  const policyTypeDeleteApiCall = async (policyTypeId: string) => {
-    setIsLoading(true);
-    deletePolicyTypeService({ header, policyTypeId, policyTypes })
-      .then((refreshedPolicyTypes) => {
-        setPolicyTypes(refreshedPolicyTypes);
-        forceRender();
-      })
-      .catch(async (error: any) => {
-        const err = await error;
-        toast.error(err.message);
-      })
-      .finally(() => {
-        updateLoading();
-      });
   };
   const getPolicyTypes = useCallback(
     () =>
@@ -143,13 +112,11 @@ const PolicyTypes = () => {
   const callUpdatepolicyTypeAPI = async (policyType: IPolicyTypesVM) => {
     var convertPolicyTypeVMToPolicyTypeForm =
       convertIPolicyTypeVMToIPolicyTypeForm(policyType);
-
     const policyTypeData: IPolicyTypeForm = {
       id: convertPolicyTypeVMToPolicyTypeForm.id,
       policyType: convertPolicyTypeVMToPolicyTypeForm.policyType,
       isActive: !convertPolicyTypeVMToPolicyTypeForm.isActive,
     };
-
     editPolicyTypeService({ header, policyType: policyTypeData })
       .then(() => {
         getPolicyTypes();
@@ -162,7 +129,6 @@ const PolicyTypes = () => {
         updateLoading();
       });
   };
-
   const handleClickChangeStatus = (policyType: IPolicyTypesVM) => {
     callUpdatepolicyTypeAPI(policyType);
   };
@@ -192,7 +158,7 @@ const PolicyTypes = () => {
                 Add Policy Type
               </Button>
             </div>
-            {/* Add a full-width grey line here */}
+           
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
@@ -267,5 +233,4 @@ const PolicyTypes = () => {
     </>
   );
 };
-
 export default PolicyTypes;

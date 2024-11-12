@@ -7,7 +7,6 @@ import AddRoleForm from "./addRoleForm";
 import getRoleDetailsService from "../../../../api/Role/GetRoleDetails/getRoleDetailsService";
 import { convertIRoleVMToIRoleForm } from "../../../../api/Role/convertIRoleVMToIRoleForm";
 import toast, { Toaster } from "react-hot-toast";
-
 const AddRole = () => {
   const { roleId } = useParams();
   const location = useLocation();
@@ -16,7 +15,6 @@ const AddRole = () => {
   const [editRoleDetails, setEditRoleDetails] = useState<IRoleForm | undefined>(
     undefined
   );
-
   useEffect(() => {
     if (!isAdd && roleId) {
       getRoleDetailsService({ header, roleId })
@@ -27,13 +25,10 @@ const AddRole = () => {
         .catch(async (error: any) => {
           const err = await error
           toast.error(err.message)
-
         });
     }
   }, [isAdd, roleId]);
-
   const title = isAdd ? "Add Role" : "Update Role";
-
   return (
     <div className="bg-blue-200 md:p-7">
       <Paper
@@ -56,7 +51,6 @@ const AddRole = () => {
             style={{ width: "100%", borderColor: "grey-800" }}
           />
         </Typography>
-
         <AddRoleForm
           initialValues={{
             id: isAdd ? "0" : editRoleDetails?.id || "",
@@ -69,5 +63,4 @@ const AddRole = () => {
     </div>
   );
 };
-
 export default AddRole;

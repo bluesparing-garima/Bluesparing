@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { Typography, Paper, Button } from "@mui/material";
-
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { ADD, header } from "../../../../context/constant";
-
 import getCreditDebitByIdService from "../../../../api/CreditDebit/GetCreditDebitById/getCreditDebitByIdService";
 import { convertICreditDebitVMToICreditDebitForm } from "../../../../api/CreditDebit/convertICreditDebitVMToICreditDebitForm";
 import PartnerDebitForm from "./PartnerDebitForm";
@@ -12,9 +10,9 @@ import { accountsPartnerPaymentPath } from "../../../../sitemap";
 import toast, { Toaster } from "react-hot-toast";
 const PartnerDebit = () => {
   const title = "Partner Payout Distribution";
-  const { creditDebitId } = useParams(); // Retrieve creditDebitId from URL params
-  const location = useLocation(); // Get current location object
-  const pathName = location.pathname.split("/"); // Split pathname into parts
+  const { creditDebitId } = useParams();
+  const location = useLocation();
+  const pathName = location.pathname.split("/");
   const isAdd = pathName[pathName.length - 1] === ADD;
   const [creditDebitDetails, setCreditDebitDetails] = useState<
     ICreditDebitForm | undefined
@@ -34,16 +32,14 @@ const PartnerDebit = () => {
         .catch(async(error) => {
           const err = await error
           toast.error(err.message)
-         
         });
     }
   }, [isAdd, creditDebitId]);
-
   return (
     <>
       <div className="bg-blue-200 md:p-7 p-2">
         <Paper elevation={3} style={{ padding: 20 }}>
-          {/* Title */}
+         
           <Typography variant="h5" mb={2}>
             <div style={{ display: "flex", alignItems: "center" }}>
               <div style={{ flex: 1 }}>
@@ -64,13 +60,12 @@ const PartnerDebit = () => {
                 Distribution Change
               </Button>
             </div>
-            {/* Divider */}
+           
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
             />
           </Typography>
-          
           <PartnerDebitForm
             initialValues={{
               id: isAdd ? "" : creditDebitDetails?.id || "",
@@ -100,5 +95,4 @@ const PartnerDebit = () => {
     </>
   );
 };
-
 export default PartnerDebit;

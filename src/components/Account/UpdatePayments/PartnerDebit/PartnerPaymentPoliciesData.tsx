@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Button,
   Checkbox,
@@ -26,11 +25,9 @@ import updateFilterPaymentsService from "../../../../api/UpdatePayment/updateFil
 import { motorPolicyEditCommissionPath } from "../../../../sitemap";
 import AddCreditDebitService from "../../../../api/CreditDebit/AddCreditDebit/addCreditDebitService";
 import { AddEditCreditDebitProps } from "../../../../api/CreditDebit/getCreditDebitTypes";
-
 import addAccountManageService from "../../../../api/CreditDebit/AddAccountManage/AddAccountManageService";
 import { CSVLink } from "react-csv";
 import PartnerDebitColumns from "./PartnerDebitColumns";
-
 interface PoliciesDetailsProps {
   policies: IViewPolicy[];
   totalPaidAmount: number;
@@ -45,7 +42,6 @@ interface PoliciesDetailsProps {
   balanceInAccount: number;
   remarks: string;
 }
-
 interface PartialPaidProps {
   policyNumber?: string;
   payOutAmount?: number;
@@ -75,39 +71,31 @@ function PartnerPaymentPoliciesData({
     []
   );
   const [paymentTextboxVisibility, setPaymentTextboxVisibility] =
-    useState<boolean>(false); // State to manage textbox visibility
+    useState<boolean>(false);
   const [selectAllPaid, setSelectAllPaid] = useState<boolean>(false);
   const [partnerAmount, setPartnerAmount] = useState(0);
-
   const [isVisibleTable, setIsVisibleTable] = useState<boolean>(true);
   const columns = useMemo(() => PartnerDebitColumns, []);
-
   const [CurrPaidAmount, setCurrPaidAmount] = useState(0);
   const [CurrLeftDisAmount, setCurrLeftDisAmount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  // debounce logic
-
   const policiesData = deepCopyIViewPolicyArray(policies);
-
   useEffect(() => {
     let totalPaidAmount = 0;
     let leftAmount = Math.abs(Number(partnerBalance)) + Number(partnerAmount);
     const hasChanges = updatePolicies.some((p, index) => {
       const originPolicyData = policiesData[index];
-
       return (
         p.payOutPaymentStatus !== originPolicyData?.payOutPaymentStatus ||
         p.payOutAmount !== originPolicyData?.payOutAmount ||
         p.payOutBalance !== originPolicyData?.payOutBalance
       );
     });
-
     if (!hasChanges) {
       setCurrLeftDisAmount(leftAmount);
       setCurrPaidAmount(0);
       return;
     }
-
     updatePolicies.forEach((p) => {
       const originPolicyData = findPolicyByNumber(p.policyNumber, policiesData);
       const preStatus = originPolicyData?.payOutPaymentStatus;
@@ -139,11 +127,10 @@ function PartnerPaymentPoliciesData({
         }
       }
     });
-
     setCurrLeftDisAmount(leftAmount);
     setCurrPaidAmount(totalPaidAmount);
+     // eslint-disable-next-line
   }, [updatePolicies, partnerAmount]);
-
   useEffect(() => {
     const partialData = policiesData.filter((p) => {
       return p.payOutPaymentStatus === "Partial";
@@ -158,13 +145,11 @@ function PartnerPaymentPoliciesData({
       data.push(dataObj);
     });
     setPartialPaidList([...data]);
-    // eslint-disable-next-line
+     // eslint-disable-next-line
   }, []);
-
   function deepCopyIViewPolicyArray(policies: IViewPolicy[]): IViewPolicy[] {
     return policies.map((policy) => deepCopyIViewPolicy(policy));
   }
-
   function deepCopyIViewPolicy(policy: IViewPolicy): IViewPolicy {
     const copy: IViewPolicy = { ...policy };
     if (policy.rcFront) copy.rcFront = policy.rcFront;
@@ -188,10 +173,8 @@ function PartnerPaymentPoliciesData({
       copy.paymentCreatedBy = deepCopyValue(policy.paymentCreatedBy);
     if (policy.paymentUpdatedBy)
       copy.paymentUpdatedBy = deepCopyValue(policy.paymentUpdatedBy);
-
     return copy;
   }
-
   function deepCopyValue<T>(value: T): T {
     if (Array.isArray(value)) {
       return value.map(deepCopyValue) as any;
@@ -201,7 +184,6 @@ function PartnerPaymentPoliciesData({
       return value;
     }
   }
-
   const payloadForDebit = (b: Number): AddEditCreditDebitProps => {
     return {
       header: header,
@@ -232,10 +214,8 @@ function PartnerPaymentPoliciesData({
       creditDebitId: "",
     };
   };
-
   const createCreditDebitForm = (balance: number): AddEditCreditDebitProps => {
     const paidPolicyAmount = CurrPaidAmount;
-
     return {
       header: header,
       creditDebit: {
@@ -265,7 +245,6 @@ function PartnerPaymentPoliciesData({
       creditDebitId: "",
     };
   };
-
   const payLoadForAccountManage = (tCode: string): AddEditCreditDebitProps => {
     const payloadData: AddEditCreditDebitProps = {
       header: header,
@@ -315,7 +294,6 @@ function PartnerPaymentPoliciesData({
     });
     setUpdatePolicies(updateData.map((a: IViewPolicy) => ({ ...a })));
   };
-
   useEffect(() => {
     partialPaidList.forEach((p) => {
       let status;
@@ -331,21 +309,16 @@ function PartnerPaymentPoliciesData({
         p.policyNumber!
       );
     });
-    // eslint-disable-next-line
   }, [partialPaidList]);
-
   const splitDataIntoChunks = (data: any) => {
     const chunks = [];
-
     if (data.length > 0) {
       for (let i = 0; i < data?.length; i += 60) {
         chunks.push(data.slice(i, i + 60));
       }
     }
-
     return chunks;
   };
-
   function addKeyValueToObjects<T extends Record<string, any>>(
     policyData: T[],
     key: string,
@@ -371,7 +344,6 @@ function PartnerPaymentPoliciesData({
       }
       return p.payOutPaymentStatus !== "UnPaid";
     });
-
     policyData = addKeyValueToObjects(
       policyData,
       "distributedDate",
@@ -383,7 +355,6 @@ function PartnerPaymentPoliciesData({
       CurrLeftDisAmount
     );
     const allBalance = Math.abs(Number(partnerBalance)) + Number(partnerAmount);
-
     try {
       if (partnerAmount > 0) {
         const resData = await toast.promise(
@@ -444,11 +415,9 @@ function PartnerPaymentPoliciesData({
       setIsLoading(false);
     }
   };
-
   const findPolicyByNumber = (policyNumber: string, list: IViewPolicy[]) => {
     return list?.find((p) => p.policyNumber === policyNumber);
   };
-
   const updatePartialPaid = (data: PartialPaidProps) => {
     let updateList = partialPaidList.map((p) => {
       if (p.policyNumber !== data.policyNumber) {
@@ -461,7 +430,6 @@ function PartnerPaymentPoliciesData({
   };
   const handleStatusChange = (policy: IViewPolicy, newStatus: string) => {
     let payOutAmount, payOutBalance, status;
-
     if (newStatus === "UnPaid") {
       payOutAmount = 0;
       payOutBalance = 0;
@@ -502,7 +470,6 @@ function PartnerPaymentPoliciesData({
           payOutBalance = 0;
         }
       }
-      //partial
     } else {
       let existPartialData = findFromPartialList(policy.policyNumber);
       if (existPartialData) {
@@ -537,16 +504,12 @@ function PartnerPaymentPoliciesData({
     );
     setPaymentTextboxVisibility(true);
   };
-
   const handleAmountChange = (policy: IViewPolicy, e: any) => {
     let amount = Number(e.target.value) || 0;
-
-    // Check if there is any amount left to distribute
     if (CurrLeftDisAmount === 0) {
       toast.error("Please enter an amount");
       return;
     }
-
     const policyAmount = policy.payOutBalance || policy.payOutCommission;
     let maxAllowableAmount = Math.min(policyAmount, CurrLeftDisAmount);
     if (amount < 0) {
@@ -554,14 +517,11 @@ function PartnerPaymentPoliciesData({
     } else if (amount >= maxAllowableAmount) {
       amount = maxAllowableAmount;
     }
-
     const existData = findFromPartialList(policy.policyNumber);
-
     if (existData) {
       let balance = existData?.payOutBalance ?? 0;
       let payOutBalance = balance ? balance - amount : amount;
       let payOutAmount = policy.payOutCommission - payOutBalance;
-
       updatePartialPaid({
         policyNumber: policy.policyNumber,
         payOutAmount,
@@ -571,7 +531,6 @@ function PartnerPaymentPoliciesData({
       setPaymentTextboxVisibility(true);
     }
   };
-
   const findFromPartialList = (pNo: string) => {
     return partialPaidList?.find((p) => p.policyNumber === pNo);
   };
@@ -586,26 +545,21 @@ function PartnerPaymentPoliciesData({
     }
     setSelectAllPaid(false);
     setUpdatePolicies(policiesData.map((a: IViewPolicy) => ({ ...a })));
-
     setPartnerAmount(enterValue > 0 ? enterValue : 0);
     setPaymentTextboxVisibility(true);
   };
-
   const handleSelectAllPaidChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const isChecked = event.target.checked;
     setSelectAllPaid(isChecked);
-
     if (!isChecked) {
       setUpdatePolicies(policiesData.map((a: IViewPolicy) => ({ ...a })));
       setPaymentTextboxVisibility(true);
       return;
     }
-
     setSelectAllPaid(true);
     let totalAmount = CurrLeftDisAmount;
-
     const updatedPolicies = policiesData.map((policy) => {
       let policyStatus = policy.payOutPaymentStatus;
       let payOutAmount = policy.payOutAmount ?? 0;
@@ -623,7 +577,6 @@ function PartnerPaymentPoliciesData({
             policyStatus = "Partial";
             payOutAmount += totalAmount;
             balance = policy.payOutCommission - payOutAmount;
-
             totalAmount = 0;
           }
         } else if (policy.payOutCommission <= totalAmount) {
@@ -638,7 +591,6 @@ function PartnerPaymentPoliciesData({
           totalAmount = 0;
         }
       }
-
       return {
         ...policy,
         payOutPaymentStatus: policyStatus,
@@ -650,7 +602,6 @@ function PartnerPaymentPoliciesData({
     setUpdatePolicies(updatedPolicies.map((a: IViewPolicy) => ({ ...a })));
     setPaymentTextboxVisibility(true);
   };
-
   if (!isVisibleTable) {
     return (
       <Paper elevation={3} style={{ padding: 30 }}>
@@ -721,7 +672,6 @@ function PartnerPaymentPoliciesData({
                 )}
             </FormControl>
           </Grid>
-
           <Grid item lg={6}>
             {paymentTextboxVisibility && (
               <Button
@@ -765,13 +715,12 @@ function PartnerPaymentPoliciesData({
           </Tooltip>
         </Grid>
         <MaterialReactTable
-          //state={{ isLoading }}
           columns={columns}
           data={updatePolicies}
           enableRowActions
           renderRowActions={({ row }) => (
             <div>
-              {/* Display error message if it exists */}
+             
               {row.original.errorMessage && (
                 <Grid container mb={2}>
                   <Grid item lg={12}>
@@ -783,7 +732,7 @@ function PartnerPaymentPoliciesData({
                   </Grid>
                 </Grid>
               )}
-              {/* Edit Commission button */}
+             
               {row.original.payOutCommission === 0 && (
                 <Tooltip title={"Edit Commission"}>
                   <IconButton
@@ -811,8 +760,7 @@ function PartnerPaymentPoliciesData({
                   </IconButton>
                 </Tooltip>
               )}
-
-              {/* Status dropdown */}
+             
               {row.original.payOutCommission !== 0 && (
                 <Grid container mt={2}>
                   <Grid item lg={12}>
@@ -837,8 +785,7 @@ function PartnerPaymentPoliciesData({
                   </Grid>
                 </Grid>
               )}
-
-              {/* Textbox for Partial status */}
+             
               {row.original.payOutPaymentStatus === "Partial" && (
                 <Grid container mt={2}>
                   <Grid item lg={12}>
@@ -863,5 +810,4 @@ function PartnerPaymentPoliciesData({
     </div>
   );
 }
-
 export default PartnerPaymentPoliciesData;

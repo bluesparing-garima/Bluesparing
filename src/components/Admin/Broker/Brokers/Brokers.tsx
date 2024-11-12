@@ -6,7 +6,6 @@ import {
   header,
 } from "../../../../context/constant";
 import { IBrokerForm, IBrokers, IBrokersVM } from "../IBroker";
-//import dayjs from "dayjs";
 import { Button, IconButton, Paper, Tooltip, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { brokerEditPath, brokerAddPath } from "../../../../sitemap";
@@ -22,7 +21,6 @@ import {
   getPaginationState,
   savePaginationState,
 } from "../../../../utils/PaginationHandler";
-
 const Brokers = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [brokers, setBrokers] = useState<IBrokers[]>([]);
@@ -30,13 +28,11 @@ const Brokers = () => {
     pageIndex: 0,
     pageSize: 10,
   });
-
   useEffect(() => {
     const p = getPaginationState(BROKER_STORAGE_KEY);
     setPagination(p);
   }, []);
   const navigate = useNavigate();
-
   const handleAddBrokerClick = () => {
     savePaginationState(pagination, BROKER_STORAGE_KEY);
     navigate(brokerAddPath());
@@ -58,14 +54,12 @@ const Brokers = () => {
   }, [GetBrokers]);
   const callUpdateBrokerAPI = async (broker: IBrokersVM) => {
     var convertBrokerVMToBrokerForm = convertIBrokerVMToIBrokerForm(broker);
-
     const brokerData: IBrokerForm = {
       id: convertBrokerVMToBrokerForm.id,
       brokerName: convertBrokerVMToBrokerForm.brokerName,
       brokerCode: convertBrokerVMToBrokerForm.brokerCode,
       isActive: !convertBrokerVMToBrokerForm.isActive,
     };
-
     editBrokerService({ header, broker: brokerData })
       .then((updatedBroker) => {
         GetBrokers();
@@ -78,7 +72,6 @@ const Brokers = () => {
         updateLoading();
       });
   };
-
   const handleClickChangeStatus = (broker: IBrokersVM) => {
     callUpdateBrokerAPI(broker);
   };
@@ -87,16 +80,15 @@ const Brokers = () => {
     () => setForcedRenderCount(forcedRenderCount + 1),
     [forcedRenderCount]
   );
-  //should be memoized or stable
   const columns = useMemo<MRT_ColumnDef<IBrokers>[]>(
     () => [
       {
-        accessorKey: "brokerName", //normal accessorKey
+        accessorKey: "brokerName",
         header: "Broker Name",
         size: 200,
       },
       {
-        accessorKey: "brokerCode", //normal accessorKey
+        accessorKey: "brokerCode",
         header: "Broker Code",
         size: 200,
       },
@@ -121,7 +113,6 @@ const Brokers = () => {
     ],
     []
   );
-
   const parsedData = useMemo(
     () =>
       brokers.map(
@@ -138,16 +129,12 @@ const Brokers = () => {
       ) ?? [],
     [brokers, forcedRenderCount]
   );
-
   const updateLoading = useCallback(async () => {
-    // setIsLoading(true) when Brokers.length is 0, and setIsLoading(false) when Brokers.length is > 0
     setIsLoading(false);
   }, []);
-
   useEffect(() => {
     updateLoading();
   }, [updateLoading]);
-
   const handleClickDeleteBroker = (broker: IBrokersVM) => {
     brokerDeleteApiCall(broker.id!);
   };
@@ -155,7 +142,6 @@ const Brokers = () => {
     savePaginationState(pagination, BROKER_STORAGE_KEY);
     navigate(brokerEditPath(broker.id!));
   };
-
   const brokerDeleteApiCall = async (brokerId: string) => {
     setIsLoading(true);
     deletebrokerService({ header, brokerId, brokers })
@@ -271,5 +257,4 @@ const Brokers = () => {
     </>
   );
 };
-
 export default Brokers;

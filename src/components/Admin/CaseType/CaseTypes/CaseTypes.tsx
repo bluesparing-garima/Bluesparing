@@ -10,8 +10,6 @@ import dayjs from "dayjs";
 import { Button, IconButton, Paper, Tooltip, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { caseTypesEditPath, caseTypesAddPath } from "../../../../sitemap";
-import deleteCaseTypeService from "../../../../api/CaseType/DeleteCaseType/deleteCaseTypeService";
-import useGetCaseTypes from "../../../../Hooks/CaseType/useGetCaseTypes";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import getCaseTypesService from "../../../../api/CaseType/GetCaseTypes/getCaseTypesService";
@@ -34,20 +32,16 @@ const CaseTypes = () => {
     savePaginationState(pagination, CASE_TYPE_STORAGE_KEY);
     navigate(caseTypesAddPath());
   };
-  const [forcedRenderCount, setForcedRenderCount] = useState(0);
-  const forceRender = useCallback(
-    () => setForcedRenderCount(forcedRenderCount + 1),
-    [forcedRenderCount]
-  );
+  const forcedRenderCount =0;
+ 
   useEffect(() => {
     const p = getPaginationState(CASE_TYPE_STORAGE_KEY);
     setPagination(p);
   }, []);
-  // Define table columns
   const columns = useMemo<MRT_ColumnDef<ICaseTypes>[]>(
     () => [
       {
-        accessorKey: "caseType", // accessor key for case type name
+        accessorKey: "caseType",
         header: "Case Type",
         size: 200,
       },
@@ -77,8 +71,6 @@ const CaseTypes = () => {
     ],
     []
   );
-
-  // Parse and format the data for the table
   const parsedData = useMemo(
     () =>
       caseTypes.map(
@@ -94,39 +86,18 @@ const CaseTypes = () => {
       ) ?? [],
     [caseTypes, forcedRenderCount]
   );
-
   const updateLoading = useCallback(async () => {
-    // setIsLoading(true) when caseTypes.length is 0, and setIsLoading(false) when caseTypes.length is > 0
     setIsLoading(caseTypes.length >= 0 ? false : true);
   }, [caseTypes]);
-
   useEffect(() => {
     updateLoading();
   }, [updateLoading]);
-
-  const handleClickDeleteCaseType = (caseType: ICaseTypesVM) => {
-    caseTypeDeleteApiCall(caseType.id!);
-  };
+ 
   const handleClickEditCaseType = (caseType: ICaseTypesVM) => {
     savePaginationState(pagination, CASE_TYPE_STORAGE_KEY);
     navigate(caseTypesEditPath(caseType.id!));
   };
-
-  const caseTypeDeleteApiCall = async (caseTypeId: string) => {
-    setIsLoading(true);
-    deleteCaseTypeService({ header, caseTypeId, caseTypes })
-      .then((refreshedCaseTypes) => {
-        setCaseTypes(refreshedCaseTypes);
-        forceRender();
-      })
-      .catch(async (error: any) => {
-        const err = await error;
-        toast.error(err.message);
-      })
-      .finally(() => {
-        updateLoading();
-      });
-  };
+ 
   const GetCaseTypes = useCallback(
     () =>
       getCaseTypesService({ header })
@@ -145,13 +116,11 @@ const CaseTypes = () => {
   const callUpdateCaseTypeAPI = async (caseType: ICaseTypesVM) => {
     var convertCaseTypeVMToCaseTypeForm =
       convertICaseTypeVMToICaseTypeForm(caseType);
-
     const caseTypeData: ICaseTypeForm = {
       id: convertCaseTypeVMToCaseTypeForm.id,
       caseType: convertCaseTypeVMToCaseTypeForm.caseType,
       isActive: !convertCaseTypeVMToCaseTypeForm.isActive,
     };
-
     editCaseTypeService({ header, caseType: caseTypeData })
       .then((updatedCaseType) => {
         GetCaseTypes();
@@ -164,7 +133,6 @@ const CaseTypes = () => {
         updateLoading();
       });
   };
-
   const handleClickChangeStatus = (caseType: ICaseTypesVM) => {
     callUpdateCaseTypeAPI(caseType);
   };
@@ -268,5 +236,4 @@ const CaseTypes = () => {
     </>
   );
 };
-
 export default CaseTypes;

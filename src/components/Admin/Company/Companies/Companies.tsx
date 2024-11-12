@@ -5,14 +5,11 @@ import {
   DAYJS_DISPLAY_FORMAT,
   header,
 } from "../../../../context/constant";
-import useGetCompanies from "../../../../Hooks/Company/useGetCompanies";
 import { ICompanies, ICompaniesVM, ICompanyForm } from "../ICompany";
-//import dayjs from "dayjs";
 import { Button, IconButton, Paper, Tooltip, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { companyAddPath, companyEditPath } from "../../../../sitemap";
 import dayjs from "dayjs";
-import deleteCompanyService from "../../../../api/Company/DeleteCompany/deleteCompanyService";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import getCompaniesService from "../../../../api/Company/GetCompanies/getCompaniesService";
@@ -30,27 +27,20 @@ const Companies = () => {
     pageIndex: 0,
     pageSize: 10,
   });
-
   const navigate = useNavigate();
   const handleClickAddCompany = () => {
     savePaginationState(pagination, COMPANY_STORAGE_KEY);
     navigate(companyAddPath());
   };
-
   useEffect(() => {
     const p = getPaginationState(COMPANY_STORAGE_KEY);
     setPagination(p);
   }, []);
-  const [forcedRenderCount, setForcedRenderCount] = useState(0);
-  const forceRender = useCallback(
-    () => setForcedRenderCount(forcedRenderCount + 1),
-    [forcedRenderCount]
-  );
-  //should be memoized or stable
+  const forcedRenderCount = 0;
   const columns = useMemo<MRT_ColumnDef<ICompanies>[]>(
     () => [
       {
-        accessorKey: "companyName", //normal accessorKey
+        accessorKey: "companyName",
         header: "Company Name",
         size: 200,
       },
@@ -75,7 +65,6 @@ const Companies = () => {
     ],
     []
   );
-
   const parsedData = useMemo(
     () =>
       companyData.map(
@@ -91,19 +80,12 @@ const Companies = () => {
       ) ?? [],
     [companyData, forcedRenderCount]
   );
-
   const updateLoading = useCallback(async () => {
-    // setIsLoading(true) when companies.length is 0, and setIsLoading(false) when companies.length is > 0
     setIsLoading(companyData.length >= 0 ? false : true);
   }, [companyData]);
-
   useEffect(() => {
     updateLoading();
   }, [updateLoading]);
-
-  const handleClickDeleteCompany = (company: ICompaniesVM) => {
-    companyDeleteApiCall(company.id!);
-  };
   const handleClickEditCompany = (company: ICompaniesVM) => {
     savePaginationState(pagination, COMPANY_STORAGE_KEY);
     navigate(companyEditPath(company.id!));
@@ -126,13 +108,11 @@ const Companies = () => {
   const callUpdateCompanyAPI = async (company: ICompaniesVM) => {
     var convertCompanyVMToCompanyForm =
       convertICompanyVMToICompanyForm(company);
-
     const companyData: ICompanyForm = {
       id: convertCompanyVMToCompanyForm.id,
       companyName: convertCompanyVMToCompanyForm.companyName,
       isActive: !convertCompanyVMToCompanyForm.isActive,
     };
-
     editCompanyService({ header, company: companyData })
       .then(() => {
         GetCompanies();
@@ -145,24 +125,8 @@ const Companies = () => {
         updateLoading();
       });
   };
-
   const handleClickChangeStatus = (company: ICompaniesVM) => {
     callUpdateCompanyAPI(company);
-  };
-  const companyDeleteApiCall = async (companyId: string) => {
-    setIsLoading(true);
-    deleteCompanyService({ header, companyId, companies: companyData })
-      .then((refreshedCompanies) => {
-        setCompanyData(refreshedCompanies);
-        forceRender();
-      })
-      .catch(async (error: any) => {
-        const err = await error;
-        toast.error(err.message);
-      })
-      .finally(() => {
-        updateLoading();
-      });
   };
   return (
     <>
@@ -190,7 +154,7 @@ const Companies = () => {
                 Add Company
               </Button>
             </div>
-            {/* Add a full-width grey line here */}
+           
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
@@ -265,5 +229,4 @@ const Companies = () => {
     </>
   );
 };
-
 export default Companies;

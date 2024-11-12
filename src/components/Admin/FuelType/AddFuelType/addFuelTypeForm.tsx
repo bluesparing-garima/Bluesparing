@@ -1,5 +1,3 @@
-// AddFuelTypeForm.tsx
-
 import React from "react";
 import { TextField, Button, Grid } from "@mui/material";
 import addFuelTypeService from "../../../../api/FuelType/AddFuelType/addFuelTypeService";
@@ -12,11 +10,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { fuelTypesPath } from "../../../../sitemap";
 import editFuelTypeService from "../../../../api/FuelType/EditFuelType/editFuelTypeService";
 import toast, { Toaster } from "react-hot-toast";
-
 export interface AddFuelTypeFormProps {
   initialValues: IFuelTypeForm;
 }
-
 const AddFuelTypeForm = (props: AddFuelTypeFormProps) => {
   const { initialValues } = props;
   const navigate = useNavigate();
@@ -24,7 +20,6 @@ const AddFuelTypeForm = (props: AddFuelTypeFormProps) => {
   const pathName = location.pathname.split("/");
   const isAddEdit = pathName[pathName.length - 1] as string;
   const isAdd = isAddEdit === ADD;
-
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
       schema = schema();
@@ -35,11 +30,9 @@ const AddFuelTypeForm = (props: AddFuelTypeFormProps) => {
       const errors = err.inner.reduce((formError: any, innerError: any) => {
         return setIn(formError, innerError.path, innerError.message);
       }, {});
-
       return errors;
     }
   };
-
   const validationSchema = yup.object().shape({
     fuelType: yup
       .string()
@@ -47,9 +40,7 @@ const AddFuelTypeForm = (props: AddFuelTypeFormProps) => {
       .min(1, "Fuel Type Name must be at least 1 character")
       .max(100, "Fuel Type Name cannot exceed 100 characters"),
   });
-
   const validate = validateFormValues(validationSchema);
-
   const onSubmit = async (fuelType: IFuelTypeForm) => {
     if (isAdd) {
       callAddFuelTypeAPI(fuelType);
@@ -57,13 +48,11 @@ const AddFuelTypeForm = (props: AddFuelTypeFormProps) => {
       callEditFuelTypeAPI(fuelType);
     }
   };
-
   const navigateToFuelTypes = (message: string) => {
     navigate(fuelTypesPath(), {
       state: message,
     });
   };
-
   const callAddFuelTypeAPI = async (fuelType: IFuelTypeForm) => {
     try {
       const newFuelType = await addFuelTypeService({ header, fuelType });
@@ -73,7 +62,6 @@ const AddFuelTypeForm = (props: AddFuelTypeFormProps) => {
       toast.error(err.message);
     }
   };
-
   const callEditFuelTypeAPI = async (fuelType: IFuelTypeForm) => {
     try {
       const updatedFuelType = await editFuelTypeService({ header, fuelType });
@@ -83,7 +71,6 @@ const AddFuelTypeForm = (props: AddFuelTypeFormProps) => {
       toast.error(err.message);
     }
   };
-
   return (
     <>
       <Form
@@ -127,5 +114,4 @@ const AddFuelTypeForm = (props: AddFuelTypeFormProps) => {
     </>
   );
 };
-
 export default AddFuelTypeForm;

@@ -1,5 +1,3 @@
-// AddCaseTypeForm.tsx
-
 import React from "react";
 import { TextField, Button, Grid } from "@mui/material";
 import addCaseTypeService from "../../../../api/CaseType/AddCaseType/addCaseTypeService";
@@ -12,11 +10,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { caseTypesPath } from "../../../../sitemap";
 import editCaseTypeService from "../../../../api/CaseType/EditCaseType/editCaseTypeService";
 import toast, { Toaster } from "react-hot-toast";
-
 export interface AddCaseTypeFormProps {
   initialValues: ICaseTypeForm;
 }
-
 const AddCaseTypeForm = (props: AddCaseTypeFormProps) => {
   const { initialValues } = props;
   const navigate = useNavigate();
@@ -24,7 +20,6 @@ const AddCaseTypeForm = (props: AddCaseTypeFormProps) => {
   const pathName = location.pathname.split("/");
   const isAddEdit = pathName[pathName.length - 1] as string;
   const isAdd = isAddEdit === ADD;
-
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
       schema = schema();
@@ -35,11 +30,9 @@ const AddCaseTypeForm = (props: AddCaseTypeFormProps) => {
       const errors = err.inner.reduce((formError: any, innerError: any) => {
         return setIn(formError, innerError.path, innerError.message);
       }, {});
-
       return errors;
     }
   };
-
   const validationSchema = yup.object().shape({
     caseType: yup
       .string()
@@ -47,9 +40,7 @@ const AddCaseTypeForm = (props: AddCaseTypeFormProps) => {
       .min(1, "Case Type Name must be at least 1 character")
       .max(100, "Case Type Name cannot exceed 100 characters"),
   });
-
   const validate = validateFormValues(validationSchema);
-
   const onSubmit = async (caseType: ICaseTypeForm) => {
     if (isAdd) {
       callAddCaseTypeAPI(caseType);
@@ -57,13 +48,11 @@ const AddCaseTypeForm = (props: AddCaseTypeFormProps) => {
       callEditCaseTypeAPI(caseType);
     }
   };
-
   const navigateToCaseTypes = (message: string) => {
     navigate(caseTypesPath(), {
       state: message,
     });
   };
-
   const callAddCaseTypeAPI = async (caseType: ICaseTypeForm) => {
     try {
       const newCaseType = await addCaseTypeService({ header, caseType });
@@ -73,7 +62,6 @@ const AddCaseTypeForm = (props: AddCaseTypeFormProps) => {
       toast.error(err.message);
     }
   };
-
   const callEditCaseTypeAPI = async (caseType: ICaseTypeForm) => {
     try {
       const updatedCaseType = await editCaseTypeService({ header, caseType });
@@ -83,7 +71,6 @@ const AddCaseTypeForm = (props: AddCaseTypeFormProps) => {
       toast.error(err.message);
     }
   };
-
   return (
     <>
       <Form
@@ -127,5 +114,4 @@ const AddCaseTypeForm = (props: AddCaseTypeFormProps) => {
     </>
   );
 };
-
 export default AddCaseTypeForm;

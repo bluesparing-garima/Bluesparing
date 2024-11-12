@@ -5,57 +5,52 @@ import { IPayInExcel, IPayInExcelVM } from "../ICommission";
 import dayjs from "dayjs";
 import { Paper, Typography } from "@mui/material";
 import useGetPayInExcel from "../../../../Hooks/PayInExcel/useGetPayInExcel";
-
 interface ActivitiesProps {
   onExcelUploaded?: () => void;
 }
-
 const PayInUploadByExcelData = ({ onExcelUploaded }: ActivitiesProps) => {
   const [isLoading, setIsLoading] = useState(false);
   let [payInExcel] = useGetPayInExcel({ header: header });
-  // Define table columns
   const columns = useMemo<MRT_ColumnDef<IPayInExcel>[]>(
     () => [
       {
-        accessorKey: "policyType", // accessor key for case type name
+        accessorKey: "policyType",
         header: "Policy Type",
         size: 100,
       },
       {
-        accessorKey: "productType", // accessor key for case type name
+        accessorKey: "productType",
         header: "Product Type",
         size: 100,
       },
       {
-        accessorKey: "subCategory", // accessor key for case type name
+        accessorKey: "subCategory",
         header: "sub Category",
         size: 100,
       },
       {
-        accessorKey: "fuelType", // accessor key for case type name
+        accessorKey: "fuelType",
         header: "Fuel Type",
         size: 100,
       },
       {
-        accessorKey: "companyName", // accessor key for case type name
+        accessorKey: "companyName",
         header: "company Name",
         size: 100,
       },
       {
-        accessorKey: "od", // accessor key for case type name
+        accessorKey: "od",
         header: "od",
         size: 50,
       },
       {
-        accessorKey: "tp", // accessor key for case type name
+        accessorKey: "tp",
         header: "tp",
         size: 50,
       },
     ],
     []
   );
-
-  // Parse and format the data for the table
   const parsedData = useMemo(
     () =>
       payInExcel.map(
@@ -77,23 +72,18 @@ const PayInUploadByExcelData = ({ onExcelUploaded }: ActivitiesProps) => {
             productType: payIn.productType,
             rto: payIn.rto,
             subCategory: payIn.subCategory,
-            // insuredType: payIn.insuredType,
             createdOn: dayjs(payIn.createdOn).format(DAYJS_DISPLAY_FORMAT),
             updatedOn: dayjs(payIn.updatedOn).format(DAYJS_DISPLAY_FORMAT),
           } as IPayInExcelVM)
       ) ?? [],
     [payInExcel]
   );
-
   const updateLoading = useCallback(async () => {
-    // setIsLoading(true) when caseTypes.length is 0, and setIsLoading(false) when caseTypes.length is > 0
     setIsLoading(payInExcel.length >= 0 ? false : true);
   }, [payInExcel]);
-
   useEffect(() => {
     updateLoading();
   }, [updateLoading]);
-
   return (
     <>
       <div className="pt-2">
@@ -111,5 +101,4 @@ const PayInUploadByExcelData = ({ onExcelUploaded }: ActivitiesProps) => {
     </>
   );
 };
-
 export default PayInUploadByExcelData;

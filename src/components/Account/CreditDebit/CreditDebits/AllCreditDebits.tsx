@@ -1,42 +1,29 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { MaterialReactTable, MRT_ColumnDef } from "material-react-table";
-import { IconButton, Tooltip } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
-import { creditDebitEditPath } from "../../../../sitemap";
 import { ICreditDebits, ICreditDebitsVM } from "../ICreditDebits";
 import { DAYJS_DISPLAY_FORMAT, header } from "../../../../context/constant";
 import getAccountManageService from "../../../../api/CreditDebit/GetAccountManage/getAccountManageService";
 import toast, { Toaster } from "react-hot-toast";
-
 const AllCreditDebits = () => {
-  // State and hooks initialization
-  const [isLoading, setIsLoading] = useState(false); // Loading state
-  const [creditDebits, setCreditDebits] = useState<ICreditDebits[]>([]); // State for all credit debits
-  const navigate = useNavigate(); // React Router's navigation hook
-
-  // Function to fetch credit debits from API
+  const [isLoading, setIsLoading] = useState(false);
+  const [creditDebits, setCreditDebits] = useState<ICreditDebits[]>([]);
   const GetCreditDebits = useCallback(() => {
-    setIsLoading(true); // Set loading state to true
-    getAccountManageService({ header }) // Call API to fetch credit debits
+    setIsLoading(true);
+    getAccountManageService({ header })
       .then((creditDebitsDetails) => {
-        // On successful API call
-        setCreditDebits(creditDebitsDetails.data); // Set all credit debits
-        setIsLoading(false); // Set loading state to false
+        setCreditDebits(creditDebitsDetails.data);
+        setIsLoading(false);
       })
       .catch(async (error) => {
-        setIsLoading(false); // Set loading state to false
+        setIsLoading(false);
         const err = await error;
         toast.error(err.message);
       });
   }, []);
-
-  // Call GetCreditDebits on component mount
   useEffect(() => {
     GetCreditDebits();
   }, [GetCreditDebits]);
-
-  // Define columns for MaterialReactTable using useMemo for optimization
   const columns = useMemo<MRT_ColumnDef<ICreditDebits>[]>(
     () => [
       {
@@ -70,11 +57,6 @@ const AllCreditDebits = () => {
         header: "Amount",
         size: 200,
       },
-      // {
-      //   accessorKey: "accountBalance",
-      //   header: "Account Balance",
-      //   size: 50,
-      // },
       {
         header: "Payment Start Date",
         accessorKey: "startDate",
@@ -93,12 +75,9 @@ const AllCreditDebits = () => {
     ],
     []
   );
-
-  // Transform creditDebits data for rendering using useMemo for optimization
   const parsedData = useMemo<ICreditDebitsVM[]>(() => {
     return creditDebits.map((creditDebit: ICreditDebits) => {
       let combinedName = "";
-
       if (creditDebit.accountType === "PayIn" && creditDebit.brokerName) {
         combinedName = creditDebit.brokerName;
       } else if (
@@ -111,7 +90,6 @@ const AllCreditDebits = () => {
       } else {
         combinedName = "other";
       }
-
       return {
         id: creditDebit._id,
         accountType: creditDebit.accountType,
@@ -134,18 +112,15 @@ const AllCreditDebits = () => {
       };
     });
   }, [creditDebits]);
-
-  // JSX rendering
   return (
     <div className="bg-blue-200 p-7 mt-3">
       <MaterialReactTable
-        state={{ isLoading }} // Loading state
-        columns={columns} // Columns configuration
-        data={parsedData} // Data to be displayed
+        state={{ isLoading }}
+        columns={columns}
+        data={parsedData}
       />
       <Toaster position="bottom-center" reverseOrder={false} />
     </div>
   );
 };
-
 export default AllCreditDebits;

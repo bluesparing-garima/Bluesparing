@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import {
   TextField,
   Button,
@@ -24,12 +23,10 @@ import getFilterPaidForBrokerService from "../../../../api/UpdatePayment/GetFilt
 import toast, { Toaster } from "react-hot-toast";
 dayjs.extend(utc);
 const ManageBrokerPaymentForm = () => {
-  //const { initialValues } = props;
   const [selectedBrokerId, setSelectedBrokerId] = useState<string>();
   const [brokerName, setBrokerName] = useState<string>("");
   const [isVisible, setIsVisible] = useState(false);
   const [motorPolicies, setMotorPolicies] = useState<IViewPolicy[]>([]);
-
   const [brokerBalance, setbrokerBalance] = useState(0);
   const [policyTotal, setPolicyTotal] = useState(0);
   const [startTime, setStartTime] = useState("");
@@ -50,14 +47,11 @@ const ManageBrokerPaymentForm = () => {
       return errors;
     }
   };
-
   const validationSchema = yup.object().shape({
     startDate: yup.string().required("Start Date is required").nullable(),
     endDate: yup.string().nullable().required("End Date is required"),
   });
-
   const validate = validateFormValues(validationSchema);
-
   const onSubmit = async (updatePayment: IUpdatePartnerPaymentPolicy) => {
     const newStartDate = dayjs(updatePayment.startDate).format(DAY_FORMAT);
     const newEndDate = dayjs(updatePayment.endDate).format(DAY_FORMAT);
@@ -88,7 +82,6 @@ const ManageBrokerPaymentForm = () => {
     <React.Fragment>
       <Form
         onSubmit={onSubmit}
-        // initialValues={initialValues}
         validate={validate}
         render={({ handleSubmit, submitting, errors, values }) => (
           <form onSubmit={handleSubmit} noValidate>
@@ -108,7 +101,7 @@ const ManageBrokerPaymentForm = () => {
                               : `${option.brokerName} - ${option.brokerCode}` ||
                                 ""
                           }
-                          options={brokers} // Replace with your options array
+                          options={brokers}
                           onChange={(event, newValue) => {
                             input.onChange(newValue.brokerName);
                             setBrokerName(newValue?.brokerName);
@@ -138,7 +131,7 @@ const ManageBrokerPaymentForm = () => {
                       <DatePicker
                         disableFuture
                         label="Start Date"
-                        value={input.value || null} // Initialize the value if it's undefined
+                        value={input.value || null}
                         onChange={(date) => input.onChange(date)}
                         renderInput={(params: any) => (
                           <TextField
@@ -162,7 +155,7 @@ const ManageBrokerPaymentForm = () => {
                       <DatePicker
                         disableFuture
                         label="End Date"
-                        value={input.value || null} // Initialize the value if it's undefined
+                        value={input.value || null}
                         onChange={(date) => input.onChange(date)}
                         renderInput={(params: any) => (
                           <TextField
@@ -186,7 +179,7 @@ const ManageBrokerPaymentForm = () => {
                       <DatePicker
                         disableFuture
                         label="Distributed Date"
-                        value={input.value || null} // Initialize the value if it's undefined
+                        value={input.value || null}
                         onChange={(date) => input.onChange(date)}
                         renderInput={(params: any) => (
                           <TextField
@@ -203,8 +196,7 @@ const ManageBrokerPaymentForm = () => {
                   )}
                 </Field>
               </Grid>
-
-              {/* Remarks Input */}
+             
               <Grid item lg={12} md={12} sm={12} xs={12}>
                 <Field name="remarks">
                   {({ input, meta }) => (
@@ -259,5 +251,4 @@ const ManageBrokerPaymentForm = () => {
     </React.Fragment>
   );
 };
-
 export default ManageBrokerPaymentForm;

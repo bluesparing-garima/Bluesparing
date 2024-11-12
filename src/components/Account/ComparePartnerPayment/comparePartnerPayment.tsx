@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useEffect, useState } from "react";
 import {
   Typography,
@@ -23,14 +22,12 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import toast, { Toaster } from "react-hot-toast";
 import useGetPartners from "../../../Hooks/Partner/useGetPartners";
-
 interface FormValues {
   file: File | null;
   endDate: string;
   startDate: string;
 }
-
-const comparePartnerPayment: React.FC = () => {
+const ComparePartnerPayment: React.FC = () => {
   const title = "Upload Partner Payment Excel";
   const [excelUploaded, setExcelUploaded] = useState(false);
   const [comparePolicyResult, setComparePolicyResult] =
@@ -44,7 +41,6 @@ const comparePartnerPayment: React.FC = () => {
       await uploadFile(values.file, newStartDate, newEndDate);
     }
   };
-
   const uploadFile = async (file: File, startDate: string, endDate: string) => {
     console.log(partnerCode);
     try {
@@ -73,13 +69,11 @@ const comparePartnerPayment: React.FC = () => {
       toast.error(errRes.message);
     }
   };
-
   useEffect(() => {
     if (excelUploaded) {
       setExcelUploaded(false);
     }
   }, [excelUploaded]);
-
   const schema = yup.object().shape({
     startDate: yup
       .date()
@@ -111,7 +105,6 @@ const comparePartnerPayment: React.FC = () => {
       ),
     partnerName: yup.string().nullable().required("partner Name is required"),
   });
-
   const validate = (values: FormValues) => {
     try {
       schema.validateSync(values, { abortEarly: false });
@@ -126,7 +119,6 @@ const comparePartnerPayment: React.FC = () => {
       return validationErrors;
     }
   };
-
   return (
     <div className="bg-blue-200 p-2">
       <Paper
@@ -161,7 +153,7 @@ const comparePartnerPayment: React.FC = () => {
                             <DatePicker
                               disableFuture
                               label="Start Date"
-                              value={input.value || null} // Initialize the value if it's undefined
+                              value={input.value || null}
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
                                 <TextField
@@ -178,7 +170,6 @@ const comparePartnerPayment: React.FC = () => {
                         )}
                       </Field>
                     </Grid>
-
                     <Grid item lg={4} md={4} sm={6} xs={12}>
                       <Field name="endDate">
                         {({ input, meta }) => (
@@ -186,7 +177,7 @@ const comparePartnerPayment: React.FC = () => {
                             <DatePicker
                               disableFuture
                               label="End Date"
-                              value={input.value || null} // Initialize the value if it's undefined
+                              value={input.value || null}
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
                                 <TextField
@@ -225,7 +216,6 @@ const comparePartnerPayment: React.FC = () => {
                                   input.onChange(
                                     newValue ? newValue.fullName : ""
                                   );
-
                                   setPartnerCode(newValue?.partnerId);
                                 }}
                                 renderInput={(params) => (
@@ -278,7 +268,6 @@ const comparePartnerPayment: React.FC = () => {
                         )}
                       </Field>
                     </Grid>
-
                     <Grid item lg={4} xs={12}>
                       <Button
                         type="submit"
@@ -307,5 +296,4 @@ const comparePartnerPayment: React.FC = () => {
     </div>
   );
 };
-
-export default comparePartnerPayment;
+export default ComparePartnerPayment;

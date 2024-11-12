@@ -2,13 +2,11 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { MaterialReactTable, type MRT_ColumnDef } from "material-react-table";
 import { Button, Typography } from "@mui/material";
 import { CompareBrokerResultProps, IPolicyBrokerData } from "../ICompareResult";
-
 import Papa from "papaparse";
 interface ActivitiesProps {
   comparison?: CompareBrokerResultProps;
   onExcelUploaded?: () => void;
 }
-
 const downloadCsv = (filename: string, csv: string) => {
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
   const link = document.createElement("a");
@@ -32,8 +30,6 @@ const CompareBrokerResult: React.FC<ActivitiesProps> = ({
   comparison,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
-
-  // Define table columns
   const safekarocolumns = useMemo<MRT_ColumnDef<IPolicyBrokerData>[]>(
     () => [
       {
@@ -59,8 +55,6 @@ const CompareBrokerResult: React.FC<ActivitiesProps> = ({
     ],
     []
   );
-
-  // Parse and format the data for the table
   const safekaroData = useMemo(
     () =>
       comparison!.data.map((payIn: IPolicyBrokerData) => ({
@@ -71,26 +65,21 @@ const CompareBrokerResult: React.FC<ActivitiesProps> = ({
       })) ?? [],
     [comparison]
   );
-
   const updateLoading = useCallback(async () => {
     if (comparison!.data.length === 0) {
-      //comparison!.data = [];
     }
     setIsLoading(false);
   }, [comparison]);
-
   useEffect(() => {
     if (onExcelUploaded) {
       updateLoading();
     }
   }, [onExcelUploaded, updateLoading]);
-
   return (
     <>
       <Typography className="text-safekaroDarkOrange" variant="h5">
         Comparison Table of {comparison!.broker}
       </Typography>
-
       <MaterialReactTable
         state={{ isLoading }}
         columns={safekarocolumns}
@@ -110,5 +99,4 @@ const CompareBrokerResult: React.FC<ActivitiesProps> = ({
     </>
   );
 };
-
 export default CompareBrokerResult;

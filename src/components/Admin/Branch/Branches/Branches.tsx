@@ -6,7 +6,6 @@ import {
   header,
 } from "../../../../context/constant";
 import { IBranchForm, IBranches, IBranchesVM } from "../IBranch";
-//import dayjs from "dayjs";
 import { Button, IconButton, Paper, Tooltip, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { branchEditPath, branchAddPath } from "../../../../sitemap";
@@ -29,7 +28,6 @@ const Branches = () => {
     pageIndex: 0,
     pageSize: 10,
   });
-
   const navigate = useNavigate();
   const handleAddBranchClick = () => {
     savePaginationState(pagination, BRANCH_STORAGE_KEY);
@@ -59,11 +57,10 @@ const Branches = () => {
     () => setForcedRenderCount(forcedRenderCount + 1),
     [forcedRenderCount]
   );
-  //should be memoized or stable
   const columns = useMemo<MRT_ColumnDef<IBranches>[]>(
     () => [
       {
-        accessorKey: "branchName", //normal accessorKey
+        accessorKey: "branchName",
         header: "Branch Name",
         size: 200,
       },
@@ -88,7 +85,6 @@ const Branches = () => {
     ],
     []
   );
-
   const parsedData = useMemo(
     () =>
       branches.map(
@@ -104,16 +100,12 @@ const Branches = () => {
       ) ?? [],
     [branches, forcedRenderCount]
   );
-
   const updateLoading = useCallback(async () => {
-    // setIsLoading(true) when Branches.length is 0, and setIsLoading(false) when Branches.length is > 0
     setIsLoading(branches.length >= 0 ? false : true);
   }, [branches]);
-
   useEffect(() => {
     updateLoading();
   }, [updateLoading]);
-
   const handleClickDeleteBranch = (branch: IBranchesVM) => {
     branchDeleteApiCall(branch.id!);
   };
@@ -121,7 +113,6 @@ const Branches = () => {
     savePaginationState(pagination, BRANCH_STORAGE_KEY);
     navigate(branchEditPath(branch.id!));
   };
-
   const branchDeleteApiCall = async (branchId: string) => {
     setIsLoading(true);
     deletebranchService({ header, branchId, branches })
@@ -137,16 +128,13 @@ const Branches = () => {
         updateLoading();
       });
   };
-
   const callUpdateBranchAPI = async (branch: IBranchesVM) => {
     var convertBranchVMToBranchForm = convertIBranchVMToIBranchForm(branch);
-
     const branchData: IBranchForm = {
       id: convertBranchVMToBranchForm.id,
       branchName: convertBranchVMToBranchForm.branchName,
       isActive: !convertBranchVMToBranchForm.isActive,
     };
-
     editBranchService({ header, branch: branchData })
       .then((updatedBranch) => {
         GetBranches();
@@ -159,7 +147,6 @@ const Branches = () => {
         updateLoading();
       });
   };
-
   const handleClickChangeStatus = (branch: IBranchesVM) => {
     callUpdateBranchAPI(branch);
   };
@@ -189,7 +176,7 @@ const Branches = () => {
                 Add Branch
               </Button>
             </div>
-            {/* Add a full-width grey line here */}
+           
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
@@ -264,5 +251,4 @@ const Branches = () => {
     </>
   );
 };
-
 export default Branches;

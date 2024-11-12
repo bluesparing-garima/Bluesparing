@@ -25,7 +25,7 @@ const ViewCreditDebitByBrokerCard = () => {
   let [brokers] = useGetBrokers({ header: header });
   const [isVisible, setIsVisible] = useState(false);
   const [selectedBrokerId, setSelectedBrokerId] = useState<string>();
-  const [creditDebits, setCreditDebits] = useState<ICreditDebits[]>([]); // State for all credit debits
+  const [creditDebits, setCreditDebits] = useState<ICreditDebits[]>([]);
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
       schema = schema();
@@ -39,21 +39,16 @@ const ViewCreditDebitByBrokerCard = () => {
       return errors;
     }
   };
-
   const validationSchema = yup.object().shape({
     startDate: yup.string().required("Start Date is required").nullable(),
     endDate: yup.string().nullable().required("End Date is required"),
     brokerName: yup.string().required("Broker is required").nullable(),
   });
-
   const validate = validateFormValues(validationSchema);
-
   const onSubmit = async (creditdebitForm: any) => {
     const utcStartDate = new Date(creditdebitForm.startDate!);
-    // Format the date
     const formattedStartDate = format(utcStartDate, "yyyy-MM-dd'T'HH:mm:ss");
     creditdebitForm.startDate = formattedStartDate;
-    // Create a Date object from the UTC date string
     const utcEndDate = new Date(creditdebitForm.endDate!);
     const formattedEndDate = format(utcEndDate, "yyyy-MM-dd'T'HH:mm:ss");
     creditdebitForm.endDate = formattedEndDate;
@@ -62,9 +57,8 @@ const ViewCreditDebitByBrokerCard = () => {
       brokerId: selectedBrokerId!,
       startDate: creditdebitForm.startDate,
       endDate: creditdebitForm.endDate,
-    }) // Call API to fetch credit debits
+    })
       .then((creditDebitsDetails) => {
-        // On successful API call
         setIsVisible(true);
         setCreditDebits(creditDebitsDetails.data);
       })
@@ -85,16 +79,14 @@ const ViewCreditDebitByBrokerCard = () => {
           >
             {title}
           </Typography>
-
           <React.Fragment>
             <Form
               onSubmit={onSubmit}
-              // initialValues={initialValues}
               validate={validate}
               render={({ handleSubmit, submitting, errors, values }) => (
                 <form onSubmit={handleSubmit} noValidate>
                   <Grid container spacing={2} mt={2} mb={2}>
-                    {/* Account Code Selection */}
+                   
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Field name="startDate">
                         {({ input, meta }) => (
@@ -102,7 +94,7 @@ const ViewCreditDebitByBrokerCard = () => {
                             <DatePicker
                               disableFuture
                               label="Start Date"
-                              value={input.value || null} // Initialize the value if it's undefined
+                              value={input.value || null}
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
                                 <TextField
@@ -126,7 +118,7 @@ const ViewCreditDebitByBrokerCard = () => {
                             <DatePicker
                               disableFuture
                               label="End Date"
-                              value={input.value || null} // Initialize the value if it's undefined
+                              value={input.value || null}
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
                                 <TextField
@@ -160,10 +152,10 @@ const ViewCreditDebitByBrokerCard = () => {
                                     : `${option.brokerName} - ${option.brokerCode}` ||
                                       ""
                                 }
-                                options={brokers} // Replace with your options array
+                                options={brokers}
                                 onChange={(event, newValue) => {
                                   input.onChange(newValue.brokerName);
-                                  setSelectedBrokerId(newValue._id); // Set selected account ID
+                                  setSelectedBrokerId(newValue._id);
                                 }}
                                 renderInput={(params) => (
                                   <TextField
@@ -205,5 +197,4 @@ const ViewCreditDebitByBrokerCard = () => {
     </>
   );
 };
-
 export default ViewCreditDebitByBrokerCard;

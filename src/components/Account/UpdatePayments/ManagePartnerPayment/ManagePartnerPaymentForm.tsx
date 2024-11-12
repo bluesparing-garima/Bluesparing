@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import {
   TextField,
   Button,
@@ -24,7 +23,6 @@ import getFilterPaidServices from "../../../../api/UpdatePayment/getFilterPaid/g
 import toast, { Toaster } from "react-hot-toast";
 dayjs.extend(utc);
 const ManagePartnerPaymentForm = () => {
-  //const { initialValues } = props;
   const [selectedPartnerId, setSelectedPartnerId] = useState<string>();
   const [partnerName, setPartnerName] = useState<string>("");
   const [isVisible, setIsVisible] = useState(false);
@@ -49,14 +47,11 @@ const ManagePartnerPaymentForm = () => {
       return errors;
     }
   };
-
   const validationSchema = yup.object().shape({
     startDate: yup.string().required("Start Date is required").nullable(),
     endDate: yup.string().nullable().required("End Date is required"),
   });
-
   const validate = validateFormValues(validationSchema);
-
   const onSubmit = async (updatePayment: IUpdatePartnerPaymentPolicy) => {
     const newStartDate = dayjs(updatePayment.startDate).format(DAY_FORMAT);
     const newEndDate = dayjs(updatePayment.endDate).format(DAY_FORMAT);
@@ -78,7 +73,6 @@ const ManagePartnerPaymentForm = () => {
       setMotorPolicies(policies.data.payments);
       setTotalPartnerAmount(policies.data.totalAmount);
       setTotalPartnerBalance(policies.data.partnerBalance);
-
     } catch (error: any) {
       const err = await error
       toast.error(err.message)
@@ -88,7 +82,6 @@ const ManagePartnerPaymentForm = () => {
     <React.Fragment>
       <Form
         onSubmit={onSubmit}
-        // initialValues={initialValues}
         validate={validate}
         render={({ handleSubmit, submitting, errors, values }) => (
           <form onSubmit={handleSubmit} noValidate>
@@ -107,7 +100,7 @@ const ManagePartnerPaymentForm = () => {
                               ? option
                               : `${option.fullName} - ${option.partnerId}` || ""
                           }
-                          options={partners} // Replace with your options array
+                          options={partners}
                           onChange={(event, newValue) => {
                             input.onChange(newValue.fullName);
                             setSelectedPartnerId(newValue._id);
@@ -137,7 +130,7 @@ const ManagePartnerPaymentForm = () => {
                       <DatePicker
                         disableFuture
                         label="Start Date"
-                        value={input.value || null} // Initialize the value if it's undefined
+                        value={input.value || null}
                         onChange={(date) => input.onChange(date)}
                         renderInput={(params: any) => (
                           <TextField
@@ -161,7 +154,7 @@ const ManagePartnerPaymentForm = () => {
                       <DatePicker
                         disableFuture
                         label="End Date"
-                        value={input.value || null} // Initialize the value if it's undefined
+                        value={input.value || null}
                         onChange={(date) => input.onChange(date)}
                         renderInput={(params: any) => (
                           <TextField
@@ -185,7 +178,7 @@ const ManagePartnerPaymentForm = () => {
                       <DatePicker
                         disableFuture
                         label="Distributed Date"
-                        value={input.value || null} // Initialize the value if it's undefined
+                        value={input.value || null}
                         onChange={(date) => input.onChange(date)}
                         renderInput={(params: any) => (
                           <TextField
@@ -202,8 +195,7 @@ const ManagePartnerPaymentForm = () => {
                   )}
                 </Field>
               </Grid>
-
-              {/* Remarks Input */}
+             
               <Grid item lg={12} md={12} sm={12} xs={12}>
                 <Field name="remarks">
                   {({ input, meta }) => (
@@ -254,10 +246,8 @@ const ManagePartnerPaymentForm = () => {
       ) : (
         ""
       )}
-
 <Toaster position="bottom-center" reverseOrder={false} />
     </React.Fragment>
   );
 };
-
 export default ManagePartnerPaymentForm;

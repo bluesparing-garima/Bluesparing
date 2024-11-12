@@ -6,7 +6,6 @@ import {
   MODEL_STORAGE_KEY,
 } from "../../../../context/constant";
 import { IModelForm, IModels, IModelsVM } from "../IModel";
-//import dayjs from "dayjs";
 import { Button, IconButton, Paper, Tooltip, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { modelAddPath, modelEditPath } from "../../../../sitemap";
@@ -16,7 +15,6 @@ import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import getModelsService from "../../../../api/Model/GetModels/getModelsService";
 import { convertIModelVMToIModelForm } from "../../../../api/Model/convertIModelVMToIModelForm";
 import editModelService from "../../../../api/Model/EditMake/editModelService";
-import deleteModelService from "../../../../api/Model/DeleteMake/deleteModelService";
 import toast, { Toaster } from "react-hot-toast";
 import {
   getPaginationState,
@@ -30,7 +28,6 @@ const Models = () => {
     pageSize: 10,
   });
   const navigate = useNavigate();
-
   const handleAddModelClick = () => {
     savePaginationState(pagination, MODEL_STORAGE_KEY);
     navigate(modelAddPath());
@@ -50,19 +47,16 @@ const Models = () => {
   useEffect(() => {
     GetModels();
   }, [GetModels]);
-
   useEffect(() => {
     const p = getPaginationState(MODEL_STORAGE_KEY);
     setPagination(p);
   }, []);
   const callUpdateModelAPI = async (model: IModelsVM) => {
     var convertModelVMToModelForm = convertIModelVMToIModelForm(model);
-
     const modelData: IModelForm = {
       ...convertModelVMToModelForm,
       isActive: !convertModelVMToModelForm.isActive,
     };
-
     editModelService({ header, model: modelData })
       .then(() => {
         GetModels();
@@ -75,25 +69,19 @@ const Models = () => {
         updateLoading();
       });
   };
-
   const handleClickChangeStatus = (model: IModelsVM) => {
     callUpdateModelAPI(model);
   };
-  const [forcedRenderCount, setForcedRenderCount] = useState(0);
-  const forceRender = useCallback(
-    () => setForcedRenderCount(forcedRenderCount + 1),
-    [forcedRenderCount]
-  );
-  //should be memoized or stable
+  const forcedRenderCount = 0;
   const columns = useMemo<MRT_ColumnDef<IModels>[]>(
     () => [
       {
-        accessorKey: "makeName", //normal accessorKey
+        accessorKey: "makeName",
         header: "Make Name",
         size: 200,
       },
       {
-        accessorKey: "modelName", //normal accessorKey
+        accessorKey: "modelName",
         header: "Model Name",
         size: 200,
       },
@@ -110,7 +98,6 @@ const Models = () => {
           );
         },
       },
-
       {
         header: "Created On",
         accessorKey: "createdOn",
@@ -119,7 +106,6 @@ const Models = () => {
     ],
     []
   );
-
   const parsedData = useMemo(
     () =>
       modelData.map(
@@ -137,38 +123,15 @@ const Models = () => {
       ) ?? [],
     [modelData, forcedRenderCount]
   );
-
   const updateLoading = useCallback(async () => {
-    // setIsLoading(true) when models.length is 0, and setIsLoading(false) when models.length is > 0
     setIsLoading(modelData.length >= 0 ? false : true);
   }, [modelData]);
-
   useEffect(() => {
     updateLoading();
   }, [updateLoading]);
-
-  const handleClickDeleteModel = (model: IModelsVM) => {
-    modelDeleteApiCall(model.id!);
-  };
   const handleClickEditModel = (model: IModelsVM) => {
     savePaginationState(pagination, MODEL_STORAGE_KEY);
     navigate(modelEditPath(model.id!));
-  };
-
-  const modelDeleteApiCall = async (modelId: string) => {
-    setIsLoading(true);
-    deleteModelService({ header, modelId, models: modelData })
-      .then((refreshedModels) => {
-        setModels(refreshedModels);
-        forceRender();
-      })
-      .catch(async (error: any) => {
-        const err = await error;
-        toast.error(err.message);
-      })
-      .finally(() => {
-        updateLoading();
-      });
   };
   return (
     <>
@@ -196,7 +159,7 @@ const Models = () => {
                 Add Model
               </Button>
             </div>
-            {/* Add a full-width grey line here */}
+           
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
@@ -271,5 +234,4 @@ const Models = () => {
     </>
   );
 };
-
 export default Models;

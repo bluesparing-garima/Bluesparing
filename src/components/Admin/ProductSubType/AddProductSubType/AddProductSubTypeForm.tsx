@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useState } from "react";
 import {
   TextField,
@@ -19,11 +18,9 @@ import { IProducts } from "../../Product/IProduct";
 import addProductSubTypeService from "../../../../api/ProductSubType/AddProductSubType/addProductSubTypeService";
 import editProductSubTypeService from "../../../../api/ProductSubType/EditProductSubType/editProductSubTypeService";
 import toast, { Toaster } from "react-hot-toast";
-
 export interface addPolicyTypeFormProps {
   initialValues: IProductSubTypeForm;
 }
-
 const AddProductSubTypeForm = (props: addPolicyTypeFormProps) => {
   const { initialValues } = props;
   let [products] = useGetProducts({ header: header });
@@ -34,8 +31,6 @@ const AddProductSubTypeForm = (props: addPolicyTypeFormProps) => {
   const pathName = location.pathname.split("/");
   const isAddEdit = pathName[pathName.length - 1] as string;
   const isAdd = isAddEdit === ADD;
-
-  // To be passed to React Final Form
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
       schema = schema();
@@ -46,11 +41,9 @@ const AddProductSubTypeForm = (props: addPolicyTypeFormProps) => {
       const errors = err.inner.reduce((formError: any, innerError: any) => {
         return setIn(formError, innerError.path, innerError.message);
       }, {});
-
       return errors;
     }
   };
-
   const validationSchema = yup.object().shape({
     productSubType: yup
       .string()
@@ -58,9 +51,7 @@ const AddProductSubTypeForm = (props: addPolicyTypeFormProps) => {
       .min(1, "Product Type must be at least 1 character")
       .max(100, "ProductSubType cannot exceed 100 characters"),
   });
-
   const validate = validateFormValues(validationSchema);
-
   const onSubmit = async (productSubType: IProductSubTypeForm) => {
     productSubType.productName = selectedProductName
       ? selectedProductName
@@ -74,13 +65,11 @@ const AddProductSubTypeForm = (props: addPolicyTypeFormProps) => {
       callEditProductSubTypeAPI(productSubType);
     }
   };
-
   const navigateToProductSubTypes = (message: string) => {
     navigate(productSubTypesPath(), {
       state: message,
     });
   };
-
   const callAddProductSubTypeAPI = async (
     productSubType: IProductSubTypeForm
   ) => {
@@ -95,12 +84,10 @@ const AddProductSubTypeForm = (props: addPolicyTypeFormProps) => {
       toast.error(err.message);
     }
   };
-
   const handleSelectProduct = async (e: IProducts) => {
     setSelectedProductId(e._id!);
     setSelectedProductName(e.productName!);
   };
-
   const callEditProductSubTypeAPI = async (
     productSubType: IProductSubTypeForm
   ) => {
@@ -115,7 +102,6 @@ const AddProductSubTypeForm = (props: addPolicyTypeFormProps) => {
       toast.error(err.message);
     }
   };
-
   return (
     <>
       <Form
@@ -138,7 +124,7 @@ const AddProductSubTypeForm = (props: addPolicyTypeFormProps) => {
                               ? input.value
                               : initialValues.productName || null
                           }
-                          options={products} // Replace with your options array
+                          options={products}
                           getOptionLabel={(option) =>
                             typeof option === "string"
                               ? option
@@ -167,7 +153,6 @@ const AddProductSubTypeForm = (props: addPolicyTypeFormProps) => {
                   )}
                 </Field>
               </Grid>
-
               <Grid item sm={6}>
                 <Field name="productSubType">
                   {({ input, meta }) => (
@@ -202,5 +187,4 @@ const AddProductSubTypeForm = (props: addPolicyTypeFormProps) => {
     </>
   );
 };
-
 export default AddProductSubTypeForm;

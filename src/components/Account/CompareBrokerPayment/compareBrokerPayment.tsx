@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useEffect, useState } from "react";
 import {
   Typography,
@@ -23,14 +22,12 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import toast, { Toaster } from "react-hot-toast";
 import useGetBrokers from "../../../Hooks/Broker/useGetBrokers";
-
 interface FormValues {
   file: File | null;
   endDate: string;
   startDate: string;
 }
-
-const compareBrokerPayment: React.FC = () => {
+const CompareBrokerPayment: React.FC = () => {
   const title = "Upload Broker Payment Excel";
   const [excelUploaded, setExcelUploaded] = useState(false);
   const [comparePolicyResult, setComparePolicyResult] =
@@ -44,7 +41,6 @@ const compareBrokerPayment: React.FC = () => {
       await uploadFile(values.file, newStartDate, newEndDate);
     }
   };
-
   const uploadFile = async (file: File, startDate: string, endDate: string) => {
     try {
       const formData = new FormData();
@@ -71,13 +67,11 @@ const compareBrokerPayment: React.FC = () => {
       toast.error(errRes.message);
     }
   };
-
   useEffect(() => {
     if (excelUploaded) {
       setExcelUploaded(false);
     }
   }, [excelUploaded]);
-
   const schema = yup.object().shape({
     startDate: yup
       .date()
@@ -105,11 +99,10 @@ const compareBrokerPayment: React.FC = () => {
       .test(
         "fileSize",
         "File size should be less than 2MB",
-        (value) => value && value.size <= 2 * 1024 * 1024 // 2MB size limit
+        (value) => value && value.size <= 2 * 1024 * 1024
       ),
     broker: yup.string().nullable().required("Broker Name is required"),
   });
-
   const validate = (values: FormValues) => {
     try {
       schema.validateSync(values, { abortEarly: false });
@@ -124,7 +117,6 @@ const compareBrokerPayment: React.FC = () => {
       return validationErrors;
     }
   };
-
   return (
     <div className="bg-blue-200 p-2">
       <Paper
@@ -159,7 +151,7 @@ const compareBrokerPayment: React.FC = () => {
                             <DatePicker
                               disableFuture
                               label="Start Date"
-                              value={input.value || null} // Initialize the value if it's undefined
+                              value={input.value || null}
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
                                 <TextField
@@ -176,7 +168,6 @@ const compareBrokerPayment: React.FC = () => {
                         )}
                       </Field>
                     </Grid>
-
                     <Grid item lg={4} md={4} sm={6} xs={12}>
                       <Field name="endDate">
                         {({ input, meta }) => (
@@ -184,7 +175,7 @@ const compareBrokerPayment: React.FC = () => {
                             <DatePicker
                               disableFuture
                               label="End Date"
-                              value={input.value || null} // Initialize the value if it's undefined
+                              value={input.value || null}
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
                                 <TextField
@@ -201,7 +192,6 @@ const compareBrokerPayment: React.FC = () => {
                         )}
                       </Field>
                     </Grid>
-
                     <Grid item lg={4} md={4} sm={6} xs={12}>
                       <Field name="broker">
                         {({ input, meta }) => (
@@ -219,8 +209,7 @@ const compareBrokerPayment: React.FC = () => {
                                     : `${option.brokerName} - ${option.brokerCode}` ||
                                       ""
                                 }
-                                options={brokers} // Replace with your options array
-                                // getOptionLabel={(option) => option.brokerName}
+                                options={brokers}
                                 onChange={(event, newValue) => {
                                   input.onChange(
                                     newValue ? newValue.brokerName : ""
@@ -296,7 +285,6 @@ const compareBrokerPayment: React.FC = () => {
             />
           </CardContent>
         </Card>
-
         {comparePolicyResult && (
           <div className="bg-blue-200 p-2 mt-3">
             <CompareBrokerResult
@@ -310,5 +298,4 @@ const compareBrokerPayment: React.FC = () => {
     </div>
   );
 };
-
-export default compareBrokerPayment;
+export default CompareBrokerPayment;

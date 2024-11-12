@@ -7,14 +7,12 @@ import AddProductForm from "./addProductForm";
 import getProductDetailsService from "../../../../api/Product/GetProductDetails/getProductDetailsService";
 import { convertIProductVMToIProductForm } from "../../../../api/Product/convertIProductVMToIProductForm";
 import toast, { Toaster } from "react-hot-toast";
-
 const AddProduct = () => {
   const { productId } = useParams();
   const location = useLocation();
   const pathName = location.pathname.split("/");
   const isAdd = pathName[pathName.length - 1] === ADD;
   const [editProductDetails, setEditProductDetails] = useState<IProductForm>();
-
   useEffect(() => {
     if (!isAdd && productId) {
       getProductDetailsService({ header, productId })
@@ -26,13 +24,10 @@ const AddProduct = () => {
         .catch(async(error) => {
           const err = await error
           toast.error(err.message)
- 
         });
     }
   }, [isAdd, productId]);
-
   const title = isAdd ? "Add Product" : "Update Product";
-
   return (
     <div className="bg-blue-200 md:p-7 ">
       <Paper
@@ -55,7 +50,6 @@ const AddProduct = () => {
             style={{ width: "100%", borderColor: "grey-800" }}
           />
         </Typography>
-
         <AddProductForm
           initialValues={{
             id: isAdd ? "0" : editProductDetails?.id || "",
@@ -70,5 +64,4 @@ const AddProduct = () => {
     </div>
   );
 };
-
 export default AddProduct;

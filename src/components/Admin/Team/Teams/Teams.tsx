@@ -8,7 +8,6 @@ import {
   TEAM_STORAGE_KEY,
 } from "../../../../context/constant";
 import { ITeamForm, ITeams, ITeamsVM } from "../ITeam";
-//import dayjs from "dayjs";
 import { Button, IconButton, Paper, Tooltip, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { teamEditPath, teamAddPath } from "../../../../sitemap";
@@ -18,12 +17,10 @@ import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import { convertITeamVMToITeamForm } from "../../../../api/Team/convertITeamVMToITeamForm";
 import getTeamService from "../../../../api/Team/GetTeams/getTeamsService";
 import editTeamService from "../../../../api/Team/EditTeam/editTeamService";
-import deleteTeamService from "../../../../api/Team/DeleteTeam/deleteTeamService";
 import {
   getPaginationState,
   savePaginationState,
 } from "../../../../utils/PaginationHandler";
-//import { CSVLink } from "react-csv";
 const Teams = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [teams, setTeams] = useState<ITeams[]>([]);
@@ -33,7 +30,6 @@ const Teams = () => {
     pageIndex: 0,
     pageSize: 10,
   });
-
   useEffect(() => {
     const p = getPaginationState(TEAM_STORAGE_KEY);
     setPagination(p);
@@ -52,42 +48,36 @@ const Teams = () => {
   useEffect(() => {
     GetTeams();
   }, [GetTeams]);
-
   const navigate = useNavigate();
   const handleAddTeamClick = () => {
     savePaginationState(pagination, TEAM_STORAGE_KEY);
     navigate(teamAddPath());
   };
-  const [forcedRenderCount, setForcedRenderCount] = useState(0);
-  const forceRender = useCallback(
-    () => setForcedRenderCount(forcedRenderCount + 1),
-    [forcedRenderCount]
-  );
-  //should be memoized or stable
+  const forcedRenderCount= 0;
   const columns = useMemo<MRT_ColumnDef<ITeams>[]>(
     () => [
       {
-        accessorKey: "branchName", //normal accessorKey
+        accessorKey: "branchName",
         header: "Branch",
         size: 200,
       },
       {
-        accessorKey: "role", //normal accessorKey
+        accessorKey: "role",
         header: "Role",
         size: 200,
       },
       {
-        accessorKey: "partnerId", //normal accessorKey
+        accessorKey: "partnerId",
         header: "Partner Code",
         size: 200,
       },
       {
-        accessorKey: "fullName", //normal accessorKey
+        accessorKey: "fullName",
         header: "Full Name",
         size: 200,
       },
       {
-        accessorKey: "phoneNumber", //normal accessorKey
+        accessorKey: "phoneNumber",
         header: "Mobile Number",
         size: 200,
       },
@@ -112,14 +102,11 @@ const Teams = () => {
     ],
     []
   );
-
   const parsedData = useMemo(() => {
     const filteredTeams =
       UserData.role.toLowerCase() === "hr"
         ? teams.filter((team: ITeams) => team.role?.toLowerCase() !== "partner")
         : teams;
-
-    // Map the filtered teams to the desired format
     return (
       filteredTeams.map((team: ITeams) => ({
         id: team._id!,
@@ -159,15 +146,11 @@ const Teams = () => {
       })) ?? []
     );
   }, [teams, forcedRenderCount, UserData.role]);
-
   const createFormData = (data: ITeamForm) => {
     const formData = new FormData();
-
     for (const key in data) {
       if (data.hasOwnProperty(key)) {
-        const value = data[key as keyof ITeamForm]; // Type assertion here
-
-        // Append the value based on its type
+        const value = data[key as keyof ITeamForm];
         if (
           typeof value === "string" ||
           typeof value === "number" ||
@@ -179,22 +162,16 @@ const Teams = () => {
         }
       }
     }
-
     return formData;
   };
-
   const updateLoading = useCallback(async () => {
-    // setIsLoading(true) when teams.length is 0, and setIsLoading(false) when teams.length is > 0
     setIsLoading(false);
   }, []);
-
   useEffect(() => {
     updateLoading();
   }, [updateLoading]);
-
   const callUpdateTeamAPI = async (team: ITeamsVM) => {
     var convertTeamVMToTeamForm: ITeamForm = convertITeamVMToITeamForm(team);
-
     const teamData: ITeamForm = {
       ...convertTeamVMToTeamForm,
       isActive: !convertTeamVMToTeamForm.isActive,
@@ -210,38 +187,16 @@ const Teams = () => {
         updateLoading();
       });
   };
-
   const handleClickDeActiveTeam = (team: ITeamsVM) => {
     callUpdateTeamAPI(team);
-  };
-
-  const handleClickDeleteTeam = (team: ITeamsVM) => {
-    teamDeleteApiCall(team.id!);
   };
   const handleClickEditTeam = (team: ITeamsVM) => {
     savePaginationState(pagination, TEAM_STORAGE_KEY);
     navigate(teamEditPath(team.id!));
   };
-
-  const teamDeleteApiCall = async (teamId: string) => {
-    setIsLoading(true);
-    deleteTeamService({ header, teamId, teams })
-      .then((refreshedTeams) => {
-        setTeams(refreshedTeams);
-        forceRender();
-      })
-      .catch((response: any) => {})
-      .finally(() => {
-        updateLoading();
-      });
-  };
-  // Function to handle file download
   const downloadFile = (url: string, fileName: string) => {
-    // Extract file extension from the original URL
     const urlFileName = url.substring(url.lastIndexOf("/") + 1);
     const fileExtension = urlFileName.split(".").pop()?.toLowerCase();
-
-    // Validate file extension
     if (
       fileExtension === "pdf" ||
       fileExtension === "png" ||
@@ -262,12 +217,9 @@ const Teams = () => {
         .catch((error) => console.error("Error downloading file:", error));
     } else {
       console.error("Unsupported file type:", fileExtension);
-      //alert("Unsupported file type. Only PDF and PNG files are supported.");
     }
   };
-  // Function to handle click events
   const handleClickDownloadDocument = (team: ITeamsVM) => {
-    // Example usage
     if (team.image) {
       downloadFile(`${imagePath}${team?.image!}`, "image");
     }
@@ -276,7 +228,6 @@ const Teams = () => {
     }
     if (team.adharCardFront) {
       downloadFile(`${imagePath}${team?.adharCardFront!}`, "adharCardFront");
-      // openFileInNewTab(`${imagePath}${team?.adharCardFront!}`, "adharCardFront");
     }
     if (team.panCard) {
       downloadFile(`${imagePath}${team?.panCard!}`, "panCard");
@@ -293,7 +244,6 @@ const Teams = () => {
     if (team.other) {
       downloadFile(`${imagePath}${team?.other!}`, "other");
     }
-    // downloadFile('https://api.safekaro.com/uploads/Manish_668919929794ffa14999dc82.png', 'Manish_668919929794ffa14999dc82.png');
   };
   return (
     <>
@@ -325,7 +275,7 @@ const Teams = () => {
                 Add Team
               </Button>
             </div>
-            {/* Add a full-width grey line here */}
+            {}
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
@@ -463,5 +413,4 @@ const Teams = () => {
     </>
   );
 };
-
 export default Teams;

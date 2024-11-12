@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useState } from "react";
 import {
   TextField,
@@ -20,16 +19,13 @@ import editModelService from "../../../../api/Model/EditMake/editModelService";
 import addModelService from "../../../../api/Model/AddMake/addModelService";
 import validateModelService from "../../../../api/Model/ValidateModel/validateModelService";
 import toast, { Toaster } from "react-hot-toast";
-
 export interface addModelFormProps {
   initialValues: IModelForm;
 }
-
 const AddModelForm = (props: addModelFormProps) => {
   let [makes] = useGetMakes({ header: header });
   const [selectedMakeName, setSelectedMakeName] = useState("");
   const [selectedMakeId, setSelectedMakeId] = useState("");
-
   const { initialValues } = props;
   const navigate = useNavigate();
   const location = useLocation() as any;
@@ -37,7 +33,6 @@ const AddModelForm = (props: addModelFormProps) => {
   const isAddEdit = pathName[pathName.length - 1] as string;
   const isAdd = isAddEdit === ADD;
   const [errorMessage, setErrorMessage] = useState("");
-  // To be passed to React Final Form
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
       schema = schema();
@@ -48,11 +43,9 @@ const AddModelForm = (props: addModelFormProps) => {
       const errors = err.inner.reduce((formError: any, innerError: any) => {
         return setIn(formError, innerError.path, innerError.message);
       }, {});
-
       return errors;
     }
   };
-
   const validationSchema = yup.object().shape({
     modelName: yup
       .string()
@@ -60,9 +53,7 @@ const AddModelForm = (props: addModelFormProps) => {
       .min(1, "Model must be at least 1 character")
       .max(100, "Model cannot exceed 100 characters"),
   });
-
   const validate = validateFormValues(validationSchema);
-
   const onSubmit = async (model: IModelForm) => {
     model.makeId = selectedMakeId ? selectedMakeId : model.makeId;
     model.makeName = selectedMakeName ? selectedMakeName : model.makeName;
@@ -72,13 +63,11 @@ const AddModelForm = (props: addModelFormProps) => {
       callEditModelAPI(model);
     }
   };
-
   const navigateToModels = (message: string) => {
     navigate(modelPath(), {
       state: message,
     });
   };
-
   const callAddModelAPI = async (model: IModelForm) => {
     try {
       const newModel = await addModelService({ header, model });
@@ -88,7 +77,6 @@ const AddModelForm = (props: addModelFormProps) => {
       toast.error(err.message);
     }
   };
-
   const callEditModelAPI = async (model: IModelForm) => {
     try {
       const newModel = await editModelService({ header, model });
@@ -143,7 +131,7 @@ const AddModelForm = (props: addModelFormProps) => {
                               ? input.value
                               : initialValues.makeName || null
                           }
-                          options={makes} // Replace with your options array
+                          options={makes}
                           getOptionLabel={(option) =>
                             typeof option === "string"
                               ? option
@@ -209,5 +197,4 @@ const AddModelForm = (props: addModelFormProps) => {
     </>
   );
 };
-
 export default AddModelForm;

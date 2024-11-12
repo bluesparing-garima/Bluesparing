@@ -25,11 +25,8 @@ import updateFilterPaymentsService from "../../../../api/UpdatePayment/updateFil
 import { motorPolicyEditCommissionPath } from "../../../../sitemap";
 import AddCreditDebitService from "../../../../api/CreditDebit/AddCreditDebit/addCreditDebitService";
 import { AddEditCreditDebitProps } from "../../../../api/CreditDebit/getCreditDebitTypes";
-
 import addAccountManageService from "../../../../api/CreditDebit/AddAccountManage/AddAccountManageService";
 import BrokerCreditColumns from "./BrokerCreditColumns";
-
-
 interface PoliciesDetailsProps {
   policies: IViewPolicy[];
   totalPaidAmount: number;
@@ -44,14 +41,12 @@ interface PoliciesDetailsProps {
   balanceInAccount: number;
   remarks: string;
 }
-
 interface PartialPaidProps {
   policyNumber?: string;
   payInAmount?: number;
   payInBalance?: number;
   payInCommission?: number;
 }
-
 function BrokerPaymentPoliciesData({
   policies,
   totalPaidAmount,
@@ -67,7 +62,6 @@ function BrokerPaymentPoliciesData({
   balanceInAccount,
 }: PoliciesDetailsProps) {
   const navigate = useNavigate();
-
   const [updatePolicies, setUpdatePolicies] = useState<IViewPolicy[]>(
     policies.map((a: IViewPolicy) => ({ ...a }))
   );
@@ -75,41 +69,33 @@ function BrokerPaymentPoliciesData({
     []
   );
   const [paymentTextboxVisibility, setPaymentTextboxVisibility] =
-    useState<boolean>(false); // State to manage textbox visibility
+    useState<boolean>(false);
   const [selectAllPaid, setSelectAllPaid] = useState<boolean>(false);
-
   const [brokerEnterAmount, setBrokerEnterAmount] = useState(0);
-
   const [isVisibleTable, setIsVisibleTable] = useState<boolean>(true);
   const columns = useMemo(() => BrokerCreditColumns, []);
   const [CurrPaidAmount, setCurrPaidAmount] = useState(0);
   const [CurrLeftDisAmount, setCurrLeftDisAmount] = useState(0);
   const [isClick, setIsClick] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
-  // debounce logic
-
   const policiesData = deepCopyIViewPolicyArray(policies);
-
   useEffect(() => {
     let totalPaidAmount = 0;
     let leftAmount =
       Math.abs(Number(brokerBalance)) + Number(brokerEnterAmount);
     const hasChanges = updatePolicies.some((p, index) => {
       const originPolicyData = policiesData[index];
-
       return (
         p.payInPaymentStatus !== originPolicyData?.payInPaymentStatus ||
         p.payInAmount !== originPolicyData?.payInAmount ||
         p.payInBalance !== originPolicyData?.payInBalance
       );
     });
-
     if (!hasChanges) {
       setCurrLeftDisAmount(leftAmount);
       setCurrPaidAmount(0);
       return;
     }
-
     updatePolicies.forEach((p) => {
       const originPolicyData = findPolicyByNumber(p.policyNumber, policiesData);
       const preStatus = originPolicyData?.payInPaymentStatus;
@@ -141,12 +127,10 @@ function BrokerPaymentPoliciesData({
         }
       }
     });
-
     setCurrLeftDisAmount(leftAmount);
     setCurrPaidAmount(totalPaidAmount);
-    // eslint-disable-next-line
+     // eslint-disable-next-line
   }, [updatePolicies, brokerEnterAmount]);
-
   useEffect(() => {
     const partialData = policiesData.filter((p) => {
       return p.payInPaymentStatus === "Partial";
@@ -161,12 +145,11 @@ function BrokerPaymentPoliciesData({
       data.push(dataObj);
     });
     setPartialPaidList([...data]);
-    // eslint-disable-next-line
+     // eslint-disable-next-line
   }, []);
   function deepCopyIViewPolicyArray(policies: IViewPolicy[]): IViewPolicy[] {
     return policies.map((policy) => deepCopyIViewPolicy(policy));
   }
-
   function deepCopyIViewPolicy(policy: IViewPolicy): IViewPolicy {
     const copy: IViewPolicy = { ...policy };
     if (policy.rcFront) copy.rcFront = policy.rcFront;
@@ -190,10 +173,8 @@ function BrokerPaymentPoliciesData({
       copy.paymentCreatedBy = deepCopyValue(policy.paymentCreatedBy);
     if (policy.paymentUpdatedBy)
       copy.paymentUpdatedBy = deepCopyValue(policy.paymentUpdatedBy);
-
     return copy;
   }
-
   function deepCopyValue<T>(value: T): T {
     if (Array.isArray(value)) {
       return value.map(deepCopyValue) as any;
@@ -203,7 +184,6 @@ function BrokerPaymentPoliciesData({
       return value;
     }
   }
-
   const payloadForDebit = (): AddEditCreditDebitProps => {
     return {
       header: header,
@@ -235,7 +215,6 @@ function BrokerPaymentPoliciesData({
       creditDebitId: "",
     };
   };
-
   const createCreditDebitForm = (balance: number): AddEditCreditDebitProps => {
     const paidPolicyAmount = CurrPaidAmount;
     return {
@@ -267,7 +246,6 @@ function BrokerPaymentPoliciesData({
       creditDebitId: "",
     };
   };
-
   const payLoadForAccountManage = (tCode: string): AddEditCreditDebitProps => {
     const payloadData: AddEditCreditDebitProps = {
       header: header,
@@ -317,7 +295,6 @@ function BrokerPaymentPoliciesData({
     });
     setUpdatePolicies(updateData.map((a: IViewPolicy) => ({ ...a })));
   };
-
   useEffect(() => {
     partialPaidList.forEach((p) => {
       let status;
@@ -334,9 +311,7 @@ function BrokerPaymentPoliciesData({
         p.policyNumber!
       );
     });
-    // eslint-disable-next-line
   }, [partialPaidList]);
-
   function addKeyValueToObjects<T extends Record<string, any>>(
     policyData: T[],
     key: string,
@@ -348,7 +323,6 @@ function BrokerPaymentPoliciesData({
       [key]: value,
     }));
   }
-
   const splitDataIntoChunks = (data: any) => {
     const chunks = [];
     if (data.length > 0) {
@@ -356,10 +330,8 @@ function BrokerPaymentPoliciesData({
         chunks.push(data.slice(i, i + 60));
       }
     }
-
     return chunks;
   };
-
   const handleClickSubmit = async () => {
     if (isClick) return;
     setIsLoading(true);
@@ -374,7 +346,6 @@ function BrokerPaymentPoliciesData({
       }
       return p.payInPaymentStatus !== "UnPaid";
     });
-
     try {
       if (brokerEnterAmount > 0) {
         const resData = await toast.promise(
@@ -390,7 +361,6 @@ function BrokerPaymentPoliciesData({
           await addAccountManageService(payLoadForAccountManage(tCode));
         }
       }
-
       if (policyData.length > 0) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
         const postData = createCreditDebitForm(CurrLeftDisAmount);
@@ -464,7 +434,6 @@ function BrokerPaymentPoliciesData({
   };
   const handleStatusChange = (policy: IViewPolicy, newStatus: string) => {
     let payInAmount, payInBalance, status;
-
     if (newStatus === "UnPaid") {
       payInAmount = 0;
       payInBalance = 0;
@@ -531,20 +500,15 @@ function BrokerPaymentPoliciesData({
         ]);
       }
     }
-
     updateAllPolicies(status, payInAmount!, payInBalance!, policy.policyNumber);
     setPaymentTextboxVisibility(true);
   };
-
   const handleAmountChange = (policy: IViewPolicy, e: any) => {
     let amount = Number(e.target.value) || 0;
-
-    // Check if there is any amount left to distribute
     if (CurrLeftDisAmount === 0) {
       toast.error("Please enter an amount");
       return;
     }
-
     const policyAmount = policy.payInBalance || policy.payInCommission;
     let maxAllowableAmount = Math.min(policyAmount, CurrLeftDisAmount);
     if (amount < 0) {
@@ -552,13 +516,11 @@ function BrokerPaymentPoliciesData({
     } else if (amount >= maxAllowableAmount) {
       amount = maxAllowableAmount;
     }
-
     const existData = findFromPartialList(policy.policyNumber);
     if (existData) {
       let balance = existData?.payInBalance ?? 0;
       let payInBalance = balance ? balance - amount : amount;
       let payInAmount = policy.payInCommission - payInBalance;
-
       updatePartialPaid({
         policyNumber: policy.policyNumber,
         payInAmount,
@@ -568,7 +530,6 @@ function BrokerPaymentPoliciesData({
       setPaymentTextboxVisibility(true);
     }
   };
-
   const handleClickPolicyEditCommission = async (policy: IViewPolicy) => {
     navigate(motorPolicyEditCommissionPath(policy?.policyId!));
   };
@@ -579,22 +540,18 @@ function BrokerPaymentPoliciesData({
     setBrokerEnterAmount(enterValue);
     setPaymentTextboxVisibility(true);
   };
-
   const handleSelectAllPaidChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const isChecked = event.target.checked;
     setSelectAllPaid(isChecked);
-
     if (!isChecked) {
       setUpdatePolicies(policiesData.map((a: IViewPolicy) => ({ ...a })));
       setPaymentTextboxVisibility(true);
       return;
     }
-
     setSelectAllPaid(true);
     let totalAmount = CurrLeftDisAmount;
-
     const updatedPolicies = policiesData.map((policy) => {
       let policyStatus = policy.payInPaymentStatus;
       let payInAmount = policy.payInAmount ?? 0;
@@ -612,7 +569,6 @@ function BrokerPaymentPoliciesData({
             policyStatus = "Partial";
             payInAmount += totalAmount;
             balance = policy.payInCommission - payInAmount;
-
             totalAmount = 0;
           }
         } else if (policy.payInCommission <= totalAmount) {
@@ -627,7 +583,6 @@ function BrokerPaymentPoliciesData({
           totalAmount = 0;
         }
       }
-
       return {
         ...policy,
         payInPaymentStatus: policyStatus,
@@ -639,7 +594,6 @@ function BrokerPaymentPoliciesData({
     setUpdatePolicies(updatedPolicies.map((a: IViewPolicy) => ({ ...a })));
     setPaymentTextboxVisibility(true);
   };
-
   if (!isVisibleTable) {
     return (
       <Paper elevation={3} style={{ padding: 30 }}>
@@ -710,7 +664,6 @@ function BrokerPaymentPoliciesData({
                 )}
             </FormControl>
           </Grid>
-
           <Grid item lg={6}>
             {paymentTextboxVisibility && (
               <Button
@@ -738,13 +691,12 @@ function BrokerPaymentPoliciesData({
           </Grid>
         </Grid>
         <MaterialReactTable
-          //state={{ isLoading }}
           columns={columns}
           data={updatePolicies}
           enableRowActions
           renderRowActions={({ row }) => (
             <div>
-              {/* Display error message if it exists */}
+             
               {row.original.errorMessage && (
                 <Grid container mb={2}>
                   <Grid item lg={12}>
@@ -756,7 +708,7 @@ function BrokerPaymentPoliciesData({
                   </Grid>
                 </Grid>
               )}
-              {/* Edit Commission button */}
+             
               {row.original.payInCommission === 0 && (
                 <Tooltip title={"Edit Commission"}>
                   <IconButton
@@ -784,8 +736,7 @@ function BrokerPaymentPoliciesData({
                   </IconButton>
                 </Tooltip>
               )}
-
-              {/* Status dropdown */}
+             
               {row.original.payInCommission !== 0 && (
                 <Grid container mt={2}>
                   <Grid item lg={12}>
@@ -810,8 +761,7 @@ function BrokerPaymentPoliciesData({
                   </Grid>
                 </Grid>
               )}
-
-              {/* Textbox for Partial status */}
+             
               {row.original.payInPaymentStatus === "Partial" && (
                 <Grid container mt={2}>
                   <Grid item lg={12}>
@@ -836,5 +786,4 @@ function BrokerPaymentPoliciesData({
     </div>
   );
 }
-
 export default BrokerPaymentPoliciesData;

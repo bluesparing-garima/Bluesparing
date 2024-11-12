@@ -1,6 +1,6 @@
 export interface IPayInExcel {
   _id?: string;
-  policyCategory?: string; //Motor health
+  policyCategory?: string;
   caseType?: string;
   companyName?: string;
   engine?: number;
@@ -17,16 +17,14 @@ export interface IPayInExcel {
   subCategory?: string;
   startDate?: string;
   endDate?: string;
-  //insuredType?:string;
   createdBy?: string;
   createdOn?: string;
   updatedOn?: string;
   updatedBy?: string;
 }
-
 export interface IPayInExcelVM {
   id?: string;
-  policyCategory?: string; //Motor health
+  policyCategory?: string;
   caseType?: string;
   companyName?: string;
   engine?: number;
@@ -43,16 +41,14 @@ export interface IPayInExcelVM {
   subCategory?: string;
   startDate?: string;
   endDate?: string;
-  //insuredType?:string;
   createdBy?: string;
   createdOn?: string;
   updatedOn?: string;
   updatedBy?: string;
 }
-
 export interface IPayOutExcelVM {
   id?: string;
-  policyCategory?: string; //Motor health
+  policyCategory?: string;
   caseType?: string;
   companyName?: string;
   engine?: number;
@@ -67,7 +63,6 @@ export interface IPayOutExcelVM {
   productType?: string;
   rto?: string;
   subCategory?: string;
-  //insuredType?:string;
   createdBy?: string;
   createdOn?: string;
   updatedOn?: string;
@@ -75,10 +70,9 @@ export interface IPayOutExcelVM {
   startDate?: string;
   endDate?: string;
 }
-
 export interface IPayOutExcel {
   _id?: string;
-  policyCategory?: string; //Motor health
+  policyCategory?: string;
   caseType?: string;
   companyName?: string;
   engine?: number;
@@ -95,13 +89,11 @@ export interface IPayOutExcel {
   subCategory?: string;
   startDate?: string;
   endDate?: string;
-  //insuredType?:string;
   createdBy?: string;
   createdOn?: string;
   updatedOn?: string;
   updatedBy?: string;
 }
-
 export interface IPercentagePolicy {
   _id?: string;
   fuelType?: string;
@@ -115,7 +107,6 @@ export interface IPercentagePolicy {
   seatingCapacity?: number | null;
   ncb?: string;
   rto?: string;
-  // insuredType?: string;
   caseType?: string;
   make?: string;
   model?: string;
@@ -142,7 +133,6 @@ export interface IPercentagePolicyVM {
   seatingCapacity?: number | null;
   ncb?: string;
   rto?: string;
-  // insuredType?: string;
   caseType?: string;
   make?: string;
   model?: string;

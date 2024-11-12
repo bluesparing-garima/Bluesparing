@@ -125,7 +125,7 @@ const NotificationBadge: FC<NotificationBadgeProps> = ({
                       </ListItemIcon>
                       <Typography variant="inherit">{ele.title}</Typography>
                     </MenuItem>
-                    {}
+                   
                   </MenuItem>
                 );
               })}

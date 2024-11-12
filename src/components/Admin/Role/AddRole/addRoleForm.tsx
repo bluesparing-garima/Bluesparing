@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-import React from "react";
 import { TextField, Button, Grid } from "@mui/material";
 import addRoleService from "../../../../api/Role/AddRole/addRoleService";
 import editRoleService from "../../../../api/Role/EditRole/editRoleService";
@@ -11,11 +9,9 @@ import { ADD, header } from "../../../../context/constant";
 import { useLocation, useNavigate } from "react-router-dom";
 import { rolesPath } from "../../../../sitemap";
 import toast, { Toaster } from "react-hot-toast";
-
 export interface addPolicyTypeFormProps {
   initialValues: IRoleForm;
 }
-
 const AddRoleForm = (props: addPolicyTypeFormProps) => {
   const { initialValues } = props;
   const navigate = useNavigate();
@@ -23,8 +19,6 @@ const AddRoleForm = (props: addPolicyTypeFormProps) => {
   const pathName = location.pathname.split("/");
   const isAddEdit = pathName[pathName.length - 1] as string;
   const isAdd = isAddEdit === ADD;
-
-  // To be passed to React Final Form
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
       schema = schema();
@@ -35,11 +29,9 @@ const AddRoleForm = (props: addPolicyTypeFormProps) => {
       const errors = err.inner.reduce((formError: any, innerError: any) => {
         return setIn(formError, innerError.path, innerError.message);
       }, {});
-
       return errors;
     }
   };
-
   const validationSchema = yup.object().shape({
     roleName: yup
       .string()
@@ -47,9 +39,7 @@ const AddRoleForm = (props: addPolicyTypeFormProps) => {
       .min(1, "Role must be at least 1 character")
       .max(100, "Role cannot exceed 100 characters"),
   });
-
   const validate = validateFormValues(validationSchema);
-
   const onSubmit = async (role: IRoleForm) => {
     if (isAdd) {
       callAddRoleAPI(role);
@@ -57,13 +47,11 @@ const AddRoleForm = (props: addPolicyTypeFormProps) => {
       callEditRoleAPI(role);
     }
   };
-
   const navigateToRoles = (message: string) => {
     navigate(rolesPath(), {
       state: message,
     });
   };
-
   const callAddRoleAPI = async (role: IRoleForm) => {
     try {
       const newRole = await addRoleService({ header, role });
@@ -73,7 +61,6 @@ const AddRoleForm = (props: addPolicyTypeFormProps) => {
       toast.error(err.message)
     }
   };
-
   const callEditRoleAPI = async (role: IRoleForm) => {
     try {
       const newRole = await editRoleService({ header, role });
@@ -83,7 +70,6 @@ const AddRoleForm = (props: addPolicyTypeFormProps) => {
       toast.error(err.message)
     }
   };
-
   return (
     <>
     <Form
@@ -126,5 +112,4 @@ const AddRoleForm = (props: addPolicyTypeFormProps) => {
     </>
   );
 };
-
 export default AddRoleForm;

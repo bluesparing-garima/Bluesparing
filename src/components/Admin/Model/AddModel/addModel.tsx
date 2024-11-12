@@ -7,7 +7,6 @@ import AddModelForm from "./addModelForm";
 import { convertIModelVMToIModelForm } from "../../../../api/Model/convertIModelVMToIModelForm";
 import getModelDetailsService from "../../../../api/Model/GetMakeDetails/getModelDetailsService";
 import toast, { Toaster } from "react-hot-toast";
-
 const AddModel = () => {
   const { modelId } = useParams();
   const location = useLocation();
@@ -16,7 +15,6 @@ const AddModel = () => {
   const [editModelDetails, setEditModelDetails] = useState<IModelForm | undefined>(
     undefined
   );
-
   useEffect(() => {
     if (!isAdd && modelId) {
       getModelDetailsService({ header, modelId })
@@ -31,9 +29,7 @@ const AddModel = () => {
         });
     }
   }, [isAdd, modelId]);
-
   const title = isAdd ? "Add Model" : "Update Model";
-
   return (
     <div className="bg-blue-200 md:p-7">
       <Paper
@@ -56,7 +52,6 @@ const AddModel = () => {
             style={{ width: "100%", borderColor: "grey-800" }}
           />
         </Typography>
-
         <AddModelForm
           initialValues={{
             id: isAdd ? "0" : editModelDetails?.id || "",
@@ -71,5 +66,4 @@ const AddModel = () => {
     </div>
   );
 };
-
 export default AddModel;

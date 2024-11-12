@@ -1,7 +1,6 @@
 import { Typography, Paper } from "@mui/material";
 import { Link } from "react-router-dom";
 import FilterPoliciesForm from "./PercentageForm";
-
 const Percentage = () => {
   const title = "Add Percentage";
   return (
@@ -27,18 +26,16 @@ const Percentage = () => {
               Policies /
             </Link>
             <span className="text-grey-600 text-sm">{title}</span>
-            {/* Add a full-width grey line here */}
+           
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
             />
           </Typography>
-
           <FilterPoliciesForm />
         </Paper>
       </div>
     </>
   );
 };
-
 export default Percentage;

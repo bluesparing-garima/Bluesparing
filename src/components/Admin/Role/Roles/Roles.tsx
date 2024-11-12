@@ -6,22 +6,17 @@ import {
   ROLE_STORAGE_KEY,
   SafeKaroUser,
 } from "../../../../context/constant";
-import { IRoleForm, IRoles, IRolesVM } from "../IRole";
-//import dayjs from "dayjs";
+import {  IRoles, IRolesVM } from "../IRole";
 import { Button, IconButton, Paper, Tooltip, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { roleEditPath, rolesAddPath } from "../../../../sitemap";
-import deleteRoleService from "../../../../api/Role/DeleteRole/deleteRoleService";
 import dayjs from "dayjs";
-import { convertIRoleVMToIRoleForm } from "../../../../api/Role/convertIRoleVMToIRoleForm";
-import editRoleService from "../../../../api/Role/EditRole/editRoleService";
 import getRoleService from "../../../../api/Role/GetRoles/getRolesService";
 import toast, { Toaster } from "react-hot-toast";
 import {
   getPaginationState,
   savePaginationState,
 } from "../../../../utils/PaginationHandler";
-
 const Roles = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [roles, setRoles] = useState<IRoles[]>([]);
@@ -51,21 +46,15 @@ const Roles = () => {
     setPagination(p);
   }, []);
   const navigate = useNavigate();
-
   const handleAddRoleClick = () => {
     savePaginationState(pagination, ROLE_STORAGE_KEY);
     navigate(rolesAddPath());
   };
-  const [forcedRenderCount, setForcedRenderCount] = useState(0);
-  const forceRender = useCallback(
-    () => setForcedRenderCount(forcedRenderCount + 1),
-    [forcedRenderCount]
-  );
-  //should be memoized or stable
+  const forcedRenderCount = 0;
   const columns = useMemo<MRT_ColumnDef<IRoles>[]>(
     () => [
       {
-        accessorKey: "roleName", //normal accessorKey
+        accessorKey: "roleName",
         header: "Role Name",
         size: 200,
       },
@@ -77,7 +66,6 @@ const Roles = () => {
     ],
     []
   );
-
   const parsedData = useMemo(() => {
     const filteredRoles =
       UserData.role.toLowerCase() === "hr"
@@ -85,7 +73,6 @@ const Roles = () => {
             (role: IRoles) => role.roleName?.toLowerCase() !== "partner"
           )
         : roles;
-
     return filteredRoles.map(
       (role: IRoles) =>
         ({
@@ -97,68 +84,18 @@ const Roles = () => {
           forceUpdate: forcedRenderCount,
         } as IRolesVM)
     );
-    // eslint-disable-next-line
+     // eslint-disable-next-line
   }, [roles, forcedRenderCount]);
-
   const updateLoading = useCallback(async () => {
-    // setIsLoading(true) when roles.length is 0, and setIsLoading(false) when roles.length is > 0
     setIsLoading(false);
   }, []);
-
   useEffect(() => {
     updateLoading();
   }, [updateLoading]);
-
-  const callUpdateRoleAPI = async (role: IRolesVM) => {
-    var convertRoleVMToRoleForm = convertIRoleVMToIRoleForm(role);
-
-    const roleData: IRoleForm = {
-      id: convertRoleVMToRoleForm.id,
-      roleName: convertRoleVMToRoleForm.roleName,
-      isActive: !convertRoleVMToRoleForm.isActive,
-    };
-
-    editRoleService({ header, role: roleData })
-      .then((updatedRole) => {
-        GetRoles();
-      })
-      .catch(async (error: any) => {
-        const err = await error;
-        toast.error(err.message);
-      })
-      .finally(() => {
-        updateLoading();
-      });
-  };
-
-  const handleClickDeActiveRole = (role: IRolesVM) => {
-    callUpdateRoleAPI(role);
-  };
-
-  const handleClickDeleteRole = (role: IRolesVM) => {
-    roleDeleteApiCall(role.id!);
-  };
   const handleClickEditRole = (role: IRolesVM) => {
     savePaginationState(pagination, ROLE_STORAGE_KEY);
     navigate(roleEditPath(role.id!));
   };
-
-  const roleDeleteApiCall = async (roleId: string) => {
-    setIsLoading(true);
-    deleteRoleService({ header, roleId, roles })
-      .then((refreshedRoles) => {
-        setRoles(refreshedRoles);
-        forceRender();
-      })
-      .catch(async (error: any) => {
-        const err = await error;
-        toast.error(err.message);
-      })
-      .finally(() => {
-        updateLoading();
-      });
-  };
-
   const generateDashBoardlink = () => {
     const role = UserData.role.toLowerCase();
     switch (role) {
@@ -176,7 +113,6 @@ const Roles = () => {
         return "/hr/dashboard";
     }
   };
-
   return (
     <>
       <div className="bg-blue-200 md:p-7 p-2">
@@ -203,7 +139,7 @@ const Roles = () => {
                 Add Role
               </Button>
             </div>
-            {/* Add a full-width grey line here */}
+           
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
@@ -254,5 +190,4 @@ const Roles = () => {
     </>
   );
 };
-
 export default Roles;

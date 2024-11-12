@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import {
   TextField,
   Button,
@@ -32,9 +31,7 @@ import addPercentageService from "../../../../api/percentageUpdate/AddPercenatag
 import toast, { Toaster } from "react-hot-toast";
 import useGetPartners from "../../../../Hooks/Partner/useGetPartners";
 import { useNavigate } from "react-router-dom";
-
 const PercentageForm = () => {
-  //const { initialValues } = props;
   let [products] = useGetProducts({ header: header });
   let [companies] = useGetCompanies({ header: header });
   let [partners] = useGetPartners({ header: header, role: "partner" });
@@ -63,7 +60,6 @@ const navigate = useNavigate()
       setFilteredSubModels(models);
     }
   }, [selectedMake, models]);
-
   useEffect(() => {
     if (selectedProduct) {
       const ProductId = selectedProduct._id;
@@ -79,7 +75,6 @@ const navigate = useNavigate()
       setFilteredSubcategories(productSubTypes);
     }
   }, [selectedProduct, productSubTypes]);
-  // To be passed to React Final Form
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
       schema = schema();
@@ -90,11 +85,9 @@ const navigate = useNavigate()
       const errors = err.inner.reduce((formError: any, innerError: any) => {
         return setIn(formError, innerError.path, innerError.message);
       }, {});
-
       return errors;
     }
   };
-
   const validationSchema = yup.object().shape({
     policyType: yup.string().required("Policy Type is required").nullable(),
     caseType: yup.string().nullable().required("Case Type is required"),
@@ -110,9 +103,7 @@ const navigate = useNavigate()
     endDate: yup.string().required("End Date is required").nullable(),
     partnerName: yup.string().nullable().required("Partner Name is required"),
   });
-
   const validate = validateFormValues(validationSchema);
-
   const onSubmit = async (policyFilter: IPercentagePolicy) => {
     policyFilter.partnerId = selectedPartnerId;
     policyFilter.partnerName = partnerName;
@@ -121,7 +112,6 @@ const navigate = useNavigate()
         header,
         policy: policyFilter,
       });
-
       if(res.status ==="success"){
         navigate("/policy/motorpolicies")
       }
@@ -130,12 +120,10 @@ const navigate = useNavigate()
       toast.error(errObj.message);
     }
   };
-
   return (
     <>
       <Form
         onSubmit={onSubmit}
-        // initialValues={initialValues}
         validate={validate}
         render={({ handleSubmit, submitting, errors }) => (
           <form onSubmit={handleSubmit} noValidate>
@@ -149,8 +137,7 @@ const navigate = useNavigate()
                           {...input}
                           id="policyType"
                           value={input.value !== undefined ? input.value : null}
-                          //value={input.value || null}
-                          options={policyTypes} // Replace with your options array
+                          options={policyTypes}
                           getOptionLabel={(option) =>
                             typeof option === "string"
                               ? option
@@ -184,7 +171,7 @@ const navigate = useNavigate()
                         <Autocomplete
                           {...input}
                           id="caseType"
-                          options={caseTypes} // Replace with your options array
+                          options={caseTypes}
                           value={input.value !== undefined ? input.value : null}
                           getOptionLabel={(option) =>
                             typeof option === "string"
@@ -219,7 +206,7 @@ const navigate = useNavigate()
                         <Autocomplete
                           {...input}
                           value={input.value !== undefined ? input.value : null}
-                          options={products} // Replace with your Dynamic API
+                          options={products}
                           getOptionLabel={(option) =>
                             typeof option === "string"
                               ? option
@@ -296,7 +283,7 @@ const navigate = useNavigate()
                               ? option
                               : option.companyName || ""
                           }
-                          options={companies} // Replace with your options array
+                          options={companies}
                           onChange={(event, newValue) => {
                             input.onChange(newValue.companyName);
                           }}
@@ -332,8 +319,7 @@ const navigate = useNavigate()
                               : `${option.brokerName} - ${option.brokerCode}` ||
                                 ""
                           }
-                          options={brokers} // Replace with your options array
-                          // getOptionLabel={(option) => option.brokerName}
+                          options={brokers}
                           onChange={(event, newValue) => {
                             input.onChange(newValue.brokerName);
                           }}
@@ -354,7 +340,6 @@ const navigate = useNavigate()
                   )}
                 </Field>
               </Grid>
-
               <Grid item lg={4} md={4} sm={6} xs={12}>
                 <Field name="partnerName">
                   {({ input, meta }) => (
@@ -369,15 +354,15 @@ const navigate = useNavigate()
                               ? option
                               : `${option.fullName} - ${option.partnerId}` || ""
                           }
-                          options={partners} // Replace with your options array
+                          options={partners}
                           onChange={(event, newValue) => {
                             if (newValue) {
                               input.onChange(newValue.fullName);
                               setPartnerName(newValue.fullName);
-                              setSelectedPartnerId(newValue._id); // Set selected partner ID
+                              setSelectedPartnerId(newValue._id);
                             } else {
                               input.onChange(null);
-                              setSelectedPartnerId(""); // Reset partner ID when no value is selected
+                              setSelectedPartnerId("");
                             }
                           }}
                           renderInput={(params) => (
@@ -411,8 +396,7 @@ const navigate = useNavigate()
                               ? option
                               : option.makeName || ""
                           }
-                          options={makes} // Replace with your options array
-                          // getOptionLabel={(option) => option.makeName}
+                          options={makes}
                           onChange={(event, newValue) => {
                             input.onChange(newValue.makeName);
                             setSelectedMake(newValue);
@@ -451,7 +435,7 @@ const navigate = useNavigate()
                                 ? option
                                 : option.modelName || ""
                             }
-                            options={filteredSubModels} // Replace with your options array
+                            options={filteredSubModels}
                             onChange={(event, newValue) => {
                               input.onChange(newValue.modelName);
                             }}
@@ -487,8 +471,7 @@ const navigate = useNavigate()
                               ? option
                               : option.fuelType || ""
                           }
-                          options={fuelTypes} // Replace with your options array
-                          //getOptionLabel={(option) => option.fuelType}
+                          options={fuelTypes}
                           onChange={(event, newValue) => {
                             input.onChange(newValue.fuelType);
                           }}
@@ -524,12 +507,12 @@ const navigate = useNavigate()
                               : option.label || ""
                           }
                           onChange={(event, newValue) => {
-                            input.onChange(newValue ? newValue.value : null); // Ensure newValue is not null before accessing .value
+                            input.onChange(newValue ? newValue.value : null);
                           }}
                           options={[
                             { label: "Yes", value: "yes" },
                             { label: "No", value: "no" },
-                          ]} // Replace with your options array
+                          ]}
                           renderInput={(params) => (
                             <TextField
                               {...params}
@@ -562,14 +545,14 @@ const navigate = useNavigate()
                               : option.label || ""
                           }
                           onChange={(event, newValue) => {
-                            input.onChange(newValue ? newValue.value : null); // Ensure newValue is not null before accessing .value
+                            input.onChange(newValue ? newValue.value : null);
                           }}
                           options={[
                             { label: "0 years", value: "0 year" },
                             { label: "1-2 years", value: "1-2 year" },
                             { label: "3-5 years", value: "3-5 year" },
                             { label: ">5 years", value: ">5 year" },
-                          ]} // Replace with your options array
+                          ]}
                           renderInput={(params) => (
                             <TextField
                               {...params}
@@ -659,7 +642,7 @@ const navigate = useNavigate()
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <DatePicker
                         label="Start Date"
-                        value={input.value || null} // Initialize the value if it's undefined
+                        value={input.value || null}
                         onChange={(date) => input.onChange(date)}
                         renderInput={(params: any) => (
                           <TextField
@@ -682,7 +665,7 @@ const navigate = useNavigate()
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <DatePicker
                         label="End Date"
-                        value={input.value || null} // Initialize the value if it's undefined
+                        value={input.value || null}
                         onChange={(date) => input.onChange(date)}
                         renderInput={(params: any) => (
                           <TextField
@@ -699,7 +682,6 @@ const navigate = useNavigate()
                   )}
                 </Field>
               </Grid>
-
               <Grid item md={12} sm={12} xs={12}>
                 <Typography
                   variant="subtitle1"
@@ -710,7 +692,6 @@ const navigate = useNavigate()
                   Pay In Values
                 </Typography>
               </Grid>
-
               <Grid item md={6} sm={6} xs={12}>
                 <Field name="payInODPercentage">
                   {({ input, meta }) => (
@@ -789,7 +770,6 @@ const navigate = useNavigate()
                   )}
                 </Field>
               </Grid>
-
               <Grid item xs={12}>
                 <Button
                   type="submit"
@@ -809,5 +789,4 @@ const navigate = useNavigate()
     </>
   );
 };
-
 export default PercentageForm;

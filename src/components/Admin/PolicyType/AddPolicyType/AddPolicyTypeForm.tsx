@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import React from "react";
 import { TextField, Button, Grid } from "@mui/material";
 import { IPolicyTypeForm } from "../IPolicyType";
@@ -11,20 +10,16 @@ import { policyTypePath } from "../../../../sitemap";
 import addPolicyTypeService from "../../../../api/PolicyType/AddPolicyType/addPolicyTypeService";
 import editPolicyTypeService from "../../../../api/PolicyType/EditPolicyType/editPolicyTypeService";
 import toast, { Toaster } from "react-hot-toast";
-
 export interface AddPolicyTypeFormProps {
   initialValues: IPolicyTypeForm;
 }
-
-const addPolicyTypeForm = (props: AddPolicyTypeFormProps) => {
+const AddPolicyTypeForm = (props: AddPolicyTypeFormProps) => {
   const { initialValues } = props;
   const navigate = useNavigate();
   const location = useLocation() as any;
   const pathName = location.pathname.split("/");
   const isAddEdit = pathName[pathName.length - 1] as string;
   const isAdd = isAddEdit === ADD;
-
-  // To be passed to React Final Form
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
       schema = schema();
@@ -35,11 +30,9 @@ const addPolicyTypeForm = (props: AddPolicyTypeFormProps) => {
       const errors = err.inner.reduce((formError: any, innerError: any) => {
         return setIn(formError, innerError.path, innerError.message);
       }, {});
-
       return errors;
     }
   };
-
   const validationSchema = yup.object().shape({
     policyType: yup
       .string()
@@ -47,9 +40,7 @@ const addPolicyTypeForm = (props: AddPolicyTypeFormProps) => {
       .min(1, "Policy Type must be at least 1 character")
       .max(100, "Policy Type cannot exceed 100 characters"),
   });
-
   const validate = validateFormValues(validationSchema);
-
   const onSubmit = async (policyType: IPolicyTypeForm) => {
     if (isAdd) {
       callAddPolicyTypeAPI(policyType);
@@ -57,13 +48,11 @@ const addPolicyTypeForm = (props: AddPolicyTypeFormProps) => {
       callEditPolicyTypeAPI(policyType);
     }
   };
-
   const navigateToPolicyTypes = (message: string) => {
     navigate(policyTypePath(), {
       state: message,
     });
   };
-
   const callAddPolicyTypeAPI = async (policyType: IPolicyTypeForm) => {
     try {
       const newPolicyType = await addPolicyTypeService({ header, policyType });
@@ -71,10 +60,8 @@ const addPolicyTypeForm = (props: AddPolicyTypeFormProps) => {
     } catch (error: any) {
       const err = await error
       toast.error(err.message)
-
     }
   };
-
   const callEditPolicyTypeAPI = async (policyType: IPolicyTypeForm) => {
     try {
       const newPolicyType = await editPolicyTypeService({ header, policyType });
@@ -84,7 +71,6 @@ const addPolicyTypeForm = (props: AddPolicyTypeFormProps) => {
       toast.error(err.message)
     }
   };
-
   return (
     <>
     <Form
@@ -127,5 +113,4 @@ const addPolicyTypeForm = (props: AddPolicyTypeFormProps) => {
     </>
   );
 };
-
-export default addPolicyTypeForm;
+export default AddPolicyTypeForm;

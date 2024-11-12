@@ -15,32 +15,25 @@ import PayOutExcelService from "../../../../api/uploadExcel/PayOutExcel/PayOutEx
 import { header } from "../../../../context/constant";
 import toast, { Toaster } from "react-hot-toast";
 import DownloadExcel from "../../../../utils/downloadExcel";
-
 const PayOutUploadByExcel = () => {
   const title = "Upload PayOut Excel";
   const [excelUploaded, setExcelUploaded] = useState(false);
-
   const onSubmit = (values: FormValues) => {
     uploadFile(values.file);
   };
-
   const handleChangeUploadExcel = () => {
     setExcelUploaded(true);
   };
-
-  // // Reset pointsUpdated after fetching updated data
   useEffect(() => {
     if (excelUploaded) {
       setExcelUploaded(false);
     }
   }, [excelUploaded]);
-
   const uploadFile = async (file: File | null) => {
     if (file) {
       try {
         const formData = new FormData();
-        formData.append("excel", file); // Ensure the key 'excel' matches the backend expectation
-
+        formData.append("excel", file);
         PayOutExcelService({ header, excel: formData })
           .then((response) => {
             if (response.ok) {
@@ -61,11 +54,9 @@ const PayOutUploadByExcel = () => {
       }
     }
   };
-
   interface FormValues {
     file: File | null;
   }
-
   const schema = yup.object().shape({
     file: yup
       .mixed()
@@ -80,7 +71,6 @@ const PayOutUploadByExcel = () => {
               "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
       ),
   });
-
   const validate = (values: FormValues) => {
     try {
       schema.validateSync(values, { abortEarly: false });
@@ -95,7 +85,6 @@ const PayOutUploadByExcel = () => {
       return validationErrors;
     }
   };
-
   return (
     <div className="bg-blue-200 p-2">
       <Paper
@@ -108,7 +97,6 @@ const PayOutUploadByExcel = () => {
           </Typography>
           <DownloadExcel />
         </div>
-
         <Typography variant="h5" mb={2}>
           <Link to="/dashboard" className="text-addButton font-bold text-sm">
             Dashboard {" / "}
@@ -177,12 +165,10 @@ const PayOutUploadByExcel = () => {
             />
           </CardContent>
         </Card>
-
         <PayOutUploadByExcelData onExcelUploaded={handleChangeUploadExcel} />
       </Paper>
       <Toaster position="bottom-center" reverseOrder={false} />
     </div>
   );
 };
-
 export default PayOutUploadByExcel;

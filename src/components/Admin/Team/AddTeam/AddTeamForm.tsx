@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useEffect, useState } from "react";
 import {
   TextField,
@@ -43,7 +42,6 @@ import dayjs from "dayjs";
 export interface addPolicyTypeFormProps {
   initialValues: ITeamForm;
 }
-
 const AddTeamForm = (props: addPolicyTypeFormProps) => {
   const [documents, setDocuments] = useState<Document[]>([
     { docName: "", file: "" },
@@ -52,7 +50,6 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
     [{ docName: "", file: "" }]
   );
   const { initialValues } = props;
-
   let [branches] = useGetBranches({ header: header });
   let [roles] = useGetRoles({ header: header });
   let [headRMs] = useGetRMList({
@@ -71,11 +68,9 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
   const isAddEdit = pathName[pathName.length - 1] as string;
   const isAdd = isAddEdit === ADD;
   const [rmErrorMessage, setRMErrorMessage] = useState("");
-
   useEffect(() => {
     if (!isAdd) {
       const updatedDocuments: Document[] = [];
-
       if (initialValues.image) {
         updatedDocuments.push({
           docName: "image",
@@ -127,7 +122,6 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       setDocuments(updatedDocuments);
     }
   }, [isAdd, initialValues]);
-
   useEffect(() => {
     if (!isAdd) {
       setSelectedRole(initialValues.role!);
@@ -138,7 +132,6 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       setFilteredHeadRM([]);
     }
   }, [initialValues, isAdd, headRMs]);
-
   const handleChangeRole = async (e: any) => {
     const role = e.target.value;
     setSelectedRole(role);
@@ -148,16 +141,13 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       setFilteredHeadRM(headRMs);
     }
   };
-
   const validateDocument = (document: Document, index: number) => {
     const isValidDocName = document.docName.trim() !== "";
-
     const isValidFile = document.file;
     validateField(index, "docName", document.docName);
     validateField(index, "file", document.file);
     return isValidDocName && isValidFile;
   };
-
   const validateField = (index: number, name: string, value: string) => {
     const newErrors = [...teamErrors];
     if (name === "docName" || name === "file") {
@@ -171,7 +161,6 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
   const onSubmit = async (teamForm: ITeamForm) => {
     const isJoiningDate = dayjs(teamForm.joiningDate).isValid();
     const isDateOfBirth = dayjs(teamForm.dateOfBirth).isValid();
-
     if (!isJoiningDate) {
       toast.error("Invalid Joining Date ,its MM/DD/YYYY from");
       return;
@@ -184,7 +173,6 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
     const formValid = documents.every((doc, index) =>
       validateDocument(doc, index)
     );
-
     if (selectedRole === "Relationship Manager") {
       if (formValid) {
         teamForm.role = selectedRole;
@@ -195,8 +183,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
         Object.keys(teamForm).forEach((key) => {
           const value = teamForm[key as keyof ITeamForm];
           if (value !== undefined) {
-            // formData.append(key, value);
-            addedKeys.set(key, value); // Mark this key as added
+            addedKeys.set(key, value);
           }
         });
         documents.forEach((doc: Document) => {
@@ -204,7 +191,6 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
             addedKeys.set(doc.docName, doc.file);
           }
         });
-
         addedKeys.forEach((file, key) => {
           formData.append(key, file);
         });
@@ -227,8 +213,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
         Object.keys(teamForm).forEach((key) => {
           const value = teamForm[key as keyof ITeamForm];
           if (value !== undefined) {
-            // formData.append(key, value);
-            addedKeys.set(key, value); // Mark this key as added
+            addedKeys.set(key, value);
           }
         });
         documents.forEach((doc: Document) => {
@@ -236,7 +221,6 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
             addedKeys.set(doc.docName, doc.file);
           }
         });
-
         addedKeys.forEach((file, key) => {
           formData.append(key, file);
         });
@@ -248,13 +232,11 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       }
     }
   };
-
   const navigateToTeams = (message: string) => {
     navigate(teamPath(), {
       state: message,
     });
   };
-
   const callAddTeamAPI = async (team: any) => {
     try {
       const newTeam = await addTeamService({ header, team });
@@ -264,7 +246,6 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       toast.error(errObj.message);
     }
   };
-
   const callEditTeamAPI = async (team: any, teamId: string) => {
     try {
       const newTeam = await editTeamService({ header, team, teamId });
@@ -274,23 +255,19 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       toast.error(errObj.message);
     }
   };
-
   const handleFileInputChange = (event: any, index: any) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
       const fileType = file.type;
       const fileSize = file.size;
       const newErrors = [...teamErrors];
-
       if (!ALLOWED_FILE_TYPES.includes(fileType)) {
-        // setErrorMessage("Invalid file type. Please upload an image or a PDF.");
         newErrors[index] = {
           ...newErrors[index],
           file: "Invalid file type. Please upload an image or a PDF.",
         };
         setErrors(newErrors);
       } else if (fileSize > MAX_FILE_SIZE) {
-        //setErrorMessage("File size exceeds the maximum limit.");
         newErrors[index] = {
           ...newErrors[index],
           file: "File size exceeds the maximum limit",
@@ -301,8 +278,6 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
         const newDocuments = [...documents];
         newDocuments[index] = { ...newDocuments[index], file: file };
         setDocuments(newDocuments);
-
-        // Clear the error if the file is valid
         if (newErrors[index]) {
           newErrors[index].file = "";
         }
@@ -310,14 +285,11 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       }
     }
   };
-  // handle DocName change
   const handleChangeDocumentName = (newValue: any, index: any) => {
     const updatedDocuments = documents.map((doc, i) =>
       i === index ? { ...doc, docName: newValue?.value! } : doc
     );
-
     setDocuments(updatedDocuments);
-    // Clear the error if the file is valid
     const newErrors = [...teamErrors];
     if (newErrors[index]) {
       newErrors[index].docName =
@@ -325,7 +297,6 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       setErrors(newErrors);
     }
   };
-
   const handleClickDeleteDocument = (index: any) => {
     setDocuments((prevDocuments) =>
       prevDocuments.filter((_, i) => i !== index)
@@ -333,25 +304,18 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
     const newErrors = teamErrors.filter((_, i) => i !== index);
     setErrors(newErrors);
   };
-
   const handleClickAddDocument = () => {
     setDocuments([...documents, { docName: "", file: "" }]);
   };
-
   const handleSelectRMChange = async (e: any) => {
     if (e) {
       setSelectedRMId(e._id!);
       setSelectedRMName(e.fullName!);
     }
   };
-  // Function to Open file download
-
   const openFileInNewTab = (url: string, fileName: string) => {
-    // Extract file extension from the original URL
     const urlFileName = url.substring(url.lastIndexOf("/") + 1);
     const fileExtension = urlFileName.split(".").pop()?.toLowerCase();
-
-    // Validate file extension
     if (
       fileExtension === "pdf" ||
       fileExtension === "png" ||
@@ -366,14 +330,12 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       document.body.removeChild(a);
     } else {
       console.error("Unsupported file type:", fileExtension);
-      //alert("Unsupported file type. Only PDF and PNG files are supported.");
     }
   };
   const handleClickViewDocument = (file: any, docName: any) => {
     const url = imagePath + file;
     openFileInNewTab(url, docName);
   };
-  // To be passed to React Final Form
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
       schema = schema();
@@ -387,7 +349,6 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       return errors;
     }
   };
-
   const checkEmailExists = async (e: any) => {
     const email = e.target.value;
     try {
@@ -406,7 +367,6 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       return false;
     }
   };
-
   const validationSchema = yup.object().shape({
     fullName: yup
       .string()
@@ -463,12 +423,9 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       .string()
       .required("salary is required")
       .min(1, "salary must be at least 1 character"),
-    //role: yup.string().required("Role is required").nullable(),
     branchName: yup.string().required("Branch Name is required").nullable(),
   });
-
   const validate = validateFormValues(validationSchema);
-
   return (
     <>
       <Form
@@ -555,12 +512,12 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                                 ? option.fullName || ""
                                 : ""
                             }
-                            options={filteredHeadRM || []} // Ensure it's never undefined
+                            options={filteredHeadRM || []}
                             isOptionEqualToValue={
-                              (option, value) => option?._id === value?._id // Safeguard for null/undefined values
+                              (option, value) => option?._id === value?._id
                             }
                             onChange={(event, newValue) => {
-                              input.onChange(newValue || null); // Safeguard when clearing
+                              input.onChange(newValue || null);
                               handleSelectRMChange(newValue || null);
                             }}
                             renderInput={(params) => (
@@ -611,12 +568,12 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                       type="tel"
                       className="rounded-sm w-full"
                       inputProps={{
-                        maxLength: 10, // Limits input to 10 digits
-                        inputMode: "numeric", // Ensures the numeric keyboard on mobile
-                        pattern: "[0-9]*", // Ensures only digits
+                        maxLength: 10,
+                        inputMode: "numeric",
+                        pattern: "[0-9]*",
                       }}
                       onInput={(e: any) => {
-                        e.target.value = e.target.value.replace(/[^0-9]/g, ""); // Remove non-digit characters
+                        e.target.value = e.target.value.replace(/[^0-9]/g, "");
                       }}
                       error={meta.touched && Boolean(meta.error)}
                       helperText={meta.touched && meta.error}
@@ -624,7 +581,6 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                   )}
                 </Field>
               </Grid>
-
               <Grid item lg={4} md={4} sm={6} xs={12}>
                 <Field name="email">
                   {({ input, meta }) => (
@@ -854,7 +810,6 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                   )}
                 </Field>
               </Grid>
-
               <Grid item md={12} mt={2}>
                 <Button variant="outlined" onClick={handleClickAddDocument}>
                   Add More Document
@@ -877,7 +832,6 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                           onChange={(e, newValue) =>
                             handleChangeDocumentName(newValue!, index)
                           }
-                          //userDocumentList
                           options={userDocumentList}
                           renderInput={(params) => (
                             <TextField
@@ -890,7 +844,6 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                             />
                           )}
                         />
-
                         {teamErrors[index]?.docName && (
                           <span>{teamErrors[index].docName}</span>
                         )}
@@ -907,7 +860,6 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                             borderRadius: "5px",
                           }}
                         />
-
                         {teamErrors[index]?.file && (
                           <span style={{ color: "red" }}>
                             {teamErrors[index].file}
@@ -1001,5 +953,4 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
     </>
   );
 };
-
 export default AddTeamForm;

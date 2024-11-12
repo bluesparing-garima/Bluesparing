@@ -15,23 +15,19 @@ import AddCircleIcon from "@mui/icons-material/AddRounded";
 import RemoveCircleIcon from "@mui/icons-material/RemoveRounded";
 const ViewAccountCreditDebitsDetails = () => {
   const { accountId } = useParams();
-  // State and hooks initialization
-  const [isLoading, setIsLoading] = useState(false); // Loading state
-  const [creditDebits, setCreditDebits] = useState<ICreditDebits[]>([]); // State for all credit debits
+  const [isLoading, setIsLoading] = useState(false);
+  const [creditDebits, setCreditDebits] = useState<ICreditDebits[]>([]);
   const [filteredCreditDebits, setFilteredCreditDebits] = useState<
     ICreditDebits[]
-  >([]); // State for filtered credit debits
-  const navigate = useNavigate(); // React Router's navigation hook
-
-  // Function to fetch credit debits from API
+  >([]);
+  const navigate = useNavigate();
   const GetCreditDebits = useCallback(() => {
-    setIsLoading(true); // Set loading state to true
-    getAccountManageByAccountIdService({ header, accountId: accountId! }) // Call API to fetch credit debits
+    setIsLoading(true);
+    getAccountManageByAccountIdService({ header, accountId: accountId! })
       .then((creditDebitsDetails) => {
-        // On successful API call
-        setCreditDebits(creditDebitsDetails.data); // Set all credit debits
-        setFilteredCreditDebits(creditDebitsDetails.data); // Initialize filtered data with all credit debits
-        setIsLoading(false); // Set loading state to false
+        setCreditDebits(creditDebitsDetails.data);
+        setFilteredCreditDebits(creditDebitsDetails.data);
+        setIsLoading(false);
       })
       .catch(async (error) => {
         const err = await error;
@@ -39,13 +35,9 @@ const ViewAccountCreditDebitsDetails = () => {
         setIsLoading(false);
       });
   }, [accountId]);
-
-  // Call GetCreditDebits on component mount
   useEffect(() => {
     GetCreditDebits();
   }, [GetCreditDebits]);
-
-  // Define columns for MaterialReactTable using useMemo for optimization
   const columns = useMemo<MRT_ColumnDef<ICreditDebits>[]>(
     () => [
       {
@@ -114,13 +106,9 @@ const ViewAccountCreditDebitsDetails = () => {
     ],
     []
   );
-
-  // Transform creditDebits data for rendering using useMemo for optimization
-
   const parsedData = useMemo<ICreditDebitsVM[]>(() => {
     return filteredCreditDebits.map((creditDebit: ICreditDebits) => {
       let combinedName = "";
-
       if (creditDebit.accountType === "PayIn" && creditDebit.brokerName) {
         combinedName = creditDebit.brokerName;
       } else if (
@@ -133,7 +121,6 @@ const ViewAccountCreditDebitsDetails = () => {
       } else {
         combinedName = "Other";
       }
-
       return {
         id: creditDebit._id,
         accountType: creditDebit.accountType,
@@ -155,40 +142,32 @@ const ViewAccountCreditDebitsDetails = () => {
       };
     });
   }, [filteredCreditDebits]);
-
-  // Event handlers for filtering creditDebits
   const handleClickCreditDebit = () => {
-    setFilteredCreditDebits(creditDebits); // Show all credit debits
+    setFilteredCreditDebits(creditDebits);
   };
-
   const handleClickDebit = () => {
     const debits = creditDebits.filter(
-      (cb) => cb.type?.toLowerCase() === "debit" // Filter debits
+      (cb) => cb.type?.toLowerCase() === "debit"
     );
-    setFilteredCreditDebits(debits); // Set filtered debits
+    setFilteredCreditDebits(debits);
   };
-
   const handleClickCredit = () => {
     const credits = creditDebits.filter(
-      (cb) => cb.type?.toLowerCase() === "credit" // Filter credits
+      (cb) => cb.type?.toLowerCase() === "credit"
     );
-    setFilteredCreditDebits(credits); // Set filtered credits
+    setFilteredCreditDebits(credits);
   };
-
-  // Navigate to add creditDebit page
   const handleAddCreditDebitClick = () => {
-    navigate(creditDebitsAddPath()); // Navigate to add creditDebit page
+    navigate(creditDebitsAddPath());
   };
-
-  // JSX rendering
   return (
     <div className="bg-blue-200 md:p-7 p-2">
       <Paper elevation={3} style={{ padding: 30 }}>
-        {/* Title */}
+       
         <Typography className="text-safekaroDarkOrange" variant="h5">
           Account Credit Debit Table of {creditDebits[0]?.accountCode}
         </Typography>
-        {/* Breadcrumb and add button */}
+       
         <Typography variant="h5" mb={2}>
           <div style={{ display: "flex", alignItems: "center" }}>
             <div style={{ flex: 1 }}>
@@ -208,13 +187,13 @@ const ViewAccountCreditDebitsDetails = () => {
               Add Transaction
             </Button>
           </div>
-          {/* Divider */}
+         
           <hr
             className="mt-4"
             style={{ width: "100%", borderColor: "grey-800" }}
           />
         </Typography>
-        {/* Buttons for filtering creditDebits */}
+       
         <Grid container>
           <Button
             type="button"
@@ -238,16 +217,15 @@ const ViewAccountCreditDebitsDetails = () => {
             Debit
           </Button>
         </Grid>
-        {/* MaterialReactTable component */}
+       
         <MaterialReactTable
-          state={{ isLoading }} // Loading state
-          columns={columns} // Columns configuration
-          data={parsedData} // Data to be displayed
+          state={{ isLoading }}
+          columns={columns}
+          data={parsedData}
         />
       </Paper>
       <Toaster position="bottom-center" reverseOrder={false} />
     </div>
   );
 };
-
 export default ViewAccountCreditDebitsDetails;

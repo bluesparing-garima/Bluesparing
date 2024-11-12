@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import React from "react";
 import { TextField, Button, Grid } from "@mui/material";
 import addRankService from "../../../../api/Rank/AddRank/addRankService";
@@ -11,11 +10,9 @@ import { ADD, header } from "../../../../context/constant";
 import { useLocation, useNavigate } from "react-router-dom";
 import { rankPath } from "../../../../sitemap";
 import toast, { Toaster } from "react-hot-toast";
-
 export interface addRankFormProps {
   initialValues: IRankForm;
 }
-
 const AddRankForm = (props: addRankFormProps) => {
   const { initialValues } = props;
   const navigate = useNavigate();
@@ -23,8 +20,6 @@ const AddRankForm = (props: addRankFormProps) => {
   const pathName = location.pathname.split("/");
   const isAddEdit = pathName[pathName.length - 1] as string;
   const isAdd = isAddEdit === ADD;
-
-  // To be passed to React Final Form
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
       schema = schema();
@@ -34,12 +29,10 @@ const AddRankForm = (props: addRankFormProps) => {
     } catch (err: any) {
       const errors = err.inner.reduce((formError: any, innerError: any) => {
         return setIn(formError, innerError.path, innerError.message);
-      }, {});
-
+      },);
       return errors;
     }
   };
-
   const validationSchema = yup.object().shape({
     rank: yup
       .string()
@@ -51,9 +44,7 @@ const AddRankForm = (props: addRankFormProps) => {
       .required("Count is required")
       .min(1, "Rank must be at least 1 character"),
   });
-
   const validate = validateFormValues(validationSchema);
-
   const onSubmit = async (rank: IRankForm) => {
     if (isAdd) {
       callAddRankAPI(rank);
@@ -61,13 +52,11 @@ const AddRankForm = (props: addRankFormProps) => {
       callEditRankAPI(rank);
     }
   };
-
   const navigateToRanks = (message: string) => {
     navigate(rankPath(), {
       state: message,
     });
   };
-
   const callAddRankAPI = async (rank: IRankForm) => {
     try {
       const newRank = await addRankService({ header, rank });
@@ -77,7 +66,6 @@ const AddRankForm = (props: addRankFormProps) => {
       toast.error(errObj.message);
     }
   };
-
   const callEditRankAPI = async (rank: IRankForm) => {
     try {
       const newRank = await editRankService({ header, rank });
@@ -87,7 +75,6 @@ const AddRankForm = (props: addRankFormProps) => {
       toast.error(errObj.message);
     }
   };
-
   return (
     <>
       <Form
@@ -146,5 +133,4 @@ const AddRankForm = (props: addRankFormProps) => {
     </>
   );
 };
-
 export default AddRankForm;

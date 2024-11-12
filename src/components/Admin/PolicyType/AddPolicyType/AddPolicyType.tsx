@@ -7,7 +7,6 @@ import AddPolicyTypeForm from "./AddPolicyTypeForm";
 import { convertIPolicyTypeVMToIPolicyTypeForm } from "../../../../api/PolicyType/convertIPolicyTypeVMToIPolicyTypeForm";
 import getPolicyTypeDetailsService from "../../../../api/PolicyType/GetPolicyTypeDetails/getPolicyTypeDetailsService";
 import toast, { Toaster } from "react-hot-toast";
-
 const AddPolicyType = () => {
   const { policyTypeId } = useParams();
   const location = useLocation();
@@ -16,7 +15,6 @@ const AddPolicyType = () => {
   const [editPolicyTypeDetails, setEditPolicyTypeDetails] = useState<IPolicyTypeForm | undefined>(
     undefined
   );
-
   useEffect(() => {
     if (!isAdd && policyTypeId) {
         getPolicyTypeDetailsService({ header, policyTypeId })
@@ -27,13 +25,10 @@ const AddPolicyType = () => {
         .catch(async(error) => {
           const err = await error
           toast.error(err.message)
-          
         });
     }
   }, [isAdd, policyTypeId]);
-
   const title = isAdd ? "Add Policy Type" : "Update Policy Type";
-
   return (
     <div className="bg-blue-200 md:p-7">
       <Paper
@@ -56,7 +51,6 @@ const AddPolicyType = () => {
             style={{ width: "100%", borderColor: "grey-800" }}
           />
         </Typography>
-
         <AddPolicyTypeForm
           initialValues={{
             id: isAdd ? "0" : editPolicyTypeDetails?.id || "",
@@ -69,5 +63,4 @@ const AddPolicyType = () => {
     </div>
   );
 };
-
 export default AddPolicyType;

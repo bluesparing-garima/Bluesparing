@@ -12,35 +12,29 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useState } from "react";
-import { Field, Form } from "react-final-form"; // Using react-final-form for managing form state
-import { DAY_FORMAT, header } from "../../../../context/constant"; // Constants and enums
-// Hooks for navigation and location
-import { setIn } from "final-form"; // final-form utilities
-import * as yup from "yup"; // yup for form validation
-// API service for editing credit/debit
-import useGetPartners from "../../../../Hooks/Partner/useGetPartners"; // Custom hook for fetching partners
-// Custom hook for fetching brokers
-import useGetAccounts from "../../../../Hooks/Account/useGetAccounts"; // Custom hook for fetching accounts
-import { LocalizationProvider } from "@mui/x-date-pickers"; // Localization provider for date pickers
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"; // Adapter for dayjs in date picker
-import { DatePicker } from "@mui/x-date-pickers/DatePicker"; // Date picker component
+import { Field, Form } from "react-final-form";
+import { DAY_FORMAT, header } from "../../../../context/constant";
+import { setIn } from "final-form";
+import * as yup from "yup";
+import useGetPartners from "../../../../Hooks/Partner/useGetPartners";
+import useGetAccounts from "../../../../Hooks/Account/useGetAccounts";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { IViewPolicy } from "../../../Policy/IPolicy";
 import dayjs from "dayjs";
 import PartnerPaymentPoliciesData from "./PartnerPaymentPoliciesData";
 import getFilterUnpaidPartialServices from "../../../../api/UpdatePayment/getFilterUnpaidPartial/getFilterUnpaidPartialServices";
 import { ICreditDebitForm } from "../../CreditDebit/ICreditDebits";
 import toast, { Toaster } from "react-hot-toast";
-
 export interface addCreditDebitFormProps {
-  initialValues: ICreditDebitForm; // Interface for initial form values
+  initialValues: ICreditDebitForm;
 }
-
 const PartnerDebitForm = (props: addCreditDebitFormProps) => {
-  let { initialValues } = props; // Destructure initial values from props
-
-  let [partners] = useGetPartners({ header: header, role: "partner" }); // Fetch partners using custom hook
+  let { initialValues } = props;
+  let [partners] = useGetPartners({ header: header, role: "partner" });
   const [totalDistributedAmount, settotalDistributedAmount] = useState(0);
-  let [accounts] = useGetAccounts({ header: header }); // Fetch accounts using custom hook
+  let [accounts] = useGetAccounts({ header: header });
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [distributedDate, setdistributedDate] = useState("");
@@ -59,7 +53,6 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
   const [partnerName, setPartnerName] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [flag,setFlag ] = useState(false)
-  // Form submission handler
   const onSubmit = async (creditdebitForm: ICreditDebitForm, form: any) => {
     setIsLoading(true);
     const newStartDate = dayjs(creditdebitForm.startDate).format(DAY_FORMAT);
@@ -73,12 +66,10 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
     setAmount(creditdebitForm.amount!);
     if (amountInAccount <= 0) {
       setIsLoading(false);
-     
       return;
     }
     setStartTime(newStartDate);
     setEndTime(newEndDate);
-
     try {
       const policies = await getFilterUnpaidPartialServices({
         header,
@@ -96,24 +87,19 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
       setIsLoading(false);
     }
   };
-
-  // Validation function for form values
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
-      schema = schema(); // Ensure schema is a function
+      schema = schema();
     }
     try {
-      await schema.validate(values, { abortEarly: false }); // Validate values against schema
+      await schema.validate(values, { abortEarly: false });
     } catch (err: any) {
-      // Handle validation errors
       const errors = err.inner.reduce((formError: any, innerError: any) => {
         return setIn(formError, innerError.path, innerError.message);
       }, {});
-      return errors; // Return validation errors
+      return errors;
     }
   };
-
-  // Schema for form validation using yup
   const validationSchema = yup.object().shape({
     startDate: yup.string().required("Start Date is required").nullable(),
     endDate: yup.string().required("End Date is required").nullable(),
@@ -123,13 +109,10 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
       .nullable(),
     amount: yup.number().nullable().required("Amount is required"),
   });
-
-  const addValidate = validateFormValues(validationSchema); // Validate function for adding
-
+  const addValidate = validateFormValues(validationSchema);
   const calculateAmountInAccount = (id: string) => {
     setFlag(false)
     const result = accounts.find((obj) => obj.accountCode === id);
-
     if (result?.amount === undefined || result.amount <= 0) {
       setAmountInAccount(0);
       setFlag(true)
@@ -137,7 +120,6 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
       setAmountInAccount(result.amount);
     }
   };
-
   return (
     <>
       <React.Fragment>
@@ -166,8 +148,6 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
               align="center"
             >
               <span className="text-red-500">   you have low balance in account</span>
-           
-             
             </Typography>
           </Grid>
           }
@@ -199,15 +179,15 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
                                     : `${option.fullName} - ${option.partnerId}` ||
                                       ""
                                 }
-                                options={partners} // Replace with your options array
+                                options={partners}
                                 onChange={(event, newValue) => {
                                   if (newValue) {
                                     input.onChange(newValue.fullName);
                                     setPartnerName(newValue.fullName);
-                                    setSelectedPartnerId(newValue._id); // Set selected partner ID
+                                    setSelectedPartnerId(newValue._id);
                                   } else {
                                     input.onChange(null);
-                                    setSelectedPartnerId(""); // Reset partner ID when no value is selected
+                                    setSelectedPartnerId("");
                                   }
                                 }}
                                 renderInput={(params) => (
@@ -227,8 +207,7 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
                         )}
                       </Field>
                     </Grid>
-
-                    {/* Account Code Selection */}
+                   
                     <Grid item lg={4} md={4} sm={6} xs={12}>
                       <Field name="accountCode">
                         {({ input, meta }) => (
@@ -247,7 +226,7 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
                                     ? option
                                     : option.accountCode || ""
                                 }
-                                options={accounts} // Replace with your options array
+                                options={accounts}
                                 onChange={(event, newValue) => {
                                   if (newValue) {
                                     input.onChange(newValue.accountCode);
@@ -257,7 +236,6 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
                                     setSelectedAccountId(newValue._id);
                                     setAccountCode(newValue.accountCode);
                                   }
-                                  // Set selected account ID
                                 }}
                                 renderInput={(params) => (
                                   <TextField
@@ -276,10 +254,8 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
                         )}
                       </Field>
                     </Grid>
-
-                    {/* Amount Input */}
-
-                    {/* Start Date Picker */}
+                   
+                   
                     <Grid item lg={4} md={4} sm={6} xs={12}>
                       <Field name="startDate">
                         {({ input, meta }) => (
@@ -287,7 +263,7 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
                             <DatePicker
                               disableFuture
                               label="Start Date"
-                              value={input.value || null} // Initialize the value if it's undefined
+                              value={input.value || null}
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
                                 <TextField
@@ -304,8 +280,7 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
                         )}
                       </Field>
                     </Grid>
-
-                    {/* End Date Picker */}
+                   
                     <Grid item lg={4} md={4} sm={6} xs={12}>
                       <Field name="endDate">
                         {({ input, meta }) => (
@@ -313,7 +288,7 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
                             <DatePicker
                               disableFuture
                               label="End Date"
-                              value={input.value || null} // Initialize the value if it's undefined
+                              value={input.value || null}
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
                                 <TextField
@@ -337,7 +312,7 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
                             <DatePicker
                               disableFuture
                               label="Distributed Date"
-                              value={input.value || null} // Initialize the value if it's undefined
+                              value={input.value || null}
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
                                 <TextField
@@ -354,7 +329,7 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
                         )}
                       </Field>
                     </Grid>
-                    {/* Remarks Input */}
+                   
                     <Grid item lg={12} md={12} sm={12} xs={12}>
                       <Field name="remarks">
                         {({ input, meta }) => (
@@ -374,8 +349,7 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
                       </Field>
                     </Grid>
                   </Grid>
-
-                  {/* Submit Button and Error Handling */}
+                 
                   <Grid container spacing={2} mt={2}>
                     <Grid item lg={12} md={12} sm={12} xs={12}>
                       {submitError && (
@@ -432,11 +406,9 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
             )
           )}
         </Card>
-
       </React.Fragment>
       <Toaster position="bottom-center" reverseOrder={false} />
     </>
   );
 };
-
 export default PartnerDebitForm;

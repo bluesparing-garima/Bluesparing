@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { TextField, Button, Grid } from "@mui/material";
 import addCompanyService from "../../../../api/Company/AddCompany/addCompanyServices";
 import editCompanyService from "../../../../api/Company/EditCompany/editCompanyService";
@@ -10,11 +9,9 @@ import { ADD, header } from "../../../../context/constant";
 import { useLocation, useNavigate } from "react-router-dom";
 import { companyPath } from "../../../../sitemap";
 import toast, { Toaster } from "react-hot-toast";
-
 export interface addCompanyFormProps {
   initialValues: ICompanyForm;
 }
-
 const AddCompanyForm = (props: addCompanyFormProps) => {
   const { initialValues } = props;
   const navigate = useNavigate();
@@ -22,8 +19,6 @@ const AddCompanyForm = (props: addCompanyFormProps) => {
   const pathName = location.pathname.split("/");
   const isAddEdit = pathName[pathName.length - 1] as string;
   const isAdd = isAddEdit === ADD;
-
-  // To be passed to React Final Form
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
       schema = schema();
@@ -34,11 +29,9 @@ const AddCompanyForm = (props: addCompanyFormProps) => {
       const errors = err.inner.reduce((formError: any, innerError: any) => {
         return setIn(formError, innerError.path, innerError.message);
       }, {});
-
       return errors;
     }
   };
-
   const validationSchema = yup.object().shape({
     companyName: yup
       .string()
@@ -46,9 +39,7 @@ const AddCompanyForm = (props: addCompanyFormProps) => {
       .min(1, "Company must be at least 1 character")
       .max(100, "Company cannot exceed 100 characters"),
   });
-
   const validate = validateFormValues(validationSchema);
-
   const onSubmit = async (company: ICompanyForm) => {
     if (isAdd) {
       callAddCompanyAPI(company);
@@ -56,33 +47,29 @@ const AddCompanyForm = (props: addCompanyFormProps) => {
       callEditCompanyAPI(company);
     }
   };
-
-  const navigateToCompanys = (message: string) => {
+  const navigateToCompany = (message: string) => {
     navigate(companyPath(), {
       state: message,
     });
   };
-
   const callAddCompanyAPI = async (company: ICompanyForm) => {
     try {
       const newCompany = await addCompanyService({ header, company });
-      navigateToCompanys(`${newCompany.message}`);
+      navigateToCompany(`${newCompany.message}`);
     } catch (error: any) {
       const err = await error;
       toast.error(err.message);
     }
   };
-
   const callEditCompanyAPI = async (company: ICompanyForm) => {
     try {
       const newCompany = await editCompanyService({ header, company });
-      navigateToCompanys(`${newCompany.message}`);
+      navigateToCompany(`${newCompany.message}`);
     } catch (error: any) {
       const err = await error;
       toast.error(err.message);
     }
   };
-
   return (
     <>
       <Form
@@ -126,5 +113,4 @@ const AddCompanyForm = (props: addCompanyFormProps) => {
     </>
   );
 };
-
 export default AddCompanyForm;

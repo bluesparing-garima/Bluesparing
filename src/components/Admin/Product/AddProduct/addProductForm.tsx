@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useState } from "react";
 import {
   TextField,
@@ -19,24 +18,19 @@ import { productPath } from "../../../../sitemap";
 import useGetCatgories from "../../../../Hooks/Category/useGetCategories";
 import { ICategories } from "../../Category/ICategory";
 import toast, { Toaster } from "react-hot-toast";
-
 export interface addProductFormProps {
   initialValues: IProductForm;
 }
-
 const AddProductForm = (props: addProductFormProps) => {
   let [categories] = useGetCatgories({ header: header });
   const [selectedCategoryName, setSelectedCategoryName] = useState("");
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
-
   const { initialValues } = props;
   const navigate = useNavigate();
   const location = useLocation() as any;
   const pathName = location.pathname.split("/");
   const isAddEdit = pathName[pathName.length - 1] as string;
   const isAdd = isAddEdit === ADD;
-
-  // To be passed to React Final Form
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
       schema = schema();
@@ -47,22 +41,17 @@ const AddProductForm = (props: addProductFormProps) => {
       const errors = err.inner.reduce((formError: any, innerError: any) => {
         return setIn(formError, innerError.path, innerError.message);
       }, {});
-
       return errors;
     }
   };
-
   const validationSchema = yup.object().shape({
-    //categoryName: yup.string().required("Category Name is required"),
     productName: yup
       .string()
       .required("Product Name is required")
       .min(1, "Product must be at least 1 character")
       .max(100, "Product cannot exceed 100 characters"),
   });
-
   const validate = validateFormValues(validationSchema);
-
   const onSubmit = async (product: IProductForm) => {
     product.categoryId = selectedCategoryId
       ? selectedCategoryId
@@ -76,13 +65,11 @@ const AddProductForm = (props: addProductFormProps) => {
       callEditProductAPI(product);
     }
   };
-
   const navigateToProducts = (message: string) => {
     navigate(productPath(), {
       state: message,
     });
   };
-
   const callAddProductAPI = async (product: IProductForm) => {
     try {
       const newProduct = await addProductService({ header, product });
@@ -90,10 +77,8 @@ const AddProductForm = (props: addProductFormProps) => {
     } catch (error:any) {
       const err = await error
       toast.error(err.message)
-      
     }
   };
-
   const callEditProductAPI = async (product: IProductForm) => {
     try {
       const newProduct = await editProductService({ header, product });
@@ -101,7 +86,6 @@ const AddProductForm = (props: addProductFormProps) => {
     } catch (error:any) {
       const err = await error
       toast.error(err.message)
-    
     }
   };
   const handleSelectCategory = async (e: ICategories) => {
@@ -110,7 +94,6 @@ const AddProductForm = (props: addProductFormProps) => {
   };
   return (
     <>
-    
     <Form
       onSubmit={onSubmit}
       initialValues={initialValues}
@@ -131,13 +114,12 @@ const AddProductForm = (props: addProductFormProps) => {
                             ? input.value
                             : initialValues.categoryName || null
                         }
-                        options={categories} // Replace with your options array
+                        options={categories}
                         getOptionLabel={(option) =>
                           typeof option === "string"
                             ? option
                             : option.categoryName || ""
                         }
-                        //getOptionLabel={(option) => option.categoryName}
                         onChange={(event, newValue) => {
                           input.onChange(newValue);
                           handleSelectCategory(newValue);
@@ -193,5 +175,4 @@ const AddProductForm = (props: addProductFormProps) => {
     </>
   );
 };
-
 export default AddProductForm;

@@ -5,13 +5,11 @@ import {
   header,
   PRODUCT_SUBTYPE_STORAGE_KEY,
 } from "../../../../context/constant";
-
 import {
   IProductSubTypeForm,
   IProductSubTypes,
   IProductSubTypesVM,
 } from "../IProductSubTypes";
-//import dayjs from "dayjs";
 import { Button, IconButton, Paper, Tooltip, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -21,7 +19,6 @@ import {
 import dayjs from "dayjs";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import deleteProductSubTypeService from "../../../../api/ProductSubType/DeleteProductSubType/deleteProductSubTypeService";
 import { convertIProductSubTypeVMToIProductSubTypeForm } from "../../../../api/ProductSubType/convertIProductSubTypeVMToIProductSubTypeForm";
 import editProductSubTypeService from "../../../../api/ProductSubType/EditProductSubType/editProductSubTypeService";
 import getProductSubTypeService from "../../../../api/ProductSubType/GetProductSubType/getProductSubTypeService";
@@ -30,7 +27,6 @@ import {
   getPaginationState,
   savePaginationState,
 } from "../../../../utils/PaginationHandler";
-
 const ProductSubTypes = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [productSubTypes, setProductSubTypes] = useState<IProductSubTypes[]>(
@@ -57,7 +53,6 @@ const ProductSubTypes = () => {
         }),
     []
   );
-
   useEffect(() => {
     const p = getPaginationState(PRODUCT_SUBTYPE_STORAGE_KEY);
     setPagination(p);
@@ -70,12 +65,10 @@ const ProductSubTypes = () => {
   ) => {
     var convertProductSubTypeVMToProductSubTypeForm =
       convertIProductSubTypeVMToIProductSubTypeForm(productSubType);
-
     const productSubTypeData: IProductSubTypeForm = {
       ...convertProductSubTypeVMToProductSubTypeForm,
       isActive: !convertProductSubTypeVMToProductSubTypeForm.isActive,
     };
-
     editProductSubTypeService({ header, productSubType: productSubTypeData })
       .then(() => {
         GetProductSubTypes();
@@ -88,25 +81,19 @@ const ProductSubTypes = () => {
         updateLoading();
       });
   };
-
   const handleClickChangeStatus = (productSubType: IProductSubTypesVM) => {
     callUpdateProductSubTypeAPI(productSubType);
   };
-  const [forcedRenderCount, setForcedRenderCount] = useState(0);
-  const forceRender = useCallback(
-    () => setForcedRenderCount(forcedRenderCount + 1),
-    [forcedRenderCount]
-  );
-  //should be memoized or stable
+  const forcedRenderCount = 0;
   const columns = useMemo<MRT_ColumnDef<IProductSubTypes>[]>(
     () => [
       {
-        accessorKey: "productName", //normal accessorKey
+        accessorKey: "productName",
         header: "Product Name",
         size: 200,
       },
       {
-        accessorKey: "productSubType", //normal accessorKey
+        accessorKey: "productSubType",
         header: "Product Category",
         size: 200,
       },
@@ -131,7 +118,6 @@ const ProductSubTypes = () => {
     ],
     []
   );
-
   const parsedData = useMemo(
     () =>
       productSubTypes.map(
@@ -153,42 +139,17 @@ const ProductSubTypes = () => {
       ) ?? [],
     [productSubTypes, forcedRenderCount]
   );
-
   const updateLoading = useCallback(async () => {
-    // setIsLoading(true) when productSubTypes.length is 0, and setIsLoading(false) when productSubTypes.length is > 0
     setIsLoading(productSubTypes.length >= 0 ? false : true);
   }, [productSubTypes]);
-
   useEffect(() => {
     updateLoading();
   }, [updateLoading]);
-
-  const handleClickDeleteProductSubType = (
-    productSubType: IProductSubTypesVM
-  ) => {
-    productSubTypeDeleteApiCall(productSubType.id!);
-  };
   const handleClickEditProductSubType = (
     productSubType: IProductSubTypesVM
   ) => {
     savePaginationState(pagination, PRODUCT_SUBTYPE_STORAGE_KEY);
     navigate(productSubTypeEditPath(productSubType.id!));
-  };
-
-  const productSubTypeDeleteApiCall = async (productSubTypeId: string) => {
-    setIsLoading(true);
-    deleteProductSubTypeService({ header, productSubTypeId, productSubTypes })
-      .then((refreshedProductSubTypes) => {
-        setProductSubTypes(refreshedProductSubTypes);
-        forceRender();
-      })
-      .catch(async (error: any) => {
-        const err = await error;
-        toast.error(err.message);
-      })
-      .finally(() => {
-        updateLoading();
-      });
   };
   return (
     <>
@@ -219,7 +180,7 @@ const ProductSubTypes = () => {
                 Add Product Sub Category
               </Button>
             </div>
-            {/* Add a full-width grey line here */}
+           
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
@@ -325,5 +286,4 @@ const ProductSubTypes = () => {
     </>
   );
 };
-
 export default ProductSubTypes;

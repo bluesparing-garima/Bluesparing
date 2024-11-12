@@ -8,7 +8,6 @@ interface PoliciesDetailsProps {
   creditDebits: ICreditDebits[];
 }
 const ViewCreditDebitByPartner = ({ creditDebits }: PoliciesDetailsProps) => {
-  // Define columns for MaterialReactTable using useMemo for optimization
   const columns = useMemo<MRT_ColumnDef<ICreditDebits>[]>(
     () => [
       {
@@ -54,8 +53,6 @@ const ViewCreditDebitByPartner = ({ creditDebits }: PoliciesDetailsProps) => {
     ],
     []
   );
-
-  // Transform creditDebits data for rendering using useMemo for optimization
   const parsedData = useMemo<ICreditDebitsVM[]>(() => {
     return creditDebits.map((creditDebit: ICreditDebits) => ({
       id: creditDebit._id,
@@ -74,24 +71,20 @@ const ViewCreditDebitByPartner = ({ creditDebits }: PoliciesDetailsProps) => {
       updatedOn: dayjs(creditDebit.updatedOn).format(DAYJS_DISPLAY_FORMAT),
     }));
   }, [creditDebits]);
-
-  // JSX rendering
   return (
     <div className="bg-blue-200 p-7 mt-2">
       <Paper elevation={3} style={{ padding: 30 }}>
-        {/* Title */}
+       
         <Typography className="text-safekaroDarkOrange" variant="h5">
           Debits Records
         </Typography>
-
-        {/* MaterialReactTable component */}
+       
         <MaterialReactTable
-          columns={columns} // Columns configuration
-          data={parsedData} // Data to be displayed
+          columns={columns}
+          data={parsedData}
         />
       </Paper>
     </div>
   );
 };
-
 export default ViewCreditDebitByPartner;

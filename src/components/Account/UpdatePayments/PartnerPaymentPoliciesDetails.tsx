@@ -20,7 +20,6 @@ import updateFilterPaymentsService from "../../../api/UpdatePayment/updateFilter
 import { AddEditCreditDebitProps } from "../../../api/CreditDebit/getCreditDebitTypes";
 import toast, { Toaster } from "react-hot-toast";
 import addCreditDebitService from "../../../api/CreditDebit/AddCreditDebit/addCreditDebitService";
-
 interface PoliciesDetailsProps {
   policies: IViewPolicy[];
   partnerAmount: number;
@@ -32,7 +31,6 @@ interface PoliciesDetailsProps {
   endDate: string;
   startDate: string;
 }
-
 interface PoliciesProps {
   policyNumber?: string;
   payOutCommission?: number;
@@ -56,65 +54,63 @@ function PartnerPaymentPoliciesDetails({
   const [oldPolicies, setOldPolicies] = useState<IViewPolicy[]>([]);
   const [updatePolicy, setUpdatePolicy] = useState<PoliciesProps[]>([]);
   const [paymentTextboxVisibility, setPaymentTextboxVisibility] =
-    useState<boolean>(false); // State to manage textbox visibility
+    useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [selectAllUnPaid, setSelectAllUnPaid] = useState<boolean>(false); // State to manage selecting all as Paid
-
+  const [selectAllUnPaid, setSelectAllUnPaid] = useState<boolean>(false);
   useEffect(() => {
     if (policies && partnerAmount != null) {
       setOldPolicies(policies);
     }
   }, [policies, partnerAmount]);
-
   const columns = useMemo<MRT_ColumnDef<IViewPolicy>[]>(
     () => [
       {
-        accessorKey: "payOutCommission", //normal accessorKey
+        accessorKey: "payOutCommission",
         header: "PayOut ",
         size: 100,
       },
       {
-        accessorKey: "payOutAmount", //normal accessorKey
+        accessorKey: "payOutAmount",
         header: "Paid Amount",
         size: 100,
       },
       {
-        accessorKey: "payOutBalance", //normal accessorKey
+        accessorKey: "payOutBalance",
         header: "balance",
         size: 100,
       },
       {
-        accessorKey: "fullName", //normal accessorKey
+        accessorKey: "fullName",
         header: "Full Name",
         size: 100,
       },
       {
-        accessorKey: "policyNumber", //normal accessorKey
+        accessorKey: "policyNumber",
         header: "Policy Number",
         size: 100,
       },
       {
-        accessorKey: "od", //normal accessorKey
+        accessorKey: "od",
         header: "OD",
         size: 100,
       },
       {
-        accessorKey: "tp", //normal accessorKey
+        accessorKey: "tp",
         header: "TP",
         size: 100,
       },
       {
-        accessorKey: "netPremium", //normal accessorKey
+        accessorKey: "netPremium",
         header: "Net Premium",
         size: 100,
       },
       {
-        accessorKey: "finalPremium", //normal accessorKey
+        accessorKey: "finalPremium",
         header: "Final Premium",
         size: 100,
       },
       {
-        accessorKey: "payOutODPercentage", //normal accessorKey
+        accessorKey: "payOutODPercentage",
         header: "PayOut OD%",
         size: 100,
         Cell: ({ cell }) => {
@@ -131,105 +127,103 @@ function PartnerPaymentPoliciesDetails({
           return <span>{tp}%</span>;
         },
       },
-
       {
-        accessorKey: "issueDate", //normal accessorKey
+        accessorKey: "issueDate",
         header: "Issue Date",
         size: 100,
       },
       {
-        accessorKey: "policyType", //normal accessorKey
+        accessorKey: "policyType",
         header: "Policy Type",
         size: 100,
       },
       {
-        accessorKey: "caseType", //normal accessorKey
+        accessorKey: "caseType",
         header: "Case Type",
         size: 100,
       },
-
       {
-        accessorKey: "category", //normal accessorKey
+        accessorKey: "category",
         header: "Category",
         size: 100,
       },
       {
-        accessorKey: "subCategory", //normal accessorKey
+        accessorKey: "subCategory",
         header: "sub Category",
         size: 100,
       },
       {
-        accessorKey: "companyName", //normal accessorKey
+        accessorKey: "companyName",
         header: "Company Name",
         size: 100,
       },
       {
-        accessorKey: "vehicleNumber", //normal accessorKey
+        accessorKey: "vehicleNumber",
         header: "Vehicle Number",
         size: 100,
       },
       {
-        accessorKey: "partnerName", //normal accessorKey
+        accessorKey: "partnerName",
         header: "Partner Name",
         size: 100,
       },
       {
-        accessorKey: "make", //normal accessorKey
+        accessorKey: "make",
         header: "Make",
         size: 100,
       },
       {
-        accessorKey: "model", //normal accessorKey
+        accessorKey: "model",
         header: "Model",
         size: 100,
       },
       {
-        accessorKey: "fuelType", //normal accessorKey
+        accessorKey: "fuelType",
         header: "Fuel Type",
         size: 100,
       },
       {
-        accessorKey: "rto", //normal accessorKey
+        accessorKey: "rto",
         header: "RTO",
         size: 100,
       },
       {
-        accessorKey: "cc", //normal accessorKey
+        accessorKey: "cc",
         header: "cc",
         size: 100,
       },
       {
-        accessorKey: "seatingCapacity", //normal accessorKey
+        accessorKey: "seatingCapacity",
         header: "Seating Capacity",
         size: 100,
       },
       {
-        accessorKey: "ncb", //normal accessorKey
+        accessorKey: "ncb",
         header: "ncb",
         size: 100,
       },
       {
-        accessorKey: "emailId", //normal accessorKey
+        accessorKey: "emailId",
         header: "Email",
         size: 100,
       },
       {
-        accessorKey: "phoneNumber", //normal accessorKey
+        accessorKey: "phoneNumber",
         header: "Phone Number",
         size: 100,
       },
       {
-        accessorKey: "vehicleAge", //normal accessorKey
+        accessorKey: "vehicleAge",
         header: "Vehicle Age",
         size: 100,
       },
       {
-        accessorKey: "mfgYear", //normal accessorKey
+        accessorKey: "mfgYear",
         header: "MFG Year",
         size: 100,
       },
       {
-        accessorKey: "tenure", //normal accessorKey
+        accessorKey: "tenure",
         header: "Tenure",
         size: 100,
       },
@@ -287,10 +281,9 @@ function PartnerPaymentPoliciesDetails({
   }
   const calculateTotalPolicyPaidAmount = () => {
     return updatePolicy.reduce((total, p) => {
-      return total + (p.payOutCommission ?? 0); // Use nullish coalescing operator to handle undefined or null payOutAmount
+      return total + (p.payOutCommission ?? 0);
     }, 0);
   };
-
   const splitDataIntoChunks = (data: any) => {
     const chunks = [];
     if (data.length > 0) {
@@ -298,7 +291,6 @@ function PartnerPaymentPoliciesDetails({
         chunks.push(data.slice(i, i + 60));
       }
     }
-
     return chunks;
   };
   const handleClickSubmit = async () => {
@@ -311,15 +303,10 @@ function PartnerPaymentPoliciesDetails({
         const Balance = partnerAmount + Math.abs(partnerBalance);
         DebitAmount = partnerAmount;
         finalBalance = Balance;
-        // setDebitAmount(partnerAmount);
-        // setFinalBalance(Balance);
       } else {
         DebitAmount = calculateTotalPolicyPaidAmount();
         let Balance = Math.abs(partnerBalance) + DebitAmount;
         finalBalance = Balance;
-
-        // setDebitAmount(payOutCommission);
-        // setFinalBalance(Balance);
       }
       const postData = createCreditDebitForm(DebitAmount, finalBalance);
       const res = await toast.promise(addCreditDebitService(postData), {
@@ -329,7 +316,6 @@ function PartnerPaymentPoliciesDetails({
       });
       if (res.status === "success") {
         policyData = updatePolicy;
-
         policyData = addKeyValueToObjects(
           policyData,
           "distributedDate",
@@ -364,23 +350,17 @@ function PartnerPaymentPoliciesDetails({
     } catch (error: any) {
       const err = await error;
       toast.error(err.message);
-
       return { [FORM_ERROR]: "error" };
     } finally {
       setIsLoading(false);
     }
   };
-
-  // Function to find a policy by policyNumber
   const findPolicyByNumber = (policyNumber: string) => {
     return oldPolicies.find((p) => p.policyNumber === policyNumber);
   };
-
   const handleStatusChange = (policy: IViewPolicy, newStatus: string) => {
-    // Handle status change to "UnPaid"
     let newUpdatedPolicy: PoliciesProps = {};
     if (newStatus === "UnPaid") {
-      // Find the policy in oldPolicies array by policyNumber
       const newPolicy = findPolicyByNumber(policy.policyNumber);
       if (newPolicy) {
         setPaymentTextboxVisibility(true);
@@ -391,37 +371,29 @@ function PartnerPaymentPoliciesDetails({
           payOutAmount: 0,
           payOutBalance: 0,
         };
-
         newPolicy.payOutPaymentStatus = newStatus;
         newPolicy.errorMessage = "";
         newPolicy.payOutAmount = 0;
         newPolicy.payOutBalance = 0;
       }
-
       setUpdatePolicy((prevPolicies) => {
-        // Add the new policy to the existing array
         return [...prevPolicies, newUpdatedPolicy];
       });
-
-      // Trigger re-render by updating oldPolicies state
       setOldPolicies([...oldPolicies]);
     } else {
       setPaymentTextboxVisibility(false);
     }
   };
-
   const handleSelectAllUnPaidChange = async (event: any) => {
     const newValue = event.target.value;
     setSelectAllUnPaid(newValue);
     let policyStatus = "";
     let payOutAmount = 0;
     let balance = 0;
-
     const updatedPolicies = oldPolicies.map((policy) => {
       policyStatus = "UnPaid";
       payOutAmount = 0;
       balance = 0;
-
       return {
         ...policy,
         payOutPaymentStatus: policyStatus,
@@ -482,15 +454,13 @@ function PartnerPaymentPoliciesDetails({
             )}
           </Grid>
         </Grid>
-
         <MaterialReactTable
-          //state={{ isLoading }}
           columns={columns}
           data={oldPolicies}
           enableRowActions
           renderRowActions={({ row }) => (
             <div>
-              {/* Display error message if it exists */}
+             
               {row.original.errorMessage && (
                 <Grid container mb={2}>
                   <Grid item lg={12}>
@@ -502,7 +472,7 @@ function PartnerPaymentPoliciesDetails({
                   </Grid>
                 </Grid>
               )}
-              {/* Status dropdown */}
+             
               {row.original.payOutCommission !== 0 && (
                 <Grid container mt={2}>
                   <Grid item lg={12}>
@@ -534,5 +504,4 @@ function PartnerPaymentPoliciesDetails({
     </div>
   );
 }
-
 export default PartnerPaymentPoliciesDetails;

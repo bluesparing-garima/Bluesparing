@@ -7,7 +7,6 @@ import AddTeamForm from "./AddTeamForm";
 import { convertITeamVMToITeamForm } from "../../../../api/Team/convertITeamVMToITeamForm";
 import getTeamDetailsService from "../../../../api/Team/GetTeamDetails/getTeamDetailsService";
 import toast, { Toaster } from "react-hot-toast";
-
 const AddTeam = () => {
   const { teamId } = useParams();
   const location = useLocation();
@@ -32,9 +31,7 @@ const AddTeam = () => {
         });
     }
   }, [isAdd, teamId]);
-
   const title = isAdd ? "Add Team" : "Update Team";
-
   return (
     <>
       <div className="bg-blue-200 md:p-7 ">
@@ -61,7 +58,6 @@ const AddTeam = () => {
               style={{ width: "100%", borderColor: "grey-800" }}
             />
           </Typography>
-
           <AddTeamForm
             initialValues={{
               id: isAdd ? "0" : editTeamDetails?.id || "",
@@ -95,7 +91,6 @@ const AddTeam = () => {
               bankProof: isAdd ? "" : editTeamDetails?.bankProof || "",
               experience: isAdd ? "" : editTeamDetails?.experience || "",
               other: isAdd ? "" : editTeamDetails?.other || "",
-              //document: isAdd ? [] : editTeamDetails?.document || [],
               isActive: isAdd ? true : editTeamDetails?.isActive || true,
               joiningDate: isAdd ? "" : editTeamDetails?.joiningDate || "",
               createdBy: "Admin",
@@ -108,5 +103,4 @@ const AddTeam = () => {
     </>
   );
 };
-
 export default AddTeam;

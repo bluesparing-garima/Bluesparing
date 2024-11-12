@@ -1,5 +1,3 @@
-// AddCaseType.tsx
-
 import React, { useEffect, useState } from "react";
 import { Typography, Paper } from "@mui/material";
 import { Link, useLocation, useParams } from "react-router-dom";
@@ -9,7 +7,6 @@ import AddCaseTypeForm from "./addCaseTypeForm";
 import getCaseTypeDetailsService from "../../../../api/CaseType/GetCaseTypeDetails/getCaseTypeDetailsService";
 import { convertICaseTypeVMToICaseTypeForm } from "../../../../api/CaseType/convertICaseTypeVMToICaseTypeForm";
 import toast, { Toaster } from "react-hot-toast";
-
 const AddCaseType = () => {
   const { caseTypeId } = useParams();
   const location = useLocation();
@@ -18,7 +15,6 @@ const AddCaseType = () => {
   const [editCaseTypeDetails, setEditCaseTypeDetails] = useState<ICaseTypeForm | undefined>(
     undefined
   );
-
   useEffect(() => {
     if (!isAdd && caseTypeId) {
       getCaseTypeDetailsService({ header, caseTypeId })
@@ -29,13 +25,10 @@ const AddCaseType = () => {
         .catch(async(error) => {
           const err = await error
           toast.error(err.message)
-         
         });
     }
   }, [isAdd, caseTypeId]);
-
   const title = isAdd ? "Add Case Type" : "Update Case Type";
-
   return (
     <div className="bg-blue-200 md:p-7 ">
       <Paper
@@ -58,7 +51,6 @@ const AddCaseType = () => {
             style={{ width: "100%", borderColor: "grey-800" }}
           />
         </Typography>
-
         <AddCaseTypeForm
           initialValues={{
             id: isAdd ? "0" : editCaseTypeDetails?.id || "",
@@ -71,5 +63,4 @@ const AddCaseType = () => {
     </div>
   );
 };
-
 export default AddCaseType;

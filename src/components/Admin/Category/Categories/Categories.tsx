@@ -5,13 +5,10 @@ import {
   DAYJS_DISPLAY_FORMAT,
   header,
 } from "../../../../context/constant";
-import useGetCategories from "../../../../Hooks/Category/useGetCategories";
 import { ICategories, ICategoriesVM, ICategoryForm } from "../ICategory";
-//import dayjs from "dayjs";
 import { Button, IconButton, Paper, Tooltip, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { categoryEditPath, categoryAddPath } from "../../../../sitemap";
-import deleteCategoryService from "../../../../api/Category/DeleteCategory/deleteCategoryService";
 import dayjs from "dayjs";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
@@ -23,7 +20,6 @@ import {
   getPaginationState,
   savePaginationState,
 } from "../../../../utils/PaginationHandler";
-
 const Categories = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [categories, setCategories] = useState<ICategories[]>([]);
@@ -51,7 +47,6 @@ const Categories = () => {
   useEffect(() => {
     GetCategories();
   }, [GetCategories]);
-
   useEffect(() => {
     const p = getPaginationState(CATEGORY_STORAGE_KEY);
     setPagination(p);
@@ -59,12 +54,10 @@ const Categories = () => {
   const callUpdateBranchAPI = async (branch: ICategoriesVM) => {
     var convertCategoryVMToCategoryForm =
       convertICategoryVMToICategoryForm(branch);
-
     const branchData: ICategoryForm = {
       ...convertCategoryVMToCategoryForm,
       isActive: !convertCategoryVMToCategoryForm.isActive,
     };
-
     editCategoryService({ header, category: branchData })
       .then(() => {
         GetCategories();
@@ -77,20 +70,14 @@ const Categories = () => {
         updateLoading();
       });
   };
-
   const handleClickChangeStatus = (branch: ICategoriesVM) => {
     callUpdateBranchAPI(branch);
   };
-  const [forcedRenderCount, setForcedRenderCount] = useState(0);
-  const forceRender = useCallback(
-    () => setForcedRenderCount(forcedRenderCount + 1),
-    [forcedRenderCount]
-  );
-  //should be memoized or stable
+  const forcedRenderCount = 0;
   const columns = useMemo<MRT_ColumnDef<ICategories>[]>(
     () => [
       {
-        accessorKey: "categoryName", //normal accessorKey
+        accessorKey: "categoryName",
         header: "Category Name",
         size: 200,
       },
@@ -115,7 +102,6 @@ const Categories = () => {
     ],
     []
   );
-
   const parsedData = useMemo(
     () =>
       categories.map(
@@ -131,38 +117,15 @@ const Categories = () => {
       ) ?? [],
     [categories, forcedRenderCount]
   );
-
   const updateLoading = useCallback(async () => {
-    // setIsLoading(true) when categories.length is 0, and setIsLoading(false) when categories.length is > 0
     setIsLoading(categories.length >= 0 ? false : true);
   }, [categories]);
-
   useEffect(() => {
     updateLoading();
   }, [updateLoading]);
-
-  const handleClickDeleteCategory = (category: ICategoriesVM) => {
-    categoryDeleteApiCall(category.id!);
-  };
   const handleClickEditCategory = (category: ICategoriesVM) => {
     savePaginationState(pagination, CATEGORY_STORAGE_KEY);
     navigate(categoryEditPath(category.id!));
-  };
-
-  const categoryDeleteApiCall = async (categoryId: string) => {
-    setIsLoading(true);
-    deleteCategoryService({ header, categoryId, categories })
-      .then((refreshedCategories) => {
-        setCategories(refreshedCategories);
-        forceRender();
-      })
-      .catch(async (error: any) => {
-        const err = await error;
-        toast.error(err.message);
-      })
-      .finally(() => {
-        updateLoading();
-      });
   };
   return (
     <>
@@ -190,7 +153,7 @@ const Categories = () => {
                 Add Category
               </Button>
             </div>
-            {/* Add a full-width grey line here */}
+            {}
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
@@ -265,5 +228,4 @@ const Categories = () => {
     </>
   );
 };
-
 export default Categories;

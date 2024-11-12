@@ -6,15 +6,12 @@ import {
   PRODUCT_STORAGE_KEY,
 } from "../../../../context/constant";
 import { IProductForm, IProducts, IProductsVM } from "../IProduct";
-//import dayjs from "dayjs";
 import { Button, IconButton, Paper, Tooltip, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import {
   productAddPath,
   productEditPath,
-  productSubTypesDirectAddPath,
 } from "../../../../sitemap";
-import deleteProductService from "../../../../api/Product/DeleteProduct/deleteProductService";
 import dayjs from "dayjs";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
@@ -34,7 +31,6 @@ const Products = () => {
     pageSize: 10,
   });
   const navigate = useNavigate();
-
   const handleAddProductClick = () => {
     savePaginationState(pagination, PRODUCT_STORAGE_KEY);
     navigate(productAddPath());
@@ -62,12 +58,10 @@ const Products = () => {
   const callUpdateProductAPI = async (product: IProductsVM) => {
     var convertProductVMToProductForm =
       convertIProductVMToIProductForm(product);
-
     const productData: IProductForm = {
       ...convertProductVMToProductForm,
       isActive: !convertProductVMToProductForm.isActive,
     };
-
     editProductService({ header, product: productData })
       .then(() => {
         GetProducts();
@@ -80,25 +74,19 @@ const Products = () => {
         updateLoading();
       });
   };
-
   const handleClickChangeStatus = (product: IProductsVM) => {
     callUpdateProductAPI(product);
   };
-  const [forcedRenderCount, setForcedRenderCount] = useState(0);
-  const forceRender = useCallback(
-    () => setForcedRenderCount(forcedRenderCount + 1),
-    [forcedRenderCount]
-  );
-  //should be memoized or stable
+  const forcedRenderCount = 0
   const columns = useMemo<MRT_ColumnDef<IProducts>[]>(
     () => [
       {
-        accessorKey: "categoryName", //normal accessorKey
+        accessorKey: "categoryName",
         header: "Category Name",
         size: 200,
       },
       {
-        accessorKey: "productName", //normal accessorKey
+        accessorKey: "productName",
         header: "Product Name",
         size: 200,
       },
@@ -115,7 +103,6 @@ const Products = () => {
           );
         },
       },
-
       {
         header: "Created On",
         accessorKey: "createdOn",
@@ -124,7 +111,6 @@ const Products = () => {
     ],
     []
   );
-
   const parsedData = useMemo(
     () =>
       productData.map(
@@ -142,44 +128,15 @@ const Products = () => {
       ) ?? [],
     [productData, forcedRenderCount]
   );
-
   const updateLoading = useCallback(async () => {
-    // setIsLoading(true) when products.length is 0, and setIsLoading(false) when products.length is > 0
     setIsLoading(productData.length >= 0 ? false : true);
   }, [productData]);
-
   useEffect(() => {
     updateLoading();
   }, [updateLoading]);
-
-  const handleClickDeleteProduct = (product: IProductsVM) => {
-    productDeleteApiCall(product.id!);
-  };
   const handleClickEditProduct = (product: IProductsVM) => {
     savePaginationState(pagination, PRODUCT_STORAGE_KEY);
     navigate(productEditPath(product.id!));
-  };
-  const handleClickAddProductSubCategory = (product: IProductsVM) => {
-    savePaginationState(pagination, PRODUCT_STORAGE_KEY);
-    navigate(productSubTypesDirectAddPath(product.id!), {
-      state: product,
-    });
-  };
-
-  const productDeleteApiCall = async (productId: string) => {
-    setIsLoading(true);
-    deleteProductService({ header, productId, products: productData })
-      .then((refreshedProducts) => {
-        setProducts(refreshedProducts);
-        forceRender();
-      })
-      .catch(async (error: any) => {
-        const err = await error;
-        toast.error(err.message);
-      })
-      .finally(() => {
-        updateLoading();
-      });
   };
   return (
     <>
@@ -207,7 +164,7 @@ const Products = () => {
                 Add Product
               </Button>
             </div>
-            {/* Add a full-width grey line here */}
+           
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
@@ -282,5 +239,4 @@ const Products = () => {
     </>
   );
 };
-
 export default Products;

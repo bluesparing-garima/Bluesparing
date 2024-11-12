@@ -7,7 +7,6 @@ import {
   SafeKaroUser,
 } from "../../../../context/constant";
 import { ITeamForm, ITeams, ITeamsVM } from "../ITeam";
-//import dayjs from "dayjs";
 import { Button, IconButton, Paper, Tooltip, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { teamEditPath, teamAddPath } from "../../../../sitemap";
@@ -16,10 +15,8 @@ import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import { convertITeamVMToITeamForm } from "../../../../api/Team/convertITeamVMToITeamForm";
 import editTeamService from "../../../../api/Team/EditTeam/editTeamService";
-
 import GetRmTeamService from "../../../../api/Team/GetRmTeam/GetRmTeamService";
 import toast, { Toaster } from "react-hot-toast";
-//import { CSVLink } from "react-csv";
 const RmTeams = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [teams, setTeams] = useState<ITeams[]>([]);
@@ -34,46 +31,42 @@ const RmTeams = () => {
         .catch(async(error) => {
           const err = await error
           toast.error(err.message)
-
         }),
     []
   );
   useEffect(() => {
     const rmId = userData.id;
     GetTeams(rmId);
-    // eslint-disable-next-line
+     // eslint-disable-next-line
   }, [GetTeams]);
-
   const navigate = useNavigate();
   const handleAddTeamClick = () => {
     navigate(teamAddPath());
   };
-
-  //should be memoized or stable
   const columns = useMemo<MRT_ColumnDef<ITeams>[]>(
     () => [
       {
-        accessorKey: "branchName", //normal accessorKey
+        accessorKey: "branchName",
         header: "Branch",
         size: 200,
       },
       {
-        accessorKey: "role", //normal accessorKey
+        accessorKey: "role",
         header: "Role",
         size: 200,
       },
       {
-        accessorKey: "partnerId", //normal accessorKey
+        accessorKey: "partnerId",
         header: "Partner Code",
         size: 200,
       },
       {
-        accessorKey: "fullName", //normal accessorKey
+        accessorKey: "fullName",
         header: "Full Name",
         size: 200,
       },
       {
-        accessorKey: "phoneNumber", //normal accessorKey
+        accessorKey: "phoneNumber",
         header: "Mobile Number",
         size: 200,
       },
@@ -98,7 +91,6 @@ const RmTeams = () => {
     ],
     []
   );
-
   const parsedData = useMemo(
     () =>
       teams.map(
@@ -141,16 +133,12 @@ const RmTeams = () => {
       ) ?? [],
     [teams]
   );
-
   const updateLoading = useCallback(async () => {
-    // setIsLoading(true) when teams.length is 0, and setIsLoading(false) when teams.length is > 0
     setIsLoading(false);
   }, []);
-
   useEffect(() => {
     updateLoading();
   }, [updateLoading]);
-
   const callUpdateTeamAPI = async (team: ITeamsVM) => {
     var convertTeamVMToTeamForm: ITeamForm = convertITeamVMToITeamForm(team);
     const rmId = userData.id;
@@ -158,7 +146,6 @@ const RmTeams = () => {
       ...convertTeamVMToTeamForm,
       isActive: !convertTeamVMToTeamForm.isActive,
     };
-
     editTeamService({ header, team: teamData })
       .then((updatedTeam) => {
         GetTeams(rmId);
@@ -168,20 +155,15 @@ const RmTeams = () => {
         updateLoading();
       });
   };
-
   const handleClickDeActiveTeam = (team: ITeamsVM) => {
     callUpdateTeamAPI(team);
   };
-
   const handleClickEditTeam = (team: ITeamsVM) => {
     navigate(teamEditPath(team.id!));
   };
-
   const downloadFile = (url: string, fileName: string) => {
     const urlFileName = url.substring(url.lastIndexOf("/") + 1);
     const fileExtension = urlFileName.split(".").pop()?.toLowerCase();
-
-    // Validate file extension
     if (
       fileExtension === "pdf" ||
       fileExtension === "png" ||
@@ -202,12 +184,9 @@ const RmTeams = () => {
         .catch((error) => console.error("Error downloading file:", error));
     } else {
       console.error("Unsupported file type:", fileExtension);
-      //alert("Unsupported file type. Only PDF and PNG files are supported.");
     }
   };
-  // Function to handle click events
   const handleClickDownloadDocument = (team: ITeamsVM) => {
-    // Example usage
     if (team.image) {
       downloadFile(`${imagePath}${team?.image!}`, "image");
     }
@@ -216,7 +195,6 @@ const RmTeams = () => {
     }
     if (team.adharCardFront) {
       downloadFile(`${imagePath}${team?.adharCardFront!}`, "adharCardFront");
-      // openFileInNewTab(`${imagePath}${team?.adharCardFront!}`, "adharCardFront");
     }
     if (team.panCard) {
       downloadFile(`${imagePath}${team?.panCard!}`, "panCard");
@@ -233,7 +211,6 @@ const RmTeams = () => {
     if (team.other) {
       downloadFile(`${imagePath}${team?.other!}`, "other");
     }
-    // downloadFile('https://api.safekaro.com/uploads/Manish_668919929794ffa14999dc82.png', 'Manish_668919929794ffa14999dc82.png');
   };
   return (
     <>
@@ -261,7 +238,7 @@ const RmTeams = () => {
                 Add Team
               </Button>
             </div>
-            {/* Add a full-width grey line here */}
+           
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
@@ -363,7 +340,6 @@ const RmTeams = () => {
                     </svg>
                   </IconButton>
                 </Tooltip>
-             
               </div>
             )}
           />
@@ -373,5 +349,4 @@ const RmTeams = () => {
     </>
   );
 };
-
 export default RmTeams;

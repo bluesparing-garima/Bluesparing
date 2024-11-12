@@ -1,22 +1,17 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Button,
   CircularProgress,
   FormControl,
   Grid,
-  IconButton,
   InputLabel,
   MenuItem,
   Paper,
   Select,
-  TextField,
-  Tooltip,
   Typography,
 } from "@mui/material";
 import MaterialReactTable from "material-react-table";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { IViewPolicy } from "../../Policy/IPolicy";
-import { motorPolicyEditCommissionPath } from "../../../sitemap";
 import { useNavigate } from "react-router-dom";
 import { header } from "../../../context/constant";
 import { FORM_ERROR } from "final-form";
@@ -25,7 +20,6 @@ import toast, { Toaster } from "react-hot-toast";
 import addCreditDebitService from "../../../api/CreditDebit/AddCreditDebit/addCreditDebitService";
 import { AddEditCreditDebitProps } from "../../../api/CreditDebit/getCreditDebitTypes";
 import BrokerCreditColumns from "./ManageBrokerPayment/BrokerCreditColumns";
-
 interface PoliciesDetailsProps {
   policies: IViewPolicy[];
   brokerBalance?: number;
@@ -37,7 +31,6 @@ interface PoliciesDetailsProps {
   startDate?: string;
   brokerAmount?: number;
 }
-
 interface PoliciesProps {
   policyNumber?: string;
   payInCommission?: number;
@@ -46,7 +39,6 @@ interface PoliciesProps {
   payInBalance?: number;
   errorMessage?: string;
 }
-
 function BrokerPaymentPoliciesDetails({
   policies,
   brokerBalance = 0,
@@ -58,7 +50,6 @@ function BrokerPaymentPoliciesDetails({
   startDate = "",
   brokerAmount = 0,
 }: PoliciesDetailsProps) {
-  const navigate = useNavigate();
   const [oldPolicies, setOldPolicies] = useState<IViewPolicy[]>([]);
   const [updatePolicy, setUpdatePolicy] = useState<PoliciesProps[]>([]);
   const [paymentTextboxVisibility, setPaymentTextboxVisibility] =
@@ -71,7 +62,6 @@ function BrokerPaymentPoliciesDetails({
       setOldPolicies(policies);
     }
   }, [policies, brokerAmount]);
-
   const createCreditDebitForm = (
     creditAmount: number,
     finalBalance: number
@@ -105,7 +95,6 @@ function BrokerPaymentPoliciesDetails({
       creditDebitId: "",
     };
   };
-
   function addKeyValueToObjects<T extends Record<string, any>>(
     policyData: T[],
     key: string,
@@ -125,9 +114,7 @@ function BrokerPaymentPoliciesDetails({
   const findPolicyByNumber = (policyNumber: string) => {
     return oldPolicies.find((p) => p.policyNumber === policyNumber);
   };
-
   const handleStatusChange = (policy: IViewPolicy, newStatus: string) => {
-    // Handle status change to "UnPaid"
     let newUpdatedPolicy: PoliciesProps = {};
     if (newStatus === "UnPaid") {
       const newPolicy = findPolicyByNumber(policy.policyNumber);
@@ -140,13 +127,11 @@ function BrokerPaymentPoliciesDetails({
           payInAmount: 0,
           payInBalance: 0,
         };
-
         newPolicy.payInPaymentStatus = newStatus;
         newPolicy.errorMessage = "";
         newPolicy.payInAmount = 0;
         newPolicy.payInBalance = 0;
       }
-
       setUpdatePolicy((prevPolicies) => {
         return [...prevPolicies, newUpdatedPolicy];
       });
@@ -155,7 +140,6 @@ function BrokerPaymentPoliciesDetails({
       setPaymentTextboxVisibility(false);
     }
   };
-
   const splitDataIntoChunks = (data: any) => {
     const chunks = [];
     if (data.length > 0) {
@@ -163,22 +147,18 @@ function BrokerPaymentPoliciesDetails({
         chunks.push(data.slice(i, i + 60));
       }
     }
-
     return chunks;
   };
-
   const handleSelectAllUnPaidChange = async (event: any) => {
     const newValue = event.target.value;
     setSelectAllUnPaid(newValue);
     let policyStatus = "";
     let payInAmount = 0;
     let balance = 0;
-
     const updatedPolicies = oldPolicies.map((policy) => {
       policyStatus = "UnPaid";
       payInAmount = 0;
       balance = 0;
-
       return {
         ...policy,
         payInPaymentStatus: policyStatus,
@@ -190,7 +170,6 @@ function BrokerPaymentPoliciesDetails({
     setUpdatePolicy(updatedPolicies);
     setPaymentTextboxVisibility(true);
   };
-
   const handleClickSubmit = async () => {
     let policyData: any[] = [];
     setIsLoading(true)
@@ -206,7 +185,6 @@ function BrokerPaymentPoliciesDetails({
         let Balance = Math.abs(brokerBalance) + CreditAmount;
         finalBalance = Balance;
       }
-
       const postData = createCreditDebitForm(CreditAmount, finalBalance);
       const res = await toast.promise(addCreditDebitService(postData), {
         loading: "Adding to partner account...",
@@ -220,13 +198,11 @@ function BrokerPaymentPoliciesDetails({
           "transactionCode",
           res.data.transactionCode
         );
-
         policyData = addKeyValueToObjects(
           policyData,
           "distributedDate",
           distributedDate
         )
-
         const chunks = splitDataIntoChunks(policyData)
         const promises = chunks?.map((ele)=>{
           let policyData = ele
@@ -236,20 +212,15 @@ function BrokerPaymentPoliciesDetails({
           })
         })
         try {
-       
           const accountResponse = await Promise.all(promises);
           const s = accountResponse.length
           if(accountResponse[s-1].status ==="success"){
             setIsVisibleTable(false);
           }
-        
-         
-       
         } catch (error: any) {
           const err = await error
           toast.error(err.message)
         }
-       
       }
     } catch (error:any) {
       const err = await error
@@ -259,7 +230,6 @@ function BrokerPaymentPoliciesDetails({
       setIsLoading(false)
     }
   };
-
   if (!isVisibleTable) {
     return (
       <Paper elevation={3} style={{ padding: 30 }}>
@@ -279,7 +249,6 @@ function BrokerPaymentPoliciesDetails({
   if (isLoading) {
     return <CircularProgress />
   }
-
   return (
     <div className="bg-blue-200 p-7 mt-4">
       <Paper elevation={3} style={{ padding: 30 }}>
@@ -323,15 +292,13 @@ function BrokerPaymentPoliciesDetails({
             )}
           </Grid>
         </Grid>
-
         <MaterialReactTable
-          //state={{ isLoading }}
           columns={BrokerCreditColumns}
           data={oldPolicies}
           enableRowActions
           renderRowActions={({ row }) => (
             <div>
-              {/* Display error message if it exists */}
+             
               {row.original.errorMessage && (
                 <Grid container mb={2}>
                   <Grid item lg={12}>
@@ -343,7 +310,7 @@ function BrokerPaymentPoliciesDetails({
                   </Grid>
                 </Grid>
               )}
-              {/* Status dropdown */}
+             
               {row.original.payInCommission !== 0 && (
                 <Grid container mt={2}>
                   <Grid item lg={12}>
@@ -375,5 +342,4 @@ function BrokerPaymentPoliciesDetails({
     </div>
   );
 }
-
 export default BrokerPaymentPoliciesDetails;

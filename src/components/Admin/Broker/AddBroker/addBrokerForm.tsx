@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import React from "react";
 import { TextField, Button, Grid } from "@mui/material";
 import addBrokerService from "../../../../api/Broker/AddBroker/addBrokerService";
@@ -11,11 +10,9 @@ import { ADD, header } from "../../../../context/constant";
 import { useLocation, useNavigate } from "react-router-dom";
 import { brokerPath } from "../../../../sitemap";
 import toast, { Toaster } from "react-hot-toast";
-
 export interface addPolicyTypeFormProps {
   initialValues: IBrokerForm;
 }
-
 const AddPolicyTypeForm = (props: addPolicyTypeFormProps) => {
   const { initialValues } = props;
   const navigate = useNavigate();
@@ -23,8 +20,6 @@ const AddPolicyTypeForm = (props: addPolicyTypeFormProps) => {
   const pathName = location.pathname.split("/");
   const isAddEdit = pathName[pathName.length - 1] as string;
   const isAdd = isAddEdit === ADD;
-
-  // To be passed to React Final Form
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
       schema = schema();
@@ -35,11 +30,9 @@ const AddPolicyTypeForm = (props: addPolicyTypeFormProps) => {
       const errors = err.inner.reduce((formError: any, innerError: any) => {
         return setIn(formError, innerError.path, innerError.message);
       }, {});
-
       return errors;
     }
   };
-
   const validationSchema = yup.object().shape({
     brokerName: yup
       .string()
@@ -47,9 +40,7 @@ const AddPolicyTypeForm = (props: addPolicyTypeFormProps) => {
       .min(1, "Broker must be at least 1 character")
       .max(100, "Broker cannot exceed 100 characters"),
   });
-
   const validate = validateFormValues(validationSchema);
-
   const onSubmit = async (broker: IBrokerForm) => {
     if (isAdd) {
       callAddBrokerAPI(broker);
@@ -57,13 +48,11 @@ const AddPolicyTypeForm = (props: addPolicyTypeFormProps) => {
       callEditBrokerAPI(broker);
     }
   };
-
   const navigateToBrokers = (message: string) => {
     navigate(brokerPath(), {
       state: message,
     });
   };
-
   const callAddBrokerAPI = async (broker: IBrokerForm) => {
     try {
       const newBroker = await addBrokerService({ header, broker });
@@ -73,7 +62,6 @@ const AddPolicyTypeForm = (props: addPolicyTypeFormProps) => {
       toast.error(errObj.message);
     }
   };
-
   const callEditBrokerAPI = async (broker: IBrokerForm) => {
     try {
       const newBroker = await editBrokerService({ header, broker });
@@ -83,7 +71,6 @@ const AddPolicyTypeForm = (props: addPolicyTypeFormProps) => {
       toast.error(errObj.message);
     }
   };
-
   return (
     <>
       <Form
@@ -127,5 +114,4 @@ const AddPolicyTypeForm = (props: addPolicyTypeFormProps) => {
     </>
   );
 };
-
 export default AddPolicyTypeForm;

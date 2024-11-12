@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { TextField, Button, Grid } from "@mui/material";
 import addMakeService from "../../../../api/Make/AddMake/addMakeService";
 import editMakeService from "../../../../api/Make/EditMake/editMakeService";
@@ -12,11 +11,9 @@ import { makePath } from "../../../../sitemap";
 import { useState } from "react";
 import validateMakeService from "../../../../api/Make/ValidateMake/validateMakeService";
 import toast, { Toaster } from "react-hot-toast";
-
 export interface addMakeFormProps {
   initialValues: IMakeForm;
 }
-
 const AddMakeForm = (props: addMakeFormProps) => {
   const { initialValues } = props;
   const navigate = useNavigate();
@@ -25,7 +22,6 @@ const AddMakeForm = (props: addMakeFormProps) => {
   const isAddEdit = pathName[pathName.length - 1] as string;
   const isAdd = isAddEdit === ADD;
   const [errorMessage, setErrorMessage] = useState("");
-  // To be passed to React Final Form
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
       schema = schema();
@@ -36,11 +32,9 @@ const AddMakeForm = (props: addMakeFormProps) => {
       const errors = err.inner.reduce((formError: any, innerError: any) => {
         return setIn(formError, innerError.path, innerError.message);
       }, {});
-
       return errors;
     }
   };
-
   const validationSchema = yup.object().shape({
     makeName: yup
       .string()
@@ -48,9 +42,7 @@ const AddMakeForm = (props: addMakeFormProps) => {
       .min(1, "Make must be at least 1 character")
       .max(100, "Make cannot exceed 100 characters"),
   });
-
   const validate = validateFormValues(validationSchema);
-
   const onSubmit = async (make: IMakeForm) => {
     if (!errorMessage) {
       if (isAdd) {
@@ -60,13 +52,11 @@ const AddMakeForm = (props: addMakeFormProps) => {
       }
     }
   };
-
   const navigateToMakes = (message: string) => {
     navigate(makePath(), {
       state: message,
     });
   };
-
   const callAddMakeAPI = async (make: IMakeForm) => {
     try {
       const newMake = await addMakeService({ header, make });
@@ -76,7 +66,6 @@ const AddMakeForm = (props: addMakeFormProps) => {
       toast.error(err.message);
     }
   };
-
   const callEditMakeAPI = async (make: IMakeForm) => {
     try {
       const newMake = await editMakeService({ header, make });
@@ -86,7 +75,6 @@ const AddMakeForm = (props: addMakeFormProps) => {
       toast.error(err.message);
     }
   };
-
   const ValidateMake = async (e: any) => {
     const makeName = e.target.value;
     try {
@@ -152,5 +140,4 @@ const AddMakeForm = (props: addMakeFormProps) => {
     </>
   );
 };
-
 export default AddMakeForm;

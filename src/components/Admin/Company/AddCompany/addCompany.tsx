@@ -7,7 +7,6 @@ import AddCompanyForm from "./addCompanyForm";
 import getCompanyDetailsService from "../../../../api/Company/GetCompanyDetails/getCompanyDetailsService";
 import { convertICompanyVMToICompanyForm } from "../../../../api/Company/convertICompanyVMToICompanyForm";
 import toast, { Toaster } from "react-hot-toast";
-
 const AddCompany = () => {
   const { companyId } = useParams();
   const location = useLocation();
@@ -16,7 +15,6 @@ const AddCompany = () => {
   const [editCompanyDetails, setEditCompanyDetails] = useState<ICompanyForm | undefined>(
     undefined
   );
-
   useEffect(() => {
     if (!isAdd && companyId) {
       getCompanyDetailsService({ header, companyId })
@@ -27,13 +25,10 @@ const AddCompany = () => {
         .catch(async(error) => {
           const err = await error
           toast.error(err.message)
-         
         });
     }
   }, [isAdd, companyId]);
-
   const title = isAdd ? "Add Company" : "Update Company";
-
   return (
     <div className="bg-blue-200 md:p-7">
       <Paper
@@ -56,7 +51,6 @@ const AddCompany = () => {
             style={{ width: "100%", borderColor: "grey-800" }}
           />
         </Typography>
-
         <AddCompanyForm
           initialValues={{
             id: isAdd ? "0" : editCompanyDetails?.id || "",
@@ -69,5 +63,4 @@ const AddCompany = () => {
     </div>
   );
 };
-
 export default AddCompany;

@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import React from "react";
 import { TextField, Button, Grid } from "@mui/material";
 import addBranchService from "../../../../api/Branch/AddBranch/addBranchService";
@@ -11,11 +10,9 @@ import { ADD, header } from "../../../../context/constant";
 import { useLocation, useNavigate } from "react-router-dom";
 import { branchPath } from "../../../../sitemap";
 import toast, { Toaster } from "react-hot-toast";
-
 export interface addBranchFormProps {
   initialValues: IBranchForm;
 }
-
 const AddBranchForm = (props: addBranchFormProps) => {
   const { initialValues } = props;
   const navigate = useNavigate();
@@ -23,8 +20,6 @@ const AddBranchForm = (props: addBranchFormProps) => {
   const pathName = location.pathname.split("/");
   const isAddEdit = pathName[pathName.length - 1] as string;
   const isAdd = isAddEdit === ADD;
-
-  // To be passed to React Final Form
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
       schema = schema();
@@ -35,11 +30,9 @@ const AddBranchForm = (props: addBranchFormProps) => {
       const errors = err.inner.reduce((formError: any, innerError: any) => {
         return setIn(formError, innerError.path, innerError.message);
       }, {});
-
       return errors;
     }
   };
-
   const validationSchema = yup.object().shape({
     branchName: yup
       .string()
@@ -47,9 +40,7 @@ const AddBranchForm = (props: addBranchFormProps) => {
       .min(1, "Branch must be at least 1 character")
       .max(100, "Branch cannot exceed 100 characters"),
   });
-
   const validate = validateFormValues(validationSchema);
-
   const onSubmit = async (branch: IBranchForm) => {
     if (isAdd) {
       callAddBranchAPI(branch);
@@ -57,13 +48,11 @@ const AddBranchForm = (props: addBranchFormProps) => {
       callEditBranchAPI(branch);
     }
   };
-
   const navigateToBranches = (message: string) => {
     navigate(branchPath(), {
       state: message,
     });
   };
-
   const callAddBranchAPI = async (branch: IBranchForm) => {
     try {
       const newBranch = await addBranchService({ header, branch });
@@ -73,7 +62,6 @@ const AddBranchForm = (props: addBranchFormProps) => {
       toast.error(errObj.message);
     }
   };
-
   const callEditBranchAPI = async (branch: IBranchForm) => {
     try {
       const newBranch = await editBranchService({ header, branch });
@@ -83,7 +71,6 @@ const AddBranchForm = (props: addBranchFormProps) => {
       toast.error(errObj.message);
     }
   };
-
   return (
     <>
       <Form
@@ -127,5 +114,4 @@ const AddBranchForm = (props: addBranchFormProps) => {
     </>
   );
 };
-
 export default AddBranchForm;
