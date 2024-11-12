@@ -1,11 +1,7 @@
-// import dayjs from "dayjs";
-// import { DAYJS_DISPLAY_FORMAT } from "../../context/constant";
 import {
   ICreditDebitForm,
   ICreditDebitsVM,
 } from "../../components/Account/CreditDebit/ICreditDebits";
-//import { convertLocaleStringToNumber } from "../../utils/convertLocaleStringToNumber";
-
 export const convertICreditDebitVMToICreditDebitForm = (
   creditDebit: ICreditDebitsVM
 ): ICreditDebitForm => {
@@ -29,9 +25,6 @@ export const convertICreditDebitVMToICreditDebitForm = (
     updatedBy: creditDebit.updatedBy!,
     isActive: !!creditDebit.isActive,
     createdBy: creditDebit.createdBy!,
-    // amount: creditDebit.amount
-    //   ? convertLocaleStringToNumber(creditDebit.amount)
-    //   : 0,
   };
   return creditDebitForm;
 };

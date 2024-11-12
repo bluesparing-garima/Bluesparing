@@ -1,5 +1,5 @@
 import getAdminDashboardAPI from "./getAdminDashboardAPI";
-import { getAdminDashboardProps } from "../getDashbaordTypes";
+import { getAdminDashboardProps } from "../getDashboardTypes";
 const getAdminDashboardService = async ({
   header,
   startDate,

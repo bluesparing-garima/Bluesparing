@@ -21,7 +21,7 @@ import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import React from "react";
 import dayjs from "dayjs";
 import { useLocation, useParams } from "react-router-dom";
-import GetMonthlyPartnerCompanyFinalPreminumService from "../../../api/Dashboard/GetMonthlyPartnerCompanyFinalPreminum/GetMonthlyPartnerCompanyFinalPreminumService";
+import GetMonthlyPartnerCompanyFinalPremiumService from "../../../api/Dashboard/GetMonthlyPartnerCompanyFinalPreminum/GetMonthlyPartnerCompanyFinalPreminumService";
 import { IFinalNetPremiumCompany } from "../../TreeView/ITreeView";
 import { generateExcelCompanyFinalNetPremium } from "../../../utils/DashboardExcel";
 
@@ -75,7 +75,7 @@ const FilterPartnerMonthlyFinalPremium = () => {
     endDate: string,
     partnerId: string
   ) => {
-    GetMonthlyPartnerCompanyFinalPreminumService({
+    GetMonthlyPartnerCompanyFinalPremiumService({
       header,
       partnerId: partnerId!,
       startDate: startDate,

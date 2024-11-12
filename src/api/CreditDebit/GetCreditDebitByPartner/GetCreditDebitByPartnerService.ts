@@ -1,7 +1,5 @@
 import GetCreditDebitByPartnerAPI from "./GetCreditDebitByPartnerAPI";
 import { GetCreditDebitByPartnerProps } from "../getCreditDebitTypes";
-//import convertICreditDebitToICreditDebitVM from "../convertICreditDebitToICreditDebitVM";
-
 const GetCreditDebitByPartnerService = async ({
   header,
   partnerId
@@ -15,7 +13,5 @@ const GetCreditDebitByPartnerService = async ({
   } catch (error) {
     throw error
   }
-
 };
-
 export default GetCreditDebitByPartnerService;

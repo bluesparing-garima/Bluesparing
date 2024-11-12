@@ -1,5 +1,5 @@
 import GetMonthlyPartnerPaymentWithCompanyPaymentAPI from "./GetMonthlyPartnerPaymentWithCompanyPaymentAPI";
-import { getMonthlyPartnerPaymentWithCompanyProps } from "../getDashbaordTypes";
+import { getMonthlyPartnerPaymentWithCompanyProps } from "../getDashboardTypes";
 
 const GetMonthlyPartnerPaymentWithCompanyService = async ({
   header,

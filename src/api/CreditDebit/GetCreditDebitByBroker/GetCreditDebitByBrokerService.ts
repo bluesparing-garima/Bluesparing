@@ -1,7 +1,5 @@
 import GetCreditDebitByBrokerAPI from "./GetCreditDebitByBrokerAPI";
 import { GetCreditDebitByBrokerProps } from "../getCreditDebitTypes";
-import convertICreditDebitToICreditDebitVM from "../convertICreditDebitToICreditDebitVM";
-
 const GetCreditDebitByBrokerService = async ({
   header,
   brokerId,
@@ -19,7 +17,5 @@ const GetCreditDebitByBrokerService = async ({
   } catch (error) {
     throw error
   }
- 
 };
-
 export default GetCreditDebitByBrokerService;

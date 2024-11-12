@@ -1,5 +1,5 @@
 import GetTotalBrokerPaymentAPI from "./GetTotalBrokerPaymentAPI";
-import { getTotalBrokerPaymentProps } from "../getDashbaordTypes";
+import { getTotalBrokerPaymentProps } from "../getDashboardTypes";
 
 const GetTotalBrokerPaymentService = async ({
   header,

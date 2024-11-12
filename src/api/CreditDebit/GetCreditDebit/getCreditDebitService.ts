@@ -1,6 +1,5 @@
 import getCreditDebitAPI from "./getCreditDebitAPI";
 import { GetCreditDebitProps } from "../getCreditDebitTypes";
-
 const getCreditDebitService = async ({ header }: GetCreditDebitProps): Promise<any> => {
   try {
     const res = await getCreditDebitAPI({
@@ -10,7 +9,5 @@ const getCreditDebitService = async ({ header }: GetCreditDebitProps): Promise<a
   } catch (error) {
     throw error
   }
-
 };
-
 export default getCreditDebitService;

@@ -1,4 +1,4 @@
-import { getPolicyProps } from "../getDashbaordTypes";
+import { getPolicyProps } from "../getDashboardTypes";
 import GetRevenueDataAPI from "./GetRevenueDataAPI";
 
 const GetRevenueDataService = async ({ header, filter }: getPolicyProps): Promise<any> => {

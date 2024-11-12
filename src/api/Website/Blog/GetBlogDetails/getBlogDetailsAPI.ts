@@ -1,6 +1,6 @@
 import { IBlog } from "../../../../components/Website/Blog/Blogs/IBlogs";
 import fetchInterceptor, { FetchOptions } from "../../../../utils/fetchInterceptor ";
-import { getBlogtDetailsEndpoint as endpoint } from "../apiEndpoints";
+import { getBlogDetailsEndpoint as endpoint } from "../apiEndpoints";
 import { GetBlogDetailsProps } from "../getBlogTypes";
 
 const getBlogDetailsAPI = async ({ header, blogId }: GetBlogDetailsProps) => {

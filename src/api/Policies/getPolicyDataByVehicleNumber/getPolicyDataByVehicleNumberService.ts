@@ -1,11 +1,11 @@
 
-import { GetVechicleNumberProps } from "../getPoliciesTypes";
+import { GetVechicleNumberProps as GetVehicleNumberProps } from "../getPoliciesTypes";
 import getPolicyDataByVehicleNumberAPI from "./getPolicyDataByVehicleNumberAPI";
 
 const getPolicyDataByVehicleNumberService = async ({
     header,
     vehicleNumber,
-}: GetVechicleNumberProps): Promise<any> => {
+}: GetVehicleNumberProps): Promise<any> => {
     try {
         const res = await getPolicyDataByVehicleNumberAPI({
             header: header,

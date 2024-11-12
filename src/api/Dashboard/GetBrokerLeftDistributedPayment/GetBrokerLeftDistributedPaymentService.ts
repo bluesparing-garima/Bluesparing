@@ -1,5 +1,5 @@
 import GetBrokerLeftDistributedPaymentAPI from "./GetBrokerLeftDistributedPaymentAPI";
-import { getTotalBrokerPaymentProps } from "../getDashbaordTypes";
+import { getTotalBrokerPaymentProps } from "../getDashboardTypes";
 
 const GetBrokerLeftDistributedPaymentService = async ({
   header, category

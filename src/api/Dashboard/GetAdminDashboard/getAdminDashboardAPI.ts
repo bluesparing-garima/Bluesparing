@@ -1,6 +1,6 @@
 import fetchInterceptor, { FetchOptions } from "../../../utils/fetchInterceptor ";
 import { getDashboardEndpoint as endpoint } from "../apiEndPoints";
-import { getAdminDashboardProps } from "../getDashbaordTypes";
+import { getAdminDashboardProps } from "../getDashboardTypes";
 
 const getAdminDashboardAPI = async ({
   header,

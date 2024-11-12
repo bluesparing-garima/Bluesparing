@@ -1,11 +1,7 @@
-// import dayjs from "dayjs";
-// import { DAYJS_DISPLAY_FORMAT } from "../../context/constant";
-
 import {
   INewsCategoriesVM,
   INewsCategoryForm,
 } from "../../../components/Website/NewsCategory/INewsCategory";
-
 export const convertINewsCategoryVMToINewsCategoryForm = (
   category: INewsCategoriesVM
 ): INewsCategoryForm => {

@@ -1,5 +1,5 @@
 import GetBrokerBalancePaymentAPI from "./GetBrokerBalancePaymentAPI";
-import { getTotalBrokerPaymentProps } from "../getDashbaordTypes";
+import { getTotalBrokerPaymentProps } from "../getDashboardTypes";
 
 const GetBrokerBalancePaymentService = async ({
   header,

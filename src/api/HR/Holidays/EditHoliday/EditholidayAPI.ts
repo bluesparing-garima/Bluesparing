@@ -2,7 +2,7 @@ import fetchInterceptor, { FetchOptions } from "../../../../utils/fetchIntercept
 import { holidayEditEndpoint as endpoint } from "../../ApiEndpoints";
 import { IAddHolidayPayload } from "../../getHrTypes";
 
-const EditholidayAPI = async ({ header, holidayData ,id}: IAddHolidayPayload) => {
+const EditHolidayAPI = async ({ header, holidayData ,id}: IAddHolidayPayload) => {
     const url = endpoint(id!)
     const options: FetchOptions = {
         method: "PUT",
@@ -16,4 +16,4 @@ const EditholidayAPI = async ({ header, holidayData ,id}: IAddHolidayPayload) =>
 
 };
 
-export default EditholidayAPI;
+export default EditHolidayAPI;

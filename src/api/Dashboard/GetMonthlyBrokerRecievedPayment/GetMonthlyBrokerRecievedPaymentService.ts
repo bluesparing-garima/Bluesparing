@@ -1,14 +1,14 @@
-import GetMonthlyBrokerRecievedPaymentAPI from "./GetMonthlyBrokerRecievedPaymentAPI";
-import { getMonthlyBrokerPaymentProps } from "../getDashbaordTypes";
+import GetMonthlyBrokerReceivedPaymentAPI from "./GetMonthlyBrokerRecievedPaymentAPI";
+import { getMonthlyBrokerPaymentProps } from "../getDashboardTypes";
 
-const GetMonthlyBrokerRecievedPaymentService = async ({
+const GetMonthlyBrokerReceivedPaymentService = async ({
   header,
   startDate,
   endDate,
   category,
 }: getMonthlyBrokerPaymentProps): Promise<any> => {
   try {
-    const res = await GetMonthlyBrokerRecievedPaymentAPI({
+    const res = await GetMonthlyBrokerReceivedPaymentAPI({
       header: header,
       startDate: startDate,
       endDate: endDate,
@@ -21,4 +21,4 @@ const GetMonthlyBrokerRecievedPaymentService = async ({
 
 };
 
-export default GetMonthlyBrokerRecievedPaymentService;
+export default GetMonthlyBrokerReceivedPaymentService;

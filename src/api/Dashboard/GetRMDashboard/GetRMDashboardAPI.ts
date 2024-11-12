@@ -1,6 +1,6 @@
 import fetchInterceptor, { FetchOptions } from "../../../utils/fetchInterceptor ";
 import { getRmDashboardEndpoints as endpoint } from "../apiEndPoints";
-import { getAccountDashboardProps } from "../getDashbaordTypes";
+import { getAccountDashboardProps } from "../getDashboardTypes";
 
 const GetRMDashboardAPI = async ({
   header,

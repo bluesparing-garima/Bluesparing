@@ -1,7 +1,6 @@
 import fetchInterceptor, { FetchOptions } from "../../../utils/fetchInterceptor ";
 import { getBarChartEndpoint } from "../apiEndPoints";
-import { GetBarChartDashboardProps } from '../getDashbaordTypes';
-
+import { GetBarChartDashboardProps } from '../getDashboardTypes';
 export const getBarChartDashboard = async ({ header, timeframe }: GetBarChartDashboardProps) => {
   const url = getBarChartEndpoint(timeframe)
   const options: FetchOptions = {
@@ -10,7 +9,5 @@ export const getBarChartDashboard = async ({ header, timeframe }: GetBarChartDas
       ...header,
     },
   }
-
   return fetchInterceptor(url, options)
-
 };

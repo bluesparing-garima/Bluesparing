@@ -1,4 +1,4 @@
-import { getMonthlyPartnerPaymentProps } from "../getDashbaordTypes";
+import { getMonthlyPartnerPaymentProps } from "../getDashboardTypes";
 import GetMonthlyPayoutBalanceAPI from "./GetMonthlyPayoutBalanceAPI";
 
 const GetMonthlyPayoutBalanceService = async ({

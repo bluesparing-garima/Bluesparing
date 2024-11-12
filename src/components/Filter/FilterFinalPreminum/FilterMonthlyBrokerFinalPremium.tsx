@@ -20,7 +20,7 @@ import useGetBrokers from "../../../Hooks/Broker/useGetBrokers";
 import React from "react";
 import dayjs from "dayjs";
 import { useLocation, useParams } from "react-router-dom";
-import GetMonthlyBrokerCompanyFinalPreminumService from "../../../api/Dashboard/GetMonthlyBrokerCompanyFinalPreminum/GetMonthlyBrokerCompanyFinalPreminumService";
+import GetMonthlyBrokerCompanyFinalPremiumService from "../../../api/Dashboard/GetMonthlyBrokerCompanyFinalPreminum/GetMonthlyBrokerCompanyFinalPreminumService";
 import { IFinalNetPremiumCompany } from "../../TreeView/ITreeView";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import { generateExcelCompanyFinalNetPremium } from "../../../utils/DashboardExcel";
@@ -74,7 +74,7 @@ const FilterMonthlyBrokerFinalPremium = () => {
     endDate: string,
     brokerId: string
   ) => {
-    GetMonthlyBrokerCompanyFinalPreminumService({
+    GetMonthlyBrokerCompanyFinalPremiumService({
       header,
       brokerId: brokerId!,
       startDate: startDate,

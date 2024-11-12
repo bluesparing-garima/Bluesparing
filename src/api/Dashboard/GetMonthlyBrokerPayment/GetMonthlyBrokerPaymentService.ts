@@ -1,5 +1,5 @@
 import GetMonthlyBrokerPaymentAPI from "./GetMonthlyBrokerPaymentAPI";
-import { getMonthlyBrokerPaymentProps } from "../getDashbaordTypes";
+import { getMonthlyBrokerPaymentProps } from "../getDashboardTypes";
 
 const GetMonthlyBrokerPaymentService = async ({
   header,

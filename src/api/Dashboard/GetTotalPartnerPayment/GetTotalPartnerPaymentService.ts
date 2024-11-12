@@ -1,5 +1,5 @@
 import GetTotalPartnerPaymentAPI from "./GetTotalPartnerPaymentAPI";
-import { getTotalPartnerPaymentProps } from "../getDashbaordTypes";
+import { getTotalPartnerPaymentProps } from "../getDashboardTypes";
 
 const GetTotalPartnerPaymentService = async ({
   header,

@@ -1,6 +1,6 @@
 import { INewsCategories } from "../../../../components/Website/NewsCategory/INewsCategory";
 import fetchInterceptor, { FetchOptions } from "../../../../utils/fetchInterceptor ";
-import { getNewsCategorytDetailsEndpoint as endpoint } from "../apiEndpoints";
+import { getNewsCategoryDetailsEndpoint as endpoint } from "../apiEndpoints";
 import { GetNewsCategoryDetailsProps } from "../getNewsCategoryTypes";
 
 const getNewsCategoryDetailsAPI = async ({ header, categoryId }: GetNewsCategoryDetailsProps) => {

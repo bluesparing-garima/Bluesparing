@@ -1,12 +1,10 @@
 import editCreditDebitAPI from "./editCreditDebitAPI";
 import { AddEditCreditDebitProps } from "../getCreditDebitTypes";
-
 const editCreditDebitService = async ({
   header,
   creditDebit,
   creditDebitId,
 }: AddEditCreditDebitProps): Promise<any> => {
-
   try {
     const res = await editCreditDebitAPI({
       header,
@@ -17,7 +15,5 @@ const editCreditDebitService = async ({
   } catch (error) {
     throw error
   }
-
 };
-
 export default editCreditDebitService;

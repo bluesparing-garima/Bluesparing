@@ -1,6 +1,6 @@
 import fetchInterceptor, { FetchOptions } from "../../../utils/fetchInterceptor ";
 import { GetTotalFinalNetPremiumPartnerEndpoint as endpoint } from "../apiEndPoints";
-import { getTotalPartnerPaymentProps } from "../getDashbaordTypes";
+import { getTotalPartnerPaymentProps } from "../getDashboardTypes";
 
 const GetTotalFinalNetPremiumPartnerAPI = async ({
   header,

@@ -1,6 +1,6 @@
 import fetchInterceptor, { FetchOptions } from "../../../utils/fetchInterceptor ";
 import { getCommissionDataEndpoint as endpoint } from "../apiEndPoints";
-import { getCommissionProps } from "../getDashbaordTypes";
+import { getCommissionProps } from "../getDashboardTypes";
 
 const GetCommissionDataAPI = async ({
   header,filter

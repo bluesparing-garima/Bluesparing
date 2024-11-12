@@ -1,8 +1,4 @@
-// import dayjs from "dayjs";
-// import { DAYJS_DISPLAY_FORMAT } from "../../context/constant";
-
 import { INewsForm, INewsVM } from "../../../components/Website/News/News/INews";
-
 export const convertINewsVMToINewsForm = (news: INewsVM): INewsForm => {
   const newsForm: INewsForm = {
     id: news.id!,

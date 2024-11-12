@@ -1,4 +1,4 @@
-import { getBrokerCompanyPaymentProps } from "../getDashbaordTypes";
+import { getBrokerCompanyPaymentProps } from "../getDashboardTypes";
 import GetTotalNetPremiumBrokerCompanyAPI from "./GetTotalNetPremiumBrokerCompanyAPi";
 
 

@@ -1,6 +1,5 @@
 import editCaseTypeAPI from "./editCaseTypeAPI";
 import { AddEditCaseTypeProps } from "../getCaseTypes";
-
 const editCaseTypeService = async ({ header, caseType }: AddEditCaseTypeProps): Promise<any> => {
   try {
     const res = await editCaseTypeAPI({
@@ -11,7 +10,5 @@ const editCaseTypeService = async ({ header, caseType }: AddEditCaseTypeProps): 
   } catch (error) {
     throw error
   }
-
 };
-
 export default editCaseTypeService;

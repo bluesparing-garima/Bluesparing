@@ -1,7 +1,7 @@
-import GetMonthlyBrokerCompanyNetPreminumAPI from "./GetMonthlyBrokerCompanyNetPreminumAPI";
-import { getMonthlyBrokerPaymentWithCompanyProps } from "../getDashbaordTypes";
+import GetMonthlyBrokerCompanyNetPremiumAPI from "./GetMonthlyBrokerCompanyNetPreminumAPI";
+import { getMonthlyBrokerPaymentWithCompanyProps } from "../getDashboardTypes";
 
-const GetMonthlyBrokerCompanyNetPreminumService = async ({
+const GetMonthlyBrokerCompanyNetPremiumService = async ({
   header,
   startDate,
   endDate,
@@ -9,7 +9,7 @@ const GetMonthlyBrokerCompanyNetPreminumService = async ({
   category,
 }: getMonthlyBrokerPaymentWithCompanyProps):Promise<any> => {
   try {
-    const res = await GetMonthlyBrokerCompanyNetPreminumAPI({
+    const res = await GetMonthlyBrokerCompanyNetPremiumAPI({
       header: header,
       startDate: startDate,
       endDate: endDate,
@@ -23,4 +23,4 @@ const GetMonthlyBrokerCompanyNetPreminumService = async ({
 
 };
 
-export default GetMonthlyBrokerCompanyNetPreminumService;
+export default GetMonthlyBrokerCompanyNetPremiumService;

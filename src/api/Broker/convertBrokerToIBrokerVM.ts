@@ -1,7 +1,6 @@
 import dayjs from "dayjs";
 import { DAYJS_DISPLAY_FORMAT } from "../../context/constant";
 import { IBrokers, IBrokersVM } from "../../components/Admin/Broker/IBroker";
-
 const convertIBrokerToIBrokerVM = (data: IBrokers): IBrokersVM => {
   const brokerViewModel: IBrokersVM = {
     id: data._id ? data._id : "",
@@ -18,5 +17,4 @@ const convertIBrokerToIBrokerVM = (data: IBrokers): IBrokersVM => {
   };
   return brokerViewModel;
 };
-
 export default convertIBrokerToIBrokerVM;

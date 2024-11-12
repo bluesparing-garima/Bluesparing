@@ -7,7 +7,7 @@ export const editBlogCategoryEndpoint = (categoryId: string) =>
 
 export const getBlogCategoryEndpoint = () => (`/api/blog-category`);
 
-export const getBlogCategorytDetailsEndpoint = (categoryId: string) =>
+export const getBlogCategoryDetailsEndpoint = (categoryId: string) =>
   (`/api/blog-category/${categoryId}`);
 
 export const deleteBlogCategoryEndpoint = (categoryId: string) =>

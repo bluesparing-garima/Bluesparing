@@ -1,6 +1,6 @@
 import fetchInterceptor, { FetchOptions } from "../../../utils/fetchInterceptor ";
 import { getOperationDashboardEndpoint as endpoint } from "../apiEndPoints";
-import { getOperationDashboardProps } from "../getDashbaordTypes";
+import { getOperationDashboardProps } from "../getDashboardTypes";
 
 const getOperationDashboardAPI = async ({
   header,

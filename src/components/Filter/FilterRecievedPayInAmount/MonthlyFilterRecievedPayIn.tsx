@@ -18,7 +18,7 @@ import dayjs from "dayjs";
 import { setIn } from "final-form";
 import * as yup from "yup";
 import { Link, useLocation } from "react-router-dom";
-import GetMonthlyBrokerRecievedPaymentService from "../../../api/Dashboard/GetMonthlyBrokerRecievedPayment/GetMonthlyBrokerRecievedPaymentService";
+import GetMonthlyBrokerReceivedPaymentService from "../../../api/Dashboard/GetMonthlyBrokerRecievedPayment/GetMonthlyBrokerRecievedPaymentService";
 import { BrokerReceivedPayInProps } from "../../TreeView/ITreeView";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import { generateBrokerReceivedPayInExcel } from "../../../utils/DashboardExcel";
@@ -38,7 +38,7 @@ const MonthlyFilterRecievedPayIn = () => {
   ) => {
     setSelectedStartDate(formattedFirstDay);
     setSelectedEndDate(formattedLastDay);
-    GetMonthlyBrokerRecievedPaymentService({
+    GetMonthlyBrokerReceivedPaymentService({
       header,
       startDate: formattedFirstDay,
       endDate: formattedLastDay,

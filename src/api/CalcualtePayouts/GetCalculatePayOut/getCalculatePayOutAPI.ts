@@ -1,7 +1,6 @@
 import fetchInterceptor, { FetchOptions } from "../../../utils/fetchInterceptor ";
 import { getCalculatePayOutEndpoint as endpoint } from "../apiEndpoints";
 import { GetCalculateTypeProps } from "../geCalculateTypes";
-
 const getCalculatePayOutAPI = async (props: GetCalculateTypeProps) => {
   const url = endpoint(
       props.fuelType!,
@@ -13,7 +12,6 @@ const getCalculatePayOutAPI = async (props: GetCalculateTypeProps) => {
       props.weight!,
       props.ncb!,
       props.rto!,
-     // props.insuredType!,
       props.caseType!,
       props.make!,
       props.model!,
@@ -23,9 +21,6 @@ const getCalculatePayOutAPI = async (props: GetCalculateTypeProps) => {
     method: "GET",
     headers: props.header,
   }
-
   return fetchInterceptor(url, options)
- 
 };
-
 export default getCalculatePayOutAPI;

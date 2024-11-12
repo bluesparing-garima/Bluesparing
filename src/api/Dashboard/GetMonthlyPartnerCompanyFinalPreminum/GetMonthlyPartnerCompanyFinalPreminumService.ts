@@ -1,7 +1,7 @@
-import GetMonthlyPartnerCompanyFinalPreminumAPI from "./GetMonthlyPartnerCompanyFinalPreminumAPI";
-import { getMonthlyPartnerPaymentWithCompanyProps } from "../getDashbaordTypes";
+import GetMonthlyPartnerCompanyFinalPremiumAPI from "./GetMonthlyPartnerCompanyFinalPreminumAPI";
+import { getMonthlyPartnerPaymentWithCompanyProps } from "../getDashboardTypes";
 
-const GetMonthlyPartnerCompanyFinalPreminumService = async ({
+const GetMonthlyPartnerCompanyFinalPremiumService = async ({
   header,
   startDate,
   endDate,
@@ -9,7 +9,7 @@ const GetMonthlyPartnerCompanyFinalPreminumService = async ({
   category,
 }: getMonthlyPartnerPaymentWithCompanyProps): Promise<any> => {
   try {
-    const res = await GetMonthlyPartnerCompanyFinalPreminumAPI({
+    const res = await GetMonthlyPartnerCompanyFinalPremiumAPI({
       header: header,
       startDate: startDate,
       endDate: endDate,
@@ -23,4 +23,4 @@ const GetMonthlyPartnerCompanyFinalPreminumService = async ({
 
 };
 
-export default GetMonthlyPartnerCompanyFinalPreminumService;
+export default GetMonthlyPartnerCompanyFinalPremiumService;

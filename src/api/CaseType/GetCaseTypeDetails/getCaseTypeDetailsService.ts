@@ -3,7 +3,6 @@ import { GetCaseTypeDetailsProps } from "../getCaseTypes";
 import convertICaseTypeToICaseTypeVM from "../convertICaseTypetoICaseTypeVM";
 import { ICaseTypes, ICaseTypesVM } from "../../../components/Admin/CaseType/ICaseTypes";
 import { IResponse } from "../../IResponse";
-
 const getCaseTypeDetailsService = async ({
   header,
     caseTypeId,
@@ -18,7 +17,5 @@ const getCaseTypeDetailsService = async ({
   } catch (error) {
     throw error
   }
- 
 };
-
 export default getCaseTypeDetailsService;

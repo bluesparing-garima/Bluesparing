@@ -1,6 +1,6 @@
 import fetchInterceptor, { FetchOptions } from "../../../utils/fetchInterceptor ";
 import { getPartnerPolicyDataEndpoint as endpoint } from "../apiEndPoints";
-import { getPartnerCommissionProps } from "../getDashbaordTypes";
+import { getPartnerCommissionProps } from "../getDashboardTypes";
 
 const GetPartnerPolicyDataAPI = async ({
   header,

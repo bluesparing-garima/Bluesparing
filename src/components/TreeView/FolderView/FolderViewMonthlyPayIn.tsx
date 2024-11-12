@@ -26,7 +26,7 @@ import {
   BrokerBalancePayInCompanyProps,
 } from "../ITreeView";
 import GetMonthlyBrokerPaymentWithCompanyService from "../../../api/Dashboard/GetMonthlyBrokerWithCompanyPayment/GetMonthlyBrokerPaymentWithCompanyService";
-import GetMonthlyBrokerWithRecievedCompanyPaymentService from "../../../api/Dashboard/GetMonthlyBrokerWithRecievedCompanyPayment/GetMonthlyBrokerWithRecievedCompanyPaymentService";
+import GetMonthlyBrokerWithReceivedCompanyPaymentService from "../../../api/Dashboard/GetMonthlyBrokerWithRecievedCompanyPayment/GetMonthlyBrokerWithRecievedCompanyPaymentService";
 import GetMonthlyBrokerWithLeftDistributedCompanyPaymentService from "../../../api/Dashboard/GetMonthlyBrokerWithLeftDistributedCompanyPayment/GetMonthlyBrokerWithLeftDistributedCompanyPaymentService";
 import GetMonthlyBrokerWithBalanceCompanyPaymentService from "../../../api/Dashboard/GetMonthlyBrokerWithBalanceCompanyPayment/GetMonthlyBrokerWithBalanceCompanyPaymentService";
 
@@ -90,7 +90,7 @@ const FolderView: React.FC<{
             }
           } else if ("brokerId" in node) {
             const brokerId = node.brokerId;
-            const res = await GetMonthlyBrokerWithRecievedCompanyPaymentService(
+            const res = await GetMonthlyBrokerWithReceivedCompanyPaymentService(
               {
                 header,
                 startDate,

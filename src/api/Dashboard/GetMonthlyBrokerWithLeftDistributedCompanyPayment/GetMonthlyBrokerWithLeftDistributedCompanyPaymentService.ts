@@ -1,5 +1,5 @@
 import GetMonthlyBrokerWithLeftDistributedCompanyPaymentPaymentAPI from "./GetMonthlyBrokerWithLeftDistributedCompanyPaymentPaymentAPI";
-import { getMonthlyBrokerPaymentWithCompanyProps } from "../getDashbaordTypes";
+import { getMonthlyBrokerPaymentWithCompanyProps } from "../getDashboardTypes";
 
 const GetMonthlyBrokerWithLeftDistributedCompanyPaymentService = async ({
   header,

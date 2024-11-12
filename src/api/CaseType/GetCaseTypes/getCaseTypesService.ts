@@ -1,8 +1,5 @@
-// getCaseTypeService.ts
-
 import getCaseTypesAPI from "./getCaseTypesAPI";
 import { GetCaseTypeProps } from "../getCaseTypes";
-
 const getCaseTypeService = async ({ header }: GetCaseTypeProps): Promise<any> => {
   try {
     const res = await getCaseTypesAPI({
@@ -12,7 +9,5 @@ const getCaseTypeService = async ({ header }: GetCaseTypeProps): Promise<any> =>
   } catch (error) {
     throw error
   }
-
 };
-
 export default getCaseTypeService;

@@ -2,7 +2,7 @@ import fetchInterceptor, { FetchOptions } from "../../../utils/fetchInterceptor 
 import { addPercentageEndpoint as endpoint } from "../apiEndpoint";
 import { AddEditPercentageProps } from "../getPercentageTypes";
 
-const addPercenatgeAPI = async ({ header, policy }: AddEditPercentageProps) => {
+const addPercentageAPI = async ({ header, policy }: AddEditPercentageProps) => {
   const url = endpoint()
   const options: FetchOptions= {
     method: "PUT",
@@ -15,4 +15,4 @@ const addPercenatgeAPI = async ({ header, policy }: AddEditPercentageProps) => {
  
 };
 
-export default addPercenatgeAPI;
+export default addPercentageAPI;

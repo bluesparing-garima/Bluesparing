@@ -44,7 +44,7 @@ import { IMakes } from "../../Admin/Make/IMake";
 import getPolicyByNumberService from "../../../api/Policies/GetPolicyByNumber/getPolicyByNumberService";
 import dayjs from "dayjs";
 import { format } from "date-fns";
-import getVechicleNumberService from "../../../api/Policies/GetVehicleNumber/getVechicleNumberService";
+import getVehicleNumberService from "../../../api/Policies/GetVehicleNumber/getVechicleNumberService";
 
 export interface AddPolicyFormProps {
   initialValues: IPDFPolicyForm;
@@ -453,7 +453,7 @@ const PolicyPDFForm = (props: AddPolicyFormProps) => {
     const vehicleNumber = e.target.value;
     console.log(vehicleNumber);
     try {
-      const res = await getVechicleNumberService({
+      const res = await getVehicleNumberService({
         header,
         vehicleNumber,
       });

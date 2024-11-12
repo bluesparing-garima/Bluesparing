@@ -3,7 +3,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { header } from "../../../context/constant";
 import { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
-import GetBrokerWithRecievedCompanyPaymentService from "../../../api/Dashboard/GetBrokerWithRecievedCompanyPayment/GetBrokerWithRecievedCompanyPaymentService";
+import GetBrokerWithReceivedCompanyPaymentService from "../../../api/Dashboard/GetBrokerWithRecievedCompanyPayment/GetBrokerWithRecievedCompanyPaymentService";
 import { BrokerReceivedPayInCompanyProps } from "../../TreeView/ITreeView";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import { generateBrokerReceivedPayInCompanyExcel } from "../../../utils/DashboardExcel";
@@ -27,7 +27,7 @@ const CompanyFilterRecievedPayIn = () => {
     generateBrokerReceivedPayInCompanyExcel(companyDetails)
   };
   const filterMonthlyBrokerPaymentWithCompany = async (brokerId: string) => {
-    GetBrokerWithRecievedCompanyPaymentService({
+    GetBrokerWithReceivedCompanyPaymentService({
       header,
       brokerId: brokerId!,
       category: selectedCategory,

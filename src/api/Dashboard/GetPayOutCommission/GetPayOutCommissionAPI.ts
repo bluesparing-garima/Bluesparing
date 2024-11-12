@@ -1,6 +1,6 @@
 import fetchInterceptor, { FetchOptions } from "../../../utils/fetchInterceptor ";
 import { getPayOutCommissionDataEndpoint as endpoint } from "../apiEndPoints";
-import { getPayOutCommissionProps } from "../getDashbaordTypes";
+import { getPayOutCommissionProps } from "../getDashboardTypes";
 
 const GetPayOutCommissionAPI = async ({
   header,

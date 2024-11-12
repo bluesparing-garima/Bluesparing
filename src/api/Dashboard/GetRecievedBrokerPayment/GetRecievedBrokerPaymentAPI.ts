@@ -1,8 +1,8 @@
 import fetchInterceptor, { FetchOptions } from "../../../utils/fetchInterceptor ";
 import { getRecievedBrokerPaymentEndpoint as endpoint } from "../apiEndPoints";
-import { getTotalBrokerPaymentProps } from "../getDashbaordTypes";
+import { getTotalBrokerPaymentProps } from "../getDashboardTypes";
 
-const GetRecievedBrokerPaymentAPI = async ({
+const GetReceivedBrokerPaymentAPI = async ({
   header,
   category,
 }: getTotalBrokerPaymentProps) => {
@@ -16,4 +16,4 @@ const GetRecievedBrokerPaymentAPI = async ({
 
 };
 
-export default GetRecievedBrokerPaymentAPI;
+export default GetReceivedBrokerPaymentAPI;

@@ -1,11 +1,7 @@
-// import dayjs from "dayjs";
-// import { DAYJS_DISPLAY_FORMAT } from "../../context/constant";
-
 import {
   IBlogForm,
   IBlogVM,
 } from "../../../components/Website/Blog/Blogs/IBlogs";
-
 export const convertIBlogVMToIBlogForm = (blog: IBlogVM): IBlogForm => {
   const blogForm: IBlogForm = {
     id: blog.id!,

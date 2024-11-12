@@ -1,8 +1,4 @@
-// import dayjs from "dayjs";
-// import { DAYJS_DISPLAY_FORMAT } from "../../context/constant";
-
 import { IAccountForm, IAccountsVM } from "../../components/Account/IAccounts";
-
 export const convertIAccountVMToIAccountForm = (
   account: IAccountsVM
 ): IAccountForm => {
@@ -17,9 +13,6 @@ export const convertIAccountVMToIAccountForm = (
     updatedBy: account.updatedBy!,
     isActive: !!account.isActive,
     createdBy: account.createdBy!,
-    // points: account.points
-    //   ? convertLocaleStringToNumber(account.points!)
-    //   : 0,
   };
   return accountForm;
 };

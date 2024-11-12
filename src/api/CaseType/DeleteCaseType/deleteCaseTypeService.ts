@@ -1,8 +1,6 @@
 import deleteCaseTypeAPI from "./deleteCaseTypeAPI";
 import { DeleteCaseTypeProps } from "../getCaseTypes";
-
 const deleteCaseTypeService = async ({ header, caseTypeId, caseTypes }: DeleteCaseTypeProps):Promise<any> => {
-
   try {
     await deleteCaseTypeAPI({
       header,
@@ -15,7 +13,5 @@ const deleteCaseTypeService = async ({ header, caseTypeId, caseTypes }: DeleteCa
   } catch (error) {
     throw error
   }
-
 };
-
 export default deleteCaseTypeService;

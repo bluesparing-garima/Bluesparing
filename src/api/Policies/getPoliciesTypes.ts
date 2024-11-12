@@ -1,5 +1,4 @@
 import { Header } from "../../Auth/IAuth";
-import { IAddEditPolicyForm } from "../../components/Policy/IPolicy";
 export interface GetMotorPoliciesPDFProps {
   header: Header;
   file: any;

@@ -21,7 +21,7 @@ import useGetBrokers from "../../../Hooks/Broker/useGetBrokers";
 import React from "react";
 import dayjs from "dayjs";
 import { useLocation, useParams } from "react-router-dom";
-import GetMonthlyBrokerCompanyNetPreminumService from "../../../api/Dashboard/GetMonthlyBrokerCompanyNetPreminum/GetMonthlyBrokerCompanyNetPreminumService";
+import GetMonthlyBrokerCompanyNetPremiumService from "../../../api/Dashboard/GetMonthlyBrokerCompanyNetPreminum/GetMonthlyBrokerCompanyNetPreminumService";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import { INetPremiumCompany } from "../../TreeView/ITreeView";
 import { generateExcelCompanyNetPremium } from "../../../utils/DashboardExcel";
@@ -74,7 +74,7 @@ const FilterMonthlyBrokerNetPremium = () => {
     endDate: string,
     brokerId: string
   ) => {
-    GetMonthlyBrokerCompanyNetPreminumService({
+    GetMonthlyBrokerCompanyNetPremiumService({
       header,
       brokerId: brokerId!,
       startDate: startDate,

@@ -1,6 +1,6 @@
 import fetchInterceptor, { FetchOptions } from "../../../utils/fetchInterceptor ";
 import { getPartnerDashboardEndpoint as endpoint } from "../apiEndPoints";
-import { getPartnerDashboardProps } from "../getDashbaordTypes";
+import { getPartnerDashboardProps } from "../getDashboardTypes";
 
 const getPartnerDashboardAPI = async ({
   header,

@@ -9,7 +9,7 @@ export const editNewsCategoryEndpoint = (categoryId: string) =>
 export const getNewsCategoryEndpoint = () =>
 (`/api/news-letter-category`);
 
-export const getNewsCategorytDetailsEndpoint = (categoryId: string) =>
+export const getNewsCategoryDetailsEndpoint = (categoryId: string) =>
 (`/api/news-letter-category/${categoryId}`);
 
 export const deleteNewsCategoryEndpoint = (categoryId: string) =>

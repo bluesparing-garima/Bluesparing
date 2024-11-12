@@ -1,8 +1,8 @@
 import fetchInterceptor, { FetchOptions } from "../../../utils/fetchInterceptor ";
 import { getMonthlyBrokerPaymentWithRecievedCompanyEndpoint as endpoint } from "../apiEndPoints";
-import { getMonthlyBrokerPaymentWithCompanyProps } from "../getDashbaordTypes";
+import { getMonthlyBrokerPaymentWithCompanyProps } from "../getDashboardTypes";
 
-const GetMonthlyBrokerWithRecievedCompanyPaymentAPI = async ({
+const GetMonthlyBrokerWithReceivedCompanyPaymentAPI = async ({
   header,
   startDate,
   endDate,
@@ -19,4 +19,4 @@ const GetMonthlyBrokerWithRecievedCompanyPaymentAPI = async ({
 
 };
 
-export default GetMonthlyBrokerWithRecievedCompanyPaymentAPI;
+export default GetMonthlyBrokerWithReceivedCompanyPaymentAPI;

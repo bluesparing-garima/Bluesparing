@@ -21,8 +21,8 @@ import {
   IFinalNetPremiumBroker,
   IFinalNetPremiumPartner,
 } from "../ITreeView";
-import GetMonthlyPartnerCompanyFinalPreminumService from "../../../api/Dashboard/GetMonthlyPartnerCompanyFinalPreminum/GetMonthlyPartnerCompanyFinalPreminumService";
-import GetMonthlyBrokerCompanyFinalPreminumService from "../../../api/Dashboard/GetMonthlyBrokerCompanyFinalPreminum/GetMonthlyBrokerCompanyFinalPreminumService";
+import GetMonthlyPartnerCompanyFinalPremiumService from "../../../api/Dashboard/GetMonthlyPartnerCompanyFinalPreminum/GetMonthlyPartnerCompanyFinalPreminumService";
+import GetMonthlyBrokerCompanyFinalPremiumService from "../../../api/Dashboard/GetMonthlyBrokerCompanyFinalPreminum/GetMonthlyBrokerCompanyFinalPreminumService";
 
 const FolderView: React.FC<{
   node:
@@ -61,7 +61,7 @@ const FolderView: React.FC<{
             }
           } else if ("partnerId" in node) {
             const partnerId = node.partnerId;
-            const res = await GetMonthlyPartnerCompanyFinalPreminumService({
+            const res = await GetMonthlyPartnerCompanyFinalPremiumService({
               header,
               startDate,
               endDate,
@@ -77,7 +77,7 @@ const FolderView: React.FC<{
             }
           } else if ("brokerId" in node) {
             const brokerId = node.brokerId;
-            const res = await GetMonthlyBrokerCompanyFinalPreminumService({
+            const res = await GetMonthlyBrokerCompanyFinalPremiumService({
               header,
               startDate,
               endDate,

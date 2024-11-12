@@ -1,4 +1,4 @@
-import { getPartnerCompanyPaymentProps } from "../getDashbaordTypes";
+import { getPartnerCompanyPaymentProps } from "../getDashboardTypes";
 import GetTotalFinalNetPremiumPartnerCompanyAPI from "./GetTotalFinalNetPremiumPartnerCompanyAPi";
 
 

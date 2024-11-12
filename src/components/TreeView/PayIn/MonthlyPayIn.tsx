@@ -26,7 +26,7 @@ import {
   BrokerReceivedPayInProps,
 } from "../ITreeView";
 import FolderViewMonthlyPayIn from "../FolderView/FolderViewMonthlyPayIn";
-import GetMonthlyBrokerRecievedPaymentService from "../../../api/Dashboard/GetMonthlyBrokerRecievedPayment/GetMonthlyBrokerRecievedPaymentService";
+import GetMonthlyBrokerReceivedPaymentService from "../../../api/Dashboard/GetMonthlyBrokerRecievedPayment/GetMonthlyBrokerRecievedPaymentService";
 import GetMonthlyBrokerBalancePaymentService from "../../../api/Dashboard/GetMonthlyBrokerBalancePayment/GetMonthlyBrokerBalancePaymentService";
 import GetMonthlyBrokerLeftDistributedPaymentService from "../../../api/Dashboard/GetMonthlyBrokerLeftDistributedPayment/GetMonthlyBrokerLeftDistributedPaymentService";
 
@@ -71,7 +71,7 @@ const MonthlyPayIn = () => {
     endDate: string
   ) => {
     try {
-      const res = await GetMonthlyBrokerRecievedPaymentService({
+      const res = await GetMonthlyBrokerReceivedPaymentService({
         header,
         startDate,
         endDate,

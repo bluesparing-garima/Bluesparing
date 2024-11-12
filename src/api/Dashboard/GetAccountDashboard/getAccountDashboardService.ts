@@ -1,6 +1,5 @@
 import getAccountDashboardAPI from "./getAccountDashboardAPI";
-import { getAccountDashboardProps } from "../getDashbaordTypes";
-
+import { getAccountDashboardProps } from "../getDashboardTypes";
 const getAccountDashboardService = async ({
   header, startDate, endDate
 }: getAccountDashboardProps): Promise<any> => {
@@ -12,7 +11,5 @@ const getAccountDashboardService = async ({
   } catch (error) {
     throw error
   }
-
 };
-
 export default getAccountDashboardService;

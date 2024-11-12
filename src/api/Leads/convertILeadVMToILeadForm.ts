@@ -1,8 +1,4 @@
-// import dayjs from "dayjs";
-// import { DAYJS_DISPLAY_FORMAT } from "../../context/constant";
-
 import { ILeadForm, ILeadsVM } from "../../components/Partner/IPartner";
-
 export const convertILeadVMToILeadForm = (lead: ILeadsVM): ILeadForm => {
   const leadForm: ILeadForm = {
     id: lead.id!,
@@ -30,12 +26,8 @@ export const convertILeadVMToILeadForm = (lead: ILeadsVM): ILeadForm => {
     createdBy: lead.createdBy!,
     createdOn:lead.createdOn!,
     updatedOn:lead.updatedOn,
-    // points: lead.points
-    //   ? convertLocaleStringToNumber(lead.points!)
-    //   : 0,
     isActive: !!lead.isActive,
     timer:lead.timer||""
-    // createdOn: dayjs(lead?.createdOn).format(DAYJS_DISPLAY_FORMAT),
   };
   return leadForm;
 };

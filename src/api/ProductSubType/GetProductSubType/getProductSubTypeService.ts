@@ -1,8 +1,5 @@
-// getProductSubTypeService.ts
-
 import { GetProductSubTypeProps } from "../getProductSubTypes";
 import getProductSubTypeAPI from "./getProductSubTypeAPI";
-
 const getProductSubTypeService = async ({ header }: GetProductSubTypeProps):Promise<any> => {
   try {
     const res = await getProductSubTypeAPI({
@@ -12,7 +9,5 @@ const getProductSubTypeService = async ({ header }: GetProductSubTypeProps):Prom
   } catch (error) {
     throw error
   }
-
 };
-
 export default getProductSubTypeService;

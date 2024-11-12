@@ -1,11 +1,11 @@
 import fetchInterceptor, { FetchOptions } from "../../../utils/fetchInterceptor ";
 import { getPolicyDataByVehicleNumber as endpoint } from "../apiEndpoints";
-import {  GetVechicleNumberProps } from "../getPoliciesTypes";
+import {  GetVechicleNumberProps as GetVehicleNumberProps } from "../getPoliciesTypes";
 
 const getPolicyDataByVehicleNumberAPI = async ({
   header,
   vehicleNumber,
-}: GetVechicleNumberProps) => {
+}: GetVehicleNumberProps) => {
   const url = endpoint(vehicleNumber)
   const options: FetchOptions= {
     method: "GET",

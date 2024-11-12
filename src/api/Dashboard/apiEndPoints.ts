@@ -79,7 +79,7 @@ export const getBrokerPaymentWithRecievedCompanyEndpoint = (
  (
     `/api/dashboard/broker-admin/payin/company-name?brokerId=${brokerId}&category=${category}`
   );
-export const getMonthlyBrokerRecievedPaymentEndpoint = (
+export const getMonthlyBrokerReceivedPaymentEndpoint = (
   startDate: string,
   endDate: string,
   category: string

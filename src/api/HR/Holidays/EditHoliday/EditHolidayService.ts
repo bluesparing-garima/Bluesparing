@@ -1,10 +1,10 @@
 import { IAddHolidayPayload } from "../../getHrTypes";
-import EditholidayAPI from "./EditholidayAPI";
+import EditHolidayAPI from "./EditholidayAPI";
 
 
 const EditHolidayService = async ({ header, holidayData,id }: IAddHolidayPayload): Promise<any> => {
     try {
-        const res = await EditholidayAPI({
+        const res = await EditHolidayAPI({
             header,
             holidayData,id
         });

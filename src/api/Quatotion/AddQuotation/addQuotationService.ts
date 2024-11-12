@@ -1,6 +1,5 @@
 import addQuotationAPI from "./addQuotationAPI";
 import { AddEditQuotationProps } from "../getQuotationTypes";
-
 const addQuotationService = async ({ header, quotation }: AddEditQuotationProps):Promise<any> => {
   try {
     const res = await addQuotationAPI({
@@ -11,7 +10,5 @@ const addQuotationService = async ({ header, quotation }: AddEditQuotationProps)
   } catch (error) {
     throw error
   }
- 
 };
-
 export default addQuotationService;

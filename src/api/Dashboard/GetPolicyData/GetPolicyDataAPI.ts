@@ -1,6 +1,6 @@
 import fetchInterceptor, { FetchOptions } from "../../../utils/fetchInterceptor ";
 import { getPolicyDataEndpoint as endpoint } from "../apiEndPoints";
-import { getPolicyProps } from "../getDashbaordTypes";
+import { getPolicyProps } from "../getDashboardTypes";
 
 const GetPolicyDataAPI = async ({ header, filter }: getPolicyProps) => {
   const url = endpoint(filter)

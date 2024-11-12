@@ -17,7 +17,7 @@ export const getTeamDetailsEndpoint = (teamId: string) =>
 export const deleteTeamEndpoint = (teamId: string) =>
 (`/api/user-profile/${teamId}`);
 
-export const valdiateEmailEndpoint = (emailId: string) =>
+export const validateEmailEndpoint = (emailId: string) =>
 (`/api/user-profile/check-email?email=${emailId}`);
 export const getTeamByRmEndpoint = (remId: string) =>
 (`/api/user-profile/headRMId?headRMId=${remId}`);

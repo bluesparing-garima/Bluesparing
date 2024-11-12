@@ -1,4 +1,4 @@
-import addPercenatgeAPI from "./addPercenatgeAPI";
+import addPercentageAPI from "./addPercenatgeAPI";
 import { AddEditPercentageProps } from "../getPercentageTypes";
 
 const addPercentageService = async ({
@@ -6,7 +6,7 @@ const addPercentageService = async ({
   policy,
 }: AddEditPercentageProps): Promise<any> => {
   try {
-    const res = await addPercenatgeAPI({
+    const res = await addPercentageAPI({
       header: header,
       policy: policy,
     })

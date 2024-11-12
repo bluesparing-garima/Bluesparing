@@ -1,6 +1,6 @@
 import fetchInterceptor, { FetchOptions } from "../../../utils/fetchInterceptor ";
 import { getBookingDashboardEndpoint as endpoint } from "../apiEndPoints";
-import { getBookingDashboardProps } from "../getDashbaordTypes";
+import { getBookingDashboardProps } from "../getDashboardTypes";
 
 const getBookingDashboardAPI = async ({
   header,

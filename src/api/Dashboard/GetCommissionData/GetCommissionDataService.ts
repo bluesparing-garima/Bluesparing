@@ -1,5 +1,5 @@
 import GetCommissionDataAPI from "./GetCommissionDataAPI";
-import { getCommissionProps } from "../getDashbaordTypes";
+import { getCommissionProps } from "../getDashboardTypes";
 
 const GetCommissionDataService = async ({ header, filter }: getCommissionProps):Promise<any> => {
   try {

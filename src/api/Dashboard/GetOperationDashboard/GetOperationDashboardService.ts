@@ -1,5 +1,5 @@
 import getOperationDashboardAPI from "./GetOperationDashboardAPI";
-import { getOperationDashboardProps } from "../getDashbaordTypes";
+import { getOperationDashboardProps } from "../getDashboardTypes";
 
 const getOperationDashboardService = async ({
   header,

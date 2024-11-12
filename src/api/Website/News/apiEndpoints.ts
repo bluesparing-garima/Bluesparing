@@ -8,7 +8,7 @@ export const editNewsEndpoint = (blogId: string) =>
 export const getNewsEndpoint = () =>
 (`/api/news-letter`);
 
-export const getNewstDetailsEndpoint = (blogId: string) =>
+export const getNewsDetailsEndpoint = (blogId: string) =>
 (`/api/news-letter/${blogId}`);
 
 export const deleteNewsEndpoint = (blogId: string) =>

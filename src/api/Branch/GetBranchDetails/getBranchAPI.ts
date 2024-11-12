@@ -1,4 +1,3 @@
-import { IBranches } from "../../../components/Admin/Branch/IBranch";
 import fetchInterceptor, { FetchOptions } from "../../../utils/fetchInterceptor ";
 import { getBranchDetailsEndpoint as endpoint } from "../apiEndPoints";
 import { GetBranchDetailsProps } from "../getBranchTypes";

@@ -1,10 +1,7 @@
-// convertICaseTypeVMToICaseTypeForm.ts
-
 import {
   ICaseTypeForm,
   ICaseTypesVM,
 } from "../../components/Admin/CaseType/ICaseTypes";
-
 export const convertICaseTypeVMToICaseTypeForm = (
   caseType: ICaseTypesVM
 ): ICaseTypeForm => {

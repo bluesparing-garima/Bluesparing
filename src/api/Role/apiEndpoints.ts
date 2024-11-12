@@ -14,6 +14,6 @@ export const getRoleDetailsEndpoint = (roleId: string) =>
 export const deleteRoleEndpoint = (roleId: string) =>
   (`/api/roles/${roleId}`);
 
-export const employeeAttendanceEnpoint=(eId:string)=>{
+export const employeeAttendanceEndpoint=(eId:string)=>{
   return(`/api/attendance/stats/employee/${eId}`)
 }

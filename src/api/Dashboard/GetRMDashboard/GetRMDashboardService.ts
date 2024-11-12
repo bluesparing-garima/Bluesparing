@@ -1,5 +1,5 @@
 
-import { getAccountDashboardProps } from "../getDashbaordTypes";
+import { getAccountDashboardProps } from "../getDashboardTypes";
 import GetRMDashboardAPI from "./GetRMDashboardAPI";
 
 const GetRMDashboardService = async ({

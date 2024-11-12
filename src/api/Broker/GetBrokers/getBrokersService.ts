@@ -1,7 +1,7 @@
 import getBrokersAPI from "./getBrokersAPI";
 import { GetBrokerProps } from "../getBrokersTypes";
 
-const getBrokerService = async ({ header }: GetBrokerProps):Promise<any> => {
+const getBrokerService = async ({ header }: GetBrokerProps): Promise<any> => {
 
   try {
     const resData = await getBrokersAPI({
@@ -18,7 +18,7 @@ const getBrokerService = async ({ header }: GetBrokerProps):Promise<any> => {
     }
     throw error;
   }
- 
+
 };
 
 export default getBrokerService;

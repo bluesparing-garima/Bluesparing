@@ -1,5 +1,5 @@
 import { getBarChartDashboard } from "./getBarChartDashboardAPI";
-import { GetBarChartDashboardProps } from "../getDashbaordTypes";
+import { GetBarChartDashboardProps } from "../getDashboardTypes";
 const getBarChartDashboardService = (props: GetBarChartDashboardProps) => {
   try {
     const res = getBarChartDashboard(props);

@@ -5,7 +5,7 @@ export const editBlogEndpoint = (blogId: string) =>
 
 export const getBlogEndpoint = () => (`/api/blogs`);
 
-export const getBlogtDetailsEndpoint = (blogId: string) =>
+export const getBlogDetailsEndpoint = (blogId: string) =>
   (`/api/blogs/${blogId}`);
 
 export const deleteBlogEndpoint = (blogId: string) =>

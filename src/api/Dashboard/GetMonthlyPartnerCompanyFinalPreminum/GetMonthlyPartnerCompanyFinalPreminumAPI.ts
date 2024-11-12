@@ -1,8 +1,8 @@
 import fetchInterceptor, { FetchOptions } from "../../../utils/fetchInterceptor ";
 import { GetMonthlyPartnerCompanyFinalPremiumEndpoint as endpoint } from "../apiEndPoints";
-import { getMonthlyPartnerPaymentWithCompanyProps } from "../getDashbaordTypes";
+import { getMonthlyPartnerPaymentWithCompanyProps } from "../getDashboardTypes";
 
-const GetMonthlyPartnerCompanyFinalPreminumAPI = async ({
+const GetMonthlyPartnerCompanyFinalPremiumAPI = async ({
   header,
   startDate,
   endDate,
@@ -19,4 +19,4 @@ const GetMonthlyPartnerCompanyFinalPreminumAPI = async ({
 
 };
 
-export default GetMonthlyPartnerCompanyFinalPreminumAPI;
+export default GetMonthlyPartnerCompanyFinalPremiumAPI;

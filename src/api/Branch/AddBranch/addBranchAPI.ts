@@ -13,7 +13,7 @@ const addBranchAPI = async ({ header, branch }: AddEditBranchProps) => {
   }
 
   return fetchInterceptor(url, options)
- 
+
 };
 
 export default addBranchAPI;

@@ -1,7 +1,7 @@
-import GetMonthlyBrokerWithRecievedCompanyPaymentAPI from "./GetMonthlyBrokerWithRecievedCompanyPaymentAPI";
-import { getMonthlyBrokerPaymentWithCompanyProps } from "../getDashbaordTypes";
+import GetMonthlyBrokerWithReceivedCompanyPaymentAPI from "./GetMonthlyBrokerWithRecievedCompanyPaymentAPI";
+import { getMonthlyBrokerPaymentWithCompanyProps } from "../getDashboardTypes";
 
-const GetMonthlyBrokerWithRecievedCompanyPaymentService = async ({
+const GetMonthlyBrokerWithReceivedCompanyPaymentService = async ({
   header,
   startDate,
   endDate,
@@ -9,7 +9,7 @@ const GetMonthlyBrokerWithRecievedCompanyPaymentService = async ({
   category
 }: getMonthlyBrokerPaymentWithCompanyProps): Promise<any> => {
   try {
-    const res = await GetMonthlyBrokerWithRecievedCompanyPaymentAPI({
+    const res = await GetMonthlyBrokerWithReceivedCompanyPaymentAPI({
       header: header,
       startDate: startDate,
       endDate: endDate,
@@ -23,4 +23,4 @@ const GetMonthlyBrokerWithRecievedCompanyPaymentService = async ({
 
 };
 
-export default GetMonthlyBrokerWithRecievedCompanyPaymentService;
+export default GetMonthlyBrokerWithReceivedCompanyPaymentService;

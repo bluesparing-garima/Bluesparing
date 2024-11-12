@@ -21,7 +21,7 @@ import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import React from "react";
 import dayjs from "dayjs";
 import { useLocation, useParams } from "react-router-dom";
-import GetMonthlyBrokerWithRecievedCompanyPaymentService from "../../../api/Dashboard/GetMonthlyBrokerWithRecievedCompanyPayment/GetMonthlyBrokerWithRecievedCompanyPaymentService";
+import GetMonthlyBrokerWithReceivedCompanyPaymentService from "../../../api/Dashboard/GetMonthlyBrokerWithRecievedCompanyPayment/GetMonthlyBrokerWithRecievedCompanyPaymentService";
 import { BrokerReceivedPayInCompanyProps } from "../../TreeView/ITreeView";
 import { generateBrokerReceivedPayInCompanyExcel } from "../../../utils/DashboardExcel";
 
@@ -74,7 +74,7 @@ const MonthlyCompanyFilterRecievedPayIn = () => {
     endDate: string,
     brokerId: string
   ) => {
-    GetMonthlyBrokerWithRecievedCompanyPaymentService({
+    GetMonthlyBrokerWithReceivedCompanyPaymentService({
       header,
       brokerId: brokerId!,
       startDate: startDate,

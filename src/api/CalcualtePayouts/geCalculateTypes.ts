@@ -1,4 +1,3 @@
-
 export interface GetCalculateTypeProps {
   header?: any;
   fuelType?: string;
@@ -10,7 +9,6 @@ export interface GetCalculateTypeProps {
   weight?: number | null;
   ncb?: string;
   rto?: string;
- // insuredType?: string;
   caseType?: string;
   make?: string;
   model?: string;

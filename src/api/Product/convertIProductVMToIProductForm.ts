@@ -1,8 +1,4 @@
-// import dayjs from "dayjs";
-// import { DAYJS_DISPLAY_FORMAT } from "../../context/constant";
-
 import { IProductForm, IProductsVM } from "../../components/Admin/Product/IProduct";
-
 export const convertIProductVMToIProductForm = (product: IProductsVM): IProductForm => {
   const productForm: IProductForm = {
     id: product.id!,

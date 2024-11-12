@@ -1,5 +1,5 @@
 import getPartnerDashboardAPI from "./getPartnerDashboardAPI";
-import { getPartnerDashboardProps } from "../getDashbaordTypes";
+import { getPartnerDashboardProps } from "../getDashboardTypes";
 
 const getPartnerDashboardService = async ({
   header,

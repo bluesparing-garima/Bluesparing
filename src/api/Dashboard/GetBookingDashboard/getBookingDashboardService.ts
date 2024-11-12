@@ -1,5 +1,5 @@
 import getBookingDashboardAPI from "./getBookingDashboardAPI";
-import { getBookingDashboardProps } from "../getDashbaordTypes";
+import { getBookingDashboardProps } from "../getDashboardTypes";
 
 const getBookingDashboardService = async ({
   header,

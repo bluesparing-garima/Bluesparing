@@ -1,5 +1,5 @@
 import GetPartnerPolicyDataAPI from "./GetPartnerPolicyDataAPI";
-import { getPartnerCommissionProps } from "../getDashbaordTypes";
+import { getPartnerCommissionProps } from "../getDashboardTypes";
 
 const GetPartnerPolicyDataService = async ({
   header,

@@ -1,12 +1,12 @@
 import { GetVechicleNumberProps } from "../getPoliciesTypes";
-import getVechicleNumberAPI from "./getVechicleNumberAPI";
+import getVehicleNumberAPI from "./getVechicleNumberAPI";
 
-const getVechicleNumberService = async ({
+const getVehicleNumberService = async ({
   header,
   vehicleNumber,
 }: GetVechicleNumberProps): Promise<any> => {
   try {
-    const res = await getVechicleNumberAPI({
+    const res = await getVehicleNumberAPI({
       header: header,
       vehicleNumber
     })
@@ -17,4 +17,4 @@ const getVechicleNumberService = async ({
 
 };
 
-export default getVechicleNumberService;
+export default getVehicleNumberService;

@@ -1,5 +1,5 @@
 import fetchInterceptor, { FetchOptions } from "../../../utils/fetchInterceptor ";
-import { valdiateEmailEndpoint as endpoint } from "../apiEndpoints";
+import { validateEmailEndpoint as endpoint } from "../apiEndpoints";
 import { ValidateEmailProps } from "../getTeamsTypes";
 
 const validateEmailAPI = async ({ header, email }: ValidateEmailProps) => {

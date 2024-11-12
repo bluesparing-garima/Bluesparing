@@ -1,8 +1,6 @@
-
 import dayjs from "dayjs";
 import { ICaseTypes, ICaseTypesVM } from "../../components/Admin/CaseType/ICaseTypes";
 import { DAYJS_DISPLAY_FORMAT } from "../../context/constant";
-
 const convertICaseTypeToICaseTypeVM = (data: ICaseTypes): ICaseTypesVM => {
   const caseTypeViewModel: ICaseTypesVM = {
     id: data._id ? data._id : "",
@@ -19,5 +17,4 @@ const convertICaseTypeToICaseTypeVM = (data: ICaseTypes): ICaseTypesVM => {
   };
   return caseTypeViewModel;
 };
-
 export default convertICaseTypeToICaseTypeVM;

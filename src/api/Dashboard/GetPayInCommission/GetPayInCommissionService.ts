@@ -1,5 +1,5 @@
 import GetPayInCommissionAPI from "./GetPayInCommissionAPI";
-import { getPayInCommissionProps } from "../getDashbaordTypes";
+import { getPayInCommissionProps } from "../getDashboardTypes";
 
 const GetPayInCommissionService = async ({
   header,

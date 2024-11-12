@@ -1,10 +1,7 @@
-// convertIFuelTypeVMToIFuelTypeForm.ts
-
 import {
   IFuelTypeForm,
   IFuelTypesVM,
 } from "../../components/Admin/FuelType/IFuelTypes";
-
 export const convertIFuelTypeVMToIFuelTypeForm = (
   fuelType: IFuelTypesVM
 ): IFuelTypeForm => {

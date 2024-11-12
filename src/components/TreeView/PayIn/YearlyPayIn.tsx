@@ -10,7 +10,7 @@ import {
   BrokerPayInLeftDistributedProps,
   BrokerReceivedPayInProps,
 } from "../ITreeView";
-import GetRecievedBrokerPaymentService from "../../../api/Dashboard/GetRecievedBrokerPayment/GetRecievedBrokerPaymentService";
+import GetReceivedBrokerPaymentService from "../../../api/Dashboard/GetRecievedBrokerPayment/GetRecievedBrokerPaymentService";
 import GetBrokerBalancePaymentService from "../../../api/Dashboard/GetBrokerBalancePayment/GetBrokerBalancePaymentService";
 import GetBrokerLeftDistributedPaymentService from "../../../api/Dashboard/GetBrokerLeftDistributedPayment/GetBrokerLeftDistributedPaymentService";
 import FolderViewYearlyPayIn from "../FolderView/FolderViewYearlyPayIn";
@@ -48,7 +48,7 @@ const YearlyPayIn = () => {
 
   const fetchBrokerReceivedPayment = async () => {
     try {
-      const res = await GetRecievedBrokerPaymentService({
+      const res = await GetReceivedBrokerPaymentService({
         header,
         category: selectedCategory,
       });

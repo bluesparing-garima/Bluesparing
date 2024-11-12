@@ -1,7 +1,6 @@
 import fetchInterceptor, { FetchOptions } from "../../../utils/fetchInterceptor ";
 import { editCreditDebitEndpoint as endpoint } from "../apiEndpoints";
 import { AddEditCreditDebitProps } from "../getCreditDebitTypes";
-
 const editCreditDebitAPI = async ({
   header,
   creditDebit,
@@ -15,9 +14,6 @@ const editCreditDebitAPI = async ({
       ...creditDebit,
     }),
   }
-
   return fetchInterceptor(url, options)
-  
 };
-
 export default editCreditDebitAPI;

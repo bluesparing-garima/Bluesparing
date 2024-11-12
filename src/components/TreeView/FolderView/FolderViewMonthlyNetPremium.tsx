@@ -22,8 +22,8 @@ import {
   INetPremiumPartner,
 } from "../ITreeView";
 
-import GetMonthlyPartnerCompanyNetPreminumService from "../../../api/Dashboard/GetMonthlyPartnerCompanyNetPreminum/GetMonthlyPartnerCompanyNetPreminumService";
-import GetMonthlyBrokerCompanyNetPreminumService from "../../../api/Dashboard/GetMonthlyBrokerCompanyNetPreminum/GetMonthlyBrokerCompanyNetPreminumService";
+import GetMonthlyPartnerCompanyNetPremiumService from "../../../api/Dashboard/GetMonthlyPartnerCompanyNetPreminum/GetMonthlyPartnerCompanyNetPreminumService";
+import GetMonthlyBrokerCompanyNetPremiumService from "../../../api/Dashboard/GetMonthlyBrokerCompanyNetPreminum/GetMonthlyBrokerCompanyNetPreminumService";
 
 const FolderView: React.FC<{
   node:
@@ -62,7 +62,7 @@ const FolderView: React.FC<{
             }
           } else if ("partnerId" in node) {
             const partnerId = node.partnerId;
-            const res = await GetMonthlyPartnerCompanyNetPreminumService({
+            const res = await GetMonthlyPartnerCompanyNetPremiumService({
               header,
               startDate,
               endDate,
@@ -78,7 +78,7 @@ const FolderView: React.FC<{
             }
           } else if ("brokerId" in node) {
             const brokerId = node.brokerId;
-            const res = await GetMonthlyBrokerCompanyNetPreminumService({
+            const res = await GetMonthlyBrokerCompanyNetPremiumService({
               header,
               startDate,
               endDate,

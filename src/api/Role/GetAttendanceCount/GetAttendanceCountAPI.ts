@@ -1,7 +1,7 @@
 import fetchInterceptor, {
   FetchOptions,
 } from "../../../utils/fetchInterceptor ";
-import { employeeAttendanceEnpoint as endpoint } from "../apiEndpoints";
+import { employeeAttendanceEndpoint as endpoint } from "../apiEndpoints";
 import { getAttendanceProps } from "../getRolesTypes";
 
 const GetAttendanceCountAPI = async ({ header, eId }: getAttendanceProps) => {

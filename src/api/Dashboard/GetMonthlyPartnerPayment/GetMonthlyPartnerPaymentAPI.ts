@@ -1,6 +1,6 @@
 import fetchInterceptor, { FetchOptions } from "../../../utils/fetchInterceptor ";
 import { getMonthlyPartnerPaymentEndpoint as endpoint } from "../apiEndPoints";
-import { getMonthlyPartnerPaymentProps } from "../getDashbaordTypes";
+import { getMonthlyPartnerPaymentProps } from "../getDashboardTypes";
 
 const GetMonthlyPartnerPaymentAPI = async ({
   header,

@@ -1,12 +1,12 @@
-import GetBrokerWithRecievedCompanyPaymentAPI from "./GetBrokerWithRecievedCompanyPaymentAPI";
-import { getBrokerCompanyPaymentProps } from "../getDashbaordTypes";
+import GetBrokerWithReceivedCompanyPaymentAPI from "./GetBrokerWithRecievedCompanyPaymentAPI";
+import { getBrokerCompanyPaymentProps } from "../getDashboardTypes";
 
-const GetBrokerWithRecievedCompanyPaymentService = async ({
+const GetBrokerWithReceivedCompanyPaymentService = async ({
   header,
   brokerId, category
 }: getBrokerCompanyPaymentProps):Promise<any> => {
   try {
-    const res = await GetBrokerWithRecievedCompanyPaymentAPI({
+    const res = await GetBrokerWithReceivedCompanyPaymentAPI({
       header: header,
       brokerId: brokerId,
       category: category
@@ -18,4 +18,4 @@ const GetBrokerWithRecievedCompanyPaymentService = async ({
 
 };
 
-export default GetBrokerWithRecievedCompanyPaymentService;
+export default GetBrokerWithReceivedCompanyPaymentService;

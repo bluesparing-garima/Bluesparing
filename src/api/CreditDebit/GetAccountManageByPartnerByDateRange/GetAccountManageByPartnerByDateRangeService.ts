@@ -1,7 +1,5 @@
 import GetAccountManageByPartnerByDateRangeAPI from "./GetAccountManageByPartnerByDateRangeAPI";
 import { GetCreditDebitByPartnerDateRangeProps } from "../getCreditDebitTypes";
-//import convertICreditDebitToICreditDebitVM from "../convertICreditDebitToICreditDebitVM";
-
 const GetAccountManageByPartnerByDateRangeService = async ({
   header,
   partnerId,
@@ -19,7 +17,5 @@ const GetAccountManageByPartnerByDateRangeService = async ({
   } catch (error) {
     throw error
   }
-
 };
-
 export default GetAccountManageByPartnerByDateRangeService;

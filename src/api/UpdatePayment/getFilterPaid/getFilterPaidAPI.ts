@@ -8,8 +8,6 @@ const getFilterPaidAPI = async (props: getFilterPaidPartialUnpaidProps) => {
     method: "GET",
     headers: props.header,
   };
-
-
   return fetchInterceptor(url, options)
 
 };

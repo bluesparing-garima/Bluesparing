@@ -1,5 +1,5 @@
 import GetBrokerWithCompanyPaymentAPI from "./GetBrokerWithCompanyPaymentAPI";
-import { getBrokerCompanyPaymentProps } from "../getDashbaordTypes";
+import { getBrokerCompanyPaymentProps } from "../getDashboardTypes";
 
 const GetBrokerWithCompanyPaymentService = async ({
   header,

@@ -1,12 +1,12 @@
-import GetRecievedBrokerPaymentAPI from "./GetRecievedBrokerPaymentAPI";
-import { getTotalBrokerPaymentProps } from "../getDashbaordTypes";
+import GetReceivedBrokerPaymentAPI from "./GetRecievedBrokerPaymentAPI";
+import { getTotalBrokerPaymentProps } from "../getDashboardTypes";
 
-const GetRecievedBrokerPaymentService = async ({
+const GetReceivedBrokerPaymentService = async ({
   header,
   category,
 }: getTotalBrokerPaymentProps): Promise<any> => {
   try {
-    const res = await GetRecievedBrokerPaymentAPI({
+    const res = await GetReceivedBrokerPaymentAPI({
       header: header,
       category: category,
     })
@@ -17,4 +17,4 @@ const GetRecievedBrokerPaymentService = async ({
 
 };
 
-export default GetRecievedBrokerPaymentService;
+export default GetReceivedBrokerPaymentService;

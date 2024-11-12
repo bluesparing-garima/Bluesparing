@@ -2,7 +2,7 @@ import fetchInterceptor, { FetchOptions } from "../../../utils/fetchInterceptor 
 import { getVechicleNumberEndpoint as endpoint } from "../apiEndpoints";
 import { GetVechicleNumberProps } from "../getPoliciesTypes";
 
-const getVechicleNumberAPI = async ({
+const getVehicleNumberAPI = async ({
   header,
   vehicleNumber,
 }: GetVechicleNumberProps) => {
@@ -16,4 +16,4 @@ const getVechicleNumberAPI = async ({
 
 };
 
-export default getVechicleNumberAPI;
+export default getVehicleNumberAPI;

@@ -1,6 +1,6 @@
 import fetchInterceptor, { FetchOptions } from "../../../utils/fetchInterceptor ";
 import { GetTotalNetPremiumBrokerEndpoint as endpoint } from "../apiEndPoints";
-import { getTotalBrokerPaymentProps } from "../getDashbaordTypes";
+import { getTotalBrokerPaymentProps } from "../getDashboardTypes";
 
 const GetTotalNetPremiumBrokerAPI = async ({
   header,

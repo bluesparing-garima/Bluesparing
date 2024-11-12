@@ -1,7 +1,7 @@
-import GetMonthlyPartnerCompanyNetPreminumAPI from "./GetMonthlyPartnerCompanyNetPreminumAPI";
-import { getMonthlyPartnerPaymentWithCompanyProps } from "../getDashbaordTypes";
+import GetMonthlyPartnerCompanyNetPremiumAPI from "./GetMonthlyPartnerCompanyNetPreminumAPI";
+import { getMonthlyPartnerPaymentWithCompanyProps } from "../getDashboardTypes";
 
-const GetMonthlyPartnerCompanyNetPreminumService = async ({
+const GetMonthlyPartnerCompanyNetPremiumService = async ({
   header,
   startDate,
   endDate,
@@ -9,7 +9,7 @@ const GetMonthlyPartnerCompanyNetPreminumService = async ({
   category,
 }: getMonthlyPartnerPaymentWithCompanyProps): Promise<any> => {
   try {
-    const res = await GetMonthlyPartnerCompanyNetPreminumAPI({
+    const res = await GetMonthlyPartnerCompanyNetPremiumAPI({
       header: header,
       startDate: startDate,
       endDate: endDate,
@@ -23,4 +23,4 @@ const GetMonthlyPartnerCompanyNetPreminumService = async ({
 
 };
 
-export default GetMonthlyPartnerCompanyNetPreminumService;
+export default GetMonthlyPartnerCompanyNetPremiumService;

@@ -1,4 +1,4 @@
-import { getMonthlyBrokerPaymentProps } from "../getDashbaordTypes";
+import { getMonthlyBrokerPaymentProps } from "../getDashboardTypes";
 import GetMonthlyBrokerNetPremiumAPI from "./GetMonthlyBrokerNetPremiumAPI";
 
 const GetMonthlyBrokerNetPremiumService = async ({

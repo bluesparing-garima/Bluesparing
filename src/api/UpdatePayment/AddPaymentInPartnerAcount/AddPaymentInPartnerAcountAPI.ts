@@ -1,7 +1,7 @@
 import { addAmountInPartnerProps } from "../getCalculatationTypes";
 import { addBalanceInPartner as endpoint } from "../apiEndpoints";
 import fetchInterceptor, { FetchOptions } from "../../../utils/fetchInterceptor ";
-const AddPaymentInPartnerAcountAPI = async ({ header, startDate,endDate,partnerId,accountId,partnerBalance,payOutAmount }: addAmountInPartnerProps) => {
+const AddPaymentInPartnerAmountAPI = async ({ header, startDate,endDate,partnerId,accountId,partnerBalance,payOutAmount }: addAmountInPartnerProps) => {
   const url = endpoint()
     const options: FetchOptions = {
       method: "POST",
@@ -13,5 +13,5 @@ const AddPaymentInPartnerAcountAPI = async ({ header, startDate,endDate,partnerI
 return fetchInterceptor(url,options)
 };
 
-export default AddPaymentInPartnerAcountAPI;
+export default AddPaymentInPartnerAmountAPI;
 

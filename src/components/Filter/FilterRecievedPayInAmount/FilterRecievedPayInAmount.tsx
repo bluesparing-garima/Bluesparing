@@ -3,7 +3,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { header } from "../../../context/constant";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import GetRecievedBrokerPaymentService from "../../../api/Dashboard/GetRecievedBrokerPayment/GetRecievedBrokerPaymentService";
+import GetReceivedBrokerPaymentService from "../../../api/Dashboard/GetRecievedBrokerPayment/GetRecievedBrokerPaymentService";
 import { BrokerReceivedPayInProps } from "../../TreeView/ITreeView";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import { generateBrokerReceivedPayInExcel } from "../../../utils/DashboardExcel";
@@ -17,7 +17,7 @@ const FilterRecievedPayInAmount = () => {
   ); // State for all credit debits
   useEffect(() => {
     const fetchBrokerPayments = async () => {
-      GetRecievedBrokerPaymentService({
+      GetReceivedBrokerPaymentService({
         header,
         category: selectedCategory,
       }) // Call API to fetch credit debits

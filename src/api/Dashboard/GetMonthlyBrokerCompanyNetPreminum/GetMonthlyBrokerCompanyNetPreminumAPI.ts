@@ -1,8 +1,8 @@
 import fetchInterceptor, { FetchOptions } from "../../../utils/fetchInterceptor ";
 import { GetMonthlyBrokerCompanyNetPremiumEndpoint as endpoint } from "../apiEndPoints";
-import { getMonthlyBrokerPaymentWithCompanyProps } from "../getDashbaordTypes";
+import { getMonthlyBrokerPaymentWithCompanyProps } from "../getDashboardTypes";
 
-const GetMonthlyBrokerCompanyNetPreminumAPI = async ({
+const GetMonthlyBrokerCompanyNetPremiumAPI = async ({
   header,
   startDate,
   endDate,
@@ -19,4 +19,4 @@ const GetMonthlyBrokerCompanyNetPreminumAPI = async ({
 
 };
 
-export default GetMonthlyBrokerCompanyNetPreminumAPI;
+export default GetMonthlyBrokerCompanyNetPremiumAPI;

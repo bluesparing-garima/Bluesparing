@@ -21,7 +21,7 @@ import useGetPartners from "../../../Hooks/Partner/useGetPartners";
 import React from "react";
 import dayjs from "dayjs";
 import { useLocation, useParams } from "react-router-dom";
-import GetMonthlyPartnerCompanyNetPreminumService from "../../../api/Dashboard/GetMonthlyPartnerCompanyNetPreminum/GetMonthlyPartnerCompanyNetPreminumService";
+import GetMonthlyPartnerCompanyNetPremiumService from "../../../api/Dashboard/GetMonthlyPartnerCompanyNetPreminum/GetMonthlyPartnerCompanyNetPreminumService";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import { INetPremiumCompany } from "../../TreeView/ITreeView";
 import { generateExcelCompanyNetPremium } from "../../../utils/DashboardExcel";
@@ -75,7 +75,7 @@ const FilterPartnerMonthlyNetPremium = () => {
     endDate: string,
     partnerId: string
   ) => {
-    GetMonthlyPartnerCompanyNetPreminumService({
+    GetMonthlyPartnerCompanyNetPremiumService({
       header,
       partnerId: partnerId!,
       startDate: startDate,
