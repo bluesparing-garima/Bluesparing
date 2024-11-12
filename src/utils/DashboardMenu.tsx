@@ -13,7 +13,6 @@ export default function DashboardMenu({ selectedCategory }: any) {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
   return (
     <div>
       <Button

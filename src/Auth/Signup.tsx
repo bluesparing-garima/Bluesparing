@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import logo from "../assets/login_logo.png";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Form, Field } from "react-final-form";
@@ -7,12 +7,10 @@ import { ISignUp } from "./IAuth";
 import {  Button, Grid } from "@mui/material";
 import { header } from "../context/constant";
 import fetchInterceptor, { FetchOptions } from "../utils/fetchInterceptor ";
-
 const Signup = () => {
   const navigate = useNavigate();
   const loc = useLocation().state as { form: string };
   const role = loc.form.toLowerCase();
-
   const validate = (values: ISignUp) => {
     const errors: Partial<ISignUp> = {};
     if (!values.email) {
@@ -32,11 +30,10 @@ const Signup = () => {
     if (values.password !== values.confirmPassword) {
       errors.confirmPassword = "Passwords do not match";
     }
-    if (role === "partner" && !values.file) {
+    if (role === "admin" && !values.file) {
       errors.file = "Please select a Logo";
-    } else if (role === "partner" && values.file) {
+    } else if (role === "admin" && values.file) {
       const maxSizeInBytes = 1 * 1024 * 1024;
-
       if (values.file.size > maxSizeInBytes) {
         errors.file = "Logo size should not exceed 1 MB";
       }
@@ -83,13 +80,9 @@ const Signup = () => {
       }
     } catch (error) {
       console.error("Error uploading file:", error);
-      // Handle error, e.g., show an error message to the user
     }
-
-    // Simulate a server error for demonstration
     return { [FORM_ERROR]: "Sign up failed. Try again!" };
   };
-
   return (
     <>
       <div className="min-h-screen bg-gray-100 text-gray-900 flex justify-center">
@@ -114,14 +107,12 @@ const Signup = () => {
                 />
               </picture>
             </div>
-
             <div className="mt-3 flex flex-col items-center">
               <h1 className="text-2xl xl:text-3xl font-extrabold">Sign up</h1>
               <div className="w-full flex-1">
                 <div className="my-4 border-b text-center">
                   <div className="leading-none px-2 inline-block text-sm text-gray-600 tracking-wide font-medium bg-white transform translate-y-1/2"></div>
                 </div>
-
                 <div className="mx-auto max-w-full px-20">
                   <Form
                     onSubmit={onSubmit}
@@ -210,7 +201,6 @@ const Signup = () => {
                               </Field>
                             </div>
                           </Grid>
-
                           <Grid item lg={6} md={6} sm={6} xs={12}>
                             <div className="mb-1">
                               <label
@@ -238,7 +228,6 @@ const Signup = () => {
                               </Field>
                             </div>
                           </Grid>
-
                           <Grid item lg={6} md={6} sm={6} xs={12}>
                             <div className="mb-1">
                               <label
@@ -298,7 +287,7 @@ const Signup = () => {
                                         accept="image/*"
                                       />
                                       {meta.touched && meta.error && (
-                                        <span style={{ color: "red" }}>
+                                        <span className="text-safekaroDarkOrange">
                                           {meta.error}
                                         </span>
                                       )}
@@ -308,7 +297,6 @@ const Signup = () => {
                               </Field>
                             </Grid>
                           )}
-
                           <Grid item lg={12} md={12} sm={12} xs={12}>
                             {submitError && (
                               <div className="error text-safekaroDarkOrange">
@@ -347,5 +335,4 @@ const Signup = () => {
     </>
   );
 };
-
 export default Signup;

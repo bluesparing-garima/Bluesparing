@@ -8,7 +8,6 @@ import { SafeKaroUser, header } from "../context/constant";
 import getTeamDetailsService from "../api/Team/GetTeamDetails/getTeamDetailsService";
 import { setTokens } from "../Hooks/Tokens/useToken";
 import fetchInterceptor, { FetchOptions } from "../utils/fetchInterceptor ";
-
 const Signin = () => {
   const navigate = useNavigate();
   const validate = (values: ISignIn) => {
@@ -31,7 +30,6 @@ const Signin = () => {
     it: "/it/dashboard",
     default: "/partnerdashboard",
   };
-
   const onSubmit = async (signInData: ISignIn) => {
     try {
       const url = "/api/user/login";
@@ -47,24 +45,19 @@ const Signin = () => {
           headRMId: "",
           headRM: "",
         };
-        // localStorage.setItem("user", JSON.stringify(loginData));
         if (loginData.accessToken && loginData.refreshToken) {
           setTokens(loginData.accessToken!, loginData.refreshToken!);
         }
-
-        // Example of fetching additional details
         if (responseData.role !== "admin") {
           const bookingRequestDetails = await getTeamDetailsService({
             header,
             teamId: responseData.partnerId,
           });
-
           loginData.headRMId = bookingRequestDetails.headRMId!;
           loginData.headRM = bookingRequestDetails.headRM!;
           loginData.id = responseData.partnerId!;
         }
         localStorage.setItem("user", JSON.stringify(loginData));
-
         let role = responseData.role.toLowerCase();
         if (role === "relationship manager") {
           role = "rm";
@@ -75,10 +68,8 @@ const Signin = () => {
       }
     } catch (error) {
       console.error("Error signing in:", error);
-      // Handle error, e.g., show an error message to the user
     }
   };
-
   return (
     <div className="min-h-screen bg-gray-100 text-gray-900 flex justify-center">
       <div className="max-w-screen-xl m-0 sm:m-0 bg-white shadow sm:rounded-lg flex justify-center flex-1">
@@ -93,7 +84,6 @@ const Signin = () => {
               <div className="my-4 border-b text-center">
                 <div className="leading-none px-2 inline-block text-sm text-gray-600 tracking-wide font-medium bg-white transform translate-y-1/2"></div>
               </div>
-
               <div className="mx-auto max-w-xs">
                 <Form
                   onSubmit={onSubmit}
@@ -127,7 +117,6 @@ const Signin = () => {
                             </Field>
                           </div>
                         </Grid>
-
                         <Grid item lg={12} md={12} sm={12} xs={12}>
                           <div className="mb-2">
                             <label
@@ -155,7 +144,6 @@ const Signin = () => {
                             </Field>
                           </div>
                         </Grid>
-
                         <Grid item lg={12} md={12} sm={12} xs={12}>
                           {submitError && (
                             <div className="error text-safekaroDarkOrange">
@@ -186,7 +174,6 @@ const Signin = () => {
                   )}
                 />
               </div>
-
               <div className="my-4 flex justify-center items-center gap-x-4">
                 <Link
                   to="/signup"
@@ -219,5 +206,4 @@ const Signin = () => {
     </div>
   );
 };
-
 export default Signin;

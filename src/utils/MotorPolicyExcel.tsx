@@ -1,10 +1,8 @@
 import React from "react";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
-
 const MotorPolicyExcel: React.FC = () => {
   const handleDownload = () => {
-    // Create a new workbook and a worksheet
     const workbook = XLSX.utils.book_new();
     const worksheetData = [
       [
@@ -103,11 +101,7 @@ const MotorPolicyExcel: React.FC = () => {
       ],
     ];
     const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
-
-    // Append the worksheet to the workbook
     XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
-
-    // Generate the Excel file and trigger the download
     const excelBuffer = XLSX.write(workbook, {
       bookType: "xlsx",
       type: "array",
@@ -115,8 +109,6 @@ const MotorPolicyExcel: React.FC = () => {
     const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
     saveAs(blob, "sample.xlsx");
   };
-
   return <button onClick={handleDownload}>Download Excel Sample</button>;
 };
-
 export default MotorPolicyExcel;

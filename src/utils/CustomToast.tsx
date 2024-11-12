@@ -2,21 +2,17 @@ import toast, { Toast } from "react-hot-toast";
 import { NotificationImportant as NotificationIcon } from "@mui/icons-material";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { useEffect } from "react";
-
 interface CustomToastProps {
-  t: Toast; // Toast instance for dismiss control
+  t: Toast;
   message: string;
 }
-
 const CustomToast: React.FC<CustomToastProps> = ({ t, message }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       toast.dismiss(t.id);
     }, 1000);
-
-    return () => clearTimeout(timer); // Cleanup on unmount
+    return () => clearTimeout(timer);
   }, [t.id]);
-
   return (
     <div
       className={`${
@@ -25,7 +21,7 @@ const CustomToast: React.FC<CustomToastProps> = ({ t, message }) => {
     >
       <div className="flex-1 w-0 p-4">
         <div className="flex items-start">
-          {/* Avatar as first letter */}
+          {}
           <div className="flex-shrink-0 pt-0.5">
             <div className="h-10 w-10 bg-blue-500 rounded-full flex items-center justify-center text-lg font-bold text-white">
               <NotificationIcon />
@@ -47,5 +43,4 @@ const CustomToast: React.FC<CustomToastProps> = ({ t, message }) => {
     </div>
   );
 };
-
 export default CustomToast;

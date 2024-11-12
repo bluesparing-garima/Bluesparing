@@ -19,19 +19,13 @@ import {
   SafeKaroUser,
   TEAM_STORAGE_KEY,
 } from "./context/constant";
-import { useEffect, useState } from "react"; // Import useState for local state
-
+import { useEffect, useState } from "react";
 import SidebarSwitcher from "./SidebarSwitcher";
-
 function App() {
   const content = useRoutes(routes);
   const location = useLocation();
   const currentUrl = location.pathname;
-
-  // Using useState for userData and storedTheme
   const [userData, setUserData] = useState<SafeKaroUser>();
- 
-
   const handleSession = (currentUrl: string) => {
     const storageKeysMap = [
       { key: ROLE_STORAGE_KEY, condition: "/role" },
@@ -59,7 +53,6 @@ function App() {
       }
     });
   };
-
   useEffect(() => {
     handleSession(currentUrl);
     if (currentUrl !== "/") {
@@ -68,12 +61,9 @@ function App() {
         let parsedUserData = JSON.parse(storedTheme) as SafeKaroUser;
         setUserData(parsedUserData);
       } else {
-        // navigate("/");
       }
     }
-    // eslint-disable-next-line
   }, [currentUrl]);
-
   return (
     <>
       <SafekaroProvider>
@@ -88,5 +78,4 @@ function App() {
     </>
   );
 }
-
 export default App;

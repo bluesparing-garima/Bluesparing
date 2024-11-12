@@ -5,7 +5,6 @@ import { Tooltip } from "@mui/material";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 const DownloadExcel: React.FC = () => {
   const handleDownload = () => {
-    // Create a new workbook and a worksheet
     const workbook = XLSX.utils.book_new();
     const worksheetData = [
       [
@@ -54,11 +53,7 @@ const DownloadExcel: React.FC = () => {
       ],
     ];
     const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
-
-    // Append the worksheet to the workbook
     XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
-
-    // Generate the Excel file and trigger the download
     const excelBuffer = XLSX.write(workbook, {
       bookType: "xlsx",
       type: "array",
@@ -66,7 +61,6 @@ const DownloadExcel: React.FC = () => {
     const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
     saveAs(blob, "sample.xlsx");
   };
-
   return (
     <Tooltip title="Download Sample Excel">
       <button
@@ -78,5 +72,4 @@ const DownloadExcel: React.FC = () => {
     </Tooltip>
   );
 };
-
 export default DownloadExcel;

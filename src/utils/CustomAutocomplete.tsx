@@ -1,17 +1,14 @@
 import React from "react";
 import { Autocomplete, TextField } from "@mui/material";
 import { FieldRenderProps } from "react-final-form";
-
 export interface OptionType {
   label: string;
   value: string;
 }
-
 interface AutocompleteProps extends FieldRenderProps<OptionType, HTMLElement> {
   options: OptionType[];
   label: string;
 }
-
 const CustomAutocomplete: React.FC<AutocompleteProps> = ({
   input,
   meta,
@@ -19,7 +16,6 @@ const CustomAutocomplete: React.FC<AutocompleteProps> = ({
   label,
   ...rest
 }) => {
-  //const { onChange, value } = input;
   const showError = meta.touched && meta.error;
   return (
     <Autocomplete
@@ -44,5 +40,4 @@ const CustomAutocomplete: React.FC<AutocompleteProps> = ({
     />
   );
 };
-
 export default CustomAutocomplete;

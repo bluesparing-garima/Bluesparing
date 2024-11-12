@@ -8,12 +8,9 @@ import Typography from "@mui/material/Typography";
 import { notificationPath } from "../sitemap";
 import { INotification } from "../components/Notification/INotification";
 import { ListItemIcon } from "@mui/material";
-
-
 interface NotificationBadgeProps {
   notificationData: INotification[];
 }
-
 const NotificationBadge: FC<NotificationBadgeProps> = ({
   notificationData,
 }) => {
@@ -21,20 +18,16 @@ const NotificationBadge: FC<NotificationBadgeProps> = ({
   const count = notificationData.length;
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
-
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
-
   const handleClose = () => {
     setAnchorEl(null);
   };
-
   const handleViewAll = () => {
     handleClose();
     navigate(notificationPath(), { state: notificationData });
   };
-
   const notificationsLabel = (count: number) => {
     if (count === 0) {
       return "no notifications";
@@ -44,7 +37,6 @@ const NotificationBadge: FC<NotificationBadgeProps> = ({
     }
     return `${count} notifications`;
   };
-
   if (count === 0) {
     return (
       <Link to={notificationPath()}>
@@ -100,7 +92,6 @@ const NotificationBadge: FC<NotificationBadgeProps> = ({
           </svg>
         </Badge>
       </IconButton>
-
       <Menu
         id="notification-menu"
         anchorEl={anchorEl}
@@ -134,7 +125,7 @@ const NotificationBadge: FC<NotificationBadgeProps> = ({
                       </ListItemIcon>
                       <Typography variant="inherit">{ele.title}</Typography>
                     </MenuItem>
-                    {/* <NotificationCard notification={ele} /> */}
+                    {}
                   </MenuItem>
                 );
               })}
@@ -161,5 +152,4 @@ const NotificationBadge: FC<NotificationBadgeProps> = ({
     </>
   );
 };
-
 export default NotificationBadge;

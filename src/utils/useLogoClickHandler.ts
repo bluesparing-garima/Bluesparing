@@ -1,13 +1,9 @@
-// useLogoClickHandler.ts
 import { useNavigate } from 'react-router-dom';
-
 const useLogoClickHandler = () => {
   const navigate = useNavigate();
-
   const handleClick = () => {
     const storedTheme = localStorage.getItem("user");
     const userData = storedTheme ? JSON.parse(storedTheme) : null;
-
     if (userData && userData.role) {
       switch (userData.role.toLowerCase()) {
         case "admin":
@@ -30,8 +26,6 @@ const useLogoClickHandler = () => {
       navigate("/login");
     }
   };
-
   return handleClick;
 };
-
 export default useLogoClickHandler;

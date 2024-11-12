@@ -1,25 +1,19 @@
 import React, { useState, useEffect } from "react";
 import dayjs from "dayjs";
-
 interface CountdownTimerProps {
   registerDate: any;
   status?: string;
   timer?: string;
 }
-
 const CountdownTimer: React.FC<CountdownTimerProps> = ({
   registerDate,
   status = "",
   timer = "",
 }) => {
- 
   const regDate = dayjs(registerDate);
-
   const calculateTimeLeft = () => {
     const now = dayjs();
-
-    const diffInMilliseconds = now.diff(regDate); // Difference in milliseconds
-
+    const diffInMilliseconds = now.diff(regDate);
     if (diffInMilliseconds <= 0) {
       return {
         days: 0,
@@ -28,15 +22,11 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({
         seconds: 0,
       };
     }
-
-    // Convert milliseconds to seconds
     const diffInSeconds = Math.floor(diffInMilliseconds / 1000);
-
     const days = Math.floor(diffInSeconds / (24 * 60 * 60));
     const hours = Math.floor((diffInSeconds % (24 * 60 * 60)) / (60 * 60));
     const minutes = Math.floor((diffInSeconds % (60 * 60)) / 60);
     const seconds = Math.floor(diffInSeconds % 60);
-
     return {
       days,
       hours,
@@ -44,9 +34,7 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({
       seconds,
     };
   };
-
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
-
   useEffect(() => {
     let timer: NodeJS.Timeout;
     if (status !== "Doc Pending" && status !== "Rejected") {
@@ -54,23 +42,19 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({
         setTimeLeft(calculateTimeLeft());
       }, 1000);
     }
-
     return () => clearInterval(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     // eslint-disable-next-line
   }, [regDate]);
-
   const convertMillisecondsToTime = (msString: string) => {
     const ms = Number(msString);
     if (isNaN(ms)) {
       return { day: 0, hour: 0, min: 0, second: 0 };
     }
-
     const totalSeconds = Math.floor(ms / 1000);
     const days = Math.floor(totalSeconds / (24 * 3600));
     const hours = Math.floor((totalSeconds % (24 * 3600)) / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
-
     return {
       day: days,
       hour: hours,
@@ -78,7 +62,6 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({
       second: seconds,
     };
   };
-
   const operationTaskDone = (s: string) => {
     if (!s) {
       return false;
@@ -92,16 +75,13 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({
       s !== "payment request" &&
       s!=="doc pending" && 
       s!=="changes required"&&
-      // s!=="rejected" &&
       s !== ""
     ) {
-  
       return true;
     }
     return false;
   };
   const { days, hours, minutes, seconds } = timeLeft;
-
   return (
     <>
       {operationTaskDone(status) ? (
@@ -161,11 +141,9 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({
               {seconds} second{seconds !== 1 ? "s" : ""}{" "}
             </span>
           )}
-        
         </div>
       )}
     </>
   );
 };
-
 export default CountdownTimer;

@@ -1,5 +1,4 @@
 import { INotification } from "../components/Notification/INotification";
-
 export const storeNotifications = (key: string, notifications: INotification[]) => {
     try {
         const serializedData = JSON.stringify(notifications);
@@ -8,8 +7,6 @@ export const storeNotifications = (key: string, notifications: INotification[]) 
         console.error("Error storing notifications:", error);
     }
 };
-
-
 export const getNotifications = (key: string): INotification[] => {
     try {
         const serializedData = localStorage.getItem(key);
@@ -19,14 +16,10 @@ export const getNotifications = (key: string): INotification[] => {
         return [];
     }
 };
-
-
 export const updateNotification = (key: string, updatedNotification: INotification) => {
     const notifications = getNotifications(key);
-
     const updatedNotifications = notifications.map(notification =>
         notification._id === updatedNotification._id ? updatedNotification : notification
     );
-
     storeNotifications(key, updatedNotifications);
 };

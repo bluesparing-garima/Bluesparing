@@ -1,4 +1,3 @@
-//import async from "./components/Async";
 import SignUp from "./Auth/Signup";
 import Dashboard from "./components/Dashboard/dashboard";
 import PartnerDashboard from "./components/Dashboard/partnerDashboard";
@@ -37,7 +36,6 @@ import ViewPolicy from "./components/Policy/ViewPolicy/ViewPolicy";
 import Teams from "./components/Admin/Team/Teams/Teams";
 import AddTeam from "./components/Admin/Team/AddTeam/AddTeam";
 import Page403 from "./Auth/Page403";
-//import AuthGuards from "./guards/AuthGuards";
 import AddBookingRequest from "./components/Booking/AddBookingRequest/AddBookingRequest";
 import BookingRequests from "./components/Booking/BookingRequests/BookingRequests";
 import AddLead from "./components/Partner/AddLead/AddLead";
@@ -123,7 +121,6 @@ import CompanyFilterPayOutBalance from "./components/Filter/FilterPayOutBalance/
 import FilterPayOutLeftDistributed from "./components/Filter/FilterPayOutLeftDistributed/FilterPayOutLeftDistributed";
 import CompanyFilterPayOutLeftDistributed from "./components/Filter/FilterPayOutLeftDistributed/CompanyFilterPayOutLeftDistributed";
 import CompanyFilterPayOutPaid from "./components/Filter/FilterPaidPayOut/CompanyFilterPayOutPaid";
-
 import FilterPartnerMonthlyNetPremium from "./components/Filter/FilterNetPerminum/FilterPartnerMonthlyNetPremium";
 import MonthlyFinalPremium from "./components/Filter/FilterFinalPreminum/MonthlyFinalPremium";
 import FilterMonthlyBrokerFinalPremium from "./components/Filter/FilterFinalPreminum/FilterMonthlyBrokerFinalPremium";
@@ -151,7 +148,6 @@ import AddNews from "./components/Website/News/AddNews/AddNews";
 import AddNewsCategory from "./components/Website/NewsCategory/AddNewsCategory/AddNewsCategory";
 import NewsCategories from "./components/Website/NewsCategory/NewsCategories/NewsCategories";
 import HrDashBoard from "./components/Dashboard/HrDashBoard";
-
 import HolidayList from "./components/HR/Holidays/HolidayList";
 import AddHoliday from "./components/HR/Holidays/AddHoliday";
 import Attendance from "./components/HR/Attendance/AttendanceRecord/Attendance";
@@ -159,7 +155,6 @@ import EmployeeAttendance from "./components/HR/Attendance/AttendanceRecord/Empl
 import AddAttendance from "./components/HR/Attendance/AddAttendance/AddAttendance";
 import MarkAttendance from "./components/HR/Attendance/MarkAttendance/MarkAttendance";
 import ITDashboard from "./components/Dashboard/ITDashboard";
-
 const routes = [
   {
     path: "/",
@@ -226,7 +221,6 @@ const routes = [
   },
   {
     path: "dashboard",
-    // element: <AdminLayout />,
     children: [
       {
         path: "",
@@ -236,7 +230,6 @@ const routes = [
   },
   {
     path: "lead",
-    //element: <DashboardLayout />,
     children: [
       {
         path: "",
@@ -266,7 +259,6 @@ const routes = [
   },
   {
     path: "role",
-    // element: <AdminLayout />,
     children: [
       {
         path: "",
@@ -578,7 +570,6 @@ const routes = [
   },
   {
     path: "account",
-    // element: <AdminLayout />,
     children: [
       {
         path: "",
@@ -652,7 +643,6 @@ const routes = [
   },
   {
     path: "booking",
-    // element: <AdminLayout />,
     children: [
       {
         path: "",
@@ -682,7 +672,6 @@ const routes = [
   },
   {
     path: "policytype",
-    // element: <AdminLayout />,
     children: [
       {
         path: "",
@@ -700,7 +689,6 @@ const routes = [
   },
   {
     path: "policy",
-    //element: <AdminLayout />,
     children: [
       {
         path: "/policy/motor/upload",
@@ -746,7 +734,6 @@ const routes = [
   },
   {
     path: "ranks",
-    //element: <AdminLayout />,
     children: [
       {
         path: "",
@@ -764,7 +751,6 @@ const routes = [
   },
   {
     path: "team",
-    //element: <AdminLayout />,
     children: [
       {
         path: "",
@@ -782,7 +768,6 @@ const routes = [
   },
   {
     path: "subproducts",
-    // element: <AdminLayout />,
     children: [
       {
         path: "",
@@ -804,7 +789,6 @@ const routes = [
   },
   {
     path: "casetype",
-    //element: <AdminLayout />,
     children: [
       {
         path: "",
@@ -822,7 +806,6 @@ const routes = [
   },
   {
     path: "fueltype",
-    //element: <AdminLayout />,
     children: [
       {
         path: "",
@@ -840,7 +823,6 @@ const routes = [
   },
   {
     path: "commision",
-    // element: <AdminLayout />,
     children: [
       {
         path: "payout",
@@ -858,12 +840,10 @@ const routes = [
   },
   {
     path: "calculate",
-    // element: <AdminLayout />,
     children: [],
   },
   {
     path: "products",
-    //element: <AdminLayout />,
     children: [
       {
         path: "",
@@ -881,7 +861,6 @@ const routes = [
   },
   {
     path: "companies",
-    //element: <AdminLayout />,
     children: [
       {
         path: "",
@@ -899,7 +878,6 @@ const routes = [
   },
   {
     path: "brokers",
-    //element: <AdminLayout />,
     children: [
       {
         path: "",
@@ -917,7 +895,6 @@ const routes = [
   },
   {
     path: "branch",
-    //element: <AdminLayout />,
     children: [
       {
         path: "",
@@ -935,7 +912,6 @@ const routes = [
   },
   {
     path: "categories",
-    //element: <AdminLayout />,
     children: [
       {
         path: "",
@@ -953,7 +929,6 @@ const routes = [
   },
   {
     path: "models",
-    //element: <AdminLayout />,
     children: [
       {
         path: "",
@@ -971,7 +946,6 @@ const routes = [
   },
   {
     path: "makes",
-    //element: <AdminLayout />,
     children: [
       {
         path: "",
@@ -989,7 +963,6 @@ const routes = [
   },
   {
     path: "accountdashboard",
-    //element: <AdminLayout />,
     children: [
       {
         path: "",
@@ -999,7 +972,6 @@ const routes = [
   },
   {
     path: "operationdashboard",
-    //element: <AdminLayout />,
     children: [
       {
         path: "",
@@ -1009,7 +981,6 @@ const routes = [
   },
   {
     path: "partnerdashboard",
-    //element: <AdminLayout />,
     children: [
       {
         path: "",
@@ -1035,7 +1006,6 @@ const routes = [
   },
   {
     path: "rm",
-    //element: <AdminLayout />,
     children: [
       {
         path: "dashboard",
@@ -1053,7 +1023,6 @@ const routes = [
         path: "lead",
         element: <RmLead />,
       },
-
       {
         path: "requested",
         element: <RmRequestedBooking />,
@@ -1062,7 +1031,6 @@ const routes = [
   },
   {
     path: "bookingdashboard",
-    //element: <AdminLayout />,
     children: [
       {
         path: "",
@@ -1072,7 +1040,6 @@ const routes = [
   },
   {
     path: "403",
-    //element: <AdminLayout />,
     children: [
       {
         path: "",
@@ -1082,7 +1049,6 @@ const routes = [
   },
   {
     path: "filter",
-    //element: <AdminLayout />,
     children: [
       {
         path: "",
@@ -1092,7 +1058,6 @@ const routes = [
   },
   {
     path: "notification",
-    //element: <AdminLayout />,
     children: [
       {
         path: "",
@@ -1146,5 +1111,4 @@ const routes = [
     element: <ITDashboard />,
   },
 ];
-
 export default routes;

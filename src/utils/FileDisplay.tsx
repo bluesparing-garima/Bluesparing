@@ -1,12 +1,9 @@
 import React from "react";
-
 interface FileDisplayProps {
-  url: string; // Assuming you pass the URL of the file directly
+  url: string;
 }
-
 const FileDisplay: React.FC<FileDisplayProps> = ({ url }) => {
   const fileType = getFileType(url);
-
   return (
     <div>
       {fileType === "image" && (
@@ -23,10 +20,8 @@ const FileDisplay: React.FC<FileDisplayProps> = ({ url }) => {
     </div>
   );
 };
-
 const getFileType = (url: string): "image" | "pdf" | "unsupported" => {
   const mimeType = getMimeType(url);
-
   if (mimeType?.startsWith("image")) {
     return "image";
   } else if (mimeType === "application/pdf") {
@@ -35,11 +30,9 @@ const getFileType = (url: string): "image" | "pdf" | "unsupported" => {
     return "unsupported";
   }
 };
-
 const getMimeType = (url: string): string | null => {
   const match = url.match(/\.([^.]+)$/);
   const extension = match ? match[1].toLowerCase() : null;
-
   switch (extension) {
     case "jpg":
     case "jpeg":
@@ -52,5 +45,4 @@ const getMimeType = (url: string): string | null => {
       return null;
   }
 };
-
 export default FileDisplay;

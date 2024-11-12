@@ -11,34 +11,27 @@ import acceptBookingRequestService from "../api/BookingRequest/AcceptBookingRequ
 import { IBookingRequestsVM } from "../components/Booking/IBookingRequests";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
-
 interface DialogProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   BookingId?: string;
   bookingData?: IBookingRequestsVM;
 }
-
 export default function InputDialog({
   open,
   setOpen,
   BookingId,
   bookingData,
 }: DialogProps) {
-
-
   const handleClose = () => {
     setOpen(false);
   };
-
   const navigate = useNavigate();
-
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const formJson = Object.fromEntries(formData.entries());
-    const reason = formJson.reason as string; // Cast to string
-
+    const reason = formJson.reason as string;
     if (bookingData) {
       const createOn = bookingData.createdOn
       const regDate = dayjs(createOn);
@@ -53,10 +46,8 @@ export default function InputDialog({
         navigate(`/booking/reject`)
       }
     }
-
     handleClose();
   };
-
   const callEditLeadAPI = async (bookingForm: any, bookingId: string) => {
     try {
       const newBooking = await acceptBookingRequestService({
@@ -71,7 +62,6 @@ export default function InputDialog({
       return []
     }
   };
-
   return (
     <React.Fragment>
       <Dialog
@@ -79,7 +69,7 @@ export default function InputDialog({
         onClose={handleClose}
         PaperProps={{
           component: "form",
-          onSubmit: handleSubmit, // Use the separate handleSubmit function
+          onSubmit: handleSubmit,
         }}
       >
         <DialogTitle>Reject </DialogTitle>

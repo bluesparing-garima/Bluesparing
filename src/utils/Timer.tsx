@@ -1,28 +1,23 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
-
 interface TimerProps {
     timer?: string;
 }
-
 interface ShowTimeProps {
     days: number, hours: number, minutes: number, seconds: number
 }
-
 const Timer: React.FC<TimerProps> = ({
     timer = "",
 }) => {
     const [time, setTime] = useState<ShowTimeProps>({ days: 0, hours: 0, minutes: 0, seconds: 0 })
     useEffect(() => {
         convertMillisecondsToTime()
-
+         // eslint-disable-next-line
     }, [])
     const convertMillisecondsToTime = () => {
         const ms = Number(timer);
         if (isNaN(ms)) {
             return
         }
-
         const totalSeconds = Math.floor(ms / 1000);
         const days = Math.floor(totalSeconds / (24 * 3600));
         const hours = Math.floor((totalSeconds % (24 * 3600)) / 3600);
@@ -30,8 +25,6 @@ const Timer: React.FC<TimerProps> = ({
         const seconds = totalSeconds % 60;
         setTime({ days, hours, minutes, seconds })
     };
-
-
     return (
         <>
             <div>
@@ -43,5 +36,4 @@ const Timer: React.FC<TimerProps> = ({
         </>
     );
 };
-
 export default Timer;
