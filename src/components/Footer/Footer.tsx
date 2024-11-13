@@ -4,13 +4,13 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <div className=" text-center py-6 fixed bottom-0 w-4/5">
-      <p className="text-lg font-semibold mb-2">
-        © {currentYear} Blue Sparing. All rights reserved.
-      </p>
-
-      <p className="text-xs text-gray-500 mt-4">
+    <div className=" text-center py-2 sticky bottom-0">
+      <p className="text-lg font-semibold">
+        © {currentYear} Blue Sparing. All rights reserved. 
+        |
+      <span className="text-xs text-gray-500 mt-0">
         Designed with ❤️ by BLUE SPARING
+      </span>
       </p>
     </div>
   );

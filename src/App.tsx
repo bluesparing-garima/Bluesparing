@@ -74,7 +74,9 @@ function App() {
           </>
         ) : (
           <SidebarSwitcher userData={userData} content={content} />
+          
         )}
+
       </SafekaroProvider>
     </>
   );
