@@ -69,8 +69,8 @@ const ViewCreditDebitByPartnerCard = () => {
   };
   return (
     <>
-      <div className="bg-blue-200 p-7 mt-3">
-        <Paper elevation={3} style={{ padding: 20 }}>
+      <div className="my-2">
+        <div>
           <Typography
             variant="h5"
             className="text-safekaroDarkOrange"
@@ -192,7 +192,7 @@ const ViewCreditDebitByPartnerCard = () => {
           {isVisible && (
             <ViewCreditDebitByPartner creditDebits={creditDebits} />
           )}
-        </Paper>
+        </div>
       </div>
       <Toaster position="bottom-center" reverseOrder={false} />
     </>

@@ -57,7 +57,6 @@ const SidebarSwitcher: React.FC<SidebarSwitcherProps> = ({
       SidebarComponent = null;
   }
 
-
   return (
     <div className="flex  bg-gray-100">
       <div
@@ -75,8 +74,9 @@ const SidebarSwitcher: React.FC<SidebarSwitcherProps> = ({
 
       <div className="flex flex-col flex-1 overflow-y-auto">
         <Header isSidebarOpen={isSidebarOpen} setSidebarOpen={setSidebarOpen} />
+
         {content}
-        <Footer/>
+        <Footer />
       </div>
     </div>
   );
