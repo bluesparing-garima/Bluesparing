@@ -70,7 +70,8 @@ function App() {
         {currentUrl === "/" ||
         currentUrl === "/signup" ||
         currentUrl === "/403" ? (
-          <> {content}</>
+          <> {content}
+          </>
         ) : (
           <SidebarSwitcher userData={userData} content={content} />
         )}

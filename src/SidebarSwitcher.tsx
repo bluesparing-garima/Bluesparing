@@ -9,6 +9,7 @@ import RMSidebar from "./components/Sidebar/RMSidebar";
 import HRSidebar from "./components/Sidebar/HRSidebar";
 import ITSidebar from "./components/Sidebar/ITSidebar";
 import { SafeKaroUser } from "./context/constant";
+import Footer from "./components/Footer/Footer";
 
 interface SidebarSwitcherProps {
   userData: SafeKaroUser | undefined;
@@ -75,6 +76,7 @@ const SidebarSwitcher: React.FC<SidebarSwitcherProps> = ({
       <div className="flex flex-col flex-1 overflow-y-auto">
         <Header isSidebarOpen={isSidebarOpen} setSidebarOpen={setSidebarOpen} />
         {content}
+        <Footer/>
       </div>
     </div>
   );
