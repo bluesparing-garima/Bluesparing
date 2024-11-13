@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from "react";
-//import { useTranslation } from "react-i18next";
 import { Typography, Paper, Card, CardContent, Grid } from "@mui/material";
 import { Link, useLocation, useParams } from "react-router-dom";
-
 import getQuotationByLeadIdService from "../../../../api/Quatotion/GetQuotationByLeadId/getQuotationByLeadIdService";
 import { ADD, header, Document, imagePath } from "../../../../context/constant";
 import { ILeads, IQuotations } from "../../IPartner";
 import getLeadByIdService from "../../../../api/Leads/GetLeadById/getLeadByIdService";
 import FileDisplay from "../../../../utils/FileDisplay";
 import toast, { Toaster } from "react-hot-toast";
-
 const ViewQuotation = () => {
   const title = "View Comments";
   const { leadId } = useParams();
@@ -23,7 +20,6 @@ const ViewQuotation = () => {
   const [documents, setDocuments] = useState<Document[]>([
     { docName: "", file: "" },
   ]);
-
   useEffect(() => {
     if (!isAdd && leadId) {
       getQuotationByLeadIdService({ header, leadId })
@@ -36,14 +32,12 @@ const ViewQuotation = () => {
         });
     }
   }, [isAdd, leadId]);
-
   useEffect(() => {
     if (!isAdd && leadId) {
       getLeadByIdService({ header, leadId })
         .then((leadDetails) => {
           setEditLeadDetails(leadDetails.data);
           const updatedDocuments: Document[] = [];
-
           if (leadDetails.data.rcBack) {
             updatedDocuments.push({
               docName: "rcBack",
@@ -103,11 +97,9 @@ const ViewQuotation = () => {
         .catch(async(error) => {
           const err = await error
           toast.error(err.message)
-        
         });
     }
   }, [isAdd, leadId]);
-
   return (
     <>
       <div className="bg-blue-200 md:p-7 p-2">
@@ -128,7 +120,7 @@ const ViewQuotation = () => {
               Lead /
             </Link>
             <span className="text-grey-600 text-sm">{title}</span>
-            {/* Add a full-width grey line here */}
+            {}
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
@@ -212,7 +204,6 @@ const ViewQuotation = () => {
                   >
                     {"Document"}
                   </Typography>
-
                   <Grid container>
                     {documents.map((document, index) => (
                       <Grid item md={4} key={index}>
@@ -242,7 +233,6 @@ const ViewQuotation = () => {
                   </Grid>
                 </Grid>
               </Grid>
-
               <Grid container>
                 <Typography
                   variant="h5"
@@ -292,5 +282,4 @@ const ViewQuotation = () => {
     </>
   );
 };
-
 export default ViewQuotation;

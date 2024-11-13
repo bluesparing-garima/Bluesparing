@@ -1,15 +1,12 @@
 import React from 'react';
 import { ArrowUpward as ArrowUpwardIcon, ArrowDownward as ArrowDownwardIcon } from '@mui/icons-material';
-
 interface StatBoxProps {
   title: string;
   value: string;
   change: string;
   isIncrease: boolean;
 }
-
 const StatBox: React.FC<StatBoxProps> = ({ title, value, change, isIncrease }) => {
-
   return (
     <div className="w-full p-1 rounded-2xl">
       <div className="flex items-center">
@@ -33,5 +30,4 @@ const StatBox: React.FC<StatBoxProps> = ({ title, value, change, isIncrease }) =
     </div>
   );
 };
-
 export default StatBox;

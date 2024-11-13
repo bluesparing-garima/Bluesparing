@@ -1,5 +1,4 @@
 import React from "react";
-//import { useTranslation } from "react-i18next";
 import { Typography, Paper } from "@mui/material";
 import PolicyPDFFormCard from "./PolicyPDFFormCard";
 import { Link } from "react-router-dom";
@@ -30,12 +29,10 @@ const PolicyPDF = () => {
               style={{ width: "100%", borderColor: "grey-800" }}
             />
           </Typography>
-
           <PolicyPDFFormCard />
         </Paper>
       </div>
     </>
   );
 };
-
 export default PolicyPDF;

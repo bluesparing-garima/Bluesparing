@@ -13,7 +13,6 @@ import {
   imagePath,
 } from "../../../context/constant";
 import CountdownTimer from "../../../utils/CountdownTimer";
-
 import Papa from "papaparse";
 import toast, { Toaster } from "react-hot-toast";
 import GetRmReqBookingService from "../../../api/BookingRequest/GetRmReqBooking/GetRmReqBookingService";
@@ -22,7 +21,6 @@ const RmRequestedBooking = () => {
   const [bookingRequests, setBookingRequests] = useState<IBookingRequests[]>(
     []
   );
-
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let userData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
   const GetBookingRequests = async (rmId: string, signal: AbortSignal) => {
@@ -37,7 +35,6 @@ const RmRequestedBooking = () => {
         }
       });
   };
-
   useEffect(() => {
     const rmId = userData.id;
     const controller = new AbortController();
@@ -47,7 +44,6 @@ const RmRequestedBooking = () => {
       controller.abort();
     };
   }, [userData.id]);
-
   const columns = useMemo<MRT_ColumnDef<IBookingRequests>[]>(
     () => [
       {
@@ -63,48 +59,47 @@ const RmRequestedBooking = () => {
         size: 200,
       },
       {
-        accessorKey: "policyNumber", //normal accessorKey
+        accessorKey: "policyNumber",
         header: "Policy Number",
         size: 200,
       },
       {
-        accessorKey: "policyType", //normal accessorKey
+        accessorKey: "policyType",
         header: "Policy Type",
         size: 100,
       },
       {
-        accessorKey: "caseType", //normal accessorKey
+        accessorKey: "caseType",
         header: "Case Type",
         size: 100,
       },
-
       {
-        accessorKey: "category", //normal accessorKey
+        accessorKey: "category",
         header: "Category",
         size: 100,
       },
       {
-        accessorKey: "productType", //normal accessorKey
+        accessorKey: "productType",
         header: "Product",
         size: 100,
       },
       {
-        accessorKey: "subCategory", //normal accessorKey
+        accessorKey: "subCategory",
         header: "Sub Category",
         size: 100,
       },
       {
-        accessorKey: "companyName", //normal accessorKey
+        accessorKey: "companyName",
         header: "Company Name",
         size: 100,
       },
       {
-        accessorKey: "bookingStatus", //normal accessorKey
+        accessorKey: "bookingStatus",
         header: "Booking Status",
         size: 100,
       },
       {
-        accessorKey: "partnerName", //normal accessorKey
+        accessorKey: "partnerName",
         header: "Partner Name",
         size: 200,
       },
@@ -136,7 +131,6 @@ const RmRequestedBooking = () => {
     ],
     []
   );
-
   const parsedData = useMemo(
     () =>
       bookingRequests.map(
@@ -162,7 +156,6 @@ const RmRequestedBooking = () => {
             currentPolicy: bookingRequest.currentPolicy,
             other: bookingRequest.other,
             timer: bookingRequest.timer,
-            // documents: bookingRequest.documents,
             bookingAcceptedBy: bookingRequest.bookingAcceptedBy,
             bookingCreatedBy: bookingRequest.bookingCreatedBy,
             bookingStatus: bookingRequest.bookingStatus,
@@ -173,18 +166,9 @@ const RmRequestedBooking = () => {
       ) ?? [],
     [bookingRequests]
   );
-
-  const updateLoading = useCallback(async () => {
-    // setIsLoading(true) when bookingRequests.length is 0, and setIsLoading(false) when bookingRequests.length is > 0
-    setIsLoading(false);
-  }, []);
-  // Function to handle file download
   const downloadFile = (url: string, fileName: string) => {
-    // Extract file extension from the original URL
     const urlFileName = url.substring(url.lastIndexOf("/") + 1);
     const fileExtension = urlFileName.split(".").pop()?.toLowerCase();
-
-    // Validate file extension
     if (
       fileExtension === "pdf" ||
       fileExtension === "png" ||
@@ -205,12 +189,9 @@ const RmRequestedBooking = () => {
         .catch((error) => console.error("Error downloading file:", error));
     } else {
       console.error("Unsupported file type:", fileExtension);
-      //alert("Unsupported file type. Only PDF and PNG files are supported.");
     }
   };
-  // Function to handle click events
   const handleClickDownloadDocument = (booking: IBookingRequestsVM) => {
-    // Example usage
     if (booking.rcBack) {
       downloadFile(`${imagePath}${booking?.rcBack!}`, "rcBack");
     }
@@ -219,7 +200,6 @@ const RmRequestedBooking = () => {
     }
     if (booking.puc) {
       downloadFile(`${imagePath}${booking?.puc!}`, "puc");
-      // openFileInNewTab(`${imagePath}${booking?.puc!}`, "puc");
     }
     if (booking.currentPolicy) {
       downloadFile(`${imagePath}${booking?.currentPolicy!}`, "currentPolicy");
@@ -240,7 +220,6 @@ const RmRequestedBooking = () => {
       downloadFile(`${imagePath}${booking?.other!}`, "other");
     }
   };
-
   const downloadCsv = (filename: string, csv: string) => {
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const link = document.createElement("a");
@@ -254,13 +233,11 @@ const RmRequestedBooking = () => {
       document.body.removeChild(link);
     }
   };
-
   const handleExportRows = (rows: any[]) => {
-    const rowData = rows.map((row) => row.original); // Adjust based on your actual row structure
+    const rowData = rows.map((row) => row.original);
     const csv = Papa.unparse(rowData, { header: true });
     downloadCsv("exported-rows.csv", csv);
   };
-
   return (
     <>
       <div className="bg-blue-200 md:p-7 p-2">
@@ -277,17 +254,15 @@ const RmRequestedBooking = () => {
                 >
                   Dashboard /
                 </Link>
-
                 <span className="text-grey-600 text-sm"> Booking Request</span>
               </div>
             </div>
-            {/* Add a full-width grey line here */}
+            {}
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
             />
           </Typography>
-
           <MaterialReactTable
             state={{ isLoading }}
             columns={columns}
@@ -344,5 +319,4 @@ const RmRequestedBooking = () => {
     </>
   );
 };
-
 export default RmRequestedBooking;

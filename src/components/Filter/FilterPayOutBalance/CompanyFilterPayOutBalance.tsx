@@ -10,21 +10,18 @@ import { generateCompanyPaidExcel } from "../../../utils/DashboardExcel";
 const CompanyFilterPayOutBalance = () => {
   const title = "Get Balance Payment Details Of Partner -";
   const location = useLocation();
-  const selectedCategory = location.state as string; // This is where you access the passed state
-
+  const selectedCategory = location.state as string;
   const { partnerId } = useParams();
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [selectedPartnerCode, setSelectedPartnerCode] = useState<string>();
   const [selectedPartnerName, setSelectedPartnerName] = useState<string>();
   const [companyDetails, setCompanyDetails] = useState<
   ICompanyPaid[]
-  >([]); // State for all credit debits
-
+  >([]);
   useEffect(() => {
     filterMonthlyPartnerPaymentWithCompany(partnerId!);
-     // eslint-disable-next-line
+     // eslint-disable-next-line 
   }, [partnerId]);
-
   const handleDownloadExcel = () => {
     generateCompanyPaidExcel(companyDetails)
   };
@@ -33,9 +30,8 @@ const CompanyFilterPayOutBalance = () => {
       header,
       partnerId: partnerId!,
       category: selectedCategory,
-    }) // Call API to fetch credit debits
+    })
       .then((partners) => {
-        // On successful API call
         setCompanyDetails(partners.data);
         setTotalAmount(partners.totalAmount);
         setSelectedPartnerCode(partners.partnerCode);
@@ -46,13 +42,11 @@ const CompanyFilterPayOutBalance = () => {
         toast.error(err.message);
       });
   };
-
   return (
     <>
       <div className="bg-blue-200 p-7 mt-3">
         <Paper elevation={3} style={{ padding: 20 }}>
           <div className="flex justify-between items-center">
-
           <Typography
             variant="h5"
             className="text-safekaroDarkOrange"
@@ -73,7 +67,6 @@ const CompanyFilterPayOutBalance = () => {
               </button>
             </Tooltip>
           </div>
-
           <Typography variant="body2" className="text-sm text-gray-600 mb-2">
             Total Amount{" "}
             <span className="text-safekaroDarkOrange">{totalAmount}</span>
@@ -96,9 +89,6 @@ const CompanyFilterPayOutBalance = () => {
                       {item.totalPayOutAmount}
                     </Typography>
                   </div>
-                  {/* Uncomment if needed
-                <img src={icon} alt={title} className="h-8 w-8" />
-                */}
                 </div>
               </Grid>
             ))}
@@ -109,5 +99,4 @@ const CompanyFilterPayOutBalance = () => {
     </>
   );
 };
-
 export default CompanyFilterPayOutBalance;

@@ -37,24 +37,19 @@ import { FORM_ERROR, setIn } from "final-form";
 import * as yup from "yup";
 import toast, { Toaster } from "react-hot-toast";
 import getPolicyByNumberService from "../../../api/Policies/GetPolicyByNumber/getPolicyByNumberService";
-
 export interface addBookingRequestFormProps {
   initialValues: IBookingRequestForm;
 }
-
 const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
   let { initialValues } = props;
   const { leadId } = useParams();
-
   const [policyErrorMessage, setPolicyErrorMessage] = useState("");
   const [documents, setDocuments] = useState<Document[]>([
     { docName: "", file: "" },
   ]);
-
   const [errors, setErrors] = useState<{ docName: string; file: string }[]>([
     { docName: "", file: "" },
   ]);
-
   const navigate = useNavigate();
   let [policyTypes] = useGetPolicyTypes({ header: header });
   let [caseTypes] = useGetCaseTypes({ header: header });
@@ -74,17 +69,8 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
   const [errorMessage, setErrorMessage] = useState("");
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let userData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
-
-  // useEffect(() => {
-  //   const pageloaddocument: any[] = initialValues?.documents!;
-
-  //   if (pageloaddocument.length > 0) {
-  //     setDocuments(pageloaddocument);
-  //   }
-  // }, [initialValues.documents]);
   useEffect(() => {
     const updatedDocuments: Document[] = [];
-
     if (initialValues.rcBack) {
       updatedDocuments.push({ docName: "rcBack", file: initialValues.rcBack });
     }
@@ -129,7 +115,6 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
     }
     setDocuments(updatedDocuments);
   }, [initialValues]);
-
   useEffect(() => {
     if (selectedProduct) {
       const ProductId = selectedProduct._id;
@@ -145,16 +130,12 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
       setFilteredSubcategories(productSubTypes);
     }
   }, [selectedProduct, productSubTypes]);
-
-  // handle DocName change
-
   const handleChangeDocumentName = (newValue: any, index: any) => {
     const updatedDocuments = documents.map((doc, i) =>
       i === index ? { ...doc, docName: newValue?.value! } : doc
     );
     setDocuments(updatedDocuments);
   };
-
   const validateField = (index: number, name: string, value: string) => {
     const newErrors = [...errors];
     if (name === "docName" || name === "file") {
@@ -165,11 +146,9 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
     }
     setErrors(newErrors);
   };
-
   const handleClickAddDocument = () => {
     setDocuments([...documents, { docName: "", file: "" }]);
   };
-
   const handleClickDeleteDocument = (index: any) => {
     setDocuments((prevDocuments) =>
       prevDocuments.filter((_, i) => i !== index)
@@ -177,34 +156,28 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
     const newErrors = errors.filter((_, i) => i !== index);
     setErrors(newErrors);
   };
-
   const handleSelectPolicyCreatedBy = (event: any, newValue: any) => {
     setSelectedPolicyCreatedBy(newValue.label);
   };
-
   const handleSelectPartnerChange = async (e: any) => {
     setSelectedPartnerId(e._id!);
     setSelectedPartnerName(e.fullName!);
     setSelectedRMId(e.headRMId!);
     setSelectedRMName(e.headRM!);
   };
-
   const handleFileInputChange = (event: any, index: any) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
       const fileType = file.type;
       const fileSize = file.size;
       const newErrors = [...errors];
-
       if (!ALLOWED_FILE_TYPES.includes(fileType)) {
-        // setErrorMessage("Invalid file type. Please upload an image or a PDF.");
         newErrors[index] = {
           ...newErrors[index],
           file: "Invalid file type. Please upload an image or a PDF.",
         };
         setErrors(newErrors);
       } else if (fileSize > MAX_FILE_SIZE) {
-        //setErrorMessage("File size exceeds the maximum limit.");
         newErrors[index] = {
           ...newErrors[index],
           file: "File size exceeds the maximum limit",
@@ -215,8 +188,6 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
         const newDocuments = [...documents];
         newDocuments[index] = { ...newDocuments[index], file: file };
         setDocuments(newDocuments);
-
-        // Clear the error if the file is valid
         if (newErrors[index]) {
           newErrors[index].file = "";
         }
@@ -224,32 +195,6 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
       }
     }
   };
-  // const handleFileInputChange = (e: any, i: any) => {
-  //   if (e.target.value) {
-  //     var file = e.target.files[0];
-  //     const fileSize = e.target.files[0].size;
-  //     if (fileSize > MAX_FILE_SIZE) {
-  //       setErrorMessage("Image is incorrect size.");
-  //     } else {
-  //       setErrorMessage("");
-  //       ConvertToBase64(file)
-  //         .then((result) => {
-  //           file["base64"] = result;
-  //           const name = "file";
-  //           const value = file.base64;
-  //           const list: any = [...documents];
-  //           list[i][name] = value;
-  //           setDocuments(list);
-
-  //           //setDocumentImages(file.base64);
-  //           // initialValues.image = file.base64;
-  //         })
-  //         .catch((err) => {
-  //           console.error(err);
-  //         });
-  //     }
-  //   }
-  // };
   const bindValues = (bookingForm: any, form: any) => {
     bookingForm.relationshipManagerId =
       userData.role.toLowerCase() === "partner"
@@ -267,14 +212,6 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
       userData.role.toLowerCase() === "partner"
         ? userData.name
         : selectedPartnerName;
-    //bookingForm.productType = bookingForm.productType.productName;
-    //bookingForm.policyType = bookingForm.policyType.policyType;
-    // bookingForm.caseType = bookingForm.caseType.caseType;
-    // bookingForm.subCategory = bookingForm.subCategory.productSubType
-    //   ? bookingForm.subCategory.productSubType
-    //   : null;
-    // bookingForm.companyName = bookingForm.companyName.companyName;
-    //bookingForm.documents = documents;
     bookingForm.createdBy = userData.name;
     bookingForm.bookingCreatedBy = userData.id;
     const formData = new FormData();
@@ -297,7 +234,6 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
       bookingForm.relationshipManagerName
     );
     documents.forEach((doc: Document) => {
-      // formData.append(doc.docName, doc.docName);
       if (doc.file) {
         formData.append(doc.docName, doc.file);
       }
@@ -305,11 +241,8 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
     callAddBookingRequestAPI(formData, form);
   };
   const openFileInNewTab = (url: string, fileName: string) => {
-    // Extract file extension from the original URL
     const urlFileName = url.substring(url.lastIndexOf("/") + 1);
     const fileExtension = urlFileName.split(".").pop()?.toLowerCase();
-
-    // Validate file extension
     if (
       fileExtension === "pdf" ||
       fileExtension === "png" ||
@@ -324,7 +257,6 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
       document.body.removeChild(a);
     } else {
       console.error("Unsupported file type:", fileExtension);
-      //alert("Unsupported file type. Only PDF and PNG files are supported.");
     }
   };
   const handleClickViewDocument = (file: any, docName: any) => {
@@ -332,7 +264,6 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
     openFileInNewTab(url, docName);
   };
   const onSubmit = (bookingForm: any, form: any) => {
-    //validate conditions
     const formValid = documents.every((doc, index) =>
       validateDocument(doc, index)
     );
@@ -342,17 +273,8 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
         initialValues.relationshipManagerName;
       bookingForm.partnerId = initialValues.partnerId;
       bookingForm.partnerName = initialValues.partnerName;
-      //bookingForm.productType = bookingForm.productType.productName;
-      // bookingForm.policyType = bookingForm.policyType.policyType;
-      // bookingForm.caseType = bookingForm.caseType.caseType;
-      // bookingForm.subCategory = bookingForm.subCategory.productSubType
-      //   ? bookingForm.subCategory.productSubType
-      //   : null;
-      // bookingForm.companyName = bookingForm.companyName.companyName;
-      //bookingForm.documents = documents;
       bookingForm.createdBy = userData.name;
       bookingForm.bookingCreatedBy = userData.id;
-
       const formData = new FormData();
       formData.append("leadId", leadId);
       formData.append("policyNumber", bookingForm.policyNumber);
@@ -377,41 +299,33 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
       );
       formData.append("createdBy", userData.name);
       documents.forEach((doc: Document) => {
-        // formData.append(doc.docName, doc.docName);
         if (doc.file) {
           formData.append(doc.docName, doc.file);
         }
       });
-      // console.log("documents", documents);
-
       callAddBookingRequestAPI(formData, form);
     } else {
       if (userData.role.toLowerCase() === "operation") {
         if (!selectedRMId) {
           setPolicyErrorMessage("Select Partner or RM");
         } else if (formValid) {
-          // Submit form
           bindValues(bookingForm, form);
         }
       } else {
         if (formValid) {
-          // Submit form
           setPolicyErrorMessage("");
           bindValues(bookingForm, form);
         }
       }
     }
   };
-
   const validateDocument = (document: Document, index: number) => {
     const isValidDocName = document.docName.trim() !== "";
-
     const isValidFile = document.file;
     validateField(index, "docName", document.docName);
     validateField(index, "file", document.file);
     return isValidDocName && isValidFile;
   };
-
   const callAddBookingRequestAPI = async (bookingRequest: any, form: any) => {
     try {
       const newBookingPolicy = await addBookingRequestService({
@@ -426,12 +340,10 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
     } catch (err: any) {
       const errObj = await err;
       toast.error(errObj.message);
-      // Handle error
       setDocuments([{ docName: "", file: "" }]);
       return { [FORM_ERROR]: `error ` };
     }
   };
-  // To be passed to React Final Form
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
       schema = schema();
@@ -442,11 +354,9 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
       const errors = err.inner.reduce((formError: any, innerError: any) => {
         return setIn(formError, innerError.path, innerError.message);
       }, {});
-
       return errors;
     }
   };
-
   const validationSchema = yup.object().shape({
     policyNumber: yup
       .string()
@@ -457,25 +367,8 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
     caseType: yup.string().nullable().required("Case Type is required"),
     companyName: yup.string().nullable().required("Company Name is required"),
     productType: yup.string().required("Product Type is required").nullable(),
-    // policyCreatedBy: yup
-    //   .object()
-    //   .nullable()
-    //   .required("Policy Created By is required"),
-    // documents: yup.array().of(
-    //   yup.object().shape({
-    //     docName: yup.string().required("Document Name is required"),
-    //     file: yup
-    //       .mixed()
-    //       .required("File is required")
-    //       .test("fileSize", "File size must be less than 2MB", (value) => {
-    //         return value && value.size <= MAX_FILE_SIZE;
-    //       }),
-    //   })
-    // ),
   });
-
   const addValidate = validateFormValues(validationSchema);
-
   const handleChangePolicyNumber = async (e: any) => {
     const policyNumber = e.target.value;
     try {
@@ -493,7 +386,6 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
       toast.error(err.message);
     }
   };
-
   return (
     <>
       <React.Fragment>
@@ -546,7 +438,7 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
                                     ? input.value
                                     : initialValues.policyType || null
                                 }
-                                options={policyTypes} // Replace with your options array
+                                options={policyTypes}
                                 getOptionLabel={(option) =>
                                   typeof option === "string"
                                     ? option
@@ -572,7 +464,6 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
                         )}
                       </Field>
                     </Grid>
-
                     <Grid item lg={4} md={4} sm={6} xs={12}>
                       <Field name="caseType">
                         {({ input, meta }) => (
@@ -581,7 +472,7 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
                               <Autocomplete
                                 {...input}
                                 id="caseType"
-                                options={caseTypes} // Replace with your options array
+                                options={caseTypes}
                                 value={
                                   input.value !== undefined
                                     ? input.value
@@ -612,7 +503,6 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
                         )}
                       </Field>
                     </Grid>
-
                     <Grid item lg={4} md={4} sm={6} xs={12}>
                       <Field name="productType">
                         {({ input, meta }) => (
@@ -631,7 +521,7 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
                                     ? option
                                     : option.productName || ""
                                 }
-                                options={products} // Replace with your Dynamic API
+                                options={products}
                                 onChange={(event, newValue) => {
                                   input.onChange(newValue.productName);
                                   setSelectedProduct(newValue);
@@ -713,7 +603,7 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
                                     ? option
                                     : option.companyName || ""
                                 }
-                                options={companies} // Replace with your options array
+                                options={companies}
                                 onChange={(event, newValue) => {
                                   input.onChange(newValue.companyName);
                                 }}
@@ -747,7 +637,7 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
                                     {...input}
                                     getOptionLabel={(option) => option.label}
                                     value={input.value || null}
-                                    options={policyCreatedByAdmin} // Replace with your options array
+                                    options={policyCreatedByAdmin}
                                     onChange={(event, newValue) => {
                                       input.onChange(newValue);
                                       handleSelectPolicyCreatedBy(
@@ -785,7 +675,7 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
                                         getOptionLabel={(option) =>
                                           `${option.fullName} - ${option.partnerId}`
                                         }
-                                        options={partners} // Replace with your options array
+                                        options={partners}
                                         onChange={(event, newValue) => {
                                           input.onChange(newValue);
                                           handleSelectPartnerChange(newValue);
@@ -825,7 +715,6 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
                         {"Image or pdf should be <= 2MB."}
                       </Typography>
                     </Grid>
-
                     <Grid item md={12}>
                       <Grid item lg={12} md={12} sm={12} xs={12}>
                         <span style={{ color: "red" }}>{errorMessage}</span>
@@ -840,7 +729,6 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
                                     (option) => option.value === doc.docName
                                   ) || null
                                 }
-                                //value={doc.docName}
                                 onChange={(e, newValue) =>
                                   handleChangeDocumentName(newValue!, index)
                                 }

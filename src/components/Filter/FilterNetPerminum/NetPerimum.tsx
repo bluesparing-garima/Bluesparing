@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { header } from "../../../context/constant";
 import toast from "react-hot-toast";
@@ -6,14 +6,13 @@ import { Button, Grid, Paper, Tooltip, Typography } from "@mui/material";
 import GetTotalNetPremiumPartnerService from "../../../api/Dashboard/GetTotalNetPremiumPartner/GetTotalNetPremiumPartnerService";
 import GetTotalNetPremiumBrokerService from "../../../api/Dashboard/GetTotalNetPremiumBroker/GetTotalNetPremiumBrokerService";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
-
 import {
   INetPremiumBroker,
   INetPremiumPartner,
 } from "../../TreeView/ITreeView";
 import { generateExcelForNetPremium } from "../../../utils/DashboardExcel";
 const NetPremium = () => {
-  const title = "Get Net Preminum Details";
+  const title = "Get Net Premium Details";
   const location = useLocation();
   const selectedCategory = location.state as string;
   const [isPartner, setIsPartner] = useState(1);
@@ -28,7 +27,6 @@ const NetPremium = () => {
   const [brokerNetPremium, setBrokerNetPremium] = useState<INetPremiumBroker[]>(
     []
   );
-
   const handleDownloadExcel = () => {
     if (isPartner === 1) {
       generateExcelForNetPremium(partnerNetPremium, "partner");
@@ -42,18 +40,14 @@ const NetPremium = () => {
         header,
         category: selectedCategory,
       });
-
       setBrokerNetPremium(partnerResponse.data);
       setBrokerTotalNetPremium(partnerResponse.totalAmount);
-
       const brokerResponse = await GetTotalNetPremiumPartnerService({
         header,
         category: selectedCategory,
       });
-
       setPartnerNetPremium(brokerResponse.data);
       setPartnerTotalNetPremium(brokerResponse.totalAmount);
-
       const totalNet = Number(
         brokerResponse.totalAmount + partnerResponse.totalAmount
       );
@@ -63,12 +57,10 @@ const NetPremium = () => {
       toast.error(err.message);
     }
   };
-
   useEffect(() => {
     fetchPartnerPayments();
-     // eslint-disable-next-line
+     // eslint-disable-next-line 
   }, []);
-
   const handleNetPremiumClick = async (flag: boolean) => {
     setSelectedPartner(flag);
     if (flag) {
@@ -100,7 +92,6 @@ const NetPremium = () => {
             </button>
           </Tooltip>
         </div>
-
         <Grid container mb={2}>
           <Grid item md={6} className={"bg-safekaroDarkOrange "}>
             <Button type="button" onClick={() => handleNetPremiumClick(true)}>
@@ -121,7 +112,6 @@ const NetPremium = () => {
             </Button>
           </Grid>
         </Grid>
-
         <Grid container className="bg-blue-200 mt-3">
           {selectedPartner ? (
             <>
@@ -198,5 +188,4 @@ const NetPremium = () => {
     </div>
   );
 };
-
 export default NetPremium;

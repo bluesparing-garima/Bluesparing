@@ -1,5 +1,4 @@
 import { CircularProgress, Paper, Typography } from "@mui/material";
-
 import { useEffect, useState } from "react";
 import { header } from "../../../context/constant";
 import toast from "react-hot-toast";
@@ -8,7 +7,6 @@ import { INetPremiumBroker, INetPremiumPartner } from "../ITreeView";
 import FolderViewYearlyNetPremium from "../FolderView/FolderViewYearlyNetPremium";
 import GetTotalNetPremiumPartnerService from "../../../api/Dashboard/GetTotalNetPremiumPartner/GetTotalNetPremiumPartnerService";
 import GetTotalNetPremiumBrokerService from "../../../api/Dashboard/GetTotalNetPremiumBroker/GetTotalNetPremiumBrokerService";
-
 const YearlyNetPremium = () => {
   const location = useLocation();
   const selectedCategory = location.state as string;
@@ -18,7 +16,6 @@ const YearlyNetPremium = () => {
   const [netPremiumBrokerData, setNetPremiumBrokerData] =
     useState<INetPremiumBroker[]>();
   const [netPremiumBrokerTotal, setNetPremiumBrokerTotal] = useState(0);
-
   const [loading, setLoading] = useState<boolean>(true);
   const fetchPartnerNetPayments = async () => {
     GetTotalNetPremiumPartnerService({
@@ -48,7 +45,6 @@ const YearlyNetPremium = () => {
         toast.error(err.message);
       });
   };
-
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -56,7 +52,7 @@ const YearlyNetPremium = () => {
       setLoading(false);
     };
     fetchData();
-    // eslint-disable-next-line
+    // eslint-disable-next-line 
   }, []);
   if (loading) {
     return (
@@ -82,7 +78,6 @@ const YearlyNetPremium = () => {
         >
           Total Net Premium
         </Typography>
-
         <FolderViewYearlyNetPremium
           data={{
             name: "Total  Net  Premium Partner",
@@ -103,5 +98,4 @@ const YearlyNetPremium = () => {
     </div>
   );
 };
-
 export default YearlyNetPremium;

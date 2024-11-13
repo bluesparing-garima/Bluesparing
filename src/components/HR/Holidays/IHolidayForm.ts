@@ -2,7 +2,7 @@ export interface IHolidayForm {
   id: string;
   name: string;
   date: string | null;
-  day?: string; 
+  day?: string;
   createdBy?: string;
 }
 export interface Holiday {
@@ -12,5 +12,5 @@ export interface Holiday {
   day: string;
 }
 export interface HolidayLocationState {
-  holiday: Holiday; 
+  holiday: Holiday;
 }

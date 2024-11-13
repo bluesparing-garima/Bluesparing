@@ -1,5 +1,4 @@
-
-import React, {  useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { header, SafeKaroUser } from "../../context/constant";
 import { Grid, Tooltip as Tip } from "@mui/material";
 import Typography from "@mui/material/Typography";
@@ -15,13 +14,12 @@ import {
   Legend,
 } from "chart.js";
 
-import { endOfMonth, startOfMonth, format } from "date-fns";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import PictureAsPdfSharpIcon from "@mui/icons-material/PictureAsPdfSharp";
 import { bookingGenerateExcel } from "../../utils/DashboardExcel";
 import { bookingGeneratePDF } from "../../utils/DashboardPdf";
 import GetAttendanceCountService from "../../api/Role/GetAttendanceCount/GetAttendanceCountService";
-import { IEmployee } from "../HR/Attendance/IAttendnace";
+import { IEmployee } from "../HR/Attendance/IAttendance";
 import AttendanceCard from "../HR/Attendance/AttendanceRecord/AttendanceCard";
 
 ChartJS.register(
@@ -44,14 +42,12 @@ const ITDashboard: React.FC = () => {
     try {
       const res = await GetAttendanceCountService({ header, eId: UserData.id });
       setEmployee(res.data);
-    } catch (error) {
-      //   console.log(error);
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {
- getAttendanceRecord();
-     // eslint-disable-next-line
+    getAttendanceRecord();
+    // eslint-disable-next-line
   }, []);
 
   const handleDownloadPDF = () => {
@@ -60,8 +56,6 @@ const ITDashboard: React.FC = () => {
   const handleDownloadExcel = () => {
     bookingGenerateExcel(data);
   };
-
-
 
   return (
     <>

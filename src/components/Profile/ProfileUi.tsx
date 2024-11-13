@@ -2,7 +2,6 @@ import React from "react";
 import { Card, Avatar, Grid, Box, Typography, Divider } from "@mui/material";
 import { deepPurple } from "@mui/material/colors";
 import { ITeamsVM } from "../Admin/Team/ITeam";
-
 const ProfileUi: React.FC<ITeamsVM> = ({
   email,
   fullName,
@@ -28,7 +27,6 @@ const ProfileUi: React.FC<ITeamsVM> = ({
     { key: "Role", value: role },
     { key: "Status", value: isActive?"Active":"Inactive" },
   ];
-
   return (
     <Box
       sx={{
@@ -38,7 +36,6 @@ const ProfileUi: React.FC<ITeamsVM> = ({
         bgcolor: "#e3f2fd",
         padding: 2,
         fontFamily: "'Satoshi', sans-serif",
-        
       }}
     >
       <Card
@@ -69,12 +66,9 @@ const ProfileUi: React.FC<ITeamsVM> = ({
           >
             {fullName?.charAt(0).toUpperCase()}
           </Avatar>
-        
         </div>
-
         <Box sx={{ flexGrow: 1, textAlign: { xs: "center", md: "left" } }}>
           <Divider sx={{ marginY: 2 }} />
-
           <Grid container spacing={2}>
             {data.map((ele) => (
               <Grid item xs={12} sm={6} key={ele.key}>
@@ -97,5 +91,4 @@ const ProfileUi: React.FC<ITeamsVM> = ({
     </Box>
   );
 };
-
 export default ProfileUi;

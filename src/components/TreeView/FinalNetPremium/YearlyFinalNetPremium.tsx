@@ -1,16 +1,12 @@
 import { CircularProgress, Paper, Typography } from "@mui/material";
-
 import { useEffect, useState } from "react";
 import { header } from "../../../context/constant";
 import toast from "react-hot-toast";
-
 import { useLocation } from "react-router-dom";
 import { IFinalNetPremiumBroker, IFinalNetPremiumPartner } from "../ITreeView";
 import GetTotalFinalNetPremiumPartnerService from "../../../api/Dashboard/GetTotalFinalNetPremiumPartner/GetTotalFinalNetPremiumPartnerService";
 import GetTotalFinalNetPremiumBrokerService from "../../../api/Dashboard/GetTotalFinalNetPremiumBroker/GetTotalFinalNetPremiumBrokerService";
 import FolderViewYearlyFinalNetPremium from "../FolderView/FolderViewYearlyFinalNetPremium";
-
-
 const YearlyFinalNetPremium = () => {
   const location = useLocation();
   const selectedCategory = location.state as string;
@@ -22,7 +18,6 @@ const YearlyFinalNetPremium = () => {
     useState<IFinalNetPremiumBroker[]>();
   const [finalNetPremiumBrokerTotal, setFinalNetPremiumBrokerTotal] =
     useState(0);
-
   const [loading, setLoading] = useState<boolean>(true);
   const fetchPartnerFinalNetPayments = async () => {
     GetTotalFinalNetPremiumPartnerService({
@@ -52,7 +47,6 @@ const YearlyFinalNetPremium = () => {
         toast.error(err.message);
       });
   };
-
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -63,7 +57,7 @@ const YearlyFinalNetPremium = () => {
       setLoading(false);
     };
     fetchData();
-    // eslint-disable-next-line
+    // eslint-disable-next-line 
   }, []);
   if (loading) {
     return (
@@ -89,7 +83,6 @@ const YearlyFinalNetPremium = () => {
         >
           Final Net Premium
         </Typography>
-
         <FolderViewYearlyFinalNetPremium
           data={{
             name: "Final Net Premium Partner",
@@ -110,5 +103,4 @@ const YearlyFinalNetPremium = () => {
     </div>
   );
 };
-
 export default YearlyFinalNetPremium;

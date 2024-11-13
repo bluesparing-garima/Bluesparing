@@ -10,7 +10,6 @@ import {
   IBlogCategoriesVM,
   IBlogCategoryForm,
 } from "../IBlogCategory";
-//import dayjs from "dayjs";
 import { Button, IconButton, Paper, Tooltip, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { blogCategoryEditPath, blogCategoryAddPath } from "../../../../sitemap";
@@ -25,8 +24,6 @@ import {
 import { convertIBlogCategoryVMToIBlogCategoryForm } from "../../../../api/Website/Category/convertIBlogCategoryVMToIBlogCategoryForm";
 import getBlogCategoriesService from "../../../../api/Website/Category/GetBlogCategory/getBlogCategoriesService";
 import editBlogCategoryService from "../../../../api/Website/Category/EditBlogCategory/editBlogCategoryService";
-import deleteBlogCategoryService from "../../../../api/Website/Category/DeleteBlogCategory/deleteBlogCategoryService";
-
 const BlogCategories = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [blogCategories, setBlogCategories] = useState<IBlogCategories[]>([]);
@@ -54,7 +51,6 @@ const BlogCategories = () => {
   useEffect(() => {
     GetBlogCategories();
   }, [GetBlogCategories]);
-
   useEffect(() => {
     const p = getPaginationState(BLOG_CATEGORY_STORAGE_KEY);
     setPagination(p);
@@ -62,12 +58,10 @@ const BlogCategories = () => {
   const callUpdateBranchAPI = async (branch: IBlogCategoriesVM) => {
     var convertCategoryVMToCategoryForm =
       convertIBlogCategoryVMToIBlogCategoryForm(branch);
-
     const branchData: IBlogCategoryForm = {
       ...convertCategoryVMToCategoryForm,
       isActive: !convertCategoryVMToCategoryForm.isActive,
     };
-
     editBlogCategoryService({ header, category: branchData })
       .then(() => {
         GetBlogCategories();
@@ -80,20 +74,15 @@ const BlogCategories = () => {
         updateLoading();
       });
   };
-
   const handleClickChangeStatus = (branch: IBlogCategoriesVM) => {
     callUpdateBranchAPI(branch);
   };
-  const [forcedRenderCount, setForcedRenderCount] = useState(0);
-  const forceRender = useCallback(
-    () => setForcedRenderCount(forcedRenderCount + 1),
-    [forcedRenderCount]
-  );
-  //should be memoized or stable
+  const forcedRenderCount = 0 ;
+  
   const columns = useMemo<MRT_ColumnDef<IBlogCategories>[]>(
     () => [
       {
-        accessorKey: "category", //normal accessorKey
+        accessorKey: "category",
         header: "Category Name",
         size: 200,
       },
@@ -118,7 +107,6 @@ const BlogCategories = () => {
     ],
     []
   );
-
   const parsedData = useMemo(
     () =>
       blogCategories.map(
@@ -134,43 +122,18 @@ const BlogCategories = () => {
       ) ?? [],
     [blogCategories, forcedRenderCount]
   );
-
   const updateLoading = useCallback(async () => {
-    // setIsLoading(true) when blogCategories.length is 0, and setIsLoading(false) when blogCategories.length is > 0
     setIsLoading(blogCategories.length >= 0 ? false : true);
   }, [blogCategories]);
-
   useEffect(() => {
     updateLoading();
   }, [updateLoading]);
-
-  const handleClickDeleteCategory = (category: IBlogCategoriesVM) => {
-    categoryDeleteApiCall(category.id!);
-  };
+  
   const handleClickEditCategory = (category: IBlogCategoriesVM) => {
     savePaginationState(pagination, BLOG_CATEGORY_STORAGE_KEY);
     navigate(blogCategoryEditPath(category.id!));
   };
-
-  const categoryDeleteApiCall = async (categoryId: string) => {
-    setIsLoading(true);
-    deleteBlogCategoryService({
-      header,
-      categoryId,
-      categories: blogCategories,
-    })
-      .then((refreshedCategories) => {
-        setBlogCategories(refreshedCategories);
-        forceRender();
-      })
-      .catch(async (error: any) => {
-        const err = await error;
-        toast.error(err.message);
-      })
-      .finally(() => {
-        updateLoading();
-      });
-  };
+  
   return (
     <>
       <div className="bg-blue-200 md:p-7 p-2">
@@ -197,7 +160,7 @@ const BlogCategories = () => {
                 Add Blog Category
               </Button>
             </div>
-            {/* Add a full-width grey line here */}
+            {}
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
@@ -274,5 +237,4 @@ const BlogCategories = () => {
     </>
   );
 };
-
 export default BlogCategories;

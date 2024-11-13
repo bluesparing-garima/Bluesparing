@@ -2,7 +2,6 @@ import { Typography, Paper, Grid, Tooltip } from "@mui/material";
 import toast, { Toaster } from "react-hot-toast";
 import { header } from "../../../context/constant";
 import { useEffect, useState } from "react";
-
 import GetTotalBrokerPaymentService from "../../../api/Dashboard/GetTotalBrokerPayment/GetTotalBrokerPaymentService";
 import { Link, useLocation } from "react-router-dom";
 import { BrokerPayInCommissionProps } from "../../TreeView/ITreeView";
@@ -11,8 +10,8 @@ import { generateBrokerPayInCommissionExcel } from "../../../utils/DashboardExce
 const FilterPayIn = () => {
   const title = "Get PayIn Details Of All Brokers";
   const location = useLocation();
-  const selectedCategory = location.state as string; // This is where you access the passed state
-  const [brokerTotalPayment, setBrokerTotalPayment] = useState<number>(0); // State for all credit debits
+  const selectedCategory = location.state as string;
+  const [brokerTotalPayment, setBrokerTotalPayment] = useState<number>(0);
   const [brokerPayment, setBrokerPayment] = useState<
     BrokerPayInCommissionProps[]
   >([]);
@@ -21,9 +20,8 @@ const FilterPayIn = () => {
       GetTotalBrokerPaymentService({
         header,
         category: selectedCategory,
-      }) // Call API to fetch credit debits
+      })
         .then((brokerPayment) => {
-          // On successful API call
           setBrokerPayment(brokerPayment.data);
           setBrokerTotalPayment(brokerPayment.totalAmount);
         })
@@ -32,9 +30,8 @@ const FilterPayIn = () => {
           toast.error(err.message);
         });
     };
-
     fetchBrokerPayments();
-    // eslint-disable-next-line
+     // eslint-disable-next-line 
   }, []);
   const handleDownloadExcel = () => {
     generateBrokerPayInCommissionExcel(brokerPayment);
@@ -58,7 +55,6 @@ const FilterPayIn = () => {
             </button>
           </Tooltip>
         </div>
-
         <Grid container className="bg-blue-200 mt-3">
           {brokerPayment && brokerPayment.length > 0 ? (
             brokerPayment.map((item, index) => (
@@ -82,9 +78,7 @@ const FilterPayIn = () => {
                         {item.totalPayInCommission}
                       </Typography>
                     </div>
-                    {/* Uncomment if needed
-                <img src={icon} alt={title} className="h-8 w-8" />
-                */}
+               
                   </div>
                 </Link>
               </Grid>
@@ -98,11 +92,9 @@ const FilterPayIn = () => {
             </Typography>
           )}
         </Grid>
-
         <Toaster position="bottom-center" reverseOrder={false} />
       </Paper>
     </div>
   );
 };
-
 export default FilterPayIn;

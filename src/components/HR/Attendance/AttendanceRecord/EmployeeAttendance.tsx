@@ -13,7 +13,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast, Toaster } from "react-hot-toast";
 import dayjs from "dayjs";
 import { DAY_FORMAT, header, SafeKaroUser } from "../../../../context/constant";
-import { IAttendance } from "../IAttendnace";
+import { IAttendance } from "../IAttendance";
 import * as yup from "yup";
 import { setIn } from "final-form";
 import { Field, Form } from "react-final-form";
@@ -22,7 +22,6 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import GetAttendanceByEmployeeService from "../../../../api/HR/Attendance/GetAttendanceByEmployeeId/GetAttendanceByEmployeeService";
 import DeleteAttendanceService from "../../../../api/HR/Attendance/DeleteAttendance/DeleteHolidayService";
 import AttendanceByDateFilterService from "../../../../api/HR/Attendance/AttendanceByDateFilter/AttendanceByDateFilterService";
-
 const EmployeeAttendance: React.FC = () => {
   const { employeeId } = useParams();
   const [attendanceRecords, setAttendanceRecords] = useState<IAttendance[]>([]);
@@ -32,7 +31,6 @@ const EmployeeAttendance: React.FC = () => {
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
   const navigate = useNavigate();
-
   const handleAddAttendanceClick = () => {
     const attendance: IAttendance = {
       employeeId: employeeId,
@@ -40,7 +38,6 @@ const EmployeeAttendance: React.FC = () => {
     };
     navigate("/hr/add-attendance", { state: { attendance } });
   };
-
   const columns = useMemo<MRT_ColumnDef<IAttendance>[]>(
     () => [
       {
@@ -86,7 +83,6 @@ const EmployeeAttendance: React.FC = () => {
     ],
     []
   );
-
   const checkIsTodayRecord = (recordDate: string): boolean => {
     const now = dayjs().startOf("day");
     const attendanceDate = dayjs(recordDate).startOf("day");
@@ -95,7 +91,6 @@ const EmployeeAttendance: React.FC = () => {
     }
     return true;
   };
-
   const fetchAllAttendanceRecords = async () => {
     setIsLoading(true);
     if (employeeId) {
@@ -120,7 +115,6 @@ const EmployeeAttendance: React.FC = () => {
       setIsLoading(false);
     }
   };
-
   const onSubmit = async (filterForm: any) => {
     const startDate = dayjs(filterForm.startDate).format(DAY_FORMAT);
     const endDate = dayjs(filterForm.endDate).format(DAY_FORMAT);
@@ -138,7 +132,6 @@ const EmployeeAttendance: React.FC = () => {
       toast.error(error.message);
     }
   };
-
   const validateFormValues = (schema: any) => async (values: any) => {
     try {
       await schema.validate(values, { abortEarly: false });
@@ -149,14 +142,11 @@ const EmployeeAttendance: React.FC = () => {
       return errors;
     }
   };
-
   const validationSchema = yup.object().shape({
     startDate: yup.string().nullable().required("Start Date is required"),
     endDate: yup.string().nullable().required("End Date is required"),
   });
-
   const validate = validateFormValues(validationSchema);
-
   const handleClickDeleteAttendance = async (attendance: IAttendance) => {
     setIsLoading(true);
     try {
@@ -171,7 +161,6 @@ const EmployeeAttendance: React.FC = () => {
       setIsLoading(false);
     }
   };
-
   const handleClickEditAttendance = (attendance: IAttendance) => {
     navigate(`/hr/edit-attendance/${attendance._id}`, {
       state: { attendance },
@@ -179,9 +168,7 @@ const EmployeeAttendance: React.FC = () => {
   };
   useEffect(() => {
     fetchAllAttendanceRecords();
-    // eslint-disable-next-line
   }, []);
-
   const generateDashBoardlink = () => {
     const role = UserData.role.toLowerCase();
     switch (role) {
@@ -232,7 +219,6 @@ const EmployeeAttendance: React.FC = () => {
               style={{ width: "100%", borderColor: "grey-800" }}
             />
           </Typography>
-
           <div className="mb-2">
             <Form
               validate={validate}
@@ -240,7 +226,7 @@ const EmployeeAttendance: React.FC = () => {
               render={({ handleSubmit, submitting, errors }) => (
                 <form onSubmit={handleSubmit} noValidate>
                   <Grid container spacing={2}>
-                    {/* Start Date Field */}
+                    {}
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Field name="startDate">
                         {({ input, meta }) => (
@@ -269,8 +255,7 @@ const EmployeeAttendance: React.FC = () => {
                         )}
                       </Field>
                     </Grid>
-
-                    {/* End Date Field */}
+                    {}
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Field name="endDate">
                         {({ input, meta }) => (
@@ -299,8 +284,7 @@ const EmployeeAttendance: React.FC = () => {
                         )}
                       </Field>
                     </Grid>
-
-                    {/* Submit Button */}
+                    {}
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Button
                         type="submit"
@@ -317,8 +301,7 @@ const EmployeeAttendance: React.FC = () => {
               )}
             />
           </div>
-
-          {/* Attendance Records Table */}
+          {}
           <MaterialReactTable
             state={{ isLoading, pagination }}
             columns={columns}
@@ -383,5 +366,4 @@ const EmployeeAttendance: React.FC = () => {
     </>
   );
 };
-
 export default EmployeeAttendance;

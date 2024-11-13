@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { ADD, header } from "../../../context/constant";
 import { IAddEditPolicyForm } from "../IPolicy";
 import getBookingRequestByIdService from "../../../api/BookingRequest/GetBookingRequestById/getBookingRequestByIdService";
-
 const EditPolicyFormCard = () => {
   const { bookingRequestId } = useParams();
   const location = useLocation();
@@ -12,7 +11,6 @@ const EditPolicyFormCard = () => {
   const isAdd = pathName[pathName.length - 1] === ADD;
   const [editPolicyDetails, setEditPolicyDetails] =
     useState<IAddEditPolicyForm>();
-
   useEffect(() => {
     if (bookingRequestId) {
       getBookingRequestByIdService({ header, bookingRequestId })
@@ -70,14 +68,13 @@ const EditPolicyFormCard = () => {
             createdOn: bookingDetails.data.createdOn,
           };
           setEditPolicyDetails(bookingRequestVMToPolicyForm);
-          // setEditPolicyDetails(bookingDetails.data);
+       ;
         })
         .catch((error) => {
           console.error("Failed to fetch bookingRequest details", error);
         });
     }
   }, [isAdd, bookingRequestId]);
-
   return (
     <>
       <EditPolicyForm
@@ -122,7 +119,6 @@ const EditPolicyFormCard = () => {
             : editPolicyDetails?.partnerId!
             ? "Partner"
             : editPolicyDetails?.policyCreatedBy!,
-          //documents: [],
           paymentDetails: isAdd ? "" : editPolicyDetails?.paymentDetails!,
           partnerId: isAdd ? "" : editPolicyDetails?.partnerId!,
           partnerName: isAdd ? "" : editPolicyDetails?.partnerName!,
@@ -150,5 +146,4 @@ const EditPolicyFormCard = () => {
     </>
   );
 };
-
 export default EditPolicyFormCard;

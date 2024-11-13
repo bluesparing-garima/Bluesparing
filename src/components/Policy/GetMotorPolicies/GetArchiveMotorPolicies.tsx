@@ -6,7 +6,6 @@ import {
   SafeKaroUser,
   header,
 } from "../../../context/constant";
-//import dayjs from "dayjs";
 import {
   Button,
   Grid,
@@ -59,14 +58,10 @@ const GetArchiveMotorPolicies = () => {
         }),
     []
   );
-
   useEffect(() => {
-    const currentDate = new Date(); // Example current date
-    // Calculate first day of current month
+    const currentDate = new Date();
     const firstDayOfMonth = startOfMonth(currentDate);
-    // Calculate last day of current month
     const lastDayOfMonth = endOfMonth(currentDate);
-    // Format the dates if needed
     const formattedFirstDay = format(firstDayOfMonth, "yyyy-MM-dd");
     const formattedLastDay = format(lastDayOfMonth, "yyyy-MM-dd");
     if (
@@ -76,15 +71,13 @@ const GetArchiveMotorPolicies = () => {
       GetPolicies(formattedFirstDay, formattedLastDay);
     }
   }, [GetPolicies, userData.role]);
-
-  //should be memoized or stable
   const columns = useMemo<MRT_ColumnDef<IPolicy>[]>(
     () =>
       [
         {
           header: "Booking Time",
           accessorKey: "bookingTimer",
-          visible: userData.role === "admin", // Conditional visibility
+          visible: userData.role === "admin",
           Cell: ({ row }: { row: { original: IPolicy } }) => (
             <CountdownTimer
               registerDate={row.original.updatedOn || row.original.createdOn}
@@ -95,10 +88,10 @@ const GetArchiveMotorPolicies = () => {
           size: 200,
         },
         {
-          accessorKey: "leadTimer", //normal accessorKey
+          accessorKey: "leadTimer",
           header: "Lead Time",
           size: 100,
-          visible: userData.role === "admin", // Conditional visibility
+          visible: userData.role === "admin",
           Cell: ({ row }: { row: { original: IPolicy } }) => (
             <CountdownTimer
               registerDate={row.original.updatedOn || row.original.createdOn}
@@ -108,133 +101,132 @@ const GetArchiveMotorPolicies = () => {
           ),
         },
         {
-          accessorKey: "policyNumber", //normal accessorKey
+          accessorKey: "policyNumber",
           header: "Policy Number",
           size: 100,
         },
         {
-          accessorKey: "policyType", //normal accessorKey
+          accessorKey: "policyType",
           header: "Policy Type",
           size: 100,
         },
         {
-          accessorKey: "caseType", //normal accessorKey
+          accessorKey: "caseType",
           header: "Case Type",
           size: 100,
         },
-
         {
-          accessorKey: "category", //normal accessorKey
+          accessorKey: "category",
           header: "Category",
           size: 100,
         },
         {
-          accessorKey: "productType", //normal accessorKey
+          accessorKey: "productType",
           header: "Product",
           size: 100,
         },
         {
-          accessorKey: "subCategory", //normal accessorKey
+          accessorKey: "subCategory",
           header: "sub Category",
           size: 100,
         },
         {
-          accessorKey: "companyName", //normal accessorKey
+          accessorKey: "companyName",
           header: "Company Name",
           size: 100,
         },
         {
-          accessorKey: "vehicleNumber", //normal accessorKey
+          accessorKey: "vehicleNumber",
           header: "Vehicle Number",
           size: 100,
         },
         {
-          accessorKey: "broker", //normal accessorKey
+          accessorKey: "broker",
           header: "Broker",
           size: 100,
         },
         {
-          accessorKey: "partnerName", //normal accessorKey
+          accessorKey: "partnerName",
           header: "Partner Name",
           size: 100,
         },
         {
-          accessorKey: "make", //normal accessorKey
+          accessorKey: "make",
           header: "Make",
           size: 100,
         },
         {
-          accessorKey: "model", //normal accessorKey
+          accessorKey: "model",
           header: "Model",
           size: 100,
         },
         {
-          accessorKey: "fuelType", //normal accessorKey
+          accessorKey: "fuelType",
           header: "Fuel Type",
           size: 100,
         },
         {
-          accessorKey: "rto", //normal accessorKey
+          accessorKey: "rto",
           header: "RTO",
           size: 100,
         },
         {
-          accessorKey: "cc", //normal accessorKey
+          accessorKey: "cc",
           header: "cc",
           size: 100,
         },
         {
-          accessorKey: "seatingCapacity", //normal accessorKey
+          accessorKey: "seatingCapacity",
           header: "Seating Capacity",
           size: 100,
         },
         {
-          accessorKey: "ncb", //normal accessorKey
+          accessorKey: "ncb",
           header: "ncb",
           size: 100,
         },
         {
-          accessorKey: "fullName", //normal accessorKey
+          accessorKey: "fullName",
           header: "Full Name",
           size: 100,
         },
         {
-          accessorKey: "emailId", //normal accessorKey
+          accessorKey: "emailId",
           header: "Email",
           size: 100,
         },
         {
-          accessorKey: "phoneNumber", //normal accessorKey
+          accessorKey: "phoneNumber",
           header: "Phone Number",
           size: 100,
         },
         {
-          accessorKey: "vehicleAge", //normal accessorKey
+          accessorKey: "vehicleAge",
           header: "Vehicle Age",
           size: 100,
         },
         {
-          accessorKey: "mfgYear", //normal accessorKey
+          accessorKey: "mfgYear",
           header: "MFG Year",
           size: 100,
         },
         {
-          accessorKey: "tenure", //normal accessorKey
+          accessorKey: "tenure",
           header: "Tenure",
           size: 100,
         },
         {
-          accessorKey: "netPremium", //normal accessorKey
+          accessorKey: "netPremium",
           header: "Net Premium",
           size: 100,
         },
         {
-          accessorKey: "finalPremium", //normal accessorKey
+          accessorKey: "finalPremium",
           header: "Final Premium",
           size: 100,
         },
         {
-          accessorKey: "issueDate", //normal accessorKey
+          accessorKey: "issueDate",
           header: "Issue Date",
           size: 100,
         },
@@ -351,7 +343,6 @@ const GetArchiveMotorPolicies = () => {
       } else {
         return;
       }
-      //navigateToPolicies(`${newPolicy.message}`);
     } catch (err: any) {
       const errorData = await err;
       toast.error(errorData.message);
@@ -359,14 +350,11 @@ const GetArchiveMotorPolicies = () => {
     }
   };
   const updateLoading = useCallback(async () => {
-    // setIsLoading(true) when motorPolicies.length is 0, and setIsLoading(false) when motorPolicies.length is > 0
     setIsLoading(motorPolicies.length >= 0 ? false : true);
   }, [motorPolicies]);
-
   useEffect(() => {
     updateLoading();
   }, [updateLoading]);
-
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
       schema = schema();
@@ -384,9 +372,7 @@ const GetArchiveMotorPolicies = () => {
     startDate: yup.string().required("Start Date is required").nullable(),
     endDate: yup.string().nullable().required("End Date is required"),
   });
-
   const validate = validateFormValues(validationSchema);
-
   return (
     <>
       <div className="bg-blue-200 md:p-7 p-2">
@@ -411,7 +397,6 @@ const GetArchiveMotorPolicies = () => {
                   type="button"
                   className="w-26 h-10 bg-addButton text-white p-3 md:text-xs text-[10px] rounded-sm"
                   onClick={handleClickAddMotorPolicy}
-        
                 >
                   Add Motor Policies
                 </Button>
@@ -419,22 +404,20 @@ const GetArchiveMotorPolicies = () => {
                 ""
               )}
             </div>
-            {/* Add a full-width grey line here */}
+            {}
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
             />
           </Typography>
-
           <React.Fragment>
             <Form
               onSubmit={onSubmit}
-              // initialValues={initialValues}
               validate={validate}
               render={({ handleSubmit, submitting, errors, values }) => (
                 <form onSubmit={handleSubmit} noValidate>
                   <Grid container spacing={2}>
-                    {/* Account Code Selection */}
+                    {}
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Field name="startDate">
                         {({ input, meta }) => (
@@ -442,7 +425,7 @@ const GetArchiveMotorPolicies = () => {
                             <DatePicker
                               disableFuture
                               label="Start Date"
-                              value={input.value || null} // Initialize the value if it's undefined
+                              value={input.value || null}
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
                                 <TextField
@@ -466,7 +449,7 @@ const GetArchiveMotorPolicies = () => {
                             <DatePicker
                               disableFuture
                               label="End Date"
-                              value={input.value || null} // Initialize the value if it's undefined
+                              value={input.value || null}
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
                                 <TextField
@@ -483,7 +466,6 @@ const GetArchiveMotorPolicies = () => {
                         )}
                       </Field>
                     </Grid>
-
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Button
                         type="submit"
@@ -500,7 +482,6 @@ const GetArchiveMotorPolicies = () => {
               )}
             />
           </React.Fragment>
-
           <MaterialReactTable
             state={{ isLoading }}
             columns={columns}
@@ -521,7 +502,6 @@ const GetArchiveMotorPolicies = () => {
                 </Button>
               </>
             )}
-            // positionActionsColumn="last"
             renderRowActions={({ row }) => (
               <div style={{ display: "flex", flexWrap: "nowrap" }}>
                 <Tooltip title={"Restore Policy"}>
@@ -558,5 +538,4 @@ const GetArchiveMotorPolicies = () => {
     </>
   );
 };
-
 export default GetArchiveMotorPolicies;

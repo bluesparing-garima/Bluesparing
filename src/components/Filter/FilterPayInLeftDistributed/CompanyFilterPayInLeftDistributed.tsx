@@ -7,32 +7,28 @@ import { useLocation, useParams } from "react-router-dom";
 import GetBrokerWithLeftDistributedCompanyPaymentService from "../../../api/Dashboard/GetBrokerWithLeftDistributedCompanyPayment/GetBrokerWithLeftDistributedCompanyPaymentService";
 import { BrokerPayInLeftDistributedCompanyProps } from "../../TreeView/ITreeView";
 import { generateBrokerPayInLeftDistributedCompanyExcel } from "../../../utils/DashboardExcel";
-
 const CompanyFilterPayInLeftDistributed = () => {
   const title = "Get Payment LeftDistributed Details Of Broker -";
   const location = useLocation();
-  const selectedCategory = location.state as string; // This is where you access the passed state
+  const selectedCategory = location.state as string;
   const { brokerId } = useParams();
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [selectedBrokerName, setSelectedBrokerName] = useState<string>();
   const [selectedBrokerCode, setSelectedBrokerCode] = useState<string>();
   const [companyDetails, setCompanyDetails] = useState<
     BrokerPayInLeftDistributedCompanyProps[]
-  >([]); // State for all credit debits
-
+  >([]);
   useEffect(() => {
     filterMonthlyBrokerPaymentWithCompany(brokerId!);
-    // eslint-disable-next-line
+     // eslint-disable-next-line 
   }, []);
-
   const filterMonthlyBrokerPaymentWithCompany = async (brokerId: string) => {
     GetBrokerWithLeftDistributedCompanyPaymentService({
       header,
       brokerId: brokerId!,
       category: selectedCategory,
-    }) // Call API to fetch credit debits
+    })
       .then((brokers) => {
-        // On successful API call
         setCompanyDetails(brokers.data);
         setTotalAmount(brokers.totalAmount);
         setSelectedBrokerName(brokers.brokerName);
@@ -71,7 +67,6 @@ const CompanyFilterPayInLeftDistributed = () => {
               </button>
             </Tooltip>
           </div>
-
           <Typography variant="body2" className="text-sm text-gray-600 mb-2">
             Total Amount{" "}
             <span className="text-safekaroDarkOrange">{totalAmount}</span>
@@ -107,5 +102,4 @@ const CompanyFilterPayInLeftDistributed = () => {
     </>
   );
 };
-
 export default CompanyFilterPayInLeftDistributed;

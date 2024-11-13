@@ -5,7 +5,6 @@ import {
   DAYJS_DISPLAY_FORMAT,
   header,
 } from "../../../../context/constant";
-//import dayjs from "dayjs";
 import { Button, IconButton, Paper, Tooltip, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
@@ -21,7 +20,6 @@ import { newsAddPath, newsEditPath } from "../../../../sitemap";
 import getNewsService from "../../../../api/Website/News/GetNews/getNewsService";
 import { convertINewsVMToINewsForm } from "../../../../api/Website/News/convertINewsVMToINewsForm";
 import editNewsService from "../../../../api/Website/News/EditNews/editNewsService";
-
 const News = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [news, setNews] = useState<INews[]>([]);
@@ -49,19 +47,16 @@ const News = () => {
   useEffect(() => {
     GetNews();
   }, [GetNews]);
-
   useEffect(() => {
     const p = getPaginationState(BLOG_STORAGE_KEY);
     setPagination(p);
   }, []);
   const callUpdateBranchAPI = async (branch: INewsVM) => {
     var convertNewsVMToNewsForm = convertINewsVMToINewsForm(branch);
-
     const branchData: INewsForm = {
       ...convertNewsVMToNewsForm,
       isActive: !convertNewsVMToNewsForm.isActive,
     };
-
     editNewsService({ header, news: branchData })
       .then(() => {
         GetNews();
@@ -74,36 +69,30 @@ const News = () => {
         updateLoading();
       });
   };
-
   const handleClickChangeStatus = (branch: INewsVM) => {
     callUpdateBranchAPI(branch);
   };
-  const [forcedRenderCount, setForcedRenderCount] = useState(0);
-  // eslint-disable-next-line
-  const forceRender = useCallback(
-    () => setForcedRenderCount(forcedRenderCount + 1),
-    [forcedRenderCount]
-  );
-  //should be memoized or stable
+  const forcedRenderCount = 0;
+  
   const columns = useMemo<MRT_ColumnDef<INews>[]>(
     () => [
       {
-        accessorKey: "title", //normal accessorKey
+        accessorKey: "title",
         header: "Title Name",
         size: 200,
       },
       {
-        accessorKey: "category", //normal accessorKey
+        accessorKey: "category",
         header: "Category Name",
         size: 200,
       },
       {
-        accessorKey: "author", //normal accessorKey
+        accessorKey: "author",
         header: "Author Name",
         size: 200,
       },
       {
-        accessorKey: "website", //normal accessorKey
+        accessorKey: "website",
         header: "Website Name",
         size: 200,
       },
@@ -128,7 +117,6 @@ const News = () => {
     ],
     []
   );
-
   const parsedData = useMemo(
     () =>
       news.map(
@@ -151,23 +139,16 @@ const News = () => {
       ) ?? [],
     [news, forcedRenderCount]
   );
-
   const updateLoading = useCallback(async () => {
-    // setIsLoading(true) when news.length is 0, and setIsLoading(false) when news.length is > 0
     setIsLoading(news.length >= 0 ? false : true);
   }, [news]);
-
   useEffect(() => {
     updateLoading();
   }, [updateLoading]);
-
-
   const handleClickEditNews = (news: INewsVM) => {
     savePaginationState(pagination, BLOG_STORAGE_KEY);
     navigate(newsEditPath(news.id!));
   };
-
- 
   return (
     <>
       <div className="bg-blue-200 md:p-7 p-2">
@@ -194,7 +175,7 @@ const News = () => {
                 Add News
               </Button>
             </div>
-            {/* Add a full-width grey line here */}
+            {}
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
@@ -269,5 +250,4 @@ const News = () => {
     </>
   );
 };
-
 export default News;

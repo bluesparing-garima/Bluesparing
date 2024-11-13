@@ -1,10 +1,5 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useCallback, useEffect, useState } from "react";
-import {
-  Grid,
-  TextField,
-  Tooltip,
-} from "@mui/material";
+import { Grid, TextField, Tooltip } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import { SafeKaroUser, header } from "../../context/constant";
 import { Account, IAccountData } from "./IDashboard";
@@ -15,7 +10,7 @@ import PayInCommissionIcon from "../../assets/payIn.png";
 import PayOutCommissionIcon from "../../assets/payOut.png";
 import TotalAccounts from "../../assets/bookedBooking.png";
 import Accounts from "../../assets/totalLead.png";
-import AdminCommisionChart from "./Chart/AdminCommisionChart";
+import AdminCommissionChart from "./Chart/AdminCommissionChart";
 import AdminPolicyChart from "./Chart/AdminPolicyChart";
 import { startOfMonth, endOfMonth, format } from "date-fns";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
@@ -35,11 +30,11 @@ import {
 } from "./data/Svg";
 import SearchIcon from "@mui/icons-material/Search";
 import { CartButton } from "./dashboard";
-import { IEmployee } from "../HR/Attendance/IAttendnace";
+import { IEmployee } from "../HR/Attendance/IAttendance";
 import GetAttendanceCountService from "../../api/Role/GetAttendanceCount/GetAttendanceCountService";
 import AttendanceCard from "../HR/Attendance/AttendanceRecord/AttendanceCard";
 import dayjs from "dayjs";
-const accountDashboard: React.FC = () => {
+const AccountDashboard: React.FC = () => {
   const [data, setData] = useState<IAccountData[]>([]);
   const [isVisible, setIsVisible] = useState(false);
   const [firstCart, setFirstCart] = useState(true);
@@ -64,7 +59,6 @@ const accountDashboard: React.FC = () => {
         setIsVisible(true);
       });
   }, []);
-
   const getAttendaceRecord = async () => {
     try {
       const res = await GetAttendanceCountService({ header, eId: UserData.id });
@@ -74,14 +68,9 @@ const accountDashboard: React.FC = () => {
     }
   };
   useEffect(() => {
-    const currentDate = new Date(); // Example current date
-
-    // Calculate first day of current month
+    const currentDate = new Date();
     const firstDayOfMonth = startOfMonth(currentDate);
-
-    // Calculate last day of current month
     const lastDayOfMonth = endOfMonth(currentDate);
-    // Format the dates if needed
     const formattedFirstDay = format(firstDayOfMonth, "yyyy-MM-dd");
     const formattedLastDay = format(lastDayOfMonth, "yyyy-MM-dd");
     getAttendaceRecord();
@@ -91,9 +80,7 @@ const accountDashboard: React.FC = () => {
     fetchData();
     const intervalId = setInterval(fetchData, 30000);
     return () => clearInterval(intervalId);
-     // eslint-disable-next-line
   }, [GetDashboardCount]);
-
   const renderCountBox = (
     title: string,
     count: number | string,
@@ -102,7 +89,6 @@ const accountDashboard: React.FC = () => {
   ) => {
     const formattedCount =
       typeof count === "number" ? Math.round(count).toLocaleString() : "0";
-
     const content = (
       <div className="bg-white m-2 p-3 rounded-[10.33px] shadow-lg flex items-center justify-between transform transition-transform duration-200 hover:scale-105">
         <div>
@@ -122,29 +108,21 @@ const accountDashboard: React.FC = () => {
         <img src={icon} alt={title} className="h-8 w-8" />
       </div>
     );
-
     return (
       <Grid item xs={12} sm={6} md={4} lg={3}>
         {path ? <Link to={path}>{content}</Link> : content}
       </Grid>
     );
   };
-
   const onSubmit = async (value: any) => {
-    // Convert to local time zone
-    // Create a Date object from the UTC date string
     const utcStartDate = new Date(value.startDate!);
-    // Format the date
     const formattedStartDate = format(utcStartDate, "yyyy-MM-dd'T'HH:mm:ss");
     value.startDate = formattedStartDate;
-    // Create a Date object from the UTC date string
     const utcEndDate = new Date(value.endDate!);
     const formattedEndDate = format(utcEndDate, "yyyy-MM-dd'T'HH:mm:ss");
     value.endDate = formattedEndDate;
-
     GetDashboardCount(value.startDate, value.endDate);
   };
-
   const handleFirstCart = async () => {
     setFirstCart(true);
     setSecondCart(false);
@@ -173,14 +151,12 @@ const accountDashboard: React.FC = () => {
     setFourthCart(true);
     setSelectedcard("4");
   };
-
   const handleDownloadPDF = () => {
     accountGeneratePDF(data);
   };
   const handleDownloadExcel = () => {
     accountGenerateExcel(data);
   };
-
   return (
     <div className="bg-blue-200 h-screen">
       <Grid container sx={{ margin: 1 }}>
@@ -223,7 +199,7 @@ const accountDashboard: React.FC = () => {
                           <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
                               disableFuture
-                              value={input.value || null} // Initialize the value if it's undefined
+                              value={input.value || null}
                               onChange={(date) => {
                                 input.onChange(date);
                               }}
@@ -248,7 +224,7 @@ const accountDashboard: React.FC = () => {
                           <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
                               disableFuture
-                              value={input.value || null} // Initialize the value if it's undefined
+                              value={input.value || null}
                               onChange={(date) => {
                                 input.onChange(date);
                               }}
@@ -297,7 +273,6 @@ const accountDashboard: React.FC = () => {
             </div>
           </div>
         </div>
-
         <Grid item md={12}>
           {UserData.role.toLowerCase() === "account" ? (
             <>
@@ -360,7 +335,6 @@ const accountDashboard: React.FC = () => {
                           ))}
                         </>
                       )}
-
                       {secondCart && (
                         <>
                           {data.map((item, index) => (
@@ -399,12 +373,11 @@ const accountDashboard: React.FC = () => {
                           ))}
                         </>
                       )}
-
                       {thirdCart && (
                         <div className="bg-blue-200 md:p-7 p-2">
                           <Grid container spacing={2}>
                             <Grid item md={6}>
-                              <AdminCommisionChart />
+                              <AdminCommissionChart />
                             </Grid>
                             <Grid item md={6}>
                               <AdminPolicyChart />
@@ -412,14 +385,12 @@ const accountDashboard: React.FC = () => {
                           </Grid>
                         </div>
                       )}
-
                       {fourthCart && employee && (
                         <>
                           <Typography className="text-lg font-medium text-gray-800">
                             Monthly Attendance Record
                           </Typography>
                           <AttendanceCard employee={employee} />
-
                           <Grid container>
                             {data[0]?.monthlyHolidays?.holidays.map(
                               (holiday: any, index: number) =>
@@ -447,5 +418,4 @@ const accountDashboard: React.FC = () => {
     </div>
   );
 };
-
-export default accountDashboard;
+export default AccountDashboard;

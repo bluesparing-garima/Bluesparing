@@ -3,13 +3,8 @@ import {
   CardContent,
   Grid,
   TextField,
-  Tooltip,
-  Card,
-  Button,
 } from "@mui/material";
 import Typography from "@mui/material/Typography";
-import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
-import PictureAsPdfSharpIcon from "@mui/icons-material/PictureAsPdfSharp";
 import SearchIcon from "@mui/icons-material/Search";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { Field, Form } from "react-final-form";
@@ -19,7 +14,6 @@ import { header, SafeKaroUser } from "../../context/constant";
 import { endOfMonth, startOfMonth, format } from "date-fns";
 import GetHrDashboardServices from "../../api/HR/GetHrDashboard/GetHrDashboardServices";
 import dayjs from "dayjs";
-
 const HrDashBoard: React.FC = () => {
   const [data, setData] = useState<any>(null);
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
@@ -46,14 +40,11 @@ const HrDashBoard: React.FC = () => {
       }
     };
 if(UserData.role.toLowerCase()==="hr"){
-
   fetchData();
 }
     const intervalId = setInterval(fetchData, 30000);
     return () => clearInterval(intervalId);
-    // eslint-disable-next-line
   }, []);
-
   const renderCountBox = (
     title: string,
     count: number | string,
@@ -63,7 +54,6 @@ if(UserData.role.toLowerCase()==="hr"){
     if (typeof count === "number") {
       formattedCount = Math.round(count).toLocaleString();
     }
-
     const content = (
       <div className="bg-white m-2 p-3 rounded-[10.33px] shadow-lg flex items-center justify-between transform transition-transform duration-200 hover:scale-105">
         <div>
@@ -82,14 +72,12 @@ if(UserData.role.toLowerCase()==="hr"){
         </div>
       </div>
     );
-
     return (
       <Grid item xs={12} sm={6} md={4} lg={3}>
         {path ? <Link to={path}>{content}</Link> : content}
       </Grid>
     );
   };
-
   const onSubmit = async (value: any) => {
     const utcStartDate = new Date(value.startDate!);
     const formattedStartDate = format(utcStartDate, "yyyy-MM-dd'T'HH:mm:ss");
@@ -111,15 +99,6 @@ if(UserData.role.toLowerCase()==="hr"){
       console.error("Error fetching HR Dashboard data:", error);
     }
   };
-
-  // const handleDownloadPDF = () => {
-  //   rmGeneratePDF(data);
-  // };
-
-  // const handleDownloadExcel = () => {
-  //   rmGenerateExcel(data);
-  // };
-
   return (
     <>
       {UserData.role.toLowerCase() === "hr" ? (
@@ -193,27 +172,8 @@ if(UserData.role.toLowerCase()==="hr"){
                       </form>
                     )}
                   />
-                  {/* <div className="flex justify-between items-center gap-x-2">
-                <Tooltip title="Download PDF">
-                  <button
-                    className="md:w-10 md:h-10 h-4 w-4 bg-[#0095FF] shadow-sm rounded flex justify-center items-center text-white"
-                    onClick={handleDownloadPDF}
-                  >
-                    <PictureAsPdfSharpIcon className="md:w-6 md:h-6 h-3 w-3" />
-                  </button>
-                </Tooltip>
-                <Tooltip title="Download Excel">
-                  <button
-                    className="md:w-10 md:h-10 h-4 w-4 bg-[#3BDB03] shadow-sm rounded flex justify-center items-center text-white"
-                    onClick={handleDownloadExcel}
-                  >
-                    <FileDownloadOutlinedIcon className="md:w-6 md:h-6 h-3 w-3" />
-                  </button>
-                </Tooltip>
-              </div> */}
                 </div>
               </div>
-
               <Grid item md={12}>
                 <Grid container>
                   <Grid item xs={12}>
@@ -276,7 +236,6 @@ if(UserData.role.toLowerCase()==="hr"){
                             Monthly Holidays
                           </Typography>
                         )}
-
                         <Grid container>
                           {data?.monthlyHolidays?.holidays.map(
                             (holiday: any, index: number) =>
@@ -289,25 +248,6 @@ if(UserData.role.toLowerCase()==="hr"){
                       </div>
                     </div>
                   </Grid>
-                  {/* <Grid item xs={12}>
-                <div>
-                  <div className="bg-blue-200 px-7 py-2">
-                    <Typography className="text-lg font-medium text-gray-800">
-                      Yearly Holidays
-                    </Typography>
-
-                    <Grid container>
-                      {data?.yearTotalHolidays?.holidays.map(
-                        (holiday: any, index: number) =>
-                          renderCountBox(
-                            holiday.name.toUpperCase(),
-                            new Date(holiday.date).toLocaleDateString()
-                          )
-                      )}
-                    </Grid>
-                  </div>
-                </div>
-              </Grid> */}
                 </Grid>
               </Grid>
             </Grid>
@@ -319,5 +259,4 @@ if(UserData.role.toLowerCase()==="hr"){
     </>
   );
 };
-
 export default HrDashBoard;

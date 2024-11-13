@@ -1,17 +1,13 @@
 export const ADD = "add";
 export const UPDATE = "update";
-
-// Standard Date/Time format
 export const DATE_TIME_FORMAT = "MMM dd, yyyy, hh:mm a";
 export const DATE_FORMAT = "MMM dd, yyyy";
 export const DAYJS_FORMAT = "YYYY-MM-DD HH:mm";
 export const DAY_FORMAT = "YYYY-MM-DD";
-// Jul 19, 2023, 07:00 AM
 export const DAYS_DB_DISPLAY_FORMAT_DATE_TYPE = "YYYY-MM-DDTHH:mm:ss.SSS[Z]";
 export const DAYJS_DISPLAY_FORMAT_TABLES = "MMM DD, YYYY";
 export const DAYJS_DISPLAY_FORMAT = "MMM DD YYYY";
-//export const DAYJS_DISPLAY_FORMAT = "MMM DD, YYYY, hh:mm";
-export const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB in bytes
+export const MAX_FILE_SIZE = 2 * 1024 * 1024;
 export const ALLOWED_FILE_TYPES = [
   "image/jpeg",
   "image/png",
@@ -20,7 +16,6 @@ export const ALLOWED_FILE_TYPES = [
 ];
 export const ALLOWED_BLOG_FILE_TYPES = ["image/jpeg", "image/png", "image/jpg"];
 export const imagePath = "https://api.safekaro.com/uploads/";
-//export const imagePath = "http://localhost:8000/uploads/";
 export type SafeKaroContextType = {
   user: SafeKaroUser;
   header: Header;
@@ -55,26 +50,22 @@ export type SafeKaroUser = {
   partnerCode: string;
   refreshToken?: string;
 };
-
 export type Header = {
   "Content-Type": string;
   "Access-Token": string;
   "Id-Token": string;
   "Refresh-Token": string;
 };
-
 export const policyStatusPartner = [
   { label: "Changes Required", value: "Changes Required" },
   { label: "Payment Request", value: "Payment Request" },
 ];
-
 export const policyStatusOperation = [
   { label: "Doc Pending", value: "Doc Pending" },
   { label: "Quotation Sent", value: "Quotation Sent" },
   { label: "Payment Link Sent", value: "Payment Pending" },
   { label: "Payment Verified", value: "Payment Verified" },
 ];
-
 export const ROLE_STORAGE_KEY = "paginationRole";
 export const MOTOR_POLICY_STORAGE_KEY = "paginationGetPolicy";
 export const TEAM_STORAGE_KEY = "paginationTeam";

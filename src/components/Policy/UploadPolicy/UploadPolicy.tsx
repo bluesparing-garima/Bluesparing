@@ -14,32 +14,22 @@ import toast, { Toaster } from "react-hot-toast";
 import MotorPolicyExcel from "../../../utils/MotorPolicyExcel";
 import { header } from "../../../context/constant";
 import MotorPolicyExcelService from "../../../api/Policies/MotorPolicyExcel/MotorPolicyExcelService";
-
 const UploadPolicy = () => {
   const title = "Upload Motor Policy Excel";
   const [excelUploaded, setExcelUploaded] = useState(false);
-
   const onSubmit = (values: FormValues) => {
     uploadFile(values.file);
   };
-
-  const handleChangeUploadExcel = () => {
-    setExcelUploaded(true);
-  };
-
-  // // Reset upload after fetching updated data
   useEffect(() => {
     if (excelUploaded) {
       setExcelUploaded(false);
     }
   }, [excelUploaded]);
-
   const uploadFile = async (file: File | null) => {
     if (file) {
       try {
         const formData = new FormData();
-        formData.append("excel", file); // Ensure the key 'excel' matches the backend expectation
-
+        formData.append("excel", file);
         MotorPolicyExcelService({ header, excel: formData })
           .then((response) => {
             if (response.ok) {
@@ -62,11 +52,9 @@ const UploadPolicy = () => {
       }
     }
   };
-
   interface FormValues {
     file: File | null;
   }
-
   const schema = yup.object().shape({
     file: yup
       .mixed()
@@ -81,7 +69,6 @@ const UploadPolicy = () => {
               "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
       ),
   });
-
   const validate = (values: FormValues) => {
     try {
       schema.validateSync(values, { abortEarly: false });
@@ -96,7 +83,6 @@ const UploadPolicy = () => {
       return validationErrors;
     }
   };
-
   return (
     <div className="bg-blue-200 p-2">
       <Paper
@@ -182,5 +168,4 @@ const UploadPolicy = () => {
     </div>
   );
 };
-
 export default UploadPolicy;

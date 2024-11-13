@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-//import { useTranslation } from "react-i18next";
 import {
   Typography,
   Paper,
@@ -26,19 +25,12 @@ import editLeadService from "../../../api/Leads/EditLead/editLeadService";
 import { leadsPath } from "../../../sitemap";
 import { documentTypes } from "../../Policy/IPolicyData";
 import toast, { Toaster } from "react-hot-toast";
-
 export interface addLeadRequestFormProps {
   initialValues: ILeadForm;
 }
-
 const EditLeadForm = (props: addLeadRequestFormProps) => {
   const { initialValues } = props;
   const navigate = useNavigate();
-  //const location = useLocation() as any;
-  //const pathName = location.pathname.split("/");
-  // const isAddEdit = pathName[pathName.length - 1] as string;
-  //const isAdd = isAddEdit === ADD;
-
   const { leadId } = useParams();
   const [errors, setErrors] = useState<{ docName: string; file: string }[]>([
     { docName: "", file: "" },
@@ -46,27 +38,22 @@ const EditLeadForm = (props: addLeadRequestFormProps) => {
   const [documents, setDocuments] = useState<Document[]>([
     { docName: "", file: "" },
   ]);
-
   const [errorMessage, setErrorMessage] = useState("");
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let userData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
-
   const handleFileInputChange = (event: any, index: any) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
       const fileType = file.type;
       const fileSize = file.size;
       const newErrors = [...errors];
-
       if (!ALLOWED_FILE_TYPES.includes(fileType)) {
-        // setErrorMessage("Invalid file type. Please upload an image or a PDF.");
         newErrors[index] = {
           ...newErrors[index],
           file: "Invalid file type. Please upload an image or a PDF.",
         };
         setErrors(newErrors);
       } else if (fileSize > MAX_FILE_SIZE) {
-        //setErrorMessage("File size exceeds the maximum limit.");
         newErrors[index] = {
           ...newErrors[index],
           file: "File size exceeds the maximum limit",
@@ -77,8 +64,6 @@ const EditLeadForm = (props: addLeadRequestFormProps) => {
         const newDocuments = [...documents];
         newDocuments[index] = { ...newDocuments[index], file: file };
         setDocuments(newDocuments);
-
-        // Clear the error if the file is valid
         if (newErrors[index]) {
           newErrors[index].file = "";
         }
@@ -86,7 +71,6 @@ const EditLeadForm = (props: addLeadRequestFormProps) => {
       }
     }
   };
-
   const validateDocument = (document: Document, index: number) => {
     const isValidDocName = document.docName.trim() !== "";
     const isValidFile = document.file;
@@ -94,7 +78,6 @@ const EditLeadForm = (props: addLeadRequestFormProps) => {
     validateField(index, "file", document.file);
     return isValidDocName && isValidFile;
   };
-
   const validateField = (index: number, name: string, value: string) => {
     const newErrors = [...errors];
     if (name === "docName" || name === "file") {
@@ -106,7 +89,6 @@ const EditLeadForm = (props: addLeadRequestFormProps) => {
     setErrors(newErrors);
   };
   const onSubmit = (leadForm: any, form: any) => {
-    // editLeadDetails
     const formValid = documents.every((doc, index) =>
       validateDocument(doc, index)
     );
@@ -124,7 +106,6 @@ const EditLeadForm = (props: addLeadRequestFormProps) => {
       leadForm.remarks = initialValues?.remarks;
       leadForm.updatedBy = userData.name;
       leadForm.status = "requested";
-
       const formData = new FormData();
       formData.append("id", leadForm.id);
       formData.append("category", leadForm.category);
@@ -142,12 +123,7 @@ const EditLeadForm = (props: addLeadRequestFormProps) => {
       formData.append("remarks", leadForm.remarks);
       formData.append("status", leadForm.status);
       formData.append("updatedBy", userData.name);
-
-      // Object.keys(leadForm).forEach((key) => {
-      //   formData.append(key, leadForm[key as keyof ILeadForm]);
-      // });
       documents.forEach((doc: Document) => {
-        // formData.append(doc.docName, doc.docName);
         if (doc.file) {
           formData.append(doc.docName, doc.file);
         }
@@ -155,7 +131,6 @@ const EditLeadForm = (props: addLeadRequestFormProps) => {
       callEditLeadAPI(formData, leadForm.id);
     }
   };
-
   const callEditLeadAPI = async (leadForm: any, leadId: string) => {
     try {
       const newLead = await editLeadService({
@@ -171,19 +146,15 @@ const EditLeadForm = (props: addLeadRequestFormProps) => {
       toast.error(err.message)
     }
   };
-
-  // handle DocName change
   const handleChangeDocumentName = (newValue: any, index: any) => {
     const updatedDocuments = documents.map((doc, i) =>
       i === index ? { ...doc, docName: newValue?.value! } : doc
     );
     setDocuments(updatedDocuments);
   };
-
   const handleClickAddDocument = () => {
     setDocuments([...documents, { docName: "", file: "" }]);
   };
-
   const handleClickDeleteDocument = (index: any) => {
     setDocuments((prevDocuments) =>
       prevDocuments.filter((_, i) => i !== index)
@@ -191,7 +162,6 @@ const EditLeadForm = (props: addLeadRequestFormProps) => {
   };
   useEffect(() => {
     const updatedDocuments: Document[] = [];
-
     if (initialValues.rcBack) {
       updatedDocuments.push({ docName: "rcBack", file: initialValues.rcBack });
     }
@@ -234,10 +204,8 @@ const EditLeadForm = (props: addLeadRequestFormProps) => {
     if (initialValues.other) {
       updatedDocuments.push({ docName: "other", file: initialValues.other });
     }
-
     setDocuments(updatedDocuments);
   }, [initialValues]);
-
   return (
     <>
       <div className="bg-blue-200 p-1">
@@ -256,7 +224,6 @@ const EditLeadForm = (props: addLeadRequestFormProps) => {
                 mt={3}
                 onSubmit={onSubmit}
                 initialValues={initialValues}
-                //validate={addValidate}
                 render={({ handleSubmit, submitError, submitting }) => (
                   <form onSubmit={handleSubmit} noValidate>
                     <Grid container spacing={2}>
@@ -285,7 +252,6 @@ const EditLeadForm = (props: addLeadRequestFormProps) => {
                                       (option) => option.value === doc.docName
                                     ) || null
                                   }
-                                  //value={doc.docName}
                                   onChange={(e, newValue) =>
                                     handleChangeDocumentName(newValue!, index)
                                   }
@@ -380,5 +346,4 @@ const EditLeadForm = (props: addLeadRequestFormProps) => {
     </>
   );
 };
-
 export default EditLeadForm;

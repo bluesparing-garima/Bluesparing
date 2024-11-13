@@ -18,43 +18,36 @@ import * as yup from "yup";
 import TransactionHistoryService from "../../../api/Partner/TransactionHistory/TransactionHistoryService";
 import DebitHistoryService from "../../../api/Partner/DebitHistory/DebitHistoryService";
 import toast, { Toaster } from "react-hot-toast";
-
 const ViewCardHistory = () => {
   const { partnerId } = useParams();
   const { transactionCode } = useParams();
   const { startDate } = useParams();
   const { endDate } = useParams();
-  // State and hooks initialization
-  const [policyStartDate, setStartDate] = useState<any>(); // Loading state
-  const [policyEndDate, setEndDate] = useState<any>(); // Loading state
-  const [isLoading, setIsLoading] = useState(false); // Loading state
+  const [policyStartDate, setStartDate] = useState<any>();
+  const [policyEndDate, setEndDate] = useState<any>();
+  const [isLoading, setIsLoading] = useState(false);
   const [partnerHistoryCard, setPartnerHistoryCard] = useState<
     IPolicyPayment[]
-  >([]); // State for all credit debits
+  >([]);
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let userData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
-
-  // Function to fetch credit debits from API
   const GetPartnerHistoryCard = useCallback((transactionCode, partnerId) => {
-    setIsLoading(true); // Set loading state to true
+    setIsLoading(true);
     TransactionHistoryService({
       header,
       transactionCode: transactionCode,
       partnerId: partnerId,
-    }) // Call API to fetch credit debits
+    })
       .then((partnerHistoryCardDetails) => {
-        // On successful API call
-        setPartnerHistoryCard(partnerHistoryCardDetails.data); // Set all credit debits
-        setIsLoading(false); // Set loading state to false
+        setPartnerHistoryCard(partnerHistoryCardDetails.data);
+        setIsLoading(false);
       })
       .catch(async(error) => {
-        setIsLoading(false); // Set loading state to false
+        setIsLoading(false);
         const err = await error
         toast.error(err.message)
       });
   }, []);
-
-  // Call GetPartnerHistoryCard on component mount
   useEffect(() => {
     if (partnerId) {
       setStartDate(startDate!);
@@ -63,37 +56,35 @@ const ViewCardHistory = () => {
     } else {
     }
   }, [partnerId, startDate, endDate, transactionCode, GetPartnerHistoryCard]);
-
-  // Define columns for MaterialReactTable using useMemo for optimization
   const columns = useMemo<MRT_ColumnDef<IPolicyPayment>[]>(
     () => [
       {
-        accessorKey: "policyNumber", //normal accessorKey
+        accessorKey: "policyNumber",
         header: "Policy Number",
         size: 100,
       },
       {
-        accessorKey: "payOutCommission", //normal accessorKey
+        accessorKey: "payOutCommission",
         header: "Total Commission",
         size: 100,
       },
       {
-        accessorKey: "payOutAmount", //normal accessorKey
+        accessorKey: "payOutAmount",
         header: "Paid Amount",
         size: 100,
       },
       {
-        accessorKey: "payOutBalance", //normal accessorKey
+        accessorKey: "payOutBalance",
         header: "Balance",
         size: 100,
       },
       {
-        accessorKey: "policyDate", //normal accessorKey
+        accessorKey: "policyDate",
         header: "Policy Date",
         size: 100,
       },
       {
-        accessorKey: "paymentUpdatedOn", //normal accessorKey
+        accessorKey: "paymentUpdatedOn",
         header: "Payment Date",
         size: 100,
       },
@@ -105,7 +96,6 @@ const ViewCardHistory = () => {
     ],
     []
   );
-
   const parsedData = useMemo(
     () =>
       partnerHistoryCard.map(
@@ -127,15 +117,10 @@ const ViewCardHistory = () => {
             policyDate: dayjs(motorPolicy.policyDate).format(
               DAYJS_DISPLAY_FORMAT
             ),
-            // documents: motorPolicy.documents,
-            // forceUpdate: forcedRenderCount,
           } as unknown as IPolicyPayment)
       ) ?? [],
     [partnerHistoryCard]
   );
-
-  // Event handlers for filtering partnerHistoryCard
-
   const handleClickDebit = () => {
     const newStartDate = dayjs(policyStartDate).format(DAY_FORMAT);
     const newEndDate = dayjs(policyEndDate).format(DAY_FORMAT);
@@ -145,21 +130,17 @@ const ViewCardHistory = () => {
       startDate: newStartDate,
       endDate: newEndDate,
       partnerId: userData.partnerId!,
-    }) // Call API to fetch credit debits
+    })
       .then((partnerHistoryCardDetails) => {
-        // On successful API call
-        setPartnerHistoryCard(partnerHistoryCardDetails.data); // Set all credit debits
-        setIsLoading(false); // Set loading state to false
+        setPartnerHistoryCard(partnerHistoryCardDetails.data);
+        setIsLoading(false);
       })
       .catch(async(error) => {
-       
-        setIsLoading(false); // Set loading state to false
+        setIsLoading(false);
         const err = await error
         toast.error(err.message)
       });
-    // GetPartnerHistoryCard(transactionCode, userData.partnerId);
   };
-
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
       schema = schema();
@@ -173,24 +154,20 @@ const ViewCardHistory = () => {
       return errors;
     }
   };
-
   const validationSchema = yup.object().shape({
     startDate: yup.string().required("Start Date is required").nullable(),
     endDate: yup.string().nullable().required("End Date is required"),
   });
-
   const validate = validateFormValues(validationSchema);
-
   const onSubmit = async () => {};
-  // JSX rendering
   return (
     <div className="bg-blue-200 md:p-7 p-2">
       <Paper elevation={3} style={{ padding: 30 }}>
-        {/* Title */}
+        {}
         <Typography className="text-safekaroDarkOrange" variant="h5">
           Account History Table
         </Typography>
-        {/* Breadcrumb and add button */}
+        {}
         <Typography variant="h5" mb={2}>
           <div style={{ display: "flex", alignItems: "center" }}>
             <div style={{ flex: 1 }}>
@@ -209,16 +186,14 @@ const ViewCardHistory = () => {
               <span className="text-grey-600 text-sm"> Account History</span>
             </div>
           </div>
-          {/* Divider */}
+          {}
           <hr
             className="mt-4"
             style={{ width: "100%", borderColor: "grey-800" }}
           />
         </Typography>
-
         <Form
           onSubmit={onSubmit}
-          // initialValues={initialValues}
           validate={validate}
           render={({ handleSubmit, submitting, errors, values }) => (
             <form onSubmit={handleSubmit} noValidate>
@@ -230,7 +205,7 @@ const ViewCardHistory = () => {
                         <DatePicker
                           disableFuture
                           label="Start Date"
-                          value={input.value || null} // Initialize the value if it's undefined
+                          value={input.value || null}
                           onChange={(date) => {
                             input.onChange(date);
                             setStartDate(date);
@@ -257,7 +232,7 @@ const ViewCardHistory = () => {
                         <DatePicker
                           disableFuture
                           label="End Date"
-                          value={input.value || null} // Initialize the value if it's undefined
+                          value={input.value || null}
                           onChange={(date) => {
                             input.onChange(date);
                             setEndDate(date);
@@ -277,7 +252,7 @@ const ViewCardHistory = () => {
                     )}
                   </Field>
                 </Grid>
-                {/* Buttons for filtering partnerHistoryCard */}
+                {}
                 <Grid item lg={4} md={4} sm={6} xs={12}>
                   <Button
                     type="button"
@@ -293,16 +268,15 @@ const ViewCardHistory = () => {
             </form>
           )}
         />
-        {/* MaterialReactTable component */}
+        {}
         <MaterialReactTable
-          state={{ isLoading }} // Loading state
-          columns={columns} // Columns configuration
-          data={parsedData} // Data to be displayed
+          state={{ isLoading }}
+          columns={columns}
+          data={parsedData}
         />
       </Paper>
       <Toaster position="bottom-center" reverseOrder={false} />
     </div>
   );
 };
-
 export default ViewCardHistory;

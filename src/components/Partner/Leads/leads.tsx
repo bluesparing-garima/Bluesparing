@@ -21,7 +21,6 @@ import CountdownTimer from "../../../utils/CountdownTimer";
 import getLeadByPartnerIdService from "../../../api/Leads/GetLeadByPartnerId/getLeadByPartnerIdService";
 import getLeadByUserIdService from "../../../api/Leads/GetLeadByUserId/getLeadByUserIdService";
 import toast, { Toaster } from "react-hot-toast";
-
 const Leads = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [leads, setLeads] = useState<ILeads[]>([]);
@@ -36,7 +35,6 @@ const Leads = () => {
         .catch(async(error) => {
           const err = await error
           toast.error(err.message)
-          
         }),
     []
   );
@@ -49,7 +47,6 @@ const Leads = () => {
         .catch(async(error) => {
           const err = await error
           toast.error(err.message)
-        
         }),
     [userData.id]
   );
@@ -65,7 +62,6 @@ const Leads = () => {
         }),
     [userData.partnerId]
   );
-
   useEffect(() => {
     if (userData.role.toLowerCase() === "operation") {
       GetLeadByIdRequests();
@@ -80,9 +76,7 @@ const Leads = () => {
     GetLeads,
     userData.role,
   ]);
-
   const navigate = useNavigate();
-
   const handleAddLeadClick = () => {
     navigate(leadsAddPath());
   };
@@ -119,35 +113,6 @@ const Leads = () => {
       ) ?? [],
     [leads]
   );
-
-  function convertMillisecondsToTime(msString:string) {
-    // Convert the string to a number
-    const ms = Number(msString);
-    if (isNaN(ms)) {
-      return {
-        day: 0,
-        hour: 0,
-        min: 0,
-        second: 0
-    };
-  }
-    // Calculate the total number of seconds
-    const totalSeconds = Math.floor(ms / 1000);
-
-    // Calculate the number of days, hours, minutes, and seconds
-    const days = Math.floor(totalSeconds / (24 * 3600));
-    const hours = Math.floor((totalSeconds % (24 * 3600)) / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
-
-    return {
-        day: days,
-        hour: hours,
-        min: minutes,
-        second: seconds
-    };
-}
-  //should be memoized or stable
   const columns = useMemo<MRT_ColumnDef<ILeads>[]>(
     () => [
       {
@@ -159,17 +124,17 @@ const Leads = () => {
         },
       },
       {
-        accessorKey: "category", //normal accessorKey
+        accessorKey: "category",
         header: "Category",
         size: 100,
       },
       {
-        accessorKey: "policyType", //normal accessorKey
+        accessorKey: "policyType",
         header: "Policy Type",
         size: 100,
       },
       {
-        accessorKey: "caseType", //normal accessorKey
+        accessorKey: "caseType",
         header: "Case Type",
         size: 100,
       },
@@ -189,20 +154,12 @@ const Leads = () => {
     ],
     []
   );
-
-
-
-
-
   const updateLoading = useCallback(async () => {
-    // setIsLoading(true) when leads.length is 0, and setIsLoading(false) when leads.length is > 0
     setIsLoading(false);
   }, []);
-
   useEffect(() => {
     updateLoading();
   }, [updateLoading]);
-
   const handleClickSendLead = (lead: ILeadsVM) => {
     navigate(bookingRequestNewPath(lead.id!));
   };
@@ -243,7 +200,7 @@ const Leads = () => {
                 </Button>
               )}
             </div>
-            {/* Add a full-width grey line here */}
+            {}
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
@@ -256,7 +213,6 @@ const Leads = () => {
             enableRowActions={userData.role.toLowerCase() !== "admin"}
             positionActionsColumn="last"
             renderRowActions={({ row }) => {
-              // Check if row status is 'booked'
               if (
                ( row.original.status === "Payment Verified" ) &&
                 userData.role.toLowerCase() === "operation"
@@ -468,5 +424,4 @@ const Leads = () => {
     </>
   );
 };
-
 export default Leads;

@@ -22,16 +22,16 @@ import GetMonthlyBrokerReceivedPaymentService from "../../../api/Dashboard/GetMo
 import { BrokerReceivedPayInProps } from "../../TreeView/ITreeView";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import { generateBrokerReceivedPayInExcel } from "../../../utils/DashboardExcel";
-const MonthlyFilterRecievedPayIn = () => {
-  const title = "Get Monthly Recieved PayIn Details Of All Brokers";
+const MonthlyFilterReceivedPayIn = () => {
+  const title = "Get Monthly Received PayIn Details Of All Brokers";
   const location = useLocation();
-  const selectedCategory = location.state as string; // This is where you access the passed state
+  const selectedCategory = location.state as string;
   const [selectedStartDate, setSelectedStartDate] = useState();
   const [selectedEndDate, setSelectedEndDate] = useState();
-  const [brokerTotalPayment, setBrokerTotalPayment] = useState<number>(0); // State for all credit debits
+  const [brokerTotalPayment, setBrokerTotalPayment] = useState<number>(0);
   const [brokerPayment, setBrokerPayment] = useState<
     BrokerReceivedPayInProps[]
-  >([]); // State for all credit debits
+  >([]);
   const fetchBrokerPayments = async (
     formattedFirstDay: any,
     formattedLastDay: any
@@ -43,9 +43,8 @@ const MonthlyFilterRecievedPayIn = () => {
       startDate: formattedFirstDay,
       endDate: formattedLastDay,
       category: selectedCategory,
-    }) // Call API to fetch credit debits
+    })
       .then((brokerPayment) => {
-        // On successful API call
         setBrokerPayment(brokerPayment.data);
         setBrokerTotalPayment(brokerPayment.totalAmount);
       })
@@ -63,9 +62,8 @@ const MonthlyFilterRecievedPayIn = () => {
     const lastDayOfMonth = endOfMonth(currentDate);
     let formattedFirstDay = format(firstDayOfMonth, "yyyy-MM-dd");
     let formattedLastDay = format(lastDayOfMonth, "yyyy-MM-dd");
-
     fetchBrokerPayments(formattedFirstDay, formattedLastDay);
-    // eslint-disable-next-line
+     // eslint-disable-next-line 
   }, []);
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
@@ -80,12 +78,10 @@ const MonthlyFilterRecievedPayIn = () => {
       return errors;
     }
   };
-
   const validationSchema = yup.object().shape({
     startDate: yup.string().required("Start Date is required").nullable(),
     endDate: yup.string().nullable().required("End Date is required"),
   });
-
   const validate = validateFormValues(validationSchema);
   const onSubmit = async (value: any) => {
     const newStartDate = dayjs(value.startDate).format(DAY_FORMAT);
@@ -114,12 +110,11 @@ const MonthlyFilterRecievedPayIn = () => {
         <React.Fragment>
           <Form
             onSubmit={onSubmit}
-            // initialValues={initialValues}
             validate={validate}
             render={({ handleSubmit, submitting, errors, values }) => (
               <form onSubmit={handleSubmit} noValidate>
                 <Grid container spacing={2} mt={2} mb={2}>
-                  {/* Account Code Selection */}
+                  {}
                   <Grid item lg={3} md={3} sm={6} xs={12}>
                     <Field name="startDate">
                       {({ input, meta }) => (
@@ -127,7 +122,7 @@ const MonthlyFilterRecievedPayIn = () => {
                           <DatePicker
                             disableFuture
                             label="Start Date"
-                            value={input.value || null} // Initialize the value if it's undefined
+                            value={input.value || null}
                             onChange={(date) => input.onChange(date)}
                             renderInput={(params: any) => (
                               <TextField
@@ -151,7 +146,7 @@ const MonthlyFilterRecievedPayIn = () => {
                           <DatePicker
                             disableFuture
                             label="End Date"
-                            value={input.value || null} // Initialize the value if it's undefined
+                            value={input.value || null}
                             onChange={(date) => input.onChange(date)}
                             renderInput={(params: any) => (
                               <TextField
@@ -168,7 +163,6 @@ const MonthlyFilterRecievedPayIn = () => {
                       )}
                     </Field>
                   </Grid>
-
                   <Grid item lg={3} md={3} sm={6} xs={12}>
                     <Button
                       type="submit"
@@ -224,11 +218,9 @@ const MonthlyFilterRecievedPayIn = () => {
             </Typography>
           )}
         </Grid>
-
         <Toaster position="bottom-center" reverseOrder={false} />
       </Paper>
     </div>
   );
 };
-
-export default MonthlyFilterRecievedPayIn;
+export default MonthlyFilterReceivedPayIn;

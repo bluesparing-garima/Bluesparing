@@ -1,11 +1,6 @@
 import React from 'react';
-// import { useTheme } from '@mui/material';
-// import { tokens } from '../../theme';
 import mastercard from '../../assets/mastercard.svg'
 const Card: React.FC = () => {
-  // const theme = useTheme();
-  // const colors = tokens(theme.palette.mode);
-
   return (
     <div
       className="w-full h-40 rounded-lg shadow-lg p-4 flex flex-col justify-between bg-gradient-to-b from-violet-600 via-violet-600 to-indigo-600">
@@ -29,5 +24,4 @@ const Card: React.FC = () => {
     </div>
   );
 };
-
 export default Card;

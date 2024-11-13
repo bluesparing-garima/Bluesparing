@@ -36,7 +36,6 @@ const AddHolidayForm: React.FC<AddHolidayFormProps> = ({ initialValues }) => {
       .typeError("Invalid date"),
   });
 
-  // Validate function
   const validateFormValues =
     (schema: yup.ObjectSchema<any>) => async (values: Record<string, any>) => {
       try {

@@ -6,7 +6,6 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-
 import { useEffect, useState } from "react";
 import GetMonthlyPartnerPaymentService from "../../../api/Dashboard/GetMonthlyPartnerPayment/GetMonthlyPartnerPaymentService";
 import { DAY_FORMAT, header } from "../../../context/constant";
@@ -24,7 +23,6 @@ import GetMonthlyPayoutBalanceService from "../../../api/Dashboard/GetMonthlyPay
 import GetMonthlyLeftDistributionService from "../../../api/Dashboard/GetMonthlyLeftDistribution/GetMonthlyLeftDistributionService";
 import { useLocation } from "react-router-dom";
 import { IPartnerBalance, IPartnerPaid, PartnerPayment } from "../ITreeView";
-
 const MonthlyPayout = () => {
   const location = useLocation();
   const selectedCategory = location.state as string;
@@ -124,10 +122,8 @@ const MonthlyPayout = () => {
     const currentDate = new Date();
     const firstDayOfMonth = startOfMonth(currentDate);
     const lastDayOfMonth = endOfMonth(currentDate);
-
     const formattedFirstDay = format(firstDayOfMonth, "yyyy-MM-dd");
     const formattedLastDay = format(lastDayOfMonth, "yyyy-MM-dd");
-
     return { formattedFirstDay, formattedLastDay };
   };
   const fetchData = async (sd?: string, ed?: string) => {
@@ -140,7 +136,6 @@ const MonthlyPayout = () => {
     }
     setSelectedStartDate(formattedFirstDay);
     setSelectedEndDate(formattedLastDay);
-
     setLoading(true);
     await Promise.all([
       fetchPartnerPayments(formattedFirstDay, formattedLastDay),
@@ -150,12 +145,10 @@ const MonthlyPayout = () => {
     ]);
     setLoading(false);
   };
-
   useEffect(() => {
     fetchData();
-    // eslint-disable-next-line
+    // eslint-disable-next-line 
   }, []);
-
   const validationSchema = yup.object().shape({
     startDate: yup.string().required("Start Date is required").nullable(),
     endDate: yup.string().nullable().required("End Date is required"),
@@ -173,14 +166,12 @@ const MonthlyPayout = () => {
       return errors;
     }
   };
-
   const validate = validateFormValues(validationSchema);
   const onSubmit = async (value: any) => {
     const newStartDate = dayjs(value.startDate).format(DAY_FORMAT);
     const newEndDate = dayjs(value.endDate).format(DAY_FORMAT);
     fetchData(newStartDate, newEndDate);
   };
-
   if (loading) {
     return (
       <div
@@ -205,7 +196,7 @@ const MonthlyPayout = () => {
             render={({ handleSubmit, submitting, errors, values }) => (
               <form onSubmit={handleSubmit} noValidate>
                 <Grid container spacing={2} mt={2} mb={2}>
-                  {/* Account Code Selection */}
+                  {}
                   <Grid item lg={3} md={3} sm={6} xs={12}>
                     <Field name="startDate">
                       {({ input, meta }) => (
@@ -213,7 +204,7 @@ const MonthlyPayout = () => {
                           <DatePicker
                             disableFuture
                             label="Start Date"
-                            value={input.value || null} // Initialize the value if it's undefined
+                            value={input.value || null}
                             onChange={(date) => input.onChange(date)}
                             renderInput={(params: any) => (
                               <TextField
@@ -237,7 +228,7 @@ const MonthlyPayout = () => {
                           <DatePicker
                             disableFuture
                             label="End Date"
-                            value={input.value || null} // Initialize the value if it's undefined
+                            value={input.value || null}
                             onChange={(date) => input.onChange(date)}
                             renderInput={(params: any) => (
                               <TextField
@@ -254,7 +245,6 @@ const MonthlyPayout = () => {
                       )}
                     </Field>
                   </Grid>
-
                   <Grid item lg={3} md={3} sm={6} xs={12}>
                     <Button
                       type="submit"
@@ -322,5 +312,4 @@ const MonthlyPayout = () => {
     </div>
   );
 };
-
 export default MonthlyPayout;

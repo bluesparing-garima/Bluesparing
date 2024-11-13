@@ -1,14 +1,11 @@
-import React, { useEffect, useState } from "react";
-//import { useTranslation } from "react-i18next";
+import  { useEffect, useState } from "react";
 import { Typography, Paper } from "@mui/material";
 import AddBookingRequestFormCard from "./AddBookingRequestFormCard";
-
 import { Link, useLocation, useParams } from "react-router-dom";
 import { ADD, header } from "../../../context/constant";
 import { IBookingRequestForm } from "../IBookingRequests";
 import getLeadByIdService from "../../../api/Leads/GetLeadById/getLeadByIdService";
 import toast, { Toaster } from "react-hot-toast";
-
 const AddBookingRequest = () => {
   const title = "Add Booking Request";
   const { leadId } = useParams();
@@ -18,7 +15,6 @@ const AddBookingRequest = () => {
   const [bookingDetails, setBookingDetails] = useState<
     IBookingRequestForm | undefined
   >(undefined);
-
   useEffect(() => {
     if (!isAdd && leadId) {
       getLeadByIdService({ header, leadId })
@@ -28,11 +24,9 @@ const AddBookingRequest = () => {
         .catch(async(error:any) => {
           const err = await error
           toast.error(err.message)
-          
         });
     }
   }, [isAdd, leadId]);
-
   return (
     <>
       <div className="bg-blue-200 md:p-7 p-2">
@@ -53,13 +47,12 @@ const AddBookingRequest = () => {
               Booking Request /
             </Link>
             <span className="text-grey-600 text-sm">{title}</span>
-            {/* Add a full-width grey line here */}
+            {}
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
             />
           </Typography>
-
           <AddBookingRequestFormCard
             initialValues={{
               policyNumber: isAdd ? "0" : bookingDetails?.policyNumber || "",
@@ -89,7 +82,6 @@ const AddBookingRequest = () => {
               proposal: isAdd ? "" : bookingDetails?.proposal || "",
               currentPolicy: isAdd ? "" : bookingDetails?.currentPolicy || "",
               other: isAdd ? "" : bookingDetails?.other || "",
-              //documents: isAdd ? [] : bookingDetails?.documents || [],
               isActive: true,
               createdBy: "",
             }}
@@ -100,5 +92,4 @@ const AddBookingRequest = () => {
     </>
   );
 };
-
 export default AddBookingRequest;

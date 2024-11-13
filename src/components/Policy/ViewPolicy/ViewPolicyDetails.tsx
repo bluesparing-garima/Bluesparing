@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { Button, CardContent, Grid, Paper, Typography } from "@mui/material";
 import { Link, useParams } from "react-router-dom";
 import { IViewPolicy } from "../IPolicy";
@@ -6,7 +5,6 @@ import { useEffect, useState } from "react";
 import { Document, header, imagePath } from "../../../context/constant";
 import { Card } from "@material-ui/core";
 import getPolicyByIdService from "../../../api/Policies/GetPolicyById/getPolicyByIdService";
-
 const ViewPolicyDetails = () => {
   const { policyId } = useParams();
   const [policy, setPolicyDetails] = useState<IViewPolicy | undefined>(
@@ -15,15 +13,12 @@ const ViewPolicyDetails = () => {
   const [documents, setDocuments] = useState<Document[]>([
     { docName: "", file: "" },
   ]);
-
   useEffect(() => {
     if (policyId) {
       getPolicyByIdService({ header, policyId })
         .then((policyDetails) => {
           setPolicyDetails(policyDetails.data);
-
           const updatedDocuments: Document[] = [];
-
           if (policyDetails.data.rcBack) {
             updatedDocuments.push({
               docName: "rcBack",
@@ -85,13 +80,9 @@ const ViewPolicyDetails = () => {
         });
     }
   }, [policyId]);
-  // Function to handle file download
   const downloadFile = (url: string, fileName: string) => {
-    // Extract file extension from the original URL
     const urlFileName = url.substring(url.lastIndexOf("/") + 1);
     const fileExtension = urlFileName.split(".").pop()?.toLowerCase();
-
-    // Validate file extension
     if (
       fileExtension === "pdf" ||
       fileExtension === "jpg" ||
@@ -112,7 +103,6 @@ const ViewPolicyDetails = () => {
         .catch((error) => console.error("Error downloading file:", error));
     } else {
       console.error("Unsupported file type:", fileExtension);
-      // alert("Unsupported file type. Only PDF and PNG files are supported.");
     }
   };
   const handleClickDownloadDocuments = async () => {
@@ -120,12 +110,8 @@ const ViewPolicyDetails = () => {
       const FileName = policy?.policyNumber + document.docName;
       downloadFile(document.file, FileName);
     });
-
     await Promise.all(promises);
-
-    // downloadFile('https://api.safekaro.com/uploads/Manish_668919929794ffa14999dc82.png', 'Manish_668919929794ffa14999dc82.png');
   };
-
   return (
     <>
       <div className="bg-blue-200 md:p-7 p-2">
@@ -149,7 +135,7 @@ const ViewPolicyDetails = () => {
               Policy /
             </Link>
             <span className="text-grey-600 text-sm">{"View Policy"}</span>
-            {/* Add a full-width grey line here */}
+            {}
             <hr
               className="mt-4 mb-2"
               style={{ width: "100%", borderColor: "grey-800" }}
@@ -431,7 +417,6 @@ const ViewPolicyDetails = () => {
                     {policy?.cc}
                   </Typography>
                 </Grid>
-
                 <Grid item xs={4}>
                   <Typography
                     variant="subtitle1"
@@ -497,7 +482,6 @@ const ViewPolicyDetails = () => {
                     {policy?.endDate}
                   </Typography>
                 </Grid>
-
                 <Grid item xs={4}>
                   <Typography
                     variant="subtitle1"
@@ -514,7 +498,6 @@ const ViewPolicyDetails = () => {
               </Grid>
             </CardContent>
           </Card>
-
           <Grid item xs={12} m={2}>
             <Typography
               variant="h5"
@@ -567,7 +550,6 @@ const ViewPolicyDetails = () => {
                     {policy?.broker}
                   </Typography>
                 </Grid>
-
                 <Grid item xs={4}>
                   <Typography
                     variant="subtitle1"
@@ -744,7 +726,6 @@ const ViewPolicyDetails = () => {
                             {policy?.payOutTPPercentage}
                           </Typography>
                         </Grid>
-
                         <Grid item xs={3}>
                           <Typography
                             variant="subtitle1"
@@ -830,7 +811,6 @@ const ViewPolicyDetails = () => {
               </Grid>
             </CardContent>
           </Card>
-
           <hr className="my-4" />
           <Grid item xs={12}>
             <Typography
@@ -884,5 +864,4 @@ const ViewPolicyDetails = () => {
     </>
   );
 };
-
 export default ViewPolicyDetails;

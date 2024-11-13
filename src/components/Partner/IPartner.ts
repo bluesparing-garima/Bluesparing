@@ -1,9 +1,9 @@
 export interface ILeadForm {
   id?: string;
-  category: string; //motor
-  policyType: string; //Package
-  caseType: string; //new ,renewal
-  companyName: string; //TATA
+  category: string;
+  policyType: string; 
+  caseType: string; 
+  companyName: string; 
   partnerId?: string;
   partnerName?: string;
   relationshipManagerId?: string;

@@ -1,10 +1,8 @@
 import { Typography, Paper } from "@mui/material";
 import { Link, useLocation } from "react-router-dom";
-
-import { AttendanceLocationState } from "../IAttendnace";
+import { AttendanceLocationState } from "../IAttendance";
 import { SafeKaroUser } from "../../../../context/constant";
 import AddAttendanceForm from "./AddAttendanceForm";
-
 const AddAttendance = () => {
   const location = useLocation();
   const state = location.state as AttendanceLocationState;
@@ -13,8 +11,7 @@ const AddAttendance = () => {
   const title = isAdd ? "Add Attendance" : "Update Attendance";
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
-
-  const generateDashBoardlink = () => {
+  const generateDashBoardLink = () => {
     const role = UserData.role.toLowerCase();
     switch (role) {
       case "hr":
@@ -51,7 +48,7 @@ const AddAttendance = () => {
               Dashboard {" / "}
             </Link>
             <Link
-              to={generateDashBoardlink()}
+              to={generateDashBoardLink()}
               className="text-addButton font-bold text-sm"
             >
               Attendance /
@@ -62,7 +59,6 @@ const AddAttendance = () => {
               style={{ width: "100%", borderColor: "grey-800" }}
             />
           </Typography>
-
           <AddAttendanceForm
             initialValues={{
               ...attendance,
@@ -73,5 +69,4 @@ const AddAttendance = () => {
     </>
   );
 };
-
 export default AddAttendance;

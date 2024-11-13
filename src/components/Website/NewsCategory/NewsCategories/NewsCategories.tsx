@@ -10,7 +10,6 @@ import {
   INewsCategoriesVM,
   INewsCategoryForm,
 } from "../INewsCategory";
-//import dayjs from "dayjs";
 import { Button, IconButton, Paper, Tooltip, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { newsCategoryEditPath, newsCategoryAddPath } from "../../../../sitemap";
@@ -25,7 +24,6 @@ import {
 import { convertINewsCategoryVMToINewsCategoryForm } from "../../../../api/Website/NewsCategory/convertINewsCategoryVMToINewsCategoryForm";
 import editNewsCategoryService from "../../../../api/Website/NewsCategory/EditNewsCategory/editNewsCategoryService";
 import getNewsCategoriesService from "../../../../api/Website/NewsCategory/GetNewsCategory/getNewsCategoriesService";
-
 const NewsCategories = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [newsCategories, setNewsCategories] = useState<INewsCategories[]>([]);
@@ -53,7 +51,6 @@ const NewsCategories = () => {
   useEffect(() => {
     GetNewsCategories();
   }, [GetNewsCategories]);
-
   useEffect(() => {
     const p = getPaginationState(NEWS_CATEGORY_STORAGE_KEY);
     setPagination(p);
@@ -61,12 +58,10 @@ const NewsCategories = () => {
   const callUpdateBranchAPI = async (branch: INewsCategoriesVM) => {
     var convertCategoryVMToCategoryForm =
       convertINewsCategoryVMToINewsCategoryForm(branch);
-
     const branchData: INewsCategoryForm = {
       ...convertCategoryVMToCategoryForm,
       isActive: !convertCategoryVMToCategoryForm.isActive,
     };
-
     editNewsCategoryService({ header, category: branchData })
       .then(() => {
         GetNewsCategories();
@@ -79,20 +74,14 @@ const NewsCategories = () => {
         updateLoading();
       });
   };
-
   const handleClickChangeStatus = (branch: INewsCategoriesVM) => {
     callUpdateBranchAPI(branch);
   };
-  const [forcedRenderCount, setForcedRenderCount] = useState(0);
-  const forceRender = useCallback(
-    () => setForcedRenderCount(forcedRenderCount + 1),
-    [forcedRenderCount]
-  );
-  //should be memoized or stable
+  const forcedRenderCount=0
   const columns = useMemo<MRT_ColumnDef<INewsCategories>[]>(
     () => [
       {
-        accessorKey: "category", //normal accessorKey
+        accessorKey: "category",
         header: "Category Name",
         size: 200,
       },
@@ -117,7 +106,6 @@ const NewsCategories = () => {
     ],
     []
   );
-
   const parsedData = useMemo(
     () =>
       newsCategories.map(
@@ -133,22 +121,16 @@ const NewsCategories = () => {
       ) ?? [],
     [newsCategories, forcedRenderCount]
   );
-
   const updateLoading = useCallback(async () => {
-    // setIsLoading(true) when newsCategories.length is 0, and setIsLoading(false) when newsCategories.length is > 0
     setIsLoading(newsCategories.length >= 0 ? false : true);
   }, [newsCategories]);
-
   useEffect(() => {
     updateLoading();
   }, [updateLoading]);
-
   const handleClickEditCategory = (category: INewsCategoriesVM) => {
     savePaginationState(pagination, NEWS_CATEGORY_STORAGE_KEY);
     navigate(newsCategoryEditPath(category.id!));
   };
-
-
   return (
     <>
       <div className="bg-blue-200 md:p-7 p-2">
@@ -175,7 +157,7 @@ const NewsCategories = () => {
                 Add News Category
               </Button>
             </div>
-            {/* Add a full-width grey line here */}
+            {}
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
@@ -252,5 +234,4 @@ const NewsCategories = () => {
     </>
   );
 };
-
 export default NewsCategories;

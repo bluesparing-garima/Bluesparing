@@ -7,20 +7,18 @@ import { useLocation, useParams } from "react-router-dom";
 import TotalPaidPayoutCompanyService from "../../../api/YearlyPayout/TotalPaidPayoutCompany/TotalPaidPayoutCompanyService";
 import { ICompanyPaid } from "../../TreeView/ITreeView";
 import { generateCompanyPaidExcel } from "../../../utils/DashboardExcel";
-
 const CompanyFilterPayOutPaid = () => {
   const title = "Get Payment Details Of Partner -";
   const location = useLocation();
-  const selectedCategory = location.state as string; // This is where you access the passed state
-
+  const selectedCategory = location.state as string;
   const { partnerId } = useParams();
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [selectedPartnerCode, setSelectedPartnerCode] = useState<string>();
   const [selectedPartnerName, setSelectedPartnerName] = useState<string>();
-  const [companyDetails, setCompanyDetails] = useState<ICompanyPaid[]>([]); // State for all credit debits
-
+  const [companyDetails, setCompanyDetails] = useState<ICompanyPaid[]>([]);
   useEffect(() => {
     filterMonthlyPartnerPaymentWithCompany(partnerId!);
+     // eslint-disable-next-line 
   }, [partnerId]);
   const handleDownloadExcel = () => {
     generateCompanyPaidExcel(companyDetails);
@@ -30,9 +28,8 @@ const CompanyFilterPayOutPaid = () => {
       header,
       partnerId: partnerId!,
       category: selectedCategory,
-    }) // Call API to fetch credit debits
+    })
       .then((partners) => {
-        // On successful API call
         setCompanyDetails(partners.data);
         setTotalAmount(partners.totalAmount);
         setSelectedPartnerCode(partners.partnerCode);
@@ -43,7 +40,6 @@ const CompanyFilterPayOutPaid = () => {
         toast.error(err.message);
       });
   };
-
   return (
     <>
       <div className="bg-blue-200 p-7 mt-3">
@@ -66,7 +62,6 @@ const CompanyFilterPayOutPaid = () => {
               </button>
             </Tooltip>
           </div>
-
           <Typography variant="body2" className="text-sm text-gray-600 mb-2">
             Total Amount{" "}
             <span className="text-safekaroDarkOrange">{totalAmount}</span>
@@ -89,9 +84,6 @@ const CompanyFilterPayOutPaid = () => {
                       {item.totalPayOutAmount}
                     </Typography>
                   </div>
-                  {/* Uncomment if needed
-                <img src={icon} alt={title} className="h-8 w-8" />
-                */}
                 </div>
               </Grid>
             ))}
@@ -102,5 +94,4 @@ const CompanyFilterPayOutPaid = () => {
     </>
   );
 };
-
 export default CompanyFilterPayOutPaid;

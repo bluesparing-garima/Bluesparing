@@ -1,9 +1,7 @@
 import { CircularProgress, Paper, Typography } from "@mui/material";
-
 import { useEffect, useState } from "react";
 import { header } from "../../../context/constant";
 import toast from "react-hot-toast";
-
 import { useLocation } from "react-router-dom";
 import {
   BrokerPayInCommissionProps,
@@ -15,7 +13,6 @@ import GetBrokerBalancePaymentService from "../../../api/Dashboard/GetBrokerBala
 import GetBrokerLeftDistributedPaymentService from "../../../api/Dashboard/GetBrokerLeftDistributedPayment/GetBrokerLeftDistributedPaymentService";
 import FolderViewYearlyPayIn from "../FolderView/FolderViewYearlyPayIn";
 import GetTotalBrokerPaymentService from "../../../api/Dashboard/GetTotalBrokerPayment/GetTotalBrokerPaymentService";
-
 const YearlyPayIn = () => {
   const location = useLocation();
   const selectedCategory = location.state as string;
@@ -45,7 +42,6 @@ const YearlyPayIn = () => {
       toast.error(err.message);
     }
   };
-
   const fetchBrokerReceivedPayment = async () => {
     try {
       const res = await GetReceivedBrokerPaymentService({
@@ -85,7 +81,6 @@ const YearlyPayIn = () => {
       toast.error(err.message);
     }
   };
-
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -98,9 +93,8 @@ const YearlyPayIn = () => {
       setLoading(false);
     };
     fetchData();
-    // eslint-disable-next-line
+    // eslint-disable-next-line 
   }, []);
-
   if (loading) {
     return (
       <div
@@ -161,5 +155,4 @@ const YearlyPayIn = () => {
     </div>
   );
 };
-
 export default YearlyPayIn;

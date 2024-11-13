@@ -22,11 +22,10 @@ import { Link, useLocation } from "react-router-dom";
 import GetMonthlyPaidPayoutService from "../../../api/Dashboard/GetMonthlytPaidPayout/GetMonthlyPaidPayoutService";
 import { IPartnerPaid } from "../../TreeView/ITreeView";
 import { generatePartnerPaidExcel } from "../../../utils/DashboardExcel";
-
 const MonthlyPaidFilterPayOut = () => {
   const title = "Get Monthly Paid Payout Details Of All Partners";
   const location = useLocation();
-  const selectedCategory = location.state as string; // This is where you access the passed state
+  const selectedCategory = location.state as string;
   const [selectedStartDate, setSelectedStartDate] = useState();
   const [selectedEndDate, setSelectedEndDate] = useState();
   const [partnerTotalPayment, setPartnerTotalPayment] = useState<number>(0);
@@ -45,9 +44,8 @@ const MonthlyPaidFilterPayOut = () => {
       startDate: formattedFirstDay,
       endDate: formattedLastDay,
       category: selectedCategory,
-    }) // Call API to fetch credit debits
+    })
       .then((partnerPayment) => {
-        // On successful API call
         setPartnerPayment(partnerPayment.data);
         setPartnerTotalPayment(partnerPayment.totalAmount);
       })
@@ -62,9 +60,8 @@ const MonthlyPaidFilterPayOut = () => {
     const lastDayOfMonth = endOfMonth(currentDate);
     let formattedFirstDay = format(firstDayOfMonth, "yyyy-MM-dd");
     let formattedLastDay = format(lastDayOfMonth, "yyyy-MM-dd");
-
     fetchPartnerPayments(formattedFirstDay, formattedLastDay);
-     // eslint-disable-next-line
+     // eslint-disable-next-line 
   }, []);
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
@@ -79,12 +76,10 @@ const MonthlyPaidFilterPayOut = () => {
       return errors;
     }
   };
-
   const validationSchema = yup.object().shape({
     startDate: yup.string().required("Start Date is required").nullable(),
     endDate: yup.string().nullable().required("End Date is required"),
   });
-
   const validate = validateFormValues(validationSchema);
   const onSubmit = async (value: any) => {
     const newStartDate = dayjs(value.startDate).format(DAY_FORMAT);
@@ -113,12 +108,11 @@ const MonthlyPaidFilterPayOut = () => {
         <React.Fragment>
           <Form
             onSubmit={onSubmit}
-            // initialValues={initialValues}
             validate={validate}
             render={({ handleSubmit, submitting, errors, values }) => (
               <form onSubmit={handleSubmit} noValidate>
                 <Grid container spacing={2} mt={2} mb={2}>
-                  {/* Account Code Selection */}
+                  {}
                   <Grid item lg={3} md={3} sm={6} xs={12}>
                     <Field name="startDate">
                       {({ input, meta }) => (
@@ -126,7 +120,7 @@ const MonthlyPaidFilterPayOut = () => {
                           <DatePicker
                             disableFuture
                             label="Start Date"
-                            value={input.value || null} // Initialize the value if it's undefined
+                            value={input.value || null}
                             onChange={(date) => input.onChange(date)}
                             renderInput={(params: any) => (
                               <TextField
@@ -150,7 +144,7 @@ const MonthlyPaidFilterPayOut = () => {
                           <DatePicker
                             disableFuture
                             label="End Date"
-                            value={input.value || null} // Initialize the value if it's undefined
+                            value={input.value || null}
                             onChange={(date) => input.onChange(date)}
                             renderInput={(params: any) => (
                               <TextField
@@ -167,7 +161,6 @@ const MonthlyPaidFilterPayOut = () => {
                       )}
                     </Field>
                   </Grid>
-
                   <Grid item lg={3} md={3} sm={6} xs={12}>
                     <Button
                       type="submit"
@@ -214,11 +207,9 @@ const MonthlyPaidFilterPayOut = () => {
             </Grid>
           ))}
         </Grid>
-
         <Toaster position="bottom-center" reverseOrder={false} />
       </Paper>
     </div>
   );
 };
-
 export default MonthlyPaidFilterPayOut;

@@ -5,7 +5,6 @@ import {
   DAYJS_DISPLAY_FORMAT,
   header,
 } from "../../../../context/constant";
-//import dayjs from "dayjs";
 import { Button, IconButton, Paper, Tooltip, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
@@ -21,7 +20,6 @@ import { blogAddPath, blogEditPath } from "../../../../sitemap";
 import getBlogService from "../../../../api/Website/Blog/GetBlog/getBlogService";
 import { convertIBlogVMToIBlogForm } from "../../../../api/Website/Blog/convertIBlogVMToIBlogForm";
 import editBlogService from "../../../../api/Website/Blog/EditBlog/editBlogService";
-
 const Blogs = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [blogs, setBlogs] = useState<IBlog[]>([]);
@@ -49,19 +47,16 @@ const Blogs = () => {
   useEffect(() => {
     GetBlogs();
   }, [GetBlogs]);
-
   useEffect(() => {
     const p = getPaginationState(BLOG_STORAGE_KEY);
     setPagination(p);
   }, []);
   const callUpdateBranchAPI = async (branch: IBlogVM) => {
     var convertBlogVMToBlogForm = convertIBlogVMToIBlogForm(branch);
-
     const branchData: IBlogForm = {
       ...convertBlogVMToBlogForm,
       isActive: !convertBlogVMToBlogForm.isActive,
     };
-
     editBlogService({ header, blog: branchData })
       .then(() => {
         GetBlogs();
@@ -74,35 +69,30 @@ const Blogs = () => {
         updateLoading();
       });
   };
-
   const handleClickChangeStatus = (branch: IBlogVM) => {
     callUpdateBranchAPI(branch);
   };
-  const [forcedRenderCount, setForcedRenderCount] = useState(0);
-  const forceRender = useCallback(
-    () => setForcedRenderCount(forcedRenderCount + 1),
-    [forcedRenderCount]
-  );
-  //should be memoized or stable
+  const forcedRenderCount= 0;
+
   const columns = useMemo<MRT_ColumnDef<IBlog>[]>(
     () => [
       {
-        accessorKey: "title", //normal accessorKey
+        accessorKey: "title",
         header: "Title Name",
         size: 200,
       },
       {
-        accessorKey: "category", //normal accessorKey
+        accessorKey: "category",
         header: "Category Name",
         size: 200,
       },
       {
-        accessorKey: "author", //normal accessorKey
+        accessorKey: "author",
         header: "Author Name",
         size: 200,
       },
       {
-        accessorKey: "website", //normal accessorKey
+        accessorKey: "website",
         header: "Website Name",
         size: 200,
       },
@@ -127,7 +117,6 @@ const Blogs = () => {
     ],
     []
   );
-
   const parsedData = useMemo(
     () =>
       blogs.map(
@@ -150,23 +139,16 @@ const Blogs = () => {
       ) ?? [],
     [blogs, forcedRenderCount]
   );
-
   const updateLoading = useCallback(async () => {
-    // setIsLoading(true) when blogs.length is 0, and setIsLoading(false) when blogs.length is > 0
     setIsLoading(blogs.length >= 0 ? false : true);
   }, [blogs]);
-
   useEffect(() => {
     updateLoading();
   }, [updateLoading]);
-
- 
   const handleClickEditBlog = (blog: IBlogVM) => {
     savePaginationState(pagination, BLOG_STORAGE_KEY);
     navigate(blogEditPath(blog.id!));
   };
-
- 
   return (
     <>
       <div className="bg-blue-200 md:p-7 p-2">
@@ -193,7 +175,7 @@ const Blogs = () => {
                 Add Blog
               </Button>
             </div>
-            {/* Add a full-width grey line here */}
+            {}
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
@@ -268,5 +250,4 @@ const Blogs = () => {
     </>
   );
 };
-
 export default Blogs;

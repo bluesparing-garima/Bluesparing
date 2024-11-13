@@ -6,11 +6,9 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-
 import { useEffect, useState } from "react";
 import { DAY_FORMAT, header } from "../../../context/constant";
 import toast from "react-hot-toast";
-
 import { endOfMonth, format, startOfMonth } from "date-fns";
 import { Field, Form } from "react-final-form";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
@@ -29,7 +27,6 @@ import FolderViewMonthlyPayIn from "../FolderView/FolderViewMonthlyPayIn";
 import GetMonthlyBrokerReceivedPaymentService from "../../../api/Dashboard/GetMonthlyBrokerRecievedPayment/GetMonthlyBrokerRecievedPaymentService";
 import GetMonthlyBrokerBalancePaymentService from "../../../api/Dashboard/GetMonthlyBrokerBalancePayment/GetMonthlyBrokerBalancePaymentService";
 import GetMonthlyBrokerLeftDistributedPaymentService from "../../../api/Dashboard/GetMonthlyBrokerLeftDistributedPayment/GetMonthlyBrokerLeftDistributedPaymentService";
-
 const MonthlyPayIn = () => {
   const location = useLocation();
   const selectedCategory = location.state as string;
@@ -65,7 +62,6 @@ const MonthlyPayIn = () => {
       toast.error(err.message);
     }
   };
-
   const fetchBrokerReceivedPayment = async (
     startDate: string,
     endDate: string
@@ -124,10 +120,8 @@ const MonthlyPayIn = () => {
     const currentDate = new Date();
     const firstDayOfMonth = startOfMonth(currentDate);
     const lastDayOfMonth = endOfMonth(currentDate);
-
     const formattedFirstDay = format(firstDayOfMonth, "yyyy-MM-dd");
     const formattedLastDay = format(lastDayOfMonth, "yyyy-MM-dd");
-
     return { formattedFirstDay, formattedLastDay };
   };
   const fetchData = async (sd?: string, ed?: string) => {
@@ -140,7 +134,6 @@ const MonthlyPayIn = () => {
     }
     setSelectedStartDate(formattedFirstDay);
     setSelectedEndDate(formattedLastDay);
-
     setLoading(true);
     await Promise.all([
       fetchBrokerPayments(formattedFirstDay, formattedLastDay),
@@ -150,12 +143,10 @@ const MonthlyPayIn = () => {
     ]);
     setLoading(false);
   };
-
   useEffect(() => {
     fetchData();
-    // eslint-disable-next-line
+    // eslint-disable-next-line 
   }, []);
-
   const validationSchema = yup.object().shape({
     startDate: yup.string().required("Start Date is required").nullable(),
     endDate: yup.string().nullable().required("End Date is required"),
@@ -173,14 +164,12 @@ const MonthlyPayIn = () => {
       return errors;
     }
   };
-
   const validate = validateFormValues(validationSchema);
   const onSubmit = async (value: any) => {
     const newStartDate = dayjs(value.startDate).format(DAY_FORMAT);
     const newEndDate = dayjs(value.endDate).format(DAY_FORMAT);
     fetchData(newStartDate, newEndDate);
   };
-
   if (loading) {
     return (
       <div
@@ -205,7 +194,7 @@ const MonthlyPayIn = () => {
             render={({ handleSubmit, submitting, errors, values }) => (
               <form onSubmit={handleSubmit} noValidate>
                 <Grid container spacing={2} mt={2} mb={2}>
-                  {/* Account Code Selection */}
+                  {}
                   <Grid item lg={3} md={3} sm={6} xs={12}>
                     <Field name="startDate">
                       {({ input, meta }) => (
@@ -213,7 +202,7 @@ const MonthlyPayIn = () => {
                           <DatePicker
                             disableFuture
                             label="Start Date"
-                            value={input.value || null} // Initialize the value if it's undefined
+                            value={input.value || null}
                             onChange={(date) => input.onChange(date)}
                             renderInput={(params: any) => (
                               <TextField
@@ -237,7 +226,7 @@ const MonthlyPayIn = () => {
                           <DatePicker
                             disableFuture
                             label="End Date"
-                            value={input.value || null} // Initialize the value if it's undefined
+                            value={input.value || null}
                             onChange={(date) => input.onChange(date)}
                             renderInput={(params: any) => (
                               <TextField
@@ -254,7 +243,6 @@ const MonthlyPayIn = () => {
                       )}
                     </Field>
                   </Grid>
-
                   <Grid item lg={3} md={3} sm={6} xs={12}>
                     <Button
                       type="submit"
@@ -322,5 +310,4 @@ const MonthlyPayIn = () => {
     </div>
   );
 };
-
 export default MonthlyPayIn;

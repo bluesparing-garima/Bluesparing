@@ -4,15 +4,13 @@ import {
   Typography,
   Grid,
   Box,
-  Badge,
-  Button,
   IconButton,
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import CancelIcon from "@mui/icons-material/Cancel";
 import AccessAlarmIcon from "@mui/icons-material/AccessAlarm";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import { IEmployee } from "../IAttendnace";
+import { IEmployee } from "../IAttendance";
 import AvTimerIcon from "@mui/icons-material/AvTimer";
 import dayjs from "dayjs";
 

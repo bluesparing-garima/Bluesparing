@@ -6,11 +6,9 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-
 import { useEffect, useState } from "react";
 import { DAY_FORMAT, header } from "../../../context/constant";
 import toast from "react-hot-toast";
-
 import { endOfMonth, format, startOfMonth } from "date-fns";
 import { Field, Form } from "react-final-form";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
@@ -19,12 +17,10 @@ import dayjs from "dayjs";
 import * as yup from "yup";
 import { setIn } from "final-form";
 import { useLocation } from "react-router-dom";
-
 import { IFinalNetPremiumBroker, IFinalNetPremiumPartner } from "../ITreeView";
 import GetMonthlyBrokerFinalPremiumService from "../../../api/Dashboard/GetMonthlyBrokerFinalPremium/GetMonthlyBrokerFinalPremiumService";
 import GetMonthlyPartnerFinalPremiumService from "../../../api/Dashboard/GetMonthlyPartnerFinalPremium/GetMonthlyPartnerFinalPremiumService";
 import FolderViewMonthlyFinalNetPremium from "../FolderView/FolderViewMonthlyFinalNetPremium";
-
 const MonthlyFinalNetPremium = () => {
   const location = useLocation();
   const selectedCategory = location.state as string;
@@ -39,7 +35,6 @@ const MonthlyFinalNetPremium = () => {
     useState(0);
   const [selectedStartDate, setSelectedStartDate] = useState("");
   const [selectedEndDate, setSelectedEndDate] = useState("");
-
   const fetchBrokerFinalNetPremium = async (startDate: any, endDate: any) => {
     try {
       const res = await GetMonthlyBrokerFinalPremiumService({
@@ -74,10 +69,8 @@ const MonthlyFinalNetPremium = () => {
     const currentDate = new Date();
     const firstDayOfMonth = startOfMonth(currentDate);
     const lastDayOfMonth = endOfMonth(currentDate);
-
     const formattedFirstDay = format(firstDayOfMonth, "yyyy-MM-dd");
     const formattedLastDay = format(lastDayOfMonth, "yyyy-MM-dd");
-
     return { formattedFirstDay, formattedLastDay };
   };
   const fetchData = async (sd?: string, ed?: string) => {
@@ -90,7 +83,6 @@ const MonthlyFinalNetPremium = () => {
     }
     setSelectedStartDate(formattedFirstDay);
     setSelectedEndDate(formattedLastDay);
-
     setLoading(true);
     await Promise.all([
       fetchBrokerFinalNetPremium(formattedFirstDay, formattedLastDay),
@@ -98,12 +90,10 @@ const MonthlyFinalNetPremium = () => {
     ]);
     setLoading(false);
   };
-
   useEffect(() => {
     fetchData();
-    // eslint-disable-next-line
+     // eslint-disable-next-line 
   }, []);
-
   const validationSchema = yup.object().shape({
     startDate: yup.string().required("Start Date is required").nullable(),
     endDate: yup.string().nullable().required("End Date is required"),
@@ -121,14 +111,12 @@ const MonthlyFinalNetPremium = () => {
       return errors;
     }
   };
-
   const validate = validateFormValues(validationSchema);
   const onSubmit = async (value: any) => {
     const newStartDate = dayjs(value.startDate).format(DAY_FORMAT);
     const newEndDate = dayjs(value.endDate).format(DAY_FORMAT);
     fetchData(newStartDate, newEndDate);
   };
-
   if (loading) {
     return (
       <div
@@ -153,7 +141,7 @@ const MonthlyFinalNetPremium = () => {
             render={({ handleSubmit, submitting, errors, values }) => (
               <form onSubmit={handleSubmit} noValidate>
                 <Grid container spacing={2} mt={2} mb={2}>
-                  {/* Account Code Selection */}
+                  {}
                   <Grid item lg={3} md={3} sm={6} xs={12}>
                     <Field name="startDate">
                       {({ input, meta }) => (
@@ -161,7 +149,7 @@ const MonthlyFinalNetPremium = () => {
                           <DatePicker
                             disableFuture
                             label="Start Date"
-                            value={input.value || null} // Initialize the value if it's undefined
+                            value={input.value || null}
                             onChange={(date) => input.onChange(date)}
                             renderInput={(params: any) => (
                               <TextField
@@ -185,7 +173,7 @@ const MonthlyFinalNetPremium = () => {
                           <DatePicker
                             disableFuture
                             label="End Date"
-                            value={input.value || null} // Initialize the value if it's undefined
+                            value={input.value || null}
                             onChange={(date) => input.onChange(date)}
                             renderInput={(params: any) => (
                               <TextField
@@ -202,7 +190,6 @@ const MonthlyFinalNetPremium = () => {
                       )}
                     </Field>
                   </Grid>
-
                   <Grid item lg={3} md={3} sm={6} xs={12}>
                     <Button
                       type="submit"
@@ -250,5 +237,4 @@ const MonthlyFinalNetPremium = () => {
     </div>
   );
 };
-
 export default MonthlyFinalNetPremium;

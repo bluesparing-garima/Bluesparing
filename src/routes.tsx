@@ -45,7 +45,7 @@ import EditLead from "./components/Partner/EditLead/editLead";
 import AddQuotation from "./components/Partner/Quotation/AddQuotation/AddQuotation";
 import ViewQuotation from "./components/Partner/Quotation/ViewQuotation/ViewQuotation";
 import NewBookingRequests from "./components/Booking/BookingRequests/NewBookingRequests";
-import EditCommison from "./components/Policy/EditCommsion/editCommison";
+import EditCommission from "./components/Policy/EditCommsion/editCommison";
 import AddAccounts from "./components/Account/AddAcoounts/AddAccounts";
 import Accounts from "./components/Account/Accounts/Accounts";
 import CompareBrokerPayment from "./components/Account/CompareBrokerPayment/compareBrokerPayment";
@@ -94,10 +94,10 @@ import RmTeams from "./components/Admin/Team/Teams/RmTeam";
 import RmLead from "./components/Rm/RmLead";
 import RmRequestedBooking from "./components/Booking/BookingRequests/RmRequestedBooking";
 import MonthlyPayout from "./components/TreeView/PayOut/MonthlyPayout";
-import FilterRecievedPayInAmount from "./components/Filter/FilterRecievedPayInAmount/FilterRecievedPayInAmount";
-import CompanyFilterRecievedPayIn from "./components/Filter/FilterRecievedPayInAmount/CompanyFilterRecievedPayIn";
-import MonthlyFilterRecievedPayIn from "./components/Filter/FilterRecievedPayInAmount/MonthlyFilterRecievedPayIn";
-import MonthlyCompanyFilterRecievedPayIn from "./components/Filter/FilterRecievedPayInAmount/MonthlyCompanyFilterRecievedPayIn";
+import FilterReceivedPayInAmount from "./components/Filter/FilterRecievedPayInAmount/FilterRecievedPayInAmount";
+import CompanyFilterReceivedPayIn from "./components/Filter/FilterRecievedPayInAmount/CompanyFilterRecievedPayIn";
+import MonthlyFilterReceivedPayIn from "./components/Filter/FilterRecievedPayInAmount/MonthlyFilterRecievedPayIn";
+import MonthlyCompanyFilterReceivedPayIn from "./components/Filter/FilterRecievedPayInAmount/MonthlyCompanyFilterRecievedPayIn";
 import FilterPayInBalance from "./components/Filter/FilterPayInBalance/FilterPayInBalance";
 import CompanyFilterPayInBalance from "./components/Filter/FilterPayInBalance/CompanyFilterPayInBalance";
 import MonthlyCompanyFilterPayInBalance from "./components/Filter/FilterPayInBalance/MonthlyCompanyFilterPayInBalance";
@@ -130,13 +130,13 @@ import NetPremium from "./components/Filter/FilterNetPerminum/NetPerimum";
 import FilterBrokerNetPremium from "./components/Filter/FilterNetPerminum/FilterBrokerNetPerimum";
 import FilterPartnerNetPremium from "./components/Filter/FilterNetPerminum/FilterPartnerNetPremium";
 import FilterPartnerFinalPremium from "./components/Filter/FilterFinalPreminum/FilterPartnerFinalPremium";
-import FinalPerimum from "./components/Filter/FilterFinalPreminum/FinalPerimum";
-import FilterBrokerFinalPerimum from "./components/Filter/FilterFinalPreminum/FilterBrokerFinalPerimum";
+import FinalPremium from "./components/Filter/FilterFinalPreminum/FinalPerimum";
+import FilterBrokerFinalPremium from "./components/Filter/FilterFinalPreminum/FilterBrokerFinalPerimum";
 import YearlyNetPremium from "./components/TreeView/NetPremium/YearlyNetPremium";
 import YearlyFinalNetPremium from "./components/TreeView/FinalNetPremium/YearlyFinalNetPremium";
 import MonthlyNetPremium from "./components/TreeView/NetPremium/MonthlyNetPremium";
 import MonthlyFinalNetPremium from "./components/TreeView/FinalNetPremium/MonthlyFinalPremium";
-import MonthlyAllNetPerimum from "./components/Filter/FilterNetPerminum/MonthlyAllNetPerimum";
+import MonthlyAllNetPremium from "./components/Filter/FilterNetPerminum/MonthlyAllNetPerimum";
 import Ranks from "./components/Admin/Rank/Ranks/Ranks";
 import AddRank from "./components/Admin/Rank/AddRank/addRank";
 import BlogCategories from "./components/Website/BlogCategory/BlogCategories/Categories";
@@ -341,11 +341,11 @@ const routes = [
     children: [
       {
         path: "",
-        element: <FinalPerimum />,
+        element: <FinalPremium />,
       },
       {
         path: "/finalpremium/broker/company/:brokerId",
-        element: <FilterBrokerFinalPerimum />,
+        element: <FilterBrokerFinalPremium />,
       },
       {
         path: "/finalpremium/partner/company/:partnerId",
@@ -382,7 +382,7 @@ const routes = [
       },
       {
         path: "monthly_preminum",
-        element: <MonthlyAllNetPerimum />,
+        element: <MonthlyAllNetPremium />,
       },
       {
         path: "monthly",
@@ -419,19 +419,19 @@ const routes = [
       },
       {
         path: "recieved",
-        element: <FilterRecievedPayInAmount />,
+        element: <FilterReceivedPayInAmount />,
       },
       {
         path: "/payins/recieved/company/:brokerId",
-        element: <CompanyFilterRecievedPayIn />,
+        element: <CompanyFilterReceivedPayIn />,
       },
       {
         path: "recieved/monthly",
-        element: <MonthlyFilterRecievedPayIn />,
+        element: <MonthlyFilterReceivedPayIn />,
       },
       {
         path: "/payins/monthly/recieved/company/:startDate/:endDate/:brokerId",
-        element: <MonthlyCompanyFilterRecievedPayIn />,
+        element: <MonthlyCompanyFilterReceivedPayIn />,
       },
       {
         path: "balance",
@@ -720,7 +720,7 @@ const routes = [
       },
       {
         path: "/policy/:policyId/commission",
-        element: <EditCommison />,
+        element: <EditCommission />,
       },
       {
         path: "motorpolicies",

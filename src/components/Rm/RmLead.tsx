@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { MaterialReactTable, type MRT_ColumnDef } from "material-react-table";
 
-import { Button, Paper, Typography } from "@mui/material";
+import {  Paper, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 
 import dayjs from "dayjs";

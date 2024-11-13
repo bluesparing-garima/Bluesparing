@@ -1,9 +1,6 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useState } from "react";
 import logo from "../../assets/login_logo.png";
-import useLogoClickHandler from "../../utils/useLogoClickHandler";
 import { IconButton } from "@mui/material";
-// Define types for menu items and submenu items
 type MenuItem = {
   id: number;
   label: string;
@@ -11,20 +8,17 @@ type MenuItem = {
   link?: string;
   subMenu?: SubMenuItem[];
 };
-
 type SubMenuItem = {
   id: number;
   svgIcon?: string;
   label: string;
   link?: string;
 };
-
 interface SidebarProps{
   isSidebarOpen: boolean;
   setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
-const partnerSidebar: React.FC<SidebarProps> = ({isSidebarOpen,setSidebarOpen}) => {
-  // Sample menu items data
+const PartnerSidebar: React.FC<SidebarProps> = ({isSidebarOpen,setSidebarOpen}) => {
   const menuItems: MenuItem[] = [
     {
       id: 1,
@@ -92,16 +86,11 @@ const partnerSidebar: React.FC<SidebarProps> = ({isSidebarOpen,setSidebarOpen}) 
       ],
     },
   ];
-
-  // State to manage active menu item and open/close state of submenus
   const [activeMenuItem, setActiveMenuItem] = useState<number | null>(null);
   const [openSubMenus, setOpenSubMenus] = useState<number[]>([]);
-  // Function to handle menu item click
   const handleMenuItemClick = (itemId: number) => {
     setActiveMenuItem(itemId === activeMenuItem ? null : itemId);
   };
-
-  // Function to toggle submenu open/close
   const toggleSubMenu = (parentId: number) => {
     if (openSubMenus.includes(parentId)) {
       setOpenSubMenus(openSubMenus.filter((id) => id !== parentId));
@@ -109,15 +98,12 @@ const partnerSidebar: React.FC<SidebarProps> = ({isSidebarOpen,setSidebarOpen}) 
       setOpenSubMenus([...openSubMenus, parentId]);
     }
   };
-  const handleLogoClick = useLogoClickHandler();
-
   return (
     <div
     className={`${
       isSidebarOpen ? "translate-x-0" : "-translate-x-full"
     } md:translate-x-0 sticky  top-0  z-20 md:flex flex-col w-60 bg-white h-screen shadow-lg border-r-2 border-[#FEF9F3] transition-transform delay-150 duration-200`}
   >
-     
       <div className="md:hidden flex w-full justify-end">
         <IconButton onClick={() => setSidebarOpen((prev) => !prev)}>
           <svg
@@ -236,7 +222,6 @@ const partnerSidebar: React.FC<SidebarProps> = ({isSidebarOpen,setSidebarOpen}) 
         </div>
       </div>
       <div className="mx-1">
-
       <picture className="mb-1 flex justify-center items-center ">
         <caption className="text-smfont-medium text-safekarolightOrange">Powered By</caption>
         <source srcSet={logo} type="image/png" />
@@ -246,5 +231,4 @@ const partnerSidebar: React.FC<SidebarProps> = ({isSidebarOpen,setSidebarOpen}) 
     </div>
   );
 };
-
-export default partnerSidebar;
+export default PartnerSidebar;

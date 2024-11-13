@@ -7,22 +7,21 @@ import GetReceivedBrokerPaymentService from "../../../api/Dashboard/GetRecievedB
 import { BrokerReceivedPayInProps } from "../../TreeView/ITreeView";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import { generateBrokerReceivedPayInExcel } from "../../../utils/DashboardExcel";
-const FilterRecievedPayInAmount = () => {
-  const title = "Recieved PayIn Details Of All Brokers";
+const FilterReceivedPayInAmount = () => {
+  const title = "Received PayIn Details Of All Brokers";
   const location = useLocation();
-  const selectedCategory = location.state as string; // This is where you access the passed state
-  const [brokerTotalPayment, setBrokerTotalPayment] = useState<number>(0); // State for all credit debits
+  const selectedCategory = location.state as string;
+  const [brokerTotalPayment, setBrokerTotalPayment] = useState<number>(0);
   const [brokerPayment, setBrokerPayment] = useState<BrokerReceivedPayInProps[]>(
     []
-  ); // State for all credit debits
+  );
   useEffect(() => {
     const fetchBrokerPayments = async () => {
       GetReceivedBrokerPaymentService({
         header,
         category: selectedCategory,
-      }) // Call API to fetch credit debits
+      })
         .then((brokerPayment) => {
-          // On successful API call
           setBrokerPayment(brokerPayment.data);
           setBrokerTotalPayment(brokerPayment.totalAmount);
         })
@@ -31,19 +30,16 @@ const FilterRecievedPayInAmount = () => {
           toast.error(err.message);
         });
     };
-
     fetchBrokerPayments();
-     // eslint-disable-next-line
+     // eslint-disable-next-line 
   }, []);
   const handleDownloadExcel = () => {
     generateBrokerReceivedPayInExcel(brokerPayment);
   };
-
   return (
     <div className="bg-blue-200 p-7 mt-3">
       <Paper elevation={3} style={{ padding: 20 }}>
         <div className="flex justify-between items-center">
-          
         <Typography variant="h5" className="text-black" gutterBottom>
           {title}{" "}
           <span className="text-safekaroDarkOrange">{brokerTotalPayment}</span>
@@ -57,7 +53,6 @@ const FilterRecievedPayInAmount = () => {
             </button>
           </Tooltip>
         </div>
-
         <Grid container className="bg-blue-200 mt-3">
           {brokerPayment && brokerPayment.length > 0 ? (
             brokerPayment.map((item, index) => (
@@ -94,11 +89,9 @@ const FilterRecievedPayInAmount = () => {
             </Typography>
           )}
         </Grid>
-
         <Toaster position="bottom-center" reverseOrder={false} />
       </Paper>
     </div>
   );
 };
-
-export default FilterRecievedPayInAmount;
+export default FilterReceivedPayInAmount;

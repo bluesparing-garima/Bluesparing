@@ -14,7 +14,6 @@ import CountdownTimer from "../../../utils/CountdownTimer";
 import getLeadService from "../../../api/Leads/GetLead/getLeadService";
 import acceptLeadService from "../../../api/Leads/AcceptLead/acceptLeadService";
 import toast, { Toaster } from "react-hot-toast";
-
 const Leads = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [leads, setLeads] = useState<ILeads[]>([]);
@@ -29,25 +28,19 @@ const Leads = () => {
           );
           setLeads(newLead);
         })
-        .catch(async(error) => {
-          const err = await error
-          toast.error(err.message)
-         
+        .catch(async (error) => {
+          const err = await error;
+          toast.error(err.message);
         }),
     []
   );
-
   useEffect(() => {
     GetNewLeads();
   }, [GetNewLeads]);
-
   const navigate = useNavigate();
-
   const handleAddLeadClick = () => {
     navigate(leadsAddPath());
   };
-
-  //should be memoized or stable
   const columns = useMemo<MRT_ColumnDef<ILeads>[]>(
     () => [
       {
@@ -57,17 +50,17 @@ const Leads = () => {
         Cell: ({ cell }) => <CountdownTimer registerDate={cell.getValue()} />,
       },
       {
-        accessorKey: "category", //normal accessorKey
+        accessorKey: "category",
         header: "Category",
         size: 100,
       },
       {
-        accessorKey: "policyType", //normal accessorKey
+        accessorKey: "policyType",
         header: "Policy Type",
         size: 100,
       },
       {
-        accessorKey: "caseType", //normal accessorKey
+        accessorKey: "caseType",
         header: "Case Type",
         size: 100,
       },
@@ -80,14 +73,17 @@ const Leads = () => {
         header: "Created On",
         accessorKey: "createdOn",
         size: 50,
-        Cell:({row})=>{
-          return(<span>{dayjs(row.original.createdOn).format(DAYJS_DISPLAY_FORMAT)}</span>)
-        }
+        Cell: ({ row }) => {
+          return (
+            <span>
+              {dayjs(row.original.createdOn).format(DAYJS_DISPLAY_FORMAT)}
+            </span>
+          );
+        },
       },
     ],
     []
   );
-
   const parsedData = useMemo(
     () =>
       leads.map(
@@ -120,38 +116,30 @@ const Leads = () => {
       ) ?? [],
     [leads]
   );
-
   const updateLoading = useCallback(async () => {
-    // setIsLoading(true) when leads.length is 0, and setIsLoading(false) when leads.length is > 0
     setIsLoading(false);
   }, []);
-
   useEffect(() => {
     updateLoading();
   }, [updateLoading]);
-
   const handleClickAcceptLead = (leadForm: ILeadsVM) => {
-    // navigate(leadEditPath(lead.id!));
     leadForm.leadCreatedBy = userData.id;
     leadForm.status = "accepted";
     leadForm.updatedBy = userData.role;
     leadForm.updatedOn = "";
     callEditLeadAPI(leadForm);
   };
-
   const callEditLeadAPI = async (leadForm: any) => {
     try {
       const newLead = await acceptLeadService({ header, lead: leadForm });
       if (newLead.status === "success") {
         navigate(leadsPath());
       }
-    } catch (error:any) {
-      const err = await error
-      toast.error(err.message)
-     
+    } catch (error: any) {
+      const err = await error;
+      toast.error(err.message);
     }
   };
-
   return (
     <>
       <div className="bg-blue-200 md:p-7 p-2">
@@ -180,7 +168,7 @@ const Leads = () => {
                 </Button>
               )}
             </div>
-            {/* Add a full-width grey line here */}
+            {}
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
@@ -228,5 +216,4 @@ const Leads = () => {
     </>
   );
 };
-
 export default Leads;

@@ -17,7 +17,6 @@ import toast, { Toaster } from "react-hot-toast";
 import { DAY_FORMAT, header } from "../../../context/constant";
 import { useEffect, useState } from "react";
 import useGetPartners from "../../../Hooks/Partner/useGetPartners";
-
 import React from "react";
 import dayjs from "dayjs";
 import { useLocation, useParams } from "react-router-dom";
@@ -28,7 +27,7 @@ import { generateExcelCompanyNetPremium } from "../../../utils/DashboardExcel";
 const FilterPartnerMonthlyNetPremium = () => {
   const title = "Get Monthly NetPremium Of Partner -";
   const location = useLocation();
-  const selectedCategory = location.state as string; // This is where you access the passed state
+  const selectedCategory = location.state as string;
   const { startDate } = useParams();
   const { endDate } = useParams();
   const { partnerId } = useParams();
@@ -39,7 +38,7 @@ const FilterPartnerMonthlyNetPremium = () => {
   const [selectedPartnerId, setSelectedPartnerId] = useState<string>();
   const [companyDetails, setCompanyDetails] = useState<INetPremiumCompany[]>(
     []
-  ); // State for all credit debits
+  );
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
       schema = schema();
@@ -53,23 +52,19 @@ const FilterPartnerMonthlyNetPremium = () => {
       return errors;
     }
   };
-
   const validationSchema = yup.object().shape({
     startDate: yup.string().required("Start Date is required").nullable(),
     endDate: yup.string().nullable().required("End Date is required"),
     partnerName: yup.string().required("Partner Name is required").nullable(),
   });
-
   const handleDownloadExcel = () => {
     generateExcelCompanyNetPremium(companyDetails);
   };
   const validate = validateFormValues(validationSchema);
-
   useEffect(() => {
     filterMonthlyPartnerPaymentWithCompany(startDate!, endDate!, partnerId!);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line
   }, [startDate, endDate, partnerId]);
-
   const filterMonthlyPartnerPaymentWithCompany = async (
     startDate: string,
     endDate: string,
@@ -81,9 +76,8 @@ const FilterPartnerMonthlyNetPremium = () => {
       startDate: startDate,
       endDate: endDate,
       category: selectedCategory,
-    }) // Call API to fetch credit debits
+    })
       .then((partners) => {
-        // On successful API call
         setCompanyDetails(partners.data);
         setTotalAmount(partners.totalAmount);
         setSelectedPartnerCode(partners.partnerCode);
@@ -94,7 +88,6 @@ const FilterPartnerMonthlyNetPremium = () => {
         toast.error(err.message);
       });
   };
-
   const onSubmit = async (value: any) => {
     const newStartDate = dayjs(value.startDate).format(DAY_FORMAT);
     const newEndDate = dayjs(value.endDate).format(DAY_FORMAT);
@@ -129,16 +122,14 @@ const FilterPartnerMonthlyNetPremium = () => {
               </button>
             </Tooltip>
           </div>
-
           <React.Fragment>
             <Form
               onSubmit={onSubmit}
-              // initialValues={initialValues}
               validate={validate}
               render={({ handleSubmit, submitting, errors, values }) => (
                 <form onSubmit={handleSubmit} noValidate>
                   <Grid container spacing={2} mt={2} mb={2}>
-                    {/* Account Code Selection */}
+                    {}
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Field name="startDate">
                         {({ input, meta }) => (
@@ -146,7 +137,7 @@ const FilterPartnerMonthlyNetPremium = () => {
                             <DatePicker
                               disableFuture
                               label="Start Date"
-                              value={input.value || null} // Initialize the value if it's undefined
+                              value={input.value || null}
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
                                 <TextField
@@ -170,7 +161,7 @@ const FilterPartnerMonthlyNetPremium = () => {
                             <DatePicker
                               disableFuture
                               label="End Date"
-                              value={input.value || null} // Initialize the value if it's undefined
+                              value={input.value || null}
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
                                 <TextField
@@ -204,7 +195,7 @@ const FilterPartnerMonthlyNetPremium = () => {
                                     : `${option.fullName} - ${option.partnerId}` ||
                                       ""
                                 }
-                                options={partners} // Replace with your options array
+                                options={partners}
                                 onChange={(event, newValue) => {
                                   input.onChange(newValue.fullName);
                                   setSelectedPartnerId(newValue._id);
@@ -264,9 +255,6 @@ const FilterPartnerMonthlyNetPremium = () => {
                       {item.netPremium}
                     </Typography>
                   </div>
-                  {/* Uncomment if needed
-                <img src={icon} alt={title} className="h-8 w-8" />
-                */}
                 </div>
               </Grid>
             ))}
@@ -277,5 +265,4 @@ const FilterPartnerMonthlyNetPremium = () => {
     </>
   );
 };
-
 export default FilterPartnerMonthlyNetPremium;

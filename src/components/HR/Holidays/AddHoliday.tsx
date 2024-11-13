@@ -1,9 +1,8 @@
 import { Typography, Paper } from "@mui/material";
 import { Link, useLocation } from "react-router-dom";
-import { ADD, SafeKaroUser } from "../../../context/constant";
+import {  SafeKaroUser } from "../../../context/constant";
 import { HolidayLocationState } from "./IHolidayForm";
 import AddHolidayForm from "./AddHolidayForm";
-
 const AddHoliday = () => {
   const location = useLocation();
   const state = location.state as HolidayLocationState;
@@ -42,7 +41,6 @@ const AddHoliday = () => {
                 style={{ width: "100%", borderColor: "grey-800" }}
               />
             </Typography>
-
             <AddHolidayForm
               initialValues={{
                 id: isAdd ? "" : holiday._id || "",
@@ -60,5 +58,4 @@ const AddHoliday = () => {
     </>
   );
 };
-
 export default AddHoliday;

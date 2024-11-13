@@ -10,17 +10,16 @@ import { generatePartnerPaidExcel } from "../../../utils/DashboardExcel";
 const FilterPaidPayOut = () => {
   const title = "Get Paid Payout Details Of All Partners";
   const location = useLocation();
-  const selectedCategory = location.state as string; // This is where you access the passed state
-  const [partnerTotalPayment, setPartnerTotalPayment] = useState<number>(0); // State for all credit debits
-  const [partnerPayment, setPartnerPayment] = useState<IPartnerPaid[]>([]); // State for all credit debits
+  const selectedCategory = location.state as string;
+  const [partnerTotalPayment, setPartnerTotalPayment] = useState<number>(0);
+  const [partnerPayment, setPartnerPayment] = useState<IPartnerPaid[]>([]);
   useEffect(() => {
     const fetchPartnerPayments = async () => {
       TotalPaidPayoutService({
         header,
         category: selectedCategory!,
-      }) // Call API to fetch credit debits
+      })
         .then((partnerPayment) => {
-          // On successful API call
           setPartnerPayment(partnerPayment.data);
           setPartnerTotalPayment(partnerPayment.totalAmount);
         })
@@ -29,11 +28,9 @@ const FilterPaidPayOut = () => {
           toast.error(err.message);
         });
     };
-
     fetchPartnerPayments();
-    // eslint-disable-next-line
+     // eslint-disable-next-line 
   }, []);
-
   const handleDownloadExcel = () => {
     generatePartnerPaidExcel(partnerPayment);
   };
@@ -56,7 +53,6 @@ const FilterPaidPayOut = () => {
             </button>
           </Tooltip>
         </div>
-
         <Grid container className="bg-blue-200 mt-3">
           {partnerPayment.map((item, index) => (
             <Grid item xs={12} sm={6} md={4} lg={4} key={index}>
@@ -79,19 +75,14 @@ const FilterPaidPayOut = () => {
                       {item.totalPayOutAmount}
                     </Typography>
                   </div>
-                  {/* Uncomment if needed
-                <img src={icon} alt={title} className="h-8 w-8" />
-                */}
                 </div>
               </Link>
             </Grid>
           ))}
         </Grid>
-
         <Toaster position="bottom-center" reverseOrder={false} />
       </Paper>
     </div>
   );
 };
-
 export default FilterPaidPayOut;

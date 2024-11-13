@@ -1,6 +1,6 @@
 import { endOfMonth, format, startOfMonth } from "date-fns";
 import { setIn } from "final-form";
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { DAY_FORMAT, header } from "../../../context/constant";
 import toast from "react-hot-toast";
@@ -25,9 +25,8 @@ import {
   INetPremiumPartner,
 } from "../../TreeView/ITreeView";
 import { generateExcelForNetPremium } from "../../../utils/DashboardExcel";
-
-const MonthlyAllNetPerimum = () => {
-  const title = "Get Monthly Net Preminum Details";
+const MonthlyAllNetPremium = () => {
+  const title = "Get Monthly Net Premium Details";
   const location = useLocation();
   const selectedCategory = location.state as string;
   const [isPartner, setIsPartner] = useState(1);
@@ -44,7 +43,6 @@ const MonthlyAllNetPerimum = () => {
   const [brokerNetPremium, setBrokerNetPremium] = useState<INetPremiumBroker[]>(
     []
   );
-
   const handleDownloadExcel = () => {
     if (isPartner === 1) {
       generateExcelForNetPremium(partnerNetPremium, "partner");
@@ -58,7 +56,6 @@ const MonthlyAllNetPerimum = () => {
   ) => {
     setSelectedStartDate(formattedFirstDay);
     setSelectedEndDate(formattedLastDay);
-
     try {
       const partnerResponse = await GetMonthlyBrokerNetPremiumService({
         header,
@@ -66,20 +63,16 @@ const MonthlyAllNetPerimum = () => {
         endDate: formattedLastDay,
         category: selectedCategory,
       });
-
       setBrokerNetPremium(partnerResponse.data);
       setBrokerTotalNetPremium(partnerResponse.totalAmount);
-
       const brokerResponse = await GetMonthlyPartnerNetPremiumService({
         header,
         startDate: formattedFirstDay,
         endDate: formattedLastDay,
         category: selectedCategory,
       });
-
       setPartnerNetPremium(brokerResponse.data);
       setPartnerTotalNetPremium(brokerResponse.totalAmount);
-
       const totalNet = Number(
         brokerResponse.totalAmount + partnerResponse.totalAmount
       );
@@ -89,16 +82,12 @@ const MonthlyAllNetPerimum = () => {
       toast.error(err.message);
     }
   };
-
   useEffect(() => {
     const currentDate = new Date();
     const firstDayOfMonth = format(startOfMonth(currentDate), "yyyy-MM-dd");
     const lastDayOfMonth = format(endOfMonth(currentDate), "yyyy-MM-dd");
-
     fetchPartnerPayments(firstDayOfMonth, lastDayOfMonth);
-     // eslint-disable-next-line
   }, []);
-
   const validateFormValues = (schema: any) => async (values: any) => {
     try {
       await schema.validate(values, { abortEarly: false });
@@ -109,14 +98,11 @@ const MonthlyAllNetPerimum = () => {
       return errors;
     }
   };
-
   const validationSchema = yup.object().shape({
     startDate: yup.string().required("Start Date is required").nullable(),
     endDate: yup.string().nullable().required("End Date is required"),
   });
-
   const validate = validateFormValues(validationSchema);
-
   const onSubmit = async (values: any) => {
     const newStartDate = dayjs(values.startDate).format(DAY_FORMAT);
     const newEndDate = dayjs(values.endDate).format(DAY_FORMAT);
@@ -222,7 +208,6 @@ const MonthlyAllNetPerimum = () => {
             </form>
           )}
         />
-
         <Grid container mb={2}>
           <Grid item md={6} className={"bg-safekaroDarkOrange "}>
             <Button type="button" onClick={() => handleNetPremiumClick(true)}>
@@ -243,7 +228,6 @@ const MonthlyAllNetPerimum = () => {
             </Button>
           </Grid>
         </Grid>
-
         <Grid container className="bg-blue-200 mt-3">
           {selectedPartner ? (
             <>
@@ -272,9 +256,6 @@ const MonthlyAllNetPerimum = () => {
                             {item.netPremium}
                           </Typography>
                         </div>
-                        {/* Uncomment if needed
-                <img src={icon} alt={title} className="h-8 w-8" />
-                */}
                       </div>
                     </Link>
                   </Grid>
@@ -308,9 +289,6 @@ const MonthlyAllNetPerimum = () => {
                             {item.netPremium}
                           </Typography>
                         </div>
-                        {/* Uncomment if needed
-              <img src={icon} alt={title} className="h-8 w-8" />
-              */}
                       </div>
                     </Link>
                   </Grid>
@@ -323,5 +301,4 @@ const MonthlyAllNetPerimum = () => {
     </div>
   );
 };
-
-export default MonthlyAllNetPerimum;
+export default MonthlyAllNetPremium;

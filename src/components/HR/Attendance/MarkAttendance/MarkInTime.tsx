@@ -1,5 +1,5 @@
 import React from "react";
-import { IAttendance } from "../IAttendnace";
+import { IAttendance } from "../IAttendance";
 import dayjs from "dayjs";
 import { IAddAttendanceProps } from "../../../../api/HR/getHrTypes";
 import AddAttendanceService from "../../../../api/HR/Attendance/AddAttendance/AddHolidayService";
@@ -15,12 +15,11 @@ const MarkInTime: React.FC<IMarkInTimeProps> = ({
   setAttendance,
 }) => {
   const isTimeAfter1130AM = (): boolean => {
-    const now = dayjs(); // Get current time
+    const now = dayjs();
     const tenThirtyAM = dayjs()
       .set("hour", 11)
       .set("minute", 30)
       .set("second", 0);
-
     return now.isAfter(tenThirtyAM);
   };
   const handleInTimeAttendance = async () => {
@@ -32,7 +31,6 @@ const MarkInTime: React.FC<IMarkInTimeProps> = ({
         inTime: dayjs().format("HH:mm"),
         remarks: `${attendance?.employeeName} is present`,
       };
-
       const res = await AddAttendanceService({
         header,
         attendanceData,
@@ -45,7 +43,6 @@ const MarkInTime: React.FC<IMarkInTimeProps> = ({
       console.log(error);
     }
   };
-
   return (
     <button
       className={`${
@@ -60,5 +57,4 @@ const MarkInTime: React.FC<IMarkInTimeProps> = ({
     </button>
   );
 };
-
 export default MarkInTime;

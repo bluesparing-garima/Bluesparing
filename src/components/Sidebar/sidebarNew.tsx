@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import logo from "../../assets/logo.svg";
-import useSafekaroContextAuth from "../../context/useSafekaroContextAuth";
 
 const Sidebar = () => {
   const [isAdminDropdownOpen, setIsAdminDropdownOpen] = useState(false);
-  const [ispolicyDropdownOpen, setIsPolicyDropdownOpen] = useState(false);
-  const { user } = useSafekaroContextAuth();
+  const [isPolicyDropdownOpen, setIsPolicyDropdownOpen] = useState(false);
+
   const toggleAdminDropdown = () => {
     setIsAdminDropdownOpen((prevState) => !prevState);
   };
@@ -386,7 +385,7 @@ const Sidebar = () => {
                 Policy
                 <i className="fas fa-chevron-down text-sm text-gray-400 ml-auto"></i>
               </div>
-              {ispolicyDropdownOpen && (
+              {isPolicyDropdownOpen && (
                 <div className="ml-6">
                   <a
                     href="/policy/motor"

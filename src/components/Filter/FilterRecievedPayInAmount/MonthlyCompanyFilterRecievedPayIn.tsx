@@ -24,11 +24,10 @@ import { useLocation, useParams } from "react-router-dom";
 import GetMonthlyBrokerWithReceivedCompanyPaymentService from "../../../api/Dashboard/GetMonthlyBrokerWithRecievedCompanyPayment/GetMonthlyBrokerWithRecievedCompanyPaymentService";
 import { BrokerReceivedPayInCompanyProps } from "../../TreeView/ITreeView";
 import { generateBrokerReceivedPayInCompanyExcel } from "../../../utils/DashboardExcel";
-
-const MonthlyCompanyFilterRecievedPayIn = () => {
-  const title = "Monthly Recieved Payment Details Of Broker -";
+const MonthlyCompanyFilterReceivedPayIn = () => {
+  const title = "Monthly Received Payment Details Of Broker -";
   const location = useLocation();
-  const selectedCategory = location.state as string; // This is where you access the passed state
+  const selectedCategory = location.state as string;
   const { startDate } = useParams();
   const { endDate } = useParams();
   const { brokerId } = useParams();
@@ -39,7 +38,7 @@ const MonthlyCompanyFilterRecievedPayIn = () => {
   const [selectedBrokerId, setSelectedBrokerId] = useState<string>();
   const [companyDetails, setCompanyDetails] = useState<
     BrokerReceivedPayInCompanyProps[]
-  >([]); // State for all credit debits
+  >([]);
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
       schema = schema();
@@ -53,19 +52,16 @@ const MonthlyCompanyFilterRecievedPayIn = () => {
       return errors;
     }
   };
-
   const validationSchema = yup.object().shape({
     startDate: yup.string().required("Start Date is required").nullable(),
     endDate: yup.string().nullable().required("End Date is required"),
     brokerName: yup.string().required("Broker Name is required").nullable(),
   });
-
   const validate = validateFormValues(validationSchema);
-
   useEffect(() => {
     filterMonthlyBrokerPaymentWithCompany(startDate!, endDate!, brokerId!);
+     // eslint-disable-next-line 
   }, [startDate, endDate, brokerId]);
-
   const handleDownloadExcel = () => {
     generateBrokerReceivedPayInCompanyExcel(companyDetails);
   };
@@ -80,9 +76,8 @@ const MonthlyCompanyFilterRecievedPayIn = () => {
       startDate: startDate,
       endDate: endDate,
       category: selectedCategory,
-    }) // Call API to fetch credit debits
+    })
       .then((brokers) => {
-        // On successful API call
         setCompanyDetails(brokers.data);
         setTotalAmount(brokers.totalAmount);
         setSelectedBrokerName(brokers.brokerName);
@@ -93,7 +88,6 @@ const MonthlyCompanyFilterRecievedPayIn = () => {
         toast.error(err.message);
       });
   };
-
   const onSubmit = async (value: any) => {
     const newStartDate = dayjs(value.startDate).format(DAY_FORMAT);
     const newEndDate = dayjs(value.endDate).format(DAY_FORMAT);
@@ -128,16 +122,14 @@ const MonthlyCompanyFilterRecievedPayIn = () => {
               </button>
             </Tooltip>
           </div>
-
           <React.Fragment>
             <Form
               onSubmit={onSubmit}
-              // initialValues={initialValues}
               validate={validate}
               render={({ handleSubmit, submitting, errors, values }) => (
                 <form onSubmit={handleSubmit} noValidate>
                   <Grid container spacing={2} mt={2} mb={2}>
-                    {/* Account Code Selection */}
+                    {}
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Field name="startDate">
                         {({ input, meta }) => (
@@ -145,7 +137,7 @@ const MonthlyCompanyFilterRecievedPayIn = () => {
                             <DatePicker
                               disableFuture
                               label="Start Date"
-                              value={input.value || null} // Initialize the value if it's undefined
+                              value={input.value || null}
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
                                 <TextField
@@ -169,7 +161,7 @@ const MonthlyCompanyFilterRecievedPayIn = () => {
                             <DatePicker
                               disableFuture
                               label="End Date"
-                              value={input.value || null} // Initialize the value if it's undefined
+                              value={input.value || null}
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
                                 <TextField
@@ -203,8 +195,7 @@ const MonthlyCompanyFilterRecievedPayIn = () => {
                                     : `${option.brokerName} - ${option.brokerCode}` ||
                                       ""
                                 }
-                                options={brokers} // Replace with your options array
-                                // getOptionLabel={(option) => option.brokerName}
+                                options={brokers}
                                 onChange={(event, newValue) => {
                                   input.onChange(
                                     newValue ? newValue.brokerName : ""
@@ -281,5 +272,4 @@ const MonthlyCompanyFilterRecievedPayIn = () => {
     </>
   );
 };
-
-export default MonthlyCompanyFilterRecievedPayIn;
+export default MonthlyCompanyFilterReceivedPayIn;

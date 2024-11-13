@@ -4,11 +4,9 @@ import { Link, useParams } from "react-router-dom";
 import { header } from "../../../context/constant";
 import { IViewPolicy } from "../IPolicy";
 import getPolicyWithPaymentService from "../../../api/Policies/GetPolicyWithPayment/getPolicyWithPaymentService";
+import EditCommissionForm from "./editCommisonForm";
 
-// Make sure to import the correct component
-import EditCommisonForm from "./editCommisonForm";
-
-const EditCommison = () => {
+const EditCommission = () => {
   const title = "Edit Policy Commission";
   const { policyId } = useParams();
   const [policyDetails, setPolicyDetails] = useState<IViewPolicy | undefined>(
@@ -50,14 +48,13 @@ const EditCommison = () => {
               Policies /
             </Link>
             <span className="text-grey-600 w-full  text-sm">{title}</span>
-            {/* Add a full-width grey line here */}
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
             />
           </Typography>
 
-          <EditCommisonForm
+          <EditCommissionForm
             initialValues={{
               od: policyDetails?.od || 0,
               tp: policyDetails?.tp || 0,
@@ -91,4 +88,4 @@ const EditCommison = () => {
   );
 };
 
-export default EditCommison;
+export default EditCommission;

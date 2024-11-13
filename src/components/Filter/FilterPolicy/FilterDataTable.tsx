@@ -1,22 +1,17 @@
-// FilterDataTable.tsx
 import React, { useEffect, useState } from "react";
 import { Document, imagePath } from "../../../context/constant";
 import { MotorPolicyData } from "../IFilter";
 import { Button, Card, CardContent, Grid, Typography } from "@mui/material";
-
 interface FilterDataTableProps {
   policy: MotorPolicyData;
 }
-
 const FilterDataTable: React.FC<FilterDataTableProps> = ({ policy }) => {
   const [documents, setDocuments] = useState<Document[]>([
     { docName: "", file: "" },
   ]);
-
   useEffect(() => {
     if (policy) {
       const updatedDocuments: Document[] = [];
-
       if (policy.rcBack) {
         updatedDocuments.push({
           docName: "rcBack",
@@ -74,13 +69,9 @@ const FilterDataTable: React.FC<FilterDataTableProps> = ({ policy }) => {
       setDocuments(updatedDocuments);
     }
   }, [policy]);
-  // Function to handle file download
   const downloadFile = (url: string, fileName: string) => {
-    // Extract file extension from the original URL
     const urlFileName = url.substring(url.lastIndexOf("/") + 1);
     const fileExtension = urlFileName.split(".").pop()?.toLowerCase();
-
-    // Validate file extension
     if (
       fileExtension === "pdf" ||
       fileExtension === "jpg" ||
@@ -101,7 +92,6 @@ const FilterDataTable: React.FC<FilterDataTableProps> = ({ policy }) => {
         .catch((error) => console.error("Error downloading file:", error));
     } else {
       console.error("Unsupported file type:", fileExtension);
-      // alert("Unsupported file type. Only PDF and PNG files are supported.");
     }
   };
   const handleClickDownloadDocuments = async () => {
@@ -109,10 +99,7 @@ const FilterDataTable: React.FC<FilterDataTableProps> = ({ policy }) => {
       const FileName = policy?.policyNumber + document.docName;
       downloadFile(document.file, FileName);
     });
-
     await Promise.all(promises);
-
-    // downloadFile('https://api.safekaro.com/uploads/Manish_668919929794ffa14999dc82.png', 'Manish_668919929794ffa14999dc82.png');
   };
   return (
     <>
@@ -392,7 +379,6 @@ const FilterDataTable: React.FC<FilterDataTableProps> = ({ policy }) => {
                 {policy?.cc}
               </Typography>
             </Grid>
-
             <Grid item xs={4}>
               <Typography
                 variant="subtitle1"
@@ -458,7 +444,6 @@ const FilterDataTable: React.FC<FilterDataTableProps> = ({ policy }) => {
                 {policy?.endDate}
               </Typography>
             </Grid>
-
             <Grid item xs={4}>
               <Typography
                 variant="subtitle1"
@@ -475,7 +460,6 @@ const FilterDataTable: React.FC<FilterDataTableProps> = ({ policy }) => {
           </Grid>
         </CardContent>
       </Card>
-
       <Grid item xs={12} m={2}>
         <Typography
           variant="h5"
@@ -528,7 +512,6 @@ const FilterDataTable: React.FC<FilterDataTableProps> = ({ policy }) => {
                 {policy?.broker}
               </Typography>
             </Grid>
-
             <Grid item xs={4}>
               <Typography
                 variant="subtitle1"
@@ -670,7 +653,6 @@ const FilterDataTable: React.FC<FilterDataTableProps> = ({ policy }) => {
           </Grid>
         </CardContent>
       </Card>
-
       <hr className="my-4" />
       <Grid item xs={12}>
         <Typography
@@ -719,5 +701,4 @@ const FilterDataTable: React.FC<FilterDataTableProps> = ({ policy }) => {
     </>
   );
 };
-
 export default FilterDataTable;

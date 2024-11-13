@@ -10,31 +10,27 @@ import { generateExcelCompanyNetPremium } from "../../../utils/DashboardExcel";
 const FilterBrokerNetPremium = () => {
   const title = "Get NetPremium Of Broker -";
   const location = useLocation();
-  const selectedCategory = location.state as string; // This is where you access the passed state
+  const selectedCategory = location.state as string;
   const { brokerId } = useParams();
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [selectedBrokerCode, setSelectedBrokerCode] = useState<string>();
   const [selectedBrokerName, setSelectedBrokerName] = useState<string>();
   const [companyDetails, setCompanyDetails] = useState<INetPremiumCompany[]>(
     []
-  ); // State for all credit debits
-
+  );
   const handleDownloadExcel = () => {
     generateExcelCompanyNetPremium(companyDetails);
   };
   useEffect(() => {
     filterMonthlyBrokerPaymentWithCompany(brokerId!);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [brokerId]);
-
   const filterMonthlyBrokerPaymentWithCompany = async (brokerId: string) => {
     GetTotalNetPremiumBrokerCompanyService({
       header,
       brokerId: brokerId!,
       category: selectedCategory,
-    }) // Call API to fetch credit debits
+    })
       .then((brokers) => {
-        // On successful API call
         setCompanyDetails(brokers.data);
         setTotalAmount(brokers.totalAmount);
         setSelectedBrokerCode(brokers.brokerCode);
@@ -45,7 +41,6 @@ const FilterBrokerNetPremium = () => {
         toast.error(err.message);
       });
   };
-
   return (
     <>
       <div className="bg-blue-200 p-7 mt-3">
@@ -71,7 +66,6 @@ const FilterBrokerNetPremium = () => {
               </button>
             </Tooltip>
           </div>
-
           <Typography variant="body2" className="text-sm text-gray-600 mb-2">
             Total Amount{" "}
             <span className="text-safekaroDarkOrange">{totalAmount}</span>
@@ -94,9 +88,6 @@ const FilterBrokerNetPremium = () => {
                       {item.netPremium}
                     </Typography>
                   </div>
-                  {/* Uncomment if needed
-                <img src={icon} alt={title} className="h-8 w-8" />
-                */}
                 </div>
               </Grid>
             ))}
@@ -107,5 +98,4 @@ const FilterBrokerNetPremium = () => {
     </>
   );
 };
-
 export default FilterBrokerNetPremium;

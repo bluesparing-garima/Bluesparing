@@ -7,22 +7,21 @@ import GetBrokerWithReceivedCompanyPaymentService from "../../../api/Dashboard/G
 import { BrokerReceivedPayInCompanyProps } from "../../TreeView/ITreeView";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import { generateBrokerReceivedPayInCompanyExcel } from "../../../utils/DashboardExcel";
-const CompanyFilterRecievedPayIn = () => {
-  const title = "Recieved Payment Details Of Broker -";
+const CompanyFilterReceivedPayIn = () => {
+  const title = "Received Payment Details Of Broker -";
   const location = useLocation();
-  const selectedCategory = location.state as string; // This is where you access the passed state
+  const selectedCategory = location.state as string;
   const { brokerId } = useParams();
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [selectedBrokerName, setSelectedBrokerName] = useState<string>();
   const [selectedBrokerCode, setSelectedBrokerCode] = useState<string>();
   const [companyDetails, setCompanyDetails] = useState<
   BrokerReceivedPayInCompanyProps[]
-  >([]); // State for all credit debits
-
+  >([]);
   useEffect(() => {
     filterMonthlyBrokerPaymentWithCompany(brokerId!);
+     // eslint-disable-next-line 
   }, []);
-
   const handleDownloadExcel = () => {
     generateBrokerReceivedPayInCompanyExcel(companyDetails)
   };
@@ -31,9 +30,8 @@ const CompanyFilterRecievedPayIn = () => {
       header,
       brokerId: brokerId!,
       category: selectedCategory,
-    }) // Call API to fetch credit debits
+    })
       .then((brokers) => {
-        // On successful API call
         setCompanyDetails(brokers.data);
         setTotalAmount(brokers.totalAmount);
         setSelectedBrokerName(brokers.brokerName);
@@ -44,13 +42,11 @@ const CompanyFilterRecievedPayIn = () => {
         toast.error(err.message);
       });
   };
-
   return (
     <>
       <div className="bg-blue-200 p-7 mt-3">
         <Paper elevation={3} style={{ padding: 20 }}>
           <div className="flex justify-between items-center">
-
           <Typography
             variant="h5"
             className="text-safekaroDarkOrange"
@@ -93,9 +89,6 @@ const CompanyFilterRecievedPayIn = () => {
                       {item.totalPayInAmount}
                     </Typography>
                   </div>
-                  {/* Uncomment if needed
-                <img src={icon} alt={title} className="h-8 w-8" />
-                */}
                 </div>
               </Grid>
             ))}
@@ -106,5 +99,4 @@ const CompanyFilterRecievedPayIn = () => {
     </>
   );
 };
-
-export default CompanyFilterRecievedPayIn;
+export default CompanyFilterReceivedPayIn;

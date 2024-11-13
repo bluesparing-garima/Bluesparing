@@ -17,27 +17,22 @@ import { header } from "../../../context/constant";
 import { MoreVertical } from "react-feather";
 import GetCommissionDataService from "../../../api/Dashboard/GetCommissionData/GetCommissionDataService";
 import toast, { Toaster } from "react-hot-toast";
-
 const Card = styled(MuiCard)`
   margin-bottom: 20px;
 `;
-
 const Button = styled(MuiButton)`
   margin-right: 10px;
 `;
-
 const ChartWrapper = styled.div`
   height: 250px;
   width: 100%;
 `;
-
-const PayInCommisionChart = () => {
+const PayInCommissionChart = () => {
   const anchorRef = React.useRef<HTMLButtonElement>(null);
   const [commissionLabelData, setCommissionLabelData] = useState<string[]>([]);
   const [payInValueData, setPayInValueData] = useState<number[]>([]);
   const [title, setTitle] = React.useState("");
   const [open, setOpen] = React.useState(false);
-
   const fetchData = async (filter: string) => {
     setCommissionLabelData([]);
     setPayInValueData([]);
@@ -50,24 +45,19 @@ const PayInCommisionChart = () => {
       const payInData = commissions.data.map(
         (item: any) => Object.values(item)[0]
       );
-
       setCommissionLabelData(CommissionLabel);
       setPayInValueData(payInData);
     } catch (error:any) {
       const err = await error
       toast.error(err.message)
-    
     }
   };
-
   useEffect(() => {
-    fetchData("week"); // Initial fetch with default filter "week"
+    fetchData("week");
   }, []);
-
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
   };
-
   const handleClose = (event: Event | React.SyntheticEvent) => {
     if (
       anchorRef.current &&
@@ -77,7 +67,6 @@ const PayInCommisionChart = () => {
     }
     setOpen(false);
   };
-
   const memberData = {
     labels: commissionLabelData,
     datasets: [
@@ -93,7 +82,6 @@ const PayInCommisionChart = () => {
       },
     ],
   };
-
   const memberOptions = {
     maintainAspectRatio: false,
     plugins: {
@@ -120,7 +108,6 @@ const PayInCommisionChart = () => {
       },
     },
   };
-
   return (
     <>
     <Card>
@@ -189,5 +176,4 @@ const PayInCommisionChart = () => {
     </>
   );
 };
-
-export default PayInCommisionChart;
+export default PayInCommissionChart;

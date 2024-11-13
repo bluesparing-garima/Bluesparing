@@ -17,20 +17,16 @@ import { header } from "../../../context/constant";
 import { MoreVertical } from "react-feather";
 import GetCommissionDataService from "../../../api/Dashboard/GetCommissionData/GetCommissionDataService";
 import toast, { Toaster } from "react-hot-toast";
-
 const Card = styled(MuiCard)`
   margin-bottom: 20px;
 `;
-
 const Button = styled(MuiButton)`
   margin-right: 10px;
 `;
-
 const ChartWrapper = styled.div`
   height: 250px;
   width: 100%;
 `;
-
 const AdminCommisionChart = () => {
   const anchorRef = React.useRef<HTMLButtonElement>(null);
   const [commissionLabelData, setCommissionLabelData] = useState<string[]>([]);
@@ -38,7 +34,6 @@ const AdminCommisionChart = () => {
   const [payOutValueData, setPayOutValueData] = useState<number[]>([]);
   const [title, setTitle] = React.useState("");
   const [open, setOpen] = React.useState(false);
-
   const fetchData = async (filter: string) => {
     setCommissionLabelData([]);
     setPayInValueData([]);
@@ -55,7 +50,6 @@ const AdminCommisionChart = () => {
       const payOutData = commissions.data.payOut.map(
         (item: any) => Object.values(item)[0]
       );
-
       setCommissionLabelData(CommissionLabel);
       setPayInValueData(payInData);
       setPayOutValueData(payOutData);
@@ -65,15 +59,12 @@ const AdminCommisionChart = () => {
       console.error("Error fetching data:", error);
     }
   };
-
   useEffect(() => {
-    fetchData("week"); // Initial fetch with default filter "week"
+    fetchData("week");
   }, []);
-
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
   };
-
   const handleClose = (event: Event | React.SyntheticEvent) => {
     if (
       anchorRef.current &&
@@ -83,7 +74,6 @@ const AdminCommisionChart = () => {
     }
     setOpen(false);
   };
-
   const memberData = {
     labels: commissionLabelData,
     datasets: [
@@ -109,7 +99,6 @@ const AdminCommisionChart = () => {
       },
     ],
   };
-
   const memberOptions = {
     maintainAspectRatio: false,
     plugins: {
@@ -136,7 +125,6 @@ const AdminCommisionChart = () => {
       },
     },
   };
-
   return (
     <>
     <Card>
@@ -205,5 +193,4 @@ const AdminCommisionChart = () => {
     </>
   );
 };
-
 export default AdminCommisionChart;

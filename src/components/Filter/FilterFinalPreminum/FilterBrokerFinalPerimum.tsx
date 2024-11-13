@@ -2,17 +2,15 @@ import { Typography, Paper, Grid, Tooltip } from "@mui/material";
 import toast, { Toaster } from "react-hot-toast";
 import { header } from "../../../context/constant";
 import { useEffect, useState } from "react";
-
 import { useLocation, useParams } from "react-router-dom";
 import GetTotalFinalNetPremiumBrokerCompanyService from "../../../api/Dashboard/GetTotalFinalNetPremiumBrokerCompany/GetTotalFinalNetPremiumBrokerCompanyService";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import { IFinalNetPremiumCompany } from "../../TreeView/ITreeView";
 import { generateExcelCompanyFinalNetPremium } from "../../../utils/DashboardExcel";
-
-const FilterBrokerFinalPerimum = () => {
+const FilterBrokerFinalPremium = () => {
   const title = "Get FinalPremium Of Broker -";
   const location = useLocation();
-  const selectedCategory = location.state as string; // This is where you access the passed state
+  const selectedCategory = location.state as string;
   const { brokerId } = useParams();
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [selectedBrokerCode, setSelectedBrokerCode] = useState<string>();
@@ -20,10 +18,9 @@ const FilterBrokerFinalPerimum = () => {
   const [companyDetails, setCompanyDetails] = useState<
     IFinalNetPremiumCompany[]
   >([]);
-
   useEffect(() => {
     filterMonthlyBrokerPaymentWithCompany(brokerId!);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line
   }, [brokerId]);
   const handleDownloadExcel = () => {
     generateExcelCompanyFinalNetPremium(companyDetails);
@@ -33,9 +30,8 @@ const FilterBrokerFinalPerimum = () => {
       header,
       brokerId: brokerId!,
       category: selectedCategory,
-    }) // Call API to fetch credit debits
+    })
       .then((brokers) => {
-        // On successful API call
         setCompanyDetails(brokers.data);
         setTotalAmount(brokers.totalAmount);
         setSelectedBrokerCode(brokers.brokerCode);
@@ -46,7 +42,6 @@ const FilterBrokerFinalPerimum = () => {
         toast.error(err.message);
       });
   };
-
   return (
     <>
       <div className="bg-blue-200 p-7 mt-3">
@@ -72,7 +67,6 @@ const FilterBrokerFinalPerimum = () => {
               </button>
             </Tooltip>
           </div>
-
           <Typography variant="body2" className="text-sm text-gray-600 mb-2">
             Total Amount{" "}
             <span className="text-safekaroDarkOrange">{totalAmount}</span>
@@ -95,9 +89,6 @@ const FilterBrokerFinalPerimum = () => {
                       {item.finalPremium}
                     </Typography>
                   </div>
-                  {/* Uncomment if needed
-                <img src={icon} alt={title} className="h-8 w-8" />
-                */}
                 </div>
               </Grid>
             ))}
@@ -108,5 +99,4 @@ const FilterBrokerFinalPerimum = () => {
     </>
   );
 };
-
-export default FilterBrokerFinalPerimum;
+export default FilterBrokerFinalPremium;

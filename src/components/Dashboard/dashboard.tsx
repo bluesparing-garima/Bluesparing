@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import {
   Button,
-  Card,
   CardContent,
   FormControl,
   Grid,
@@ -18,7 +17,7 @@ import getAdminDashboardService from "../../api/Dashboard/GetAdminDashboard/getA
 import { SafeKaroUser, header } from "../../context/constant";
 import { IData } from "./IDashboard";
 import SearchIcon from "@mui/icons-material/Search";
-import AdminCommisionChart from "./Chart/AdminCommisionChart";
+import AdminCommissionChart from "./Chart/AdminCommissionChart";
 import AdminPolicyChart from "./Chart/AdminPolicyChart";
 import { startOfMonth, endOfMonth, format } from "date-fns";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
@@ -39,7 +38,6 @@ import {
   ViewPartnerSvg,
 } from "./data/Svg";
 import Attendance from "../HR/Attendance/AttendanceRecord/Attendance";
-import dayjs from "dayjs";
 interface CartButtonProps {
   onClick: () => void;
   tooltipTitle: string;
@@ -60,8 +58,6 @@ const Dashboard: React.FC = () => {
   const [selectedCard, setSelectedcard] = useState("1");
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
-  const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const GetDashboardCount = useCallback((startDate, endDate) => {
     getAdminDashboardService({
@@ -675,7 +671,7 @@ const Dashboard: React.FC = () => {
                           <div className="bg-blue-200 md:p-7 p-2">
                             <Grid container spacing={2}>
                               <Grid item md={6}>
-                                <AdminCommisionChart />
+                                <AdminCommissionChart />
                               </Grid>
                               <Grid item md={6}>
                                 <AdminPolicyChart />

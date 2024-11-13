@@ -9,7 +9,6 @@ import {
 import toast, { Toaster } from "react-hot-toast";
 import { DAY_FORMAT, header } from "../../../context/constant";
 import { useEffect, useState } from "react";
-
 import { endOfMonth, format, startOfMonth } from "date-fns";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { Field, Form } from "react-final-form";
@@ -26,12 +25,11 @@ import { generatePartnerBalanceExcel } from "../../../utils/DashboardExcel";
 const MonthlyFilterPayOutLeftDistributed = () => {
   const title = "Get Monthly Payout Left Distributed Details Of All Partners";
   const location = useLocation();
-  const selectedCategory = location.state as string; // This is where you access the passed state
+  const selectedCategory = location.state as string;
   const [selectedStartDate, setSelectedStartDate] = useState();
   const [selectedEndDate, setSelectedEndDate] = useState();
   const [partnerTotalPayment, setPartnerTotalPayment] = useState<number>(0);
   const [partnerPayment, setPartnerPayment] = useState<IPartnerBalance[]>([]);
-
   const fetchPartnerPayments = async (
     formattedFirstDay: any,
     formattedLastDay: any
@@ -43,9 +41,8 @@ const MonthlyFilterPayOutLeftDistributed = () => {
       startDate: formattedFirstDay,
       endDate: formattedLastDay,
       category: selectedCategory,
-    }) // Call API to fetch credit debits
+    })
       .then((partnerPayment) => {
-        // On successful API call
         setPartnerPayment(partnerPayment.data);
         setPartnerTotalPayment(partnerPayment.totalAmount);
       })
@@ -63,9 +60,8 @@ const MonthlyFilterPayOutLeftDistributed = () => {
     const lastDayOfMonth = endOfMonth(currentDate);
     let formattedFirstDay = format(firstDayOfMonth, "yyyy-MM-dd");
     let formattedLastDay = format(lastDayOfMonth, "yyyy-MM-dd");
-
     fetchPartnerPayments(formattedFirstDay, formattedLastDay);
-    // eslint-disable-next-line
+     // eslint-disable-next-line 
   }, []);
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
@@ -80,12 +76,10 @@ const MonthlyFilterPayOutLeftDistributed = () => {
       return errors;
     }
   };
-
   const validationSchema = yup.object().shape({
     startDate: yup.string().required("Start Date is required").nullable(),
     endDate: yup.string().nullable().required("End Date is required"),
   });
-
   const validate = validateFormValues(validationSchema);
   const onSubmit = async (value: any) => {
     const newStartDate = dayjs(value.startDate).format(DAY_FORMAT);
@@ -114,12 +108,11 @@ const MonthlyFilterPayOutLeftDistributed = () => {
         <React.Fragment>
           <Form
             onSubmit={onSubmit}
-            // initialValues={initialValues}
             validate={validate}
             render={({ handleSubmit, submitting, errors, values }) => (
               <form onSubmit={handleSubmit} noValidate>
                 <Grid container spacing={2} mt={2} mb={2}>
-                  {/* Account Code Selection */}
+                  {}
                   <Grid item lg={3} md={3} sm={6} xs={12}>
                     <Field name="startDate">
                       {({ input, meta }) => (
@@ -127,7 +120,7 @@ const MonthlyFilterPayOutLeftDistributed = () => {
                           <DatePicker
                             disableFuture
                             label="Start Date"
-                            value={input.value || null} // Initialize the value if it's undefined
+                            value={input.value || null}
                             onChange={(date) => input.onChange(date)}
                             renderInput={(params: any) => (
                               <TextField
@@ -151,7 +144,7 @@ const MonthlyFilterPayOutLeftDistributed = () => {
                           <DatePicker
                             disableFuture
                             label="End Date"
-                            value={input.value || null} // Initialize the value if it's undefined
+                            value={input.value || null}
                             onChange={(date) => input.onChange(date)}
                             renderInput={(params: any) => (
                               <TextField
@@ -168,7 +161,6 @@ const MonthlyFilterPayOutLeftDistributed = () => {
                       )}
                     </Field>
                   </Grid>
-
                   <Grid item lg={3} md={3} sm={6} xs={12}>
                     <Button
                       type="submit"
@@ -207,19 +199,14 @@ const MonthlyFilterPayOutLeftDistributed = () => {
                       {item.totalPartnerBalance}
                     </Typography>
                   </div>
-                  {/* Uncomment if needed
-                <img src={icon} alt={title} className="h-8 w-8" />
-                */}
                 </div>
               </Link>
             </Grid>
           ))}
         </Grid>
-
         <Toaster position="bottom-center" reverseOrder={false} />
       </Paper>
     </div>
   );
 };
-
 export default MonthlyFilterPayOutLeftDistributed;

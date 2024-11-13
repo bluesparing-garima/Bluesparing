@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import {
   Button,
   Card,
@@ -16,66 +15,43 @@ import { IPolicyPayment } from "../IPolicy";
 import { Field, Form } from "react-final-form";
 import editMotorPolicyPaymentService from "../../../api/MotorPolicyPayment/EditMotorPolicyPayment/editMotorPolicyPaymentService";
 import toast, { Toaster } from "react-hot-toast";
-
 export interface AddPolicyFormProps {
   initialValues: IPolicyPayment;
 }
-
-function editCommisonForm(props: AddPolicyFormProps) {
+function EditCommissionForm(props: AddPolicyFormProps) {
   const navigate = useNavigate();
   const { initialValues } = props;
-
   const onSubmit = async (policyForm: IPolicyPayment) => {
     const ODAmount = initialValues?.od!;
     const TPAmount = initialValues?.tp!;
-
-    ///---------------------------Pay In----------------------///
-    //value from Form
     const payInODPercentage = policyForm?.payInODPercentage!;
     const payInTPPercentage = policyForm?.payInTPPercentage!;
-
-    //PayINCalcuation
     let calculatedPayInODPercentage: number =
       (ODAmount * payInODPercentage) / 100;
     let calculatedPayInTPPercentage: number =
       (TPAmount * payInTPPercentage) / 100;
-
-    //Round off
     calculatedPayInODPercentage = Math.round(calculatedPayInODPercentage);
     calculatedPayInTPPercentage = Math.round(calculatedPayInTPPercentage);
     policyForm.payInODAmount = calculatedPayInODPercentage;
     policyForm.payInTPAmount = calculatedPayInTPPercentage;
-
-    // Calculate the sum of percentages
     let payInCommission =
       calculatedPayInODPercentage + calculatedPayInTPPercentage;
     payInCommission = Math.round(payInCommission);
     policyForm.payInCommission = payInCommission;
-
-    ///---------------------------Pay Out----------------------///
-
-    //value from Form
     const payOutODPercentage = policyForm?.payOutODPercentage!;
     const payOutTPPercentage = policyForm?.payOutTPPercentage!;
-
-    //PayOutCalcuation
     let calculatedPayOutODPercentage: number =
       (ODAmount * payOutODPercentage) / 100;
     let calculatedPayOutTPPercentage: number =
       (TPAmount * payOutTPPercentage) / 100;
-
     calculatedPayOutODPercentage = Math.round(calculatedPayOutODPercentage);
     calculatedPayOutTPPercentage = Math.round(calculatedPayOutTPPercentage);
     policyForm.payOutODAmount = calculatedPayOutODPercentage;
     policyForm.payOutTPAmount = calculatedPayOutTPPercentage;
-
     let payOutCommission =
       calculatedPayOutODPercentage + calculatedPayOutTPPercentage;
-    // Round to two decimal places and convert to number
     payOutCommission = Math.round(payOutCommission);
     policyForm.payOutCommission = payOutCommission;
-
-    ////------------------Bind Other Policy Details---------------------//
     policyForm.od = initialValues?.od!;
     policyForm.tp = initialValues?.tp!;
     policyForm.policyNumber = initialValues?.policyNumber!;
@@ -86,7 +62,6 @@ function editCommisonForm(props: AddPolicyFormProps) {
     policyForm.finalPremium = initialValues?.finalPremium!;
     policyForm.policyId = initialValues?.policyId!;
     policyForm.updatedBy = "Admin";
-
     try {
       const newPayment = await editMotorPolicyPaymentService({
         header,
@@ -100,8 +75,6 @@ function editCommisonForm(props: AddPolicyFormProps) {
       toast.error(errObj.message);
     }
   };
-
-  // To be passed to React Final Form
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
       schema = schema();
@@ -112,18 +85,15 @@ function editCommisonForm(props: AddPolicyFormProps) {
       const errors = err.inner.reduce((formError: any, innerError: any) => {
         return setIn(formError, innerError.path, innerError.message);
       }, {});
-
       return errors;
     }
   };
-
   const validationSchema = yup.object().shape({
     payInODPercentage: yup.number().required("Pay In OD Premium is required"),
     payInTPPercentage: yup.number().required("Pay In TP Premium is required"),
     payOutODPercentage: yup.number().required("Pay out OD Premium is required"),
     payOutTPPercentage: yup.number().required("Pay out TP Premium is required"),
   });
-
   const validate = validateFormValues(validationSchema);
   return (
     <>
@@ -248,10 +218,8 @@ function editCommisonForm(props: AddPolicyFormProps) {
           />
         </CardContent>
       </Card>
-
       <Toaster position="bottom-center" reverseOrder={false} />
     </>
   );
 }
-
-export default editCommisonForm;
+export default EditCommissionForm;

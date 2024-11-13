@@ -14,14 +14,11 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import { endOfMonth, startOfMonth, format } from "date-fns";
 import { header } from "../../../context/constant";
 import GetMonthlyPartnerPaymentWithCompanyService from "../../../api/Dashboard/GetMonthlyPartnerWithCompanyPayment/GetMonthlyPartnerPaymentWithCompanyService";
-
 import GetMonthlyPartnerWithCompanyPaidService from "../../../api/Dashboard/GetMonthlyPartnerWithCompanyPaid/GetMonthlyPartnerWithCompanyPaidService";
 import GetMonthlyPayOutBalWithCompanyService from "../../../api/Dashboard/GetMonthlyPayOutBalWithCompanyService/GetMonthlyPayOutBalWithCompanyService";
 import GetMonthlyLeftDistributionCompanyService from "../../../api/Dashboard/GetMonthlyLeftDistributionCompany/GetMonthlyLeftDistributionCompanyService";
 import { useLocation } from "react-router-dom";
 import { FolderLikeStructureForPayoutProps, ICompanyLeftDis, ICompanyPaid, ICompanyView, IPartnerBalance, IPartnerPaid, IPartnerView, TreeNodePayOut } from "../ITreeView";
-
-
 
 const FolderView: React.FC<{
   node:
@@ -37,7 +34,7 @@ const FolderView: React.FC<{
   endDate: string;
 }> = ({ node, api, startDate, endDate }) => {
   const location = useLocation();
-  const selectedCategory = location.state as string; // This is where you access the passed state
+  const selectedCategory = location.state as string;
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [childrenData, setChildrenData] = useState<

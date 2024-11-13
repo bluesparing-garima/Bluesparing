@@ -7,22 +7,20 @@ import { useLocation, useParams } from "react-router-dom";
 import GetTotalFinalNetPremiumPartnerCompanyService from "../../../api/Dashboard/GetTotalFinalNetPremiumPartnerCompany/GetTotalFinalNetPremiumPartnerCompanyService";
 import { IFinalNetPremiumCompany } from "../../TreeView/ITreeView";
 import { generateExcelCompanyFinalNetPremium } from "../../../utils/DashboardExcel";
-
 const FilterPartnerFinalPremium = () => {
   const title = "Get FinalPremium Of Partner -";
   const location = useLocation();
-  const selectedCategory = location.state as string; // This is where you access the passed state
+  const selectedCategory = location.state as string;
   const { partnerId } = useParams();
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [selectedPartnerCode, setSelectedPartnerCode] = useState<string>();
   const [selectedPartnerName, setSelectedPartnerName] = useState<string>();
   const [companyDetails, setCompanyDetails] = useState<
     IFinalNetPremiumCompany[]
-  >([]); // State for all credit debits
-
+  >([]);
   useEffect(() => {
     filterMonthlyPartnerPaymentWithCompany(partnerId!);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line
   }, [partnerId]);
   const handleDownloadExcel = () => {
     generateExcelCompanyFinalNetPremium(companyDetails);
@@ -32,9 +30,8 @@ const FilterPartnerFinalPremium = () => {
       header,
       partnerId: partnerId!,
       category: selectedCategory,
-    }) // Call API to fetch credit debits
+    })
       .then((partners) => {
-        // On successful API call
         setCompanyDetails(partners.data);
         setTotalAmount(partners.totalAmount);
         setSelectedPartnerCode(partners.partnerCode);
@@ -45,13 +42,11 @@ const FilterPartnerFinalPremium = () => {
         toast.error(err.message);
       });
   };
-
   return (
     <>
       <div className="bg-blue-200 p-7 mt-3">
         <Paper elevation={3} style={{ padding: 20 }}>
           <div className="flex justify-between items-start">
-           
             <Typography
               variant="h5"
               className="text-safekaroDarkOrange"
@@ -72,7 +67,6 @@ const FilterPartnerFinalPremium = () => {
               </button>
             </Tooltip>
           </div>
-
           <Typography variant="body2" className="text-sm text-gray-600 mb-2">
             Total Amount{" "}
             <span className="text-safekaroDarkOrange">{totalAmount}</span>
@@ -95,9 +89,6 @@ const FilterPartnerFinalPremium = () => {
                       {item.finalPremium}
                     </Typography>
                   </div>
-                  {/* Uncomment if needed
-                <img src={icon} alt={title} className="h-8 w-8" />
-                */}
                 </div>
               </Grid>
             ))}
@@ -108,5 +99,4 @@ const FilterPartnerFinalPremium = () => {
     </>
   );
 };
-
 export default FilterPartnerFinalPremium;

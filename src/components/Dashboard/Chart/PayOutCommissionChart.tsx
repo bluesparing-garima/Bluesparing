@@ -17,28 +17,22 @@ import { header } from "../../../context/constant";
 import { MoreVertical } from "react-feather";
 import GetPayOutCommissionService from "../../../api/Dashboard/GetPayOutCommission/GetPayOutCommissionService";
 import toast, { Toaster } from "react-hot-toast";
-
 const Card = styled(MuiCard)`
   margin-bottom: 20px;
 `;
-
 const Button = styled(MuiButton)`
   margin-right: 10px;
 `;
-
 const ChartWrapper = styled.div`
   height: 250px;
   width: 100%;
 `;
-
-const PayOutCommisionChart = ({ partnerId }: any) => {
-
+const PayOutCommissionChart = ({ partnerId }: any) => {
   const anchorRef = React.useRef<HTMLButtonElement>(null);
   const [commissionLabelData, setCommissionLabelData] = useState<string[]>([]);
   const [payOutValueData, setPayOutValueData] = useState<number[]>([]);
   const [title, setTitle] = React.useState("");
   const [open, setOpen] = React.useState(false);
-
   const fetchData = async (filter: string) => {
     setCommissionLabelData([]);
     setPayOutValueData([]);
@@ -52,28 +46,23 @@ const PayOutCommisionChart = ({ partnerId }: any) => {
       const CommissionLabel = commissions.data.map(
         (item: any) => Object.keys(item)[0]
       );
-
       const payOutData = commissions.data.map(
         (item: any) => Object.values(item)[0]
       );
-
       setCommissionLabelData(CommissionLabel);
       setPayOutValueData(payOutData);
     } catch (error:any) {
       const err = await error
       toast.error(err.message)
-   
     }
   };
-
   useEffect(() => {
-    fetchData("week"); // Initial fetch with default filter "week"
+    fetchData("week");
+     // eslint-disable-next-line 
   },[]);
-
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
   };
-
   const handleClose = (event: Event | React.SyntheticEvent) => {
     if (
       anchorRef.current &&
@@ -83,7 +72,6 @@ const PayOutCommisionChart = ({ partnerId }: any) => {
     }
     setOpen(false);
   };
-
   const memberData = {
     labels: commissionLabelData,
     datasets: [
@@ -99,7 +87,6 @@ const PayOutCommisionChart = ({ partnerId }: any) => {
       },
     ],
   };
-
   const memberOptions = {
     maintainAspectRatio: false,
     plugins: {
@@ -126,7 +113,6 @@ const PayOutCommisionChart = ({ partnerId }: any) => {
       },
     },
   };
-
   return (
     <>
     <Card>
@@ -195,5 +181,4 @@ const PayOutCommisionChart = ({ partnerId }: any) => {
     </>
   );
 };
-
-export default PayOutCommisionChart;
+export default PayOutCommissionChart;

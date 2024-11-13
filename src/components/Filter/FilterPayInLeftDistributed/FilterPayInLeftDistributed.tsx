@@ -7,23 +7,21 @@ import { Link, useLocation } from "react-router-dom";
 import GetBrokerLeftDistributedPaymentService from "../../../api/Dashboard/GetBrokerLeftDistributedPayment/GetBrokerLeftDistributedPaymentService";
 import { BrokerPayInLeftDistributedProps } from "../../TreeView/ITreeView";
 import { generateBrokerPayInLeftDistributedExcel } from "../../../utils/DashboardExcel";
-
 const FilterPayInLeftDistributed = () => {
   const title = "Get PayIn LeftDistributed Details Of All Brokers";
   const location = useLocation();
-  const selectedCategory = location.state as string; // This is where you access the passed state
-  const [brokerTotalPayment, setBrokerTotalPayment] = useState<number>(0); // State for all credit debits
+  const selectedCategory = location.state as string;
+  const [brokerTotalPayment, setBrokerTotalPayment] = useState<number>(0);
   const [brokerPayment, setBrokerPayment] = useState<
     BrokerPayInLeftDistributedProps[]
-  >([]); // State for all credit debits
+  >([]);
   useEffect(() => {
     const fetchBrokerPayments = async () => {
       GetBrokerLeftDistributedPaymentService({
         header,
         category: selectedCategory,
-      }) // Call API to fetch credit debits
+      })
         .then((brokerPayment) => {
-          // On successful API call
           setBrokerPayment(brokerPayment.data);
           setBrokerTotalPayment(brokerPayment.totalAmount);
         })
@@ -32,9 +30,8 @@ const FilterPayInLeftDistributed = () => {
           toast.error(err.message);
         });
     };
-
     fetchBrokerPayments();
-    // eslint-disable-next-line
+     // eslint-disable-next-line 
   }, []);
   const handleDownloadExcel = () => {
     generateBrokerPayInLeftDistributedExcel(brokerPayment);
@@ -58,7 +55,6 @@ const FilterPayInLeftDistributed = () => {
             </button>
           </Tooltip>
         </div>
-
         <Grid container className="bg-blue-200 mt-3">
           {brokerPayment && brokerPayment.length > 0 ? (
             brokerPayment.map((item, index) => (
@@ -98,11 +94,9 @@ const FilterPayInLeftDistributed = () => {
             </Typography>
           )}
         </Grid>
-
         <Toaster position="bottom-center" reverseOrder={false} />
       </Paper>
     </div>
   );
 };
-
 export default FilterPayInLeftDistributed;

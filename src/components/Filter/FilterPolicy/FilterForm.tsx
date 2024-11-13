@@ -16,22 +16,20 @@ import getPolicyDataByVehicleNumberService from "../../../api/Policies/getPolicy
 import { useState } from "react";
 import FilterDataTable from "./FilterDataTable";
 import { MotorPolicyData } from "../IFilter";
-
 const FilterForm = () => {
-  const [motorPolicies, setmotorPolicies] = useState<MotorPolicyData | null>();
-  const [isLoading, setIsLoaing] = useState(false);
+  const [motorPolicies, setMotorPolicies] = useState<MotorPolicyData | null>();
+  const [isLoading, setIsLoading] = useState(false);
   const [noRecordsFound, setNoRecordsFound] = useState(false);
   const onSubmit = async (values: any) => {
-    setmotorPolicies(null);
+    setMotorPolicies(null);
     const { policyNumber, vehicleNumber } = values;
-    setIsLoaing(true);
+    setIsLoading(true);
     setNoRecordsFound(false);
     if (!policyNumber && !vehicleNumber) {
       toast.error("Please enter either Policy Number or Vehicle Number");
-      setIsLoaing(false);
+      setIsLoading(false);
       return;
     }
-
     try {
       switch (true) {
         case !!policyNumber && !vehicleNumber:
@@ -41,7 +39,7 @@ const FilterForm = () => {
               policyNumber,
             });
             if (resPolicy.success) {
-              setmotorPolicies(resPolicy.data);
+              setMotorPolicies(resPolicy.data);
             }
           } catch (error: any) {
             setNoRecordsFound(true);
@@ -49,7 +47,6 @@ const FilterForm = () => {
             toast.error(err.message);
           }
           break;
-
         case !policyNumber && !!vehicleNumber:
           try {
             const resVehicle = await getPolicyDataByVehicleNumberService({
@@ -57,7 +54,7 @@ const FilterForm = () => {
               vehicleNumber,
             });
             if (resVehicle.success) {
-              setmotorPolicies(resVehicle.data);
+              setMotorPolicies(resVehicle.data);
             }
           } catch (error: any) {
             setNoRecordsFound(true);
@@ -65,7 +62,6 @@ const FilterForm = () => {
             toast.error(err.message);
           }
           break;
-
         case !!policyNumber && !!vehicleNumber:
           try {
             const resPolicy = await getPolicyDataByPolicyNumberService({
@@ -73,7 +69,7 @@ const FilterForm = () => {
               policyNumber,
             });
             if (resPolicy.success) {
-              setmotorPolicies(resPolicy.data);
+              setMotorPolicies(resPolicy.data);
             }
           } catch (error: any) {
             try {
@@ -82,7 +78,7 @@ const FilterForm = () => {
                 vehicleNumber,
               });
               if (resVehicle.success) {
-                setmotorPolicies(resVehicle.data);
+                setMotorPolicies(resVehicle.data);
               }
             } catch (innerError: any) {
               setNoRecordsFound(true);
@@ -96,10 +92,9 @@ const FilterForm = () => {
       const err = await error;
       toast.error(err.message);
     } finally {
-      setIsLoaing(false);
+      setIsLoading(false);
     }
   };
-
   if (isLoading) {
     return (
       <Box sx={{ display: "flex" }}>
@@ -107,7 +102,6 @@ const FilterForm = () => {
       </Box>
     );
   }
-
   return (
     <>
       <Card>
@@ -136,7 +130,6 @@ const FilterForm = () => {
                       )}
                     </Field>
                   </Grid>
-
                   <Grid item lg={4} md={4} sm={6} xs={12}>
                     <Field name="vehicleNumber">
                       {({ input, meta }) => (
@@ -156,7 +149,6 @@ const FilterForm = () => {
                       )}
                     </Field>
                   </Grid>
-
                   <Grid item lg={4} md={4} sm={6} xs={12}>
                     <Button variant="contained" type="submit">
                       Submit
@@ -184,5 +176,4 @@ const FilterForm = () => {
     </>
   );
 };
-
 export default FilterForm;

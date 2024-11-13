@@ -1,8 +1,6 @@
 import React from "react";
 import Typography from "@mui/material/Typography";
 import Card from "../card";
-import { IPremiums } from "../IDashboard";
-
 const CreditCard: React.FC = () => {
   return (
     <div className="bg-white p-4 rounded-2xl shadow-lg">
@@ -35,5 +33,4 @@ const CreditCard: React.FC = () => {
     </div>
   );
 };
-
 export default CreditCard;

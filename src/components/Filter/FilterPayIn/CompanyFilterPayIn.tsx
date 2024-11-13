@@ -10,15 +10,14 @@ import { BrokerPayInCommissionCompanyProps } from "../../TreeView/ITreeView";
 const CompanyFilterPayIn = () => {
   const title = "Get Payment Details Of Broker -";
   const location = useLocation();
-  const selectedCategory = location.state as string; // This is where you access the passed state
+  const selectedCategory = location.state as string;
   const { brokerId } = useParams();
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [selectedBrokerName, setSelectedBrokerName] = useState<string>();
   const [selectedBrokerCode, setSelectedBrokerCode] = useState<string>();
   const [companyDetails, setCompanyDetails] = useState<
     BrokerPayInCommissionCompanyProps[]
-  >([]); // State for all credit debits
-
+  >([]);
   useEffect(() => {
     filterMonthlyBrokerPaymentWithCompany(brokerId!);
     // eslint-disable-next-line
@@ -31,9 +30,8 @@ const CompanyFilterPayIn = () => {
       header,
       brokerId: brokerId!,
       category: selectedCategory,
-    }) // Call API to fetch credit debits
+    })
       .then((brokers) => {
-        // On successful API call
         setCompanyDetails(brokers.data);
         setTotalAmount(brokers.totalAmount);
         setSelectedBrokerName(brokers.brokerName);
@@ -44,7 +42,6 @@ const CompanyFilterPayIn = () => {
         toast.error(err.message);
       });
   };
-
   return (
     <>
       <div className="bg-blue-200 p-7 mt-3">
@@ -70,7 +67,6 @@ const CompanyFilterPayIn = () => {
               </button>
             </Tooltip>
           </div>
-
           <Typography variant="body2" className="text-sm text-gray-600 mb-2">
             Total Amount{" "}
             <span className="text-safekaroDarkOrange">{totalAmount}</span>
@@ -93,9 +89,6 @@ const CompanyFilterPayIn = () => {
                       {item.totalPayInCommission}
                     </Typography>
                   </div>
-                  {/* Uncomment if needed
-                <img src={icon} alt={title} className="h-8 w-8" />
-                */}
                 </div>
               </Grid>
             ))}
@@ -106,5 +99,4 @@ const CompanyFilterPayIn = () => {
     </>
   );
 };
-
 export default CompanyFilterPayIn;

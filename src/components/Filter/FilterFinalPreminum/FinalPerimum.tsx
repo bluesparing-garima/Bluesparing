@@ -3,7 +3,6 @@ import { Link, useLocation } from "react-router-dom";
 import { header } from "../../../context/constant";
 import toast from "react-hot-toast";
 import { Button, Grid, Paper, Tooltip, Typography } from "@mui/material";
-
 import GetTotalFinalNetPremiumPartnerService from "../../../api/Dashboard/GetTotalFinalNetPremiumPartner/GetTotalFinalNetPremiumPartnerService";
 import GetTotalFinalNetPremiumBrokerService from "../../../api/Dashboard/GetTotalFinalNetPremiumBroker/GetTotalFinalNetPremiumBrokerService";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
@@ -12,8 +11,8 @@ import {
   IFinalNetPremiumBroker,
   IFinalNetPremiumPartner,
 } from "../../TreeView/ITreeView";
-const FinalPerimum = () => {
-  const title = "Get Final Preminum Details";
+const FinalPremium = () => {
+  const title = "Get Final Premium Details";
   const location = useLocation();
   const selectedCategory = location.state as string;
   const [isPartner, setIsPartner] = useState(1);
@@ -29,7 +28,6 @@ const FinalPerimum = () => {
   const [brokerFinalPremium, setBrokerFinalPremium] = useState<
     IFinalNetPremiumBroker[]
   >([]);
-
   const handleDownloadExcel = () => {
     if (isPartner === 1) {
       generateExcelFinalPremium(partnerFinalPremium, "partner");
@@ -45,14 +43,12 @@ const FinalPerimum = () => {
       });
       setPartnerFinalPremium(partnerResponse.data);
       setPartnerTotalFinalPremium(partnerResponse.totalAmount);
-
       const brokerResponse = await GetTotalFinalNetPremiumBrokerService({
         header,
         category: selectedCategory,
       });
       setBrokerFinalPremium(brokerResponse.data);
       setBrokerTotalFinalPremium(brokerResponse.totalAmount);
-
       const totalFinal = Number(
         brokerResponse.totalAmount + partnerResponse.totalAmount
       );
@@ -62,12 +58,10 @@ const FinalPerimum = () => {
       toast.error(err.message);
     }
   };
-
   useEffect(() => {
     fetchPartnerPayments();
-     // eslint-disable-next-line
+     // eslint-disable-next-line 
   }, []);
-
   const handleFinalPremiumClick = async (flag: boolean) => {
     setSelectedPartner(flag);
     if (flag) {
@@ -99,7 +93,6 @@ const FinalPerimum = () => {
             </button>
           </Tooltip>
         </div>
-
         <Grid container mb={2}>
           <Grid item md={6} className={"bg-safekaroDarkOrange "}>
             <Button type="button" onClick={() => handleFinalPremiumClick(true)}>
@@ -123,7 +116,6 @@ const FinalPerimum = () => {
             </Button>
           </Grid>
         </Grid>
-
         <Grid container className="bg-blue-200 mt-3">
           {selectedPartner ? (
             <>
@@ -152,9 +144,7 @@ const FinalPerimum = () => {
                             {item.finalPremium}
                           </Typography>
                         </div>
-                        {/* Uncomment if needed
-                <img src={icon} alt={title} className="h-8 w-8" />
-                */}
+                 
                       </div>
                     </Link>
                   </Grid>
@@ -200,5 +190,4 @@ const FinalPerimum = () => {
     </div>
   );
 };
-
-export default FinalPerimum;
+export default FinalPremium;

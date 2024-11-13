@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { MaterialReactTable, type MRT_ColumnDef } from "material-react-table";
 import { Button, IconButton, Paper, Tooltip, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
@@ -18,7 +18,6 @@ import CountdownTimer from "../../../utils/CountdownTimer";
 import acceptBookingRequestService from "../../../api/BookingRequest/AcceptBookingRequest/acceptBookingRequestService";
 import InputDialog from "../../../utils/InputDialog";
 import toast, { Toaster } from "react-hot-toast";
-
 const NewBookingRequests = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [bookingRequests, setBookingRequests] = useState<IBookingRequests[]>(
@@ -29,7 +28,6 @@ const NewBookingRequests = () => {
   const [bookingData, setBookingData] = useState<IBookingRequestsVM>();
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let userData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
-
   const GetBookingRequests = useCallback(
     () =>
       getBookingRequestService({ header })
@@ -42,21 +40,16 @@ const NewBookingRequests = () => {
         .catch(async(error) => {
           const err = await error
           toast.error(err.message)
-       
         }),
     []
   );
-
   useEffect(() => {
     GetBookingRequests();
   }, [GetBookingRequests]);
-
   const navigate = useNavigate();
   const handleAddBookingRequestClick = () => {
     navigate(bookingRequestsAddPath());
   };
-
-  //should be memoized or stable
   const columns = useMemo<MRT_ColumnDef<IBookingRequests>[]>(
     () => [
       {
@@ -70,48 +63,47 @@ const NewBookingRequests = () => {
         size: 200,
       },
       {
-        accessorKey: "policyNumber", //normal accessorKey
+        accessorKey: "policyNumber",
         header: "Policy Number",
         size: 200,
       },
       {
-        accessorKey: "policyType", //normal accessorKey
+        accessorKey: "policyType",
         header: "Policy Type",
         size: 100,
       },
       {
-        accessorKey: "caseType", //normal accessorKey
+        accessorKey: "caseType",
         header: "Case Type",
         size: 100,
       },
-
       {
-        accessorKey: "category", //normal accessorKey
+        accessorKey: "category",
         header: "Category",
         size: 100,
       },
       {
-        accessorKey: "productType", //normal accessorKey
+        accessorKey: "productType",
         header: "Product",
         size: 100,
       },
       {
-        accessorKey: "subCategory", //normal accessorKey
+        accessorKey: "subCategory",
         header: "Sub Category",
         size: 100,
       },
       {
-        accessorKey: "companyName", //normal accessorKey
+        accessorKey: "companyName",
         header: "Company Name",
         size: 100,
       },
       {
-        accessorKey: "bookingStatus", //normal accessorKey
+        accessorKey: "bookingStatus",
         header: "Booking Status",
         size: 100,
       },
       {
-        accessorKey: "partnerName", //normal accessorKey
+        accessorKey: "partnerName",
         header: "Partner Name",
         size: 200,
       },
@@ -143,7 +135,6 @@ const NewBookingRequests = () => {
     ],
     []
   );
-
   const parsedData = useMemo(
     () =>
       bookingRequests.map(
@@ -168,7 +159,6 @@ const NewBookingRequests = () => {
           proposal: bookingRequest.proposal,
           currentPolicy: bookingRequest.currentPolicy,
           other: bookingRequest.other,
-          //documents: bookingRequest.documents,
           bookingStatus: bookingRequest.bookingStatus,
           bookingCreatedBy: bookingRequest.bookingCreatedBy,
           bookingAcceptedBy: bookingRequest.bookingAcceptedBy,
@@ -181,29 +171,22 @@ const NewBookingRequests = () => {
       ) ?? [],
     [bookingRequests]
   );
-
   const updateLoading = useCallback(async () => {
-    // setIsLoading(true) when bookingRequests.length is 0, and setIsLoading(false) when bookingRequests.length is > 0
     setIsLoading(false);
   }, []);
   const handleReject = (bookingForm: IBookingRequestsVM) => {
-
     setSelectedBookingId(bookingForm.id!);
     bookingForm.isRejected = true;
     setBookingData(bookingForm);
     setOpen(true);
-
   };
-
   const handleClickAcceptBooking = (bookingForm: IBookingRequestsVM) => {
-    // navigate(leadEditPath(lead.id!));
     bookingForm.bookingAcceptedBy = userData.id;
     bookingForm.bookingStatus = "accepted";
     bookingForm.updatedBy = userData.role;
     bookingForm.updatedOn = "";
     callEditLeadAPI(bookingForm, bookingForm.id!);
   };
-
   const callEditLeadAPI = async (bookingForm: any, bookingId: string) => {
     try {
       const newBooking = await acceptBookingRequestService({
@@ -217,20 +200,14 @@ const NewBookingRequests = () => {
     } catch (error:any) {
       const err = await error
       toast.error(err.message)
-      
     }
   };
   useEffect(() => {
     updateLoading();
   }, [updateLoading]);
-
-   // Function to handle file download
    const downloadFile = (url: string, fileName: string) => {
-    // Extract file extension from the original URL
     const urlFileName = url.substring(url.lastIndexOf("/") + 1);
     const fileExtension = urlFileName.split(".").pop()?.toLowerCase();
-
-    // Validate file extension
     if (
       fileExtension === "pdf" ||
       fileExtension === "png" ||
@@ -251,12 +228,9 @@ const NewBookingRequests = () => {
         .catch((error) => console.error("Error downloading file:", error));
     } else {
       console.error("Unsupported file type:", fileExtension);
-      //alert("Unsupported file type. Only PDF and PNG files are supported.");
     }
   };
-
   const handleClickDownloadDocument = (booking: IBookingRequestsVM) => {
-    // Example usage
     if (booking.rcBack) {
       downloadFile(`${imagePath}${booking?.rcBack!}`, "rcBack");
     }
@@ -265,7 +239,6 @@ const NewBookingRequests = () => {
     }
     if (booking.puc) {
       downloadFile(`${imagePath}${booking?.puc!}`, "puc");
-      // openFileInNewTab(`${imagePath}${booking?.puc!}`, "puc");
     }
     if (booking.currentPolicy) {
       downloadFile(`${imagePath}${booking?.currentPolicy!}`, "currentPolicy");
@@ -285,7 +258,6 @@ const NewBookingRequests = () => {
     if (booking.other) {
       downloadFile(`${imagePath}${booking?.other!}`, "other");
     }
-    // downloadFile('https://api.safekaro.com/uploads/Manish_668919929794ffa14999dc82.png', 'Manish_668919929794ffa14999dc82.png');
   };
   return (
     <>
@@ -303,7 +275,6 @@ const NewBookingRequests = () => {
                 >
                   Dashboard /
                 </Link>
-
                 <span className="text-grey-600 text-sm"> Booking Request</span>
               </div>
               {userData.role.toLowerCase() !== "booking" ? (
@@ -318,7 +289,7 @@ const NewBookingRequests = () => {
                 ""
               )}
             </div>
-            {/* Add a full-width grey line here */}
+            {}
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
@@ -331,7 +302,6 @@ const NewBookingRequests = () => {
             enableRowActions
             enablePagination
             autoResetPageIndex={false}
-            // positionActionsColumn="last"
             renderRowActions={({ row }) => (
               <div style={{ display: "flex", flexWrap: "nowrap" }}>
                 <Tooltip title={"Download Documents"}>
@@ -423,5 +393,4 @@ const NewBookingRequests = () => {
     </>
   );
 };
-
 export default NewBookingRequests;

@@ -1,5 +1,5 @@
 import React from "react";
-import { IAttendance } from "../IAttendnace";
+import { IAttendance } from "../IAttendance";
 import dayjs from "dayjs";
 import { IAddAttendanceProps } from "../../../../api/HR/getHrTypes";
 import AddAttendanceService from "../../../../api/HR/Attendance/AddAttendance/AddHolidayService";

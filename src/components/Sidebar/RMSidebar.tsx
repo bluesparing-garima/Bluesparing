@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import logo from "../../assets/login_logo.png";
-import useLogoClickHandler from "../../utils/useLogoClickHandler";
 import { IconButton } from "@mui/material";
 type MenuItem = {
   id: number;
@@ -131,7 +130,6 @@ const RMSidebar: React.FC<SidebarProps> = ({
     }
   };
 
-  const handleLogoClick = useLogoClickHandler();
   return (
     <div
       className={`${

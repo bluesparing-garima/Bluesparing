@@ -23,8 +23,6 @@ import { Field, Form } from "react-final-form";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import GetHolidaysDateFilterService from "../../../api/HR/Holidays/GetHolidaysDateFilter/GetHolidaysDateFilterService";
-// Define the Holiday type
-
 const HolidaysList: React.FC = () => {
   const [holidays, setHolidays] = useState<Holiday[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -32,11 +30,9 @@ const HolidaysList: React.FC = () => {
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
   const navigate = useNavigate();
-
   const handleAddHolidayClick = () => {
     navigate("/hr/add-holiday");
   };
-
   const isAccessAction = () => {
     const role = UserData.role.toLowerCase();
     if (role === "hr") {
@@ -45,7 +41,7 @@ const HolidaysList: React.FC = () => {
       return false;
     }
   };
-  const generateDashBoardlink = () => {
+  const generateDashBoardLink = () => {
     const role = UserData.role.toLowerCase();
     switch (role) {
       case "hr":
@@ -64,7 +60,6 @@ const HolidaysList: React.FC = () => {
         return "/hr/dashboard";
     }
   };
-
   const downloadCsv = (filename: string, csv: string) => {
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const link = document.createElement("a");
@@ -78,13 +73,11 @@ const HolidaysList: React.FC = () => {
       document.body.removeChild(link);
     }
   };
-
   const handleExportRows = (rows: any[]) => {
     const rowData = rows.map((row) => row.original);
     const csv = Papa.unparse(rowData, { header: true });
     downloadCsv("exported-rows.csv", csv);
   };
-
   const columns = useMemo<MRT_ColumnDef<Holiday>[]>(
     () => [
       {
@@ -97,7 +90,7 @@ const HolidaysList: React.FC = () => {
         header: "Date",
         size: 100,
         Cell: ({ cell }) => {
-          const dateValue = cell.getValue() as string; // Cast to string
+          const dateValue = cell.getValue() as string;
           return dayjs(dateValue).format("MM/DD/YYYY");
         },
       },
@@ -109,11 +102,9 @@ const HolidaysList: React.FC = () => {
     ],
     []
   );
-
   const handleClickEditHoliday = (holiday: Holiday) => {
     navigate(`/hr/edit-holiday/${holiday._id}`, { state: { holiday } });
   };
-
   const fetchAllHolidays = async () => {
     try {
       const res = await GetHolidaysYearlyService({ header });
@@ -152,18 +143,14 @@ const HolidaysList: React.FC = () => {
       return errors;
     }
   };
-
   const validationSchema = yup.object().shape({
     startDate: yup.string().nullable().required("Start Date is required"),
     endDate: yup.string().nullable().required("End Date is required"),
   });
-
   const validate = validateFormValues(validationSchema);
-
   const onSubmit = async (filterForm: any) => {
     const startDate = dayjs(filterForm.startDate).format(DAY_FORMAT);
     const endDate = dayjs(filterForm.endDate).format(DAY_FORMAT);
-
     try {
       const res = await GetHolidaysDateFilterService({
         header,
@@ -189,7 +176,7 @@ const HolidaysList: React.FC = () => {
             <div style={{ display: "flex", alignItems: "center" }}>
               <div style={{ flex: 1 }}>
                 <Link
-                  to={generateDashBoardlink()}
+                  to={generateDashBoardLink()}
                   className="text-addButton font-bold text-sm"
                 >
                   Dashboard /
@@ -218,7 +205,7 @@ const HolidaysList: React.FC = () => {
               render={({ handleSubmit, submitting, errors }) => (
                 <form onSubmit={handleSubmit} noValidate>
                   <Grid container spacing={2}>
-                    {/* Start Date Field */}
+                    {}
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Field name="startDate">
                         {({ input, meta }) => (
@@ -226,11 +213,11 @@ const HolidaysList: React.FC = () => {
                             <DatePicker
                               disableFuture
                               label="Start Date"
-                              value={input.value ? dayjs(input.value) : null} // Convert value to Dayjs object
+                              value={input.value ? dayjs(input.value) : null}
                               onChange={(newValue) => {
                                 input.onChange(
                                   newValue ? newValue.toISOString() : null
-                                ); // Store in ISO string format
+                                );
                               }}
                               renderInput={(params) => (
                                 <TextField
@@ -247,8 +234,7 @@ const HolidaysList: React.FC = () => {
                         )}
                       </Field>
                     </Grid>
-
-                    {/* End Date Field */}
+                    {}
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Field name="endDate">
                         {({ input, meta }) => (
@@ -256,11 +242,11 @@ const HolidaysList: React.FC = () => {
                             <DatePicker
                               disableFuture
                               label="End Date"
-                              value={input.value ? dayjs(input.value) : null} // Convert value to Dayjs object
+                              value={input.value ? dayjs(input.value) : null}
                               onChange={(newValue) => {
                                 input.onChange(
                                   newValue ? newValue.toISOString() : null
-                                ); // Store in ISO string format
+                                );
                               }}
                               renderInput={(params) => (
                                 <TextField
@@ -277,8 +263,7 @@ const HolidaysList: React.FC = () => {
                         )}
                       </Field>
                     </Grid>
-
-                    {/* Submit Button */}
+                    {}
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Button
                         type="submit"
@@ -369,5 +354,4 @@ const HolidaysList: React.FC = () => {
     </>
   );
 };
-
 export default HolidaysList;

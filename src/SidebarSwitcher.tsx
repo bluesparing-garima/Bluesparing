@@ -56,9 +56,6 @@ const SidebarSwitcher: React.FC<SidebarSwitcherProps> = ({
       SidebarComponent = null;
   }
 
-  const toggleSidebar = () => {
-    setSidebarOpen((prev) => !prev);
-  };
 
   return (
     <div className="flex  bg-gray-100">

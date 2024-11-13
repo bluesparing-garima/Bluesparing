@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { MaterialReactTable, MRT_ColumnDef } from "material-react-table";
 import {
@@ -31,18 +30,16 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import * as yup from "yup";
 import { setIn } from "final-form";
 import toast, { Toaster } from "react-hot-toast";
-const manageCards = () => {
-  // State and hooks initialization
+const ManageCards = () => {
   const { partnerId } = useParams();
-  const [isLoading, setIsLoading] = useState(false); // Loading state
-  const [partnerCard, setPartnerCard] = useState<ICreditDebits[]>([]); // State for all credit debits
-  const navigate = useNavigate(); // React Router's navigation hook
+  const [isLoading, setIsLoading] = useState(false);
+  const [partnerCard, setPartnerCard] = useState<ICreditDebits[]>([]);
+  const navigate = useNavigate();
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let userData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
-  // Function to fetch credit debits from API
   const GetPartnerCard = useCallback(
     (startDate: any, endDate: any) => {
-      setIsLoading(true); // Set loading state to true
+      setIsLoading(true);
       GetCreditDebitByPartnerByDateRangeService({
         header,
         partnerId:
@@ -51,38 +48,28 @@ const manageCards = () => {
             : userData.partnerId,
         startDate,
         endDate,
-      }) // Call API to fetch credit debits
+      })
         .then((partnerCardDetails) => {
-          // On successful API call
-          setPartnerCard(partnerCardDetails.data); // Set all credit debits
-          setIsLoading(false); // Set loading state to false
+          setPartnerCard(partnerCardDetails.data);
+          setIsLoading(false);
         })
         .catch(async (error) => {
-          setIsLoading(false); // Set loading state to false
+          setIsLoading(false);
           const err = await error;
           toast.error(err.message);
         });
     },
+     // eslint-disable-next-line 
     [userData.partnerId]
   );
-
-  // Call GetPartnerCard on component mount
   useEffect(() => {
-    const currentDate = new Date(); // Example current date
-
-    // Calculate first day of current month
+    const currentDate = new Date();
     const firstDayOfMonth = startOfMonth(currentDate);
-
-    // Calculate last day of current month
     const lastDayOfMonth = endOfMonth(currentDate);
-    // Format the dates if needed
     const formattedFirstDay = format(firstDayOfMonth, "yyyy-MM-dd");
     const formattedLastDay = format(lastDayOfMonth, "yyyy-MM-dd");
-
     GetPartnerCard(formattedFirstDay, formattedLastDay);
   }, [GetPartnerCard]);
-
-  // Define columns for MaterialReactTable using useMemo for optimization
   const columns = useMemo<MRT_ColumnDef<ICreditDebits>[]>(
     () => [
       {
@@ -123,8 +110,6 @@ const manageCards = () => {
     ],
     []
   );
-
-  // Transform partnerCard data for rendering using useMemo for optimization
   const parsedData = useMemo<ICreditDebitsVM[]>(() => {
     return partnerCard.map((partnerCard: ICreditDebits) => ({
       id: partnerCard._id,
@@ -145,14 +130,10 @@ const manageCards = () => {
       isActive: partnerCard.isActive,
     }));
   }, [partnerCard]);
-
-  // Navigate to edit page for a specific partnerCard
   const handleClickViewCreditDebit = (partnerCard: ICreditDebitsVM) => {
     const utcStartDate = new Date(partnerCard.startDate!);
-    // Format the date
     const formattedStartDate = format(utcStartDate, "yyyy-MM-dd'T'HH:mm:ss");
     partnerCard.startDate = formattedStartDate;
-    // Create a Date object from the UTC date string
     const utcEndDate = new Date(partnerCard.endDate!);
     const formattedEndDate = format(utcEndDate, "yyyy-MM-dd'T'HH:mm:ss");
     partnerCard.endDate = formattedEndDate;
@@ -167,16 +148,13 @@ const manageCards = () => {
   };
   const onSubmit = async (creditdebitForm: any) => {
     const utcStartDate = new Date(creditdebitForm.startDate!);
-    // Format the date
     const formattedStartDate = format(utcStartDate, "yyyy-MM-dd'T'HH:mm:ss");
     creditdebitForm.startDate = formattedStartDate;
-    // Create a Date object from the UTC date string
     const utcEndDate = new Date(creditdebitForm.endDate!);
     const formattedEndDate = format(utcEndDate, "yyyy-MM-dd'T'HH:mm:ss");
     creditdebitForm.endDate = formattedEndDate;
     GetPartnerCard(creditdebitForm.startDate, creditdebitForm.endDate);
   };
-  // JSX rendering
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
       schema = schema();
@@ -194,17 +172,15 @@ const manageCards = () => {
     startDate: yup.string().required("Start Date is required").nullable(),
     endDate: yup.string().nullable().required("End Date is required"),
   });
-
   const validate = validateFormValues(validationSchema);
-
   return (
     <div className="bg-blue-200 md:p-7 p-2 ">
       <Paper elevation={3} style={{ padding: 30 }}>
-        {/* Title */}
+        {}
         <Typography className="text-safekaroDarkOrange" variant="h5">
           Wallet History Table
         </Typography>
-        {/* Breadcrumb and add button */}
+        {}
         <Typography variant="h5" mb={2}>
           <div style={{ display: "flex", alignItems: "center" }}>
             <div style={{ flex: 1 }}>
@@ -217,22 +193,20 @@ const manageCards = () => {
               <span className="text-grey-600 text-sm">Withdrawals</span>
             </div>
           </div>
-          {/* Divider */}
+          {}
           <hr
             className="mt-4"
             style={{ width: "100%", borderColor: "grey-800" }}
           />
         </Typography>
-
         <React.Fragment>
           <Form
             onSubmit={onSubmit}
-            // initialValues={initialValues}
             validate={validate}
             render={({ handleSubmit, submitting, errors, values }) => (
               <form onSubmit={handleSubmit} noValidate>
                 <Grid container spacing={2}>
-                  {/* Account Code Selection */}
+                  {}
                   <Grid item lg={3} md={3} sm={6} xs={12}>
                     <Field name="startDate">
                       {({ input, meta }) => (
@@ -240,7 +214,7 @@ const manageCards = () => {
                           <DatePicker
                             disableFuture
                             label="Start Date"
-                            value={input.value || null} // Initialize the value if it's undefined
+                            value={input.value || null}
                             onChange={(date) => input.onChange(date)}
                             renderInput={(params: any) => (
                               <TextField
@@ -264,7 +238,7 @@ const manageCards = () => {
                           <DatePicker
                             disableFuture
                             label="End Date"
-                            value={input.value || null} // Initialize the value if it's undefined
+                            value={input.value || null}
                             onChange={(date) => input.onChange(date)}
                             renderInput={(params: any) => (
                               <TextField
@@ -281,7 +255,6 @@ const manageCards = () => {
                       )}
                     </Field>
                   </Grid>
-
                   <Grid item lg={3} md={3} sm={6} xs={12}>
                     <Button
                       type="submit"
@@ -298,17 +271,16 @@ const manageCards = () => {
             )}
           />
         </React.Fragment>
-
-        {/* MaterialReactTable component */}
+        {}
         <MaterialReactTable
-          state={{ isLoading }} // Loading state
-          columns={columns} // Columns configuration
-          data={parsedData} // Data to be displayed
-          enableRowActions // Enable row actions (like edit)
-          positionActionsColumn="last" // Position of row actions column
+          state={{ isLoading }}
+          columns={columns}
+          data={parsedData}
+          enableRowActions
+          positionActionsColumn="last"
           renderRowActions={({ row }) => (
             <div style={{ display: "flex", flexWrap: "nowrap" }}>
-              {/* View IconButton */}
+              {}
               {row.original.credit ? (
                 <Tooltip title="View Wallet History">
                   <IconButton
@@ -353,5 +325,4 @@ const manageCards = () => {
     </div>
   );
 };
-
-export default manageCards;
+export default ManageCards;

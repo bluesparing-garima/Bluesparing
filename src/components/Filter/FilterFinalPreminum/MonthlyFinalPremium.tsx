@@ -17,7 +17,6 @@ import {
   Typography,
 } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-
 import GetMonthlyBrokerFinalPremiumService from "../../../api/Dashboard/GetMonthlyBrokerFinalPremium/GetMonthlyBrokerFinalPremiumService";
 import GetMonthlyPartnerFinalPremiumService from "../../../api/Dashboard/GetMonthlyPartnerFinalPremium/GetMonthlyPartnerFinalPremiumService";
 import { IFinalNetPremiumBroker, IFinalNetPremiumPartner } from "../../TreeView/ITreeView";
@@ -42,14 +41,12 @@ const MonthlyFinalPremium = () => {
   const [brokerFinalPremium, setBrokerFinalPremium] = useState<
   IFinalNetPremiumBroker[]
   >([]);
-
   const fetchPartnerPayments = async (
     formattedFirstDay: any,
     formattedLastDay: any
   ) => {
     setSelectedStartDate(formattedFirstDay);
     setSelectedEndDate(formattedLastDay);
-
     try {
       const partnerResponse = await GetMonthlyBrokerFinalPremiumService({
         header,
@@ -57,20 +54,16 @@ const MonthlyFinalPremium = () => {
         endDate: formattedLastDay,
         category: selectedCategory,
       });
-
       setBrokerFinalPremium(partnerResponse.data);
       setBrokerTotalFinalPremium(partnerResponse.totalAmount);
-
       const brokerResponse = await GetMonthlyPartnerFinalPremiumService({
         header,
         startDate: formattedFirstDay,
         endDate: formattedLastDay,
         category: selectedCategory,
       });
-
       setPartnerFinalPremium(brokerResponse.data);
       setPartnerTotalFinalPremium(brokerResponse.totalAmount);
-
       const totalFinal = Number(
         brokerResponse.totalAmount + partnerResponse.totalAmount
       );
@@ -91,10 +84,9 @@ const MonthlyFinalPremium = () => {
     const currentDate = new Date();
     const firstDayOfMonth = format(startOfMonth(currentDate), "yyyy-MM-dd");
     const lastDayOfMonth = format(endOfMonth(currentDate), "yyyy-MM-dd");
-
     fetchPartnerPayments(firstDayOfMonth, lastDayOfMonth);
+     // eslint-disable-next-line 
   }, []);
-
   const validateFormValues = (schema: any) => async (values: any) => {
     try {
       await schema.validate(values, { abortEarly: false });
@@ -105,14 +97,11 @@ const MonthlyFinalPremium = () => {
       return errors;
     }
   };
-
   const validationSchema = yup.object().shape({
     startDate: yup.string().required("Start Date is required").nullable(),
     endDate: yup.string().nullable().required("End Date is required"),
   });
-
   const validate = validateFormValues(validationSchema);
-
   const onSubmit = async (values: any) => {
     const newStartDate = dayjs(values.startDate).format(DAY_FORMAT);
     const newEndDate = dayjs(values.endDate).format(DAY_FORMAT);
@@ -149,7 +138,6 @@ const MonthlyFinalPremium = () => {
             </button>
           </Tooltip>
         </div>
-       
         <Form
           onSubmit={onSubmit}
           validate={validate}
@@ -219,7 +207,6 @@ const MonthlyFinalPremium = () => {
             </form>
           )}
         />
-
         <Grid container mb={2}>
           <Grid item md={6} className={"bg-safekaroDarkOrange "}>
             <Button type="button" onClick={() => handleFinalPremiumClick(true)}>
@@ -243,7 +230,6 @@ const MonthlyFinalPremium = () => {
             </Button>
           </Grid>
         </Grid>
-
         <Grid container className="bg-blue-200 mt-3">
           {selectedPartner ? (
             <>
@@ -323,5 +309,4 @@ const MonthlyFinalPremium = () => {
     </div>
   );
 };
-
 export default MonthlyFinalPremium;

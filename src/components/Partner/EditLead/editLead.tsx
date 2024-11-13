@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-//import { useTranslation } from "react-i18next";
 import { Typography, Paper, Card, CardContent, Grid } from "@mui/material";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { ADD, header, Document, imagePath } from "../../../context/constant";
@@ -111,7 +110,6 @@ const EditLead = () => {
               Lead /
             </Link>
             <span className="text-grey-600 text-sm">{title}</span>
-            {/* Add a full-width grey line here */}
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}

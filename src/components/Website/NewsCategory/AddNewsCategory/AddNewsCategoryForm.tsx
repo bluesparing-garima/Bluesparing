@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import React from "react";
 import { TextField, Button, Grid } from "@mui/material";
 import { INewsCategoryForm } from "../INewsCategory";
@@ -11,11 +10,9 @@ import { newsCategoryPath } from "../../../../sitemap";
 import toast, { Toaster } from "react-hot-toast";
 import addNewsCategoryServices from "../../../../api/Website/NewsCategory/AddNewsCategory/addNewsCategoryServices";
 import editNewsCategoryService from "../../../../api/Website/NewsCategory/EditNewsCategory/editNewsCategoryService";
-
 export interface addPolicyTypeFormProps {
   initialValues: INewsCategoryForm;
 }
-
 const AddNewsCategoryForm = (props: addPolicyTypeFormProps) => {
   const { initialValues } = props;
   const navigate = useNavigate();
@@ -23,8 +20,6 @@ const AddNewsCategoryForm = (props: addPolicyTypeFormProps) => {
   const pathName = location.pathname.split("/");
   const isAddEdit = pathName[pathName.length - 1] as string;
   const isAdd = isAddEdit === ADD;
-
-  // To be passed to React Final Form
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
       schema = schema();
@@ -35,11 +30,9 @@ const AddNewsCategoryForm = (props: addPolicyTypeFormProps) => {
       const errors = err.inner.reduce((formError: any, innerError: any) => {
         return setIn(formError, innerError.path, innerError.message);
       }, {});
-
       return errors;
     }
   };
-
   const validationSchema = yup.object().shape({
     category: yup
       .string()
@@ -47,9 +40,7 @@ const AddNewsCategoryForm = (props: addPolicyTypeFormProps) => {
       .min(1, "Category must be at least 1 character")
       .max(100, "Category cannot exceed 100 characters"),
   });
-
   const validate = validateFormValues(validationSchema);
-
   const onSubmit = async (category: INewsCategoryForm) => {
     if (isAdd) {
       callAddCategoryAPI(category);
@@ -57,13 +48,11 @@ const AddNewsCategoryForm = (props: addPolicyTypeFormProps) => {
       callEditCategoryAPI(category);
     }
   };
-
   const navigateToCategories = (message: string) => {
     navigate(newsCategoryPath(), {
       state: message,
     });
   };
-
   const callAddCategoryAPI = async (category: INewsCategoryForm) => {
     try {
       const newCategory = await addNewsCategoryServices({ header, category });
@@ -73,7 +62,6 @@ const AddNewsCategoryForm = (props: addPolicyTypeFormProps) => {
       toast.error(err.message);
     }
   };
-
   const callEditCategoryAPI = async (category: INewsCategoryForm) => {
     try {
       const newCategory = await editNewsCategoryService({ header, category });
@@ -83,7 +71,6 @@ const AddNewsCategoryForm = (props: addPolicyTypeFormProps) => {
       toast.error(err.message);
     }
   };
-
   return (
     <>
       <Form
@@ -127,5 +114,4 @@ const AddNewsCategoryForm = (props: addPolicyTypeFormProps) => {
     </>
   );
 };
-
 export default AddNewsCategoryForm;

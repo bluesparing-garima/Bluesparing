@@ -15,17 +15,16 @@ import { Link, useLocation } from "react-router-dom";
 import GetMonthlyBrokerLeftDistributedPaymentService from "../../../api/Dashboard/GetMonthlyBrokerLeftDistributedPayment/GetMonthlyBrokerLeftDistributedPaymentService";
 import { BrokerPayInLeftDistributedProps } from "../../TreeView/ITreeView";
 import { generateBrokerPayInLeftDistributedExcel } from "../../../utils/DashboardExcel";
-
 const MonthlyFilterPayInLeftDistributed = () => {
   const title = "Get Monthly PayIn LeftDistributed Details Of All Brokers";
   const location = useLocation();
-  const selectedCategory = location.state as string; // This is where you access the passed state
+  const selectedCategory = location.state as string;
   const [selectedStartDate, setSelectedStartDate] = useState();
   const [selectedEndDate, setSelectedEndDate] = useState();
-  const [brokerTotalPayment, setBrokerTotalPayment] = useState<number>(0); // State for all credit debits
+  const [brokerTotalPayment, setBrokerTotalPayment] = useState<number>(0);
   const [brokerPayment, setBrokerPayment] = useState<BrokerPayInLeftDistributedProps[]>(
     []
-  ); // State for all credit debits
+  );
   const fetchBrokerPayments = async (
     formattedFirstDay: any,
     formattedLastDay: any
@@ -37,9 +36,8 @@ const MonthlyFilterPayInLeftDistributed = () => {
       startDate: formattedFirstDay,
       endDate: formattedLastDay,
       category: selectedCategory,
-    }) // Call API to fetch credit debits
+    })
       .then((brokerPayment) => {
-        // On successful API call
         setBrokerPayment(brokerPayment.data);
         setBrokerTotalPayment(brokerPayment.totalAmount);
       })
@@ -54,11 +52,9 @@ const MonthlyFilterPayInLeftDistributed = () => {
     const lastDayOfMonth = endOfMonth(currentDate);
     let formattedFirstDay = format(firstDayOfMonth, "yyyy-MM-dd");
     let formattedLastDay = format(lastDayOfMonth, "yyyy-MM-dd");
-
     fetchBrokerPayments(formattedFirstDay, formattedLastDay);
-     // eslint-disable-next-line
+     // eslint-disable-next-line 
   }, []);
-
   const handleDownloadExcel = () => {
     generateBrokerPayInLeftDistributedExcel(brokerPayment)
   }
@@ -75,12 +71,10 @@ const MonthlyFilterPayInLeftDistributed = () => {
       return errors;
     }
   };
-
   const validationSchema = yup.object().shape({
     startDate: yup.string().required("Start Date is required").nullable(),
     endDate: yup.string().nullable().required("End Date is required"),
   });
-
   const validate = validateFormValues(validationSchema);
   const onSubmit = async (value: any) => {
     const newStartDate = dayjs(value.startDate).format(DAY_FORMAT);
@@ -91,7 +85,6 @@ const MonthlyFilterPayInLeftDistributed = () => {
     <div className="bg-blue-200 p-7 mt-3">
       <Paper elevation={3} style={{ padding: 20 }}>
         <div className="flex items-center justify-between">
-
         <Typography variant="h5" className="text-black" gutterBottom>
           {title}{" "}
           <span className="text-safekaroDarkOrange">{brokerTotalPayment}</span>
@@ -108,12 +101,11 @@ const MonthlyFilterPayInLeftDistributed = () => {
         <React.Fragment>
           <Form
             onSubmit={onSubmit}
-            // initialValues={initialValues}
             validate={validate}
             render={({ handleSubmit, submitting, errors, values }) => (
               <form onSubmit={handleSubmit} noValidate>
                 <Grid container spacing={2} mt={2} mb={2}>
-                  {/* Account Code Selection */}
+                  {}
                   <Grid item lg={3} md={3} sm={6} xs={12}>
                     <Field name="startDate">
                       {({ input, meta }) => (
@@ -121,7 +113,7 @@ const MonthlyFilterPayInLeftDistributed = () => {
                           <DatePicker
                             disableFuture
                             label="Start Date"
-                            value={input.value || null} // Initialize the value if it's undefined
+                            value={input.value || null}
                             onChange={(date) => input.onChange(date)}
                             renderInput={(params: any) => (
                               <TextField
@@ -145,7 +137,7 @@ const MonthlyFilterPayInLeftDistributed = () => {
                           <DatePicker
                             disableFuture
                             label="End Date"
-                            value={input.value || null} // Initialize the value if it's undefined
+                            value={input.value || null}
                             onChange={(date) => input.onChange(date)}
                             renderInput={(params: any) => (
                               <TextField
@@ -162,7 +154,6 @@ const MonthlyFilterPayInLeftDistributed = () => {
                       )}
                     </Field>
                   </Grid>
-
                   <Grid item lg={3} md={3} sm={6} xs={12}>
                     <Button
                       type="submit"
@@ -209,11 +200,9 @@ const MonthlyFilterPayInLeftDistributed = () => {
             </Grid>
           ))}
         </Grid>
-
         <Toaster position="bottom-center" reverseOrder={false} />
       </Paper>
     </div>
   );
 };
-
 export default MonthlyFilterPayInLeftDistributed;

@@ -1,5 +1,4 @@
 import { CircularProgress, Paper, Typography } from "@mui/material";
-
 import { useEffect, useState } from "react";
 import { header } from "../../../context/constant";
 import toast from "react-hot-toast";
@@ -10,7 +9,6 @@ import TotalPaidPayoutService from "../../../api/YearlyPayout/TotalPaidPayout/To
 import TotalPayoutBalanceService from "../../../api/YearlyPayout/TotalPayoutBalance/TotalPayoutBalanceService";
 import { useLocation } from "react-router-dom";
 import { IPartnerBalance, IPartnerPaid, PartnerPayment } from "../ITreeView";
-
 const YearlyPayout = () => {
   const location = useLocation();
   const selectedCategory = location.state as string;
@@ -46,7 +44,6 @@ const YearlyPayout = () => {
         toast.error(err.message);
       });
   };
-
   const fetchPartnerPaid = async () => {
     try {
       const res = await TotalPaidPayoutService({
@@ -98,7 +95,7 @@ const YearlyPayout = () => {
       setLoading(false);
     };
     fetchData();
-    // eslint-disable-next-line
+    // eslint-disable-next-line 
   }, []);
   if (loading) {
     return (
@@ -160,5 +157,4 @@ const YearlyPayout = () => {
     </div>
   );
 };
-
 export default YearlyPayout;

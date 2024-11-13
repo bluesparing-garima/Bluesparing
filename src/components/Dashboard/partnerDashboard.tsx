@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useCallback, useEffect, useState } from "react";
 import { CardContent, Grid, TextField, Tooltip } from "@mui/material";
 import Typography from "@mui/material/Typography";
@@ -20,7 +19,7 @@ import { Field, Form } from "react-final-form";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import getPartnerDashboardService from "../../api/Dashboard/GetPartnerDashboard/getPartnerDashboardService";
 import PartnerPolicyChart from "./Chart/PartnerPolicyChart";
-import PayOutCommisionChart from "./Chart/PayOutCommisionChart";
+import PayOutCommissionChart from "./Chart/PayOutCommissionChart";
 import { Link } from "react-router-dom";
 import PictureAsPdfSharpIcon from "@mui/icons-material/PictureAsPdfSharp";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
@@ -30,17 +29,15 @@ import { CartButton } from "./dashboard";
 import SearchIcon from "@mui/icons-material/Search";
 import { MotorSvg, ViewAdminDataSvg, ViewPartnerSvg } from "./data/Svg";
 import { Toaster } from "react-hot-toast";
-const partnerDashboard: React.FC = () => {
+const PartnerDashboard: React.FC = () => {
   const [data, setData] = useState<IPartnerData[]>([]);
   const [isVisible, setIsVisible] = useState(false);
   const [firstCart, setFirstCart] = useState(true);
   const [secondCart, setSecondCart] = useState(false);
   const [thirdCart, setThirdCart] = useState(false);
-
   const [selectedCard, setSelectedcard] = useState("1");
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
-
   const GetDashboardCount = useCallback(
     (startDate, endDate) => {
       getPartnerDashboardService({
@@ -60,16 +57,10 @@ const partnerDashboard: React.FC = () => {
     },
     [UserData.partnerId]
   );
-
   useEffect(() => {
-    const currentDate = new Date(); // Example current date
-
-    // Calculate first day of current month
+    const currentDate = new Date();
     const firstDayOfMonth = startOfMonth(currentDate);
-
-    // Calculate last day of current month
     const lastDayOfMonth = endOfMonth(currentDate);
-    // Format the dates if needed
     const formattedFirstDay = format(firstDayOfMonth, "yyyy-MM-dd");
     const formattedLastDay = format(lastDayOfMonth, "yyyy-MM-dd");
     const fetchData = () => {
@@ -79,15 +70,13 @@ const partnerDashboard: React.FC = () => {
     const intervalId = setInterval(fetchData, 30000);
     return () => clearInterval(intervalId);
   }, [GetDashboardCount]);
-
   const renderCountBox = (
     title: string,
     count: number,
     icon: string,
     path?: string
   ) => {
-    const formattedCount = Math.round(count).toLocaleString(); // Format numbers with commas for readability
-
+    const formattedCount = Math.round(count).toLocaleString();
     const content = (
       <div className="bg-white m-2 p-3 rounded-[10.33px] shadow-lg flex items-center justify-between transform transition-transform duration-200 hover:scale-105">
         <div>
@@ -107,41 +96,31 @@ const partnerDashboard: React.FC = () => {
         <img src={icon} alt={title} className="h-8 w-8" />
       </div>
     );
-
     return (
       <Grid item xs={12} sm={6} md={4} lg={3}>
         {path ? <Link to={path}>{content}</Link> : content}
       </Grid>
     );
   };
-
   const onSubmit = async (value: any) => {
-    // Convert to local time zone
-    // Create a Date object from the UTC date string
     const utcStartDate = new Date(value.startDate!);
-    // Format the date
     const formattedStartDate = format(utcStartDate, "yyyy-MM-dd'T'HH:mm:ss");
     value.startDate = formattedStartDate;
-    // Create a Date object from the UTC date string
     const utcEndDate = new Date(value.endDate!);
     const formattedEndDate = format(utcEndDate, "yyyy-MM-dd'T'HH:mm:ss");
     value.endDate = formattedEndDate;
-
     GetDashboardCount(value.startDate, value.endDate);
   };
-
   const handleFirstCart = async () => {
     setFirstCart(true);
     setSecondCart(false);
     setThirdCart(false);
-
     setSelectedcard("1");
   };
   const handleSecondCart = async () => {
     setFirstCart(false);
     setSecondCart(true);
     setThirdCart(false);
-
     setSelectedcard("2");
   };
   const handleThirdCart = async () => {
@@ -193,7 +172,7 @@ const partnerDashboard: React.FC = () => {
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                               <DatePicker
                                 disableFuture
-                                value={input.value || null} // Initialize the value if it's undefined
+                                value={input.value || null}
                                 onChange={(date) => {
                                   input.onChange(date);
                                 }}
@@ -218,7 +197,7 @@ const partnerDashboard: React.FC = () => {
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                               <DatePicker
                                 disableFuture
-                                value={input.value || null} // Initialize the value if it's undefined
+                                value={input.value || null}
                                 onChange={(date) => {
                                   input.onChange(date);
                                 }}
@@ -340,7 +319,6 @@ const partnerDashboard: React.FC = () => {
                             ))}
                           </>
                         )}
-
                         {secondCart && (
                           <>
                             {data.map((item, index) => (
@@ -393,12 +371,11 @@ const partnerDashboard: React.FC = () => {
                             ))}
                           </>
                         )}
-
                         {thirdCart && (
                           <div className="bg-blue-200 md:p-7 p-2">
                             <Grid container spacing={2}>
                               <Grid item md={6}>
-                                <PayOutCommisionChart
+                                <PayOutCommissionChart
                                   partnerId={UserData.partnerId!}
                                 />
                               </Grid>
@@ -427,5 +404,4 @@ const partnerDashboard: React.FC = () => {
     </div>
   );
 };
-
-export default partnerDashboard;
+export default PartnerDashboard;

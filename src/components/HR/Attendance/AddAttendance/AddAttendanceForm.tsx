@@ -8,7 +8,7 @@ import * as yup from "yup";
 import toast, { Toaster } from "react-hot-toast";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
-import { AddAttendanceFormProps, IAttendance } from "../IAttendnace";
+import { AddAttendanceFormProps, IAttendance } from "../IAttendance";
 import AddAttendanceService from "../../../../api/HR/Attendance/AddAttendance/AddHolidayService";
 import { IAddAttendanceProps } from "../../../../api/HR/getHrTypes";
 import { header } from "../../../../context/constant";

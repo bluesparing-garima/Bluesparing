@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { IAttendanceData, IEmployee } from "../IAttendnace";
+import { IAttendanceData, IEmployee } from "../IAttendance";
 
 import toast from "react-hot-toast";
 import GetEmployeeDepartmentService from "../../../../api/HR/Attendance/GetEmpolyeeDepartment/GetEmployeeDepartmentService";

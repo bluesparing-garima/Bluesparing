@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { MaterialReactTable, type MRT_ColumnDef } from "material-react-table";
-import { Button, IconButton, Paper, Tooltip, Typography } from "@mui/material";
+import {  IconButton, Paper, Tooltip, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
-import { bookingRequestsAddPath, bookingRequestsPath } from "../../../sitemap";
+import {  bookingRequestsPath } from "../../../sitemap";
 import dayjs from "dayjs";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
@@ -13,12 +13,10 @@ import {
   header,
 } from "../../../context/constant";
 import CountdownTimer from "../../../utils/CountdownTimer";
-
 import acceptBookingRequestService from "../../../api/BookingRequest/AcceptBookingRequest/acceptBookingRequestService";
 import GetRejectedBookingRequestService from "../../../api/BookingRequest/GetRejectedBookingRequest/GetRejectedBookingRequestService";
 import toast, { Toaster } from "react-hot-toast";
 import RejectedBookingPartnerService from "../../../api/BookingRequest/RejectedBookingPartner/RejectedBookingPartnerService";
-
 const RejectionPolicies = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [bookingRequests, setBookingRequests] = useState<IBookingRequests[]>(
@@ -26,7 +24,6 @@ const RejectionPolicies = () => {
   );
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let userData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
-
   const GetBookingRequests = useCallback(() => {
     if (userData.role === "Partner") {
       const partnerId = userData.partnerId;
@@ -48,15 +45,12 @@ const RejectionPolicies = () => {
           toast.error(err.message);
         });
     }
+     // eslint-disable-next-line 
   }, [userData.role]);
-
   useEffect(() => {
     GetBookingRequests();
   }, [GetBookingRequests]);
-
   const navigate = useNavigate();
-
-  //should be memoized or stable
   const columns = useMemo<MRT_ColumnDef<IBookingRequests>[]>(
     () => [
       {
@@ -72,53 +66,52 @@ const RejectionPolicies = () => {
         size: 200,
       },
       {
-        accessorKey: "policyNumber", //normal accessorKey
+        accessorKey: "policyNumber",
         header: "Policy Number",
         size: 200,
       },
       {
-        accessorKey: "policyType", //normal accessorKey
+        accessorKey: "policyType",
         header: "Policy Type",
         size: 100,
       },
       {
-        accessorKey: "caseType", //normal accessorKey
+        accessorKey: "caseType",
         header: "Case Type",
         size: 100,
       },
-
       {
-        accessorKey: "category", //normal accessorKey
+        accessorKey: "category",
         header: "Category",
         size: 100,
       },
       {
-        accessorKey: "productType", //normal accessorKey
+        accessorKey: "productType",
         header: "Product",
         size: 100,
       },
       {
-        accessorKey: "subCategory", //normal accessorKey
+        accessorKey: "subCategory",
         header: "Sub Category",
         size: 100,
       },
       {
-        accessorKey: "companyName", //normal accessorKey
+        accessorKey: "companyName",
         header: "Company Name",
         size: 100,
       },
       {
-        accessorKey: "bookingStatus", //normal accessorKey
+        accessorKey: "bookingStatus",
         header: "Booking Status",
         size: 100,
       },
       {
-        accessorKey: "partnerName", //normal accessorKey
+        accessorKey: "partnerName",
         header: "Partner Name",
         size: 200,
       },
       {
-        accessorKey: "rejectionReason", //normal accessorKey
+        accessorKey: "rejectionReason",
         header: "Rejection Reason",
         size: 200,
       },
@@ -150,7 +143,6 @@ const RejectionPolicies = () => {
     ],
     []
   );
-
   const parsedData = useMemo(
     () =>
       bookingRequests.map(
@@ -175,7 +167,6 @@ const RejectionPolicies = () => {
             proposal: bookingRequest.proposal,
             currentPolicy: bookingRequest.currentPolicy,
             other: bookingRequest.other,
-            //documents: bookingRequest.documents,
             bookingStatus: bookingRequest.bookingStatus,
             bookingCreatedBy: bookingRequest.bookingCreatedBy,
             bookingAcceptedBy: bookingRequest.bookingAcceptedBy,
@@ -190,12 +181,9 @@ const RejectionPolicies = () => {
       ) ?? [],
     [bookingRequests]
   );
-
   const updateLoading = useCallback(async () => {
-    // setIsLoading(true) when bookingRequests.length is 0, and setIsLoading(false) when bookingRequests.length is > 0
     setIsLoading(false);
   }, []);
-
   const handleRestore = (bookingForm: IBookingRequestsVM) => {
     const id = bookingForm.id;
     bookingForm.createdOn = dayjs().toISOString();
@@ -209,7 +197,6 @@ const RejectionPolicies = () => {
       callEditLeadAPI(bookingForm, id);
     }
   };
-
   const callEditLeadAPI = async (bookingForm: any, bookingId: string) => {
     try {
       const newBooking = await acceptBookingRequestService({
@@ -228,7 +215,6 @@ const RejectionPolicies = () => {
   useEffect(() => {
     updateLoading();
   }, [updateLoading]);
-
   return (
     <>
       <div className="bg-blue-200 md:p-7 p-2">
@@ -245,13 +231,12 @@ const RejectionPolicies = () => {
                 >
                   Dashboard /
                 </Link>
-
                 <span className="text-grey-600 text-sm">
                   Rejected Booking Request
                 </span>
               </div>
             </div>
-            {/* Add a full-width grey line here */}
+            {}
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
@@ -304,5 +289,4 @@ const RejectionPolicies = () => {
     </>
   );
 };
-
 export default RejectionPolicies;

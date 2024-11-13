@@ -24,11 +24,10 @@ import { useLocation, useParams } from "react-router-dom";
 import GetMonthlyPartnerCompanyFinalPremiumService from "../../../api/Dashboard/GetMonthlyPartnerCompanyFinalPreminum/GetMonthlyPartnerCompanyFinalPreminumService";
 import { IFinalNetPremiumCompany } from "../../TreeView/ITreeView";
 import { generateExcelCompanyFinalNetPremium } from "../../../utils/DashboardExcel";
-
 const FilterPartnerMonthlyFinalPremium = () => {
   const title = "Get Monthly FinalPremium Of Partner -";
   const location = useLocation();
-  const selectedCategory = location.state as string; // This is where you access the passed state
+  const selectedCategory = location.state as string;
   const { startDate } = useParams();
   const { endDate } = useParams();
   const { partnerId } = useParams();
@@ -38,8 +37,8 @@ const FilterPartnerMonthlyFinalPremium = () => {
   const [selectedPartnerName, setSelectedPartnerName] = useState<string>();
   const [selectedPartnerId, setSelectedPartnerId] = useState<string>();
   const [companyDetails, setCompanyDetails] = useState<
-  IFinalNetPremiumCompany[]
-  >([]); // State for all credit debits
+    IFinalNetPremiumCompany[]
+  >([]);
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
       schema = schema();
@@ -53,7 +52,6 @@ const FilterPartnerMonthlyFinalPremium = () => {
       return errors;
     }
   };
-
   const handleDownloadExcel = () => {
     generateExcelCompanyFinalNetPremium(companyDetails);
   };
@@ -62,14 +60,11 @@ const FilterPartnerMonthlyFinalPremium = () => {
     endDate: yup.string().nullable().required("End Date is required"),
     partnerName: yup.string().required("Partner Name is required").nullable(),
   });
-
   const validate = validateFormValues(validationSchema);
-
   useEffect(() => {
     filterMonthlyPartnerPaymentWithCompany(startDate!, endDate!, partnerId!);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line
   }, [startDate, endDate, partnerId]);
-
   const filterMonthlyPartnerPaymentWithCompany = async (
     startDate: string,
     endDate: string,
@@ -81,9 +76,8 @@ const FilterPartnerMonthlyFinalPremium = () => {
       startDate: startDate,
       endDate: endDate,
       category: selectedCategory,
-    }) // Call API to fetch credit debits
+    })
       .then((partners) => {
-        // On successful API call
         setCompanyDetails(partners.data);
         setTotalAmount(partners.totalAmount);
         setSelectedPartnerCode(partners.partnerCode);
@@ -94,7 +88,6 @@ const FilterPartnerMonthlyFinalPremium = () => {
         toast.error(err.message);
       });
   };
-
   const onSubmit = async (value: any) => {
     const newStartDate = dayjs(value.startDate).format(DAY_FORMAT);
     const newEndDate = dayjs(value.endDate).format(DAY_FORMAT);
@@ -109,19 +102,18 @@ const FilterPartnerMonthlyFinalPremium = () => {
       <div className="bg-blue-200 p-7 mt-3">
         <Paper elevation={3} style={{ padding: 20 }}>
           <div className="flex justify-between items-center">
-         
-          <Typography
-            variant="h5"
-            className="text-safekaroDarkOrange"
-            gutterBottom
-            display="inline"
-          >
-            {title}{" "}
-            <span className="text-addButton">
-              {selectedPartnerName} ({selectedPartnerCode})
-            </span>
-          </Typography>
-          <Tooltip title="download Excel">
+            <Typography
+              variant="h5"
+              className="text-safekaroDarkOrange"
+              gutterBottom
+              display="inline"
+            >
+              {title}{" "}
+              <span className="text-addButton">
+                {selectedPartnerName} ({selectedPartnerCode})
+              </span>
+            </Typography>
+            <Tooltip title="download Excel">
               <button
                 className="md:w-10 md:h-10 h-4 w-4 bg-[#3BDB03] shadow-sm rounded flex justify-center items-center text-white"
                 onClick={handleDownloadExcel}
@@ -133,12 +125,11 @@ const FilterPartnerMonthlyFinalPremium = () => {
           <React.Fragment>
             <Form
               onSubmit={onSubmit}
-              // initialValues={initialValues}
               validate={validate}
               render={({ handleSubmit, submitting, errors, values }) => (
                 <form onSubmit={handleSubmit} noValidate>
                   <Grid container spacing={2} mt={2} mb={2}>
-                    {/* Account Code Selection */}
+                    {}
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Field name="startDate">
                         {({ input, meta }) => (
@@ -146,7 +137,7 @@ const FilterPartnerMonthlyFinalPremium = () => {
                             <DatePicker
                               disableFuture
                               label="Start Date"
-                              value={input.value || null} // Initialize the value if it's undefined
+                              value={input.value || null}
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
                                 <TextField
@@ -170,7 +161,7 @@ const FilterPartnerMonthlyFinalPremium = () => {
                             <DatePicker
                               disableFuture
                               label="End Date"
-                              value={input.value || null} // Initialize the value if it's undefined
+                              value={input.value || null}
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
                                 <TextField
@@ -204,7 +195,7 @@ const FilterPartnerMonthlyFinalPremium = () => {
                                     : `${option.fullName} - ${option.partnerId}` ||
                                       ""
                                 }
-                                options={partners} // Replace with your options array
+                                options={partners}
                                 onChange={(event, newValue) => {
                                   input.onChange(newValue.fullName);
                                   setSelectedPartnerId(newValue._id);
@@ -264,9 +255,6 @@ const FilterPartnerMonthlyFinalPremium = () => {
                       {item.finalPremium}
                     </Typography>
                   </div>
-                  {/* Uncomment if needed
-                <img src={icon} alt={title} className="h-8 w-8" />
-                */}
                 </div>
               </Grid>
             ))}
@@ -277,5 +265,4 @@ const FilterPartnerMonthlyFinalPremium = () => {
     </>
   );
 };
-
 export default FilterPartnerMonthlyFinalPremium;

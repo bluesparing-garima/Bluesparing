@@ -17,7 +17,6 @@ import toast, { Toaster } from "react-hot-toast";
 import { DAY_FORMAT, header } from "../../../context/constant";
 import { useEffect, useState } from "react";
 import useGetBrokers from "../../../Hooks/Broker/useGetBrokers";
-
 import React from "react";
 import dayjs from "dayjs";
 import { useLocation, useParams } from "react-router-dom";
@@ -28,7 +27,7 @@ import { generateExcelCompanyNetPremium } from "../../../utils/DashboardExcel";
 const FilterMonthlyBrokerNetPremium = () => {
   const title = "Get Monthly NetPremium Of Broker -";
   const location = useLocation();
-  const selectedCategory = location.state as string; // This is where you access the passed state
+  const selectedCategory = location.state as string;
   const { startDate } = useParams();
   const { endDate } = useParams();
   const { brokerId } = useParams();
@@ -39,7 +38,7 @@ const FilterMonthlyBrokerNetPremium = () => {
   const [selectedBrokerId, setSelectedBrokerId] = useState<string>();
   const [companyDetails, setCompanyDetails] = useState<INetPremiumCompany[]>(
     []
-  ); // State for all credit debits
+  );
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
       schema = schema();
@@ -53,22 +52,19 @@ const FilterMonthlyBrokerNetPremium = () => {
       return errors;
     }
   };
-
   const validationSchema = yup.object().shape({
     startDate: yup.string().required("Start Date is required").nullable(),
     endDate: yup.string().nullable().required("End Date is required"),
     brokerName: yup.string().required("Broker Name is required").nullable(),
   });
-
   const validate = validateFormValues(validationSchema);
   const handleDownloadExcel = () => {
     generateExcelCompanyNetPremium(companyDetails);
   };
   useEffect(() => {
     filterMonthlyBrokerPaymentWithCompany(startDate!, endDate!, brokerId!);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     // eslint-disable-next-line 
   }, [startDate, endDate, brokerId]);
-
   const filterMonthlyBrokerPaymentWithCompany = async (
     startDate: string,
     endDate: string,
@@ -80,9 +76,8 @@ const FilterMonthlyBrokerNetPremium = () => {
       startDate: startDate,
       endDate: endDate,
       category: selectedCategory,
-    }) // Call API to fetch credit debits
+    })
       .then((brokers) => {
-        // On successful API call
         setCompanyDetails(brokers.data);
         setTotalAmount(brokers.totalAmount);
         setSelectedBrokerCode(brokers.brokerCode);
@@ -93,7 +88,6 @@ const FilterMonthlyBrokerNetPremium = () => {
         toast.error(err.message);
       });
   };
-
   const onSubmit = async (value: any) => {
     const newStartDate = dayjs(value.startDate).format(DAY_FORMAT);
     const newEndDate = dayjs(value.endDate).format(DAY_FORMAT);
@@ -131,12 +125,11 @@ const FilterMonthlyBrokerNetPremium = () => {
           <React.Fragment>
             <Form
               onSubmit={onSubmit}
-              // initialValues={initialValues}
               validate={validate}
               render={({ handleSubmit, submitting, errors, values }) => (
                 <form onSubmit={handleSubmit} noValidate>
                   <Grid container spacing={2} mt={2} mb={2}>
-                    {/* Account Code Selection */}
+                    {}
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Field name="startDate">
                         {({ input, meta }) => (
@@ -144,7 +137,7 @@ const FilterMonthlyBrokerNetPremium = () => {
                             <DatePicker
                               disableFuture
                               label="Start Date"
-                              value={input.value || null} // Initialize the value if it's undefined
+                              value={input.value || null}
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
                                 <TextField
@@ -168,7 +161,7 @@ const FilterMonthlyBrokerNetPremium = () => {
                             <DatePicker
                               disableFuture
                               label="End Date"
-                              value={input.value || null} // Initialize the value if it's undefined
+                              value={input.value || null}
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
                                 <TextField
@@ -202,7 +195,7 @@ const FilterMonthlyBrokerNetPremium = () => {
                                     : `${option.brokerName} - ${option.brokerCode}` ||
                                       ""
                                 }
-                                options={brokers} // Replace with your options array
+                                options={brokers}
                                 onChange={(event, newValue) => {
                                   input.onChange(newValue.brokerName);
                                   setSelectedBrokerId(newValue._id);
@@ -275,5 +268,4 @@ const FilterMonthlyBrokerNetPremium = () => {
     </>
   );
 };
-
 export default FilterMonthlyBrokerNetPremium;

@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Autocomplete,
   TextField,
@@ -55,14 +54,11 @@ import dayjs, { Dayjs } from "dayjs";
 import editBookingRequestService from "../../../api/BookingRequest/EditBookingRequest/editBookingRequestService";
 import editLeadService from "../../../api/Leads/EditLead/editLeadService";
 import toast, { Toaster } from "react-hot-toast";
-
 export interface AddPolicyFormProps {
   initialValues: IAddEditPolicyForm;
 }
-
 const EditPolicyForm = (props: AddPolicyFormProps) => {
   const { initialValues } = props;
-
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let userData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
   const [policyType, setPolicyType] = useState("");
@@ -88,7 +84,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
   let [companies] = useGetCompanies({ header: header });
   let [products] = useGetProducts({ header: header });
   let [productSubTypes] = useGetProductSubTypes({ header: header });
-  const [isVisibile, setIsVisibile] = useState(false);
+  const [isVisibile, setIsVisible] = useState(false);
   const [selectedBrokerId, setSelectedBrokerId] = useState("");
   const [selectedPartnerName, setSelectedPartnerName] = useState("");
   const [selectedPartnerId, setSelectedPartnerId] = useState("");
@@ -112,15 +108,13 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
   useEffect(() => {
     setNetPremium(Number(od) + Number(tp));
   }, [od, tp]);
-
   const handleNetPremiumChange = (event: any) => {
     const value = event.target.value;
     setNetPremium(value);
   };
   useEffect(() => {
-    if (!initialValues) return; // Add a guard clause to handle cases where initialValues might be null or undefined
+    if (!initialValues) return;
     const updatedDocuments: Document[] = [];
-
     if (initialValues.rcBack) {
       updatedDocuments.push({ docName: "rcBack", file: initialValues.rcBack });
     }
@@ -163,10 +157,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
     if (initialValues.other) {
       updatedDocuments.push({ docName: "other", file: initialValues.other });
     }
-
     setDocuments(updatedDocuments);
-
-    // Use optional chaining to safely access optional properties
     setSelectedBrokerId(initialValues.brokerId ?? "");
     setSelectedPartnerId(initialValues.partnerId ?? "");
     setSelectedPartnerName(initialValues.partnerName ?? "");
@@ -174,12 +165,10 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
     setSelectedRMName(initialValues.relationshipManagerName ?? "");
     setRMErrorMessage("");
     setProType(initialValues.productType);
-    // Check if initialValues.policyCreatedBy exists before setting state
     if (initialValues.policyCreatedBy) {
       setSelectedPolicyCreatedBy(initialValues.policyCreatedBy);
     }
   }, [initialValues]);
-
   useEffect(() => {
     if (selectedMake) {
       const MakeId = selectedMake._id;
@@ -188,14 +177,13 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
       setFilteredSubModels(models);
     }
   }, [selectedMake, models]);
-
   useEffect(() => {
     if (selectedProduct) {
       const ProductId = selectedProduct._id;
       if (selectedProduct.productName === "Goods carrying vehicle") {
-        setIsVisibile(true);
+        setIsVisible(true);
       } else {
-        setIsVisibile(false);
+        setIsVisible(false);
       }
       setFilteredSubcategories(
         productSubTypes.filter((sub) => sub.productId === ProductId)
@@ -204,23 +192,19 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
       setFilteredSubcategories(productSubTypes);
     }
   }, [selectedProduct, productSubTypes]);
-
   const handleFileInputChange = (event: any, index: any) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
       const fileType = file.type;
       const fileSize = file.size;
       const newErrors = [...errors];
-
       if (!ALLOWED_FILE_TYPES.includes(fileType)) {
-        // setErrorMessage("Invalid file type. Please upload an image or a PDF.");
         newErrors[index] = {
           ...newErrors[index],
           file: "Invalid file type. Please upload an image or a PDF.",
         };
         setErrors(newErrors);
       } else if (fileSize > MAX_FILE_SIZE) {
-        //setErrorMessage("File size exceeds the maximum limit.");
         newErrors[index] = {
           ...newErrors[index],
           file: "File size exceeds the maximum limit",
@@ -231,8 +215,6 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
         const newDocuments = [...documents];
         newDocuments[index] = { ...newDocuments[index], file: file };
         setDocuments(newDocuments);
-
-        // Clear the error if the file is valid
         if (newErrors[index]) {
           newErrors[index].file = "";
         }
@@ -240,15 +222,11 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
       }
     }
   };
-
-  // Function to calculate the difference in years
   const calculateYearDifference = (
     startDate: Dayjs,
     endDate: Dayjs
   ): number => {
     let yearsDifference = endDate.year() - startDate.year();
-
-    // Adjust the yearsDifference if the endDate is before the startDate in the current year
     const monthDifference = endDate.month() - startDate.month();
     if (
       monthDifference < 0 ||
@@ -256,19 +234,15 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
     ) {
       yearsDifference--;
     }
-
     return yearsDifference;
   };
-
   const validateDocument = (document: Document, index: number) => {
     const isValidDocName = document.docName.trim() !== "";
-
     const isValidFile = document.file;
     validateField(index, "docName", document.docName);
     validateField(index, "file", document.file);
     return isValidDocName && isValidFile;
   };
-
   const validateField = (index: number, name: string, value: string) => {
     const newErrors = [...errors];
     if (name === "docName" || name === "file") {
@@ -279,13 +253,11 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
     }
     setErrors(newErrors);
   };
-
   const bindValues = async (policyForm: any) => {
     const yearDifference = calculateYearDifference(
       policyForm.registrationDate,
       policyForm.issueDate
     );
-
     if (yearDifference <= 0) {
       policyForm.vehicleAge = "0 year";
     } else if (yearDifference >= 1 && yearDifference <= 2) {
@@ -297,7 +269,6 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
     } else {
       policyForm.vehicleAge = null;
     }
-
     policyForm.relationshipManagerId =
       userData.role.toLowerCase() === "admin"
         ? selectedRMId
@@ -322,7 +293,6 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
         : policyForm.policyCreatedBy === "Direct"
         ? userData.name
         : selectedPartnerName;
-
     policyForm.createdBy = userData.name;
     policyForm.vehicleNumber = policyForm.vehicleNumber.toUpperCase();
     policyForm.rto = policyForm.vehicleNumber.substring(0, 4);
@@ -331,13 +301,11 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
     policyForm.brokerId = selectedBrokerId;
     policyForm.bookingRMId = userData.headRMId;
     const formData = new FormData();
-
     const addedKeys = new Map<string, string>();
     Object.keys(policyForm).forEach((key) => {
       const value = policyForm[key as keyof IAddEditPolicyForm];
       if (value !== undefined) {
-        // formData.append(key, value);
-        addedKeys.set(key, value); // Mark this key as added
+        addedKeys.set(key, value);
       }
     });
     documents.forEach((doc: Document) => {
@@ -345,16 +313,13 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
         addedKeys.set(doc.docName, doc.file);
       }
     });
-
     addedKeys.forEach((file, key) => {
       formData.append(key, file);
     });
     console.log("policyForm",policyForm);
     callAddPolicyAPI(formData);
   };
-
   const onSubmit = async (policyForm: any) => {
-    // validate conditions
     const formValid = documents.every((doc, index) =>
       validateDocument(doc, index)
     );
@@ -364,12 +329,10 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
     const diff = now.diff(createdOn);
     bookingForm.append("timer", diff.toString());
     callEditBookingApi(bookingForm, initialValues.bookingId!);
-
     if (policyForm.policyCreatedBy.toLowerCase() === "admin") {
       if (!selectedRMId) {
         setRMErrorMessage("Select Partner or RM");
       } else if (formValid) {
-        // Submit form
         bindValues(policyForm);
       }
     } else if (policyForm.policyCreatedBy !== "Direct") {
@@ -377,12 +340,10 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
       if (!selectedRMId) {
         setRMErrorMessage("Select Partner or RM");
       } else if (formValid) {
-        // Submit form
         bindValues(policyForm);
       }
     } else {
       if (formValid) {
-        // Submit form
         bindValues(policyForm);
       }
     }
@@ -395,7 +356,6 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
         leadId,
       });
       if (newLead.status === "success") {
-        // navigate(leadsPath());
       }
     } catch (error: any) {
       const err = await error;
@@ -427,34 +387,26 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
       } else {
         return { [FORM_ERROR]: `${newPolicy.message}` };
       }
-      //navigateToPolicies(`${newPolicy.message}`);
     } catch (error: any) {
       const err = await error;
       toast.error(err.message);
       return { [FORM_ERROR]: `${"message"}` };
     }
   };
-
-  // handle DocName change
   const handleChangeDocumentName = (newValue: any, index: any) => {
     const updatedDocuments = documents.map((doc, i) =>
       i === index ? { ...doc, docName: newValue?.value! } : doc
     );
     setDocuments(updatedDocuments);
   };
-
   const handleClickAddDocument = () => {
     setDocuments([...documents, { docName: "", file: "" }]);
   };
-
   const handleClickDeleteDocument = (index: any) => {
     setDocuments((prevDocuments) =>
       prevDocuments.filter((_, i) => i !== index)
     );
   };
-
-  // Validationon textbox
-  // To be passed to React Final Form
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
       schema = schema();
@@ -465,11 +417,9 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
       const errors = err.inner.reduce((formError: any, innerError: any) => {
         return setIn(formError, innerError.path, innerError.message);
       }, {}) as any;
-
       return errors;
     }
   };
-
   const addValidationSchema = yup.object({
     policyNumber: yup
       .string()
@@ -531,17 +481,13 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
       .nullable()
       .required("Policy Created By is required"),
   });
-
   const addValidate = validateFormValues(addValidationSchema);
-
   const handleSelectPolicyCreatedBy = (event: any, newValue: any) => {
     setSelectedPolicyCreatedBy(newValue ? newValue.label : "");
   };
-
   const handleSelectPaymentMode = (event: any, newValue: any) => {
     setSelectedPaymentMode(newValue ? newValue.label : "");
   };
-
   const handleSelectPartnerChange = async (e: any) => {
     if (e._id) {
       setSelectedPartnerId(e._id!);
@@ -555,7 +501,6 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
     setSelectedRMId(e._id!);
     setSelectedRMName(e.fullName!);
   };
-
   const handleChangePolicyNumber = async (e: any) => {
     const policyNumber = e.target.value;
     try {
@@ -621,8 +566,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                                     ? input.value
                                     : initialValues.policyType || null
                                 }
-                                //value={input.value || null}
-                                options={policyTypes} // Replace with your options array
+                                options={policyTypes}
                                 getOptionLabel={(option) =>
                                   typeof option === "string"
                                     ? option
@@ -662,7 +606,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                               <Autocomplete
                                 {...input}
                                 id="caseType"
-                                options={caseTypes} // Replace with your options array
+                                options={caseTypes}
                                 value={
                                   input.value !== undefined
                                     ? input.value
@@ -707,7 +651,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                                     ? input.value
                                     : initialValues.productType || null
                                 }
-                                options={products} // Replace with your Dynamic API
+                                options={products}
                                 getOptionLabel={(option) =>
                                   typeof option === "string"
                                     ? option
@@ -794,7 +738,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                                     ? option
                                     : option.companyName || ""
                                 }
-                                options={companies} // Replace with your options array
+                                options={companies}
                                 onChange={(event, newValue) => {
                                   input.onChange(
                                     newValue ? newValue.companyName : ""
@@ -836,8 +780,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                                     : `${option.brokerName} - ${option.brokerCode}` ||
                                       ""
                                 }
-                                options={brokers} // Replace with your options array
-                                // getOptionLabel={(option) => option.brokerName}
+                                options={brokers}
                                 onChange={(event, newValue) => {
                                   input.onChange(
                                     newValue ? newValue.brokerName : ""
@@ -881,8 +824,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                                     ? option
                                     : option.makeName || ""
                                 }
-                                options={makes} // Replace with your options array
-                                // getOptionLabel={(option) => option.makeName}
+                                options={makes}
                                 onChange={(event, newValue) => {
                                   input.onChange(
                                     newValue ? newValue.makeName : ""
@@ -925,7 +867,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                                       ? option
                                       : option.modelName || ""
                                   }
-                                  options={filteredSubModels} // Replace with your options array
+                                  options={filteredSubModels}
                                   onChange={(event, newValue) => {
                                     input.onChange(
                                       newValue ? newValue.modelName : ""
@@ -967,8 +909,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                                     ? option
                                     : option.fuelType || ""
                                 }
-                                options={fuelTypes} // Replace with your options array
-                                //getOptionLabel={(option) => option.fuelType}
+                                options={fuelTypes}
                                 onChange={(event, newValue) => {
                                   input.onChange(
                                     newValue ? newValue.fuelType : ""
@@ -998,7 +939,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                             <DatePicker
                               disableFuture
                               label="Registration Date"
-                              value={input.value || null} // Initialize the value if it's undefined
+                              value={input.value || null}
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
                                 <TextField
@@ -1021,7 +962,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                           <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
                               label="Issue Date"
-                              value={input.value || null} // Initialize the value if it's undefined
+                              value={input.value || null}
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
                                 <TextField
@@ -1045,7 +986,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                             <DatePicker
                               disablePast
                               label="End Date"
-                              value={input.value || null} // Initialize the value if it's undefined
+                              value={input.value || null}
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
                                 <TextField
@@ -1062,11 +1003,9 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                         )}
                       </Field>
                     </Grid>
-
                     <Grid item lg={4} md={4} sm={6} xs={12}>
                       <Field
                         name="vehicleNumber"
-                        //validate={validateVehicleNumber}
                       >
                         {({ input, meta }) => (
                           <TextField
@@ -1102,12 +1041,12 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                                 onChange={(event, newValue) => {
                                   input.onChange(
                                     newValue ? newValue.value : null
-                                  ); // Ensure newValue is not null before accessing .value
+                                  );
                                 }}
                                 options={[
                                   { label: "Yes", value: "yes" },
                                   { label: "No", value: "no" },
-                                ]} // Replace with your options array
+                                ]}
                                 renderInput={(params) => (
                                   <TextField
                                     {...params}
@@ -1142,7 +1081,6 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                         )}
                       </Field>
                     </Grid>
-
                     <Grid item lg={4} md={4} sm={6} xs={12}>
                       <Field name="tenure">
                         {({ input, meta }) => (
@@ -1159,7 +1097,6 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                         )}
                       </Field>
                     </Grid>
-
                     {isVisibile ? (
                       <Grid item lg={4} md={4} sm={6} xs={12}>
                         <Field name="weight">
@@ -1211,7 +1148,6 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                         )}
                       </Field>
                     </Grid>
-
                     <Grid item lg={4} md={4} sm={6} xs={12}>
                       <Field name="idv">
                         {({ input, meta }) => (
@@ -1264,7 +1200,6 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                         )}
                       </Field>
                     </Grid>
-
                     <Grid item lg={4} md={4} sm={6} xs={12}>
                       <Field name="netPremium">
                         {({ input, meta }) => (
@@ -1302,7 +1237,6 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                         )}
                       </Field>
                     </Grid>
-
                     <>
                       <Grid item lg={4} md={4} sm={6} xs={12}>
                         <Field name="fullName">
@@ -1346,7 +1280,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                               label="Enter Phone Number"
                               className="rounded-sm w-full"
                               variant="outlined"
-                              inputProps={{ maxLength: 10 }} // Set max length in the input field
+                              inputProps={{ maxLength: 10 }}
                               error={meta.touched && Boolean(meta.error)}
                               helperText={meta.touched && meta.error}
                             />
@@ -1374,10 +1308,10 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                                   onChange={(event, newValue) => {
                                     input.onChange(
                                       newValue ? newValue.value : null
-                                    ); // Ensure newValue is not null before accessing .value
+                                    );
                                     handleSelectPaymentMode(event, newValue);
                                   }}
-                                  options={paymentModes} // Replace with your options array
+                                  options={paymentModes}
                                   renderInput={(params) => (
                                     <TextField
                                       {...params}
@@ -1435,7 +1369,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                                     userData.role.toLowerCase() === "admin"
                                       ? policyCreatedBy
                                       : policyCreatedByAdmin
-                                  } // Replace with your options array
+                                  }
                                   onChange={(event, newValue) => {
                                     input.onChange(
                                       newValue ? newValue.value : ""
@@ -1483,7 +1417,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                                           : `${option.fullName} - ${option.partnerId}` ||
                                             ""
                                       }
-                                      options={partners} // Replace with your options array
+                                      options={partners}
                                       onChange={(event, newValue) => {
                                         input.onChange(
                                           newValue ? newValue.fullName : ""
@@ -1510,7 +1444,6 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                             </Field>
                           </Grid>
                         )}
-
                       {selectedPolicyCreatedBy &&
                         selectedPolicyCreatedBy === "Relationship Manager" && (
                           <Grid item lg={4} md={4} sm={6} xs={12}>
@@ -1533,7 +1466,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                                           : initialValues.relationshipManagerName ||
                                             null
                                       }
-                                      options={relationshipManagers} // Replace with your options array
+                                      options={relationshipManagers}
                                       onChange={(event, newValue) => {
                                         input.onChange(
                                           newValue ? newValue.fullName : ""
@@ -1588,7 +1521,6 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                                       (option) => option.value === doc.docName
                                     ) || null
                                   }
-                                  //value={doc.docName}
                                   onChange={(e, newValue) =>
                                     handleChangeDocumentName(newValue!, index)
                                   }
@@ -1680,5 +1612,4 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
     </>
   );
 };
-
 export default EditPolicyForm;

@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useCallback, useEffect, useState } from "react";
 import { header, SafeKaroUser } from "../../context/constant";
 import { Button, Grid, TextField, Tooltip as Tip } from "@mui/material";
@@ -32,7 +31,7 @@ import PictureAsPdfSharpIcon from "@mui/icons-material/PictureAsPdfSharp";
 import { bookingGenerateExcel } from "../../utils/DashboardExcel";
 import { bookingGeneratePDF } from "../../utils/DashboardPdf";
 import GetAttendanceCountService from "../../api/Role/GetAttendanceCount/GetAttendanceCountService";
-import { IEmployee } from "../HR/Attendance/IAttendnace";
+import { IEmployee } from "../HR/Attendance/IAttendance";
 import AttendanceCard from "../HR/Attendance/AttendanceRecord/AttendanceCard";
 import { AttendanceDataSvg, EmployeeSvg } from "./data/Svg";
 import { CartButton } from "./dashboard";
@@ -50,8 +49,7 @@ ChartJS.register(
   Tooltip,
   Legend
 );
-
-const bookingDashboard: React.FC = () => {
+const BookingDashboard: React.FC = () => {
   const [data, setData] = useState<IBookingData[]>([]);
   const [isVisible, setIsVisible] = useState(false);
   const [firstCart, setFirstCart] = useState(true);
@@ -79,7 +77,6 @@ const bookingDashboard: React.FC = () => {
     },
     [UserData.id]
   );
-
   const getAttendaceRecord = async () => {
     try {
       const res = await GetAttendanceCountService({ header, eId: UserData.id });
@@ -88,7 +85,6 @@ const bookingDashboard: React.FC = () => {
       console.log(error);
     }
   };
-
   const handleFirstCart = async () => {
     setFirstCart(true);
     setSelectedcard("1");
@@ -100,12 +96,9 @@ const bookingDashboard: React.FC = () => {
     setSelectedcard("2");
   };
   useEffect(() => {
-    // Calculate first day of current month
     const currentDate = new Date();
     const firstDayOfMonth = startOfMonth(currentDate);
-    // Calculate last day of current month
     const lastDayOfMonth = endOfMonth(currentDate);
-    // Format the dates if needed
     const formattedFirstDay = format(firstDayOfMonth, "yyyy-MM-dd");
     const formattedLastDay = format(lastDayOfMonth, "yyyy-MM-dd");
     const fetchData = () => {
@@ -115,9 +108,8 @@ const bookingDashboard: React.FC = () => {
     fetchData();
     const intervalId = setInterval(fetchData, 30000);
     return () => clearInterval(intervalId);
-    // eslint-disable-next-line
+     // eslint-disable-next-line 
   }, [GetDashboardCount]);
-
   const onSubmit = async (value: any) => {
     const utcStartDate = new Date(value.startDate!);
     const formattedStartDate = format(utcStartDate, "yyyy-MM-dd");
@@ -125,7 +117,6 @@ const bookingDashboard: React.FC = () => {
     const utcEndDate = new Date(value.endDate!);
     const formattedEndDate = format(utcEndDate, "yyyy-MM-dd");
     value.endDate = formattedEndDate;
-
     GetDashboardCount(value.startDate, value.endDate);
   };
   const handleDownloadPDF = () => {
@@ -134,7 +125,6 @@ const bookingDashboard: React.FC = () => {
   const handleDownloadExcel = () => {
     bookingGenerateExcel(data);
   };
-
   const renderCountBox = (
     title: string,
     count: number | string,
@@ -143,7 +133,6 @@ const bookingDashboard: React.FC = () => {
   ) => {
     const formattedCount =
       typeof count === "number" ? Math.round(count).toLocaleString() : "0";
-
     const content = (
       <div className="bg-white m-2 p-3 rounded-[10.33px] shadow-lg flex items-center justify-between transform transition-transform duration-200 hover:scale-105">
         <div>
@@ -163,14 +152,12 @@ const bookingDashboard: React.FC = () => {
         <img src={icon} alt={title} className="h-8 w-8" />
       </div>
     );
-
     return (
       <Grid item xs={12} sm={6} md={4} lg={3}>
         {path ? <Link to={path}>{content}</Link> : content}
       </Grid>
     );
   };
-
   return (
     <div className="bg-blue-200 h-screen p-2">
       <Grid container>
@@ -275,7 +262,6 @@ const bookingDashboard: React.FC = () => {
             </Tip>
           </div>
         </div>
-
         <Grid item lg={12}>
           {isVisible ? (
             <>
@@ -360,5 +346,4 @@ const bookingDashboard: React.FC = () => {
     </div>
   );
 };
-
-export default bookingDashboard;
+export default BookingDashboard;

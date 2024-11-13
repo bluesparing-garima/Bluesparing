@@ -5,7 +5,7 @@ import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import { SafeKaroUser, header } from "../../context/constant";
 import { IData } from "./IDashboard";
 import PictureAsPdfSharpIcon from "@mui/icons-material/PictureAsPdfSharp";
-import AdminCommisionChart from "./Chart/AdminCommisionChart";
+import AdminCommissionChart from "./Chart/AdminCommissionChart";
 import AdminPolicyChart from "./Chart/AdminPolicyChart";
 import { startOfMonth, endOfMonth, format } from "date-fns";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
@@ -20,7 +20,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { AttendanceDataSvg, MotorSvg, ViewAdminDataSvg, ViewChartSvg } from "./data/Svg";
 import AttendanceCard from "../HR/Attendance/AttendanceRecord/AttendanceCard";
 import GetAttendanceCountService from "../../api/Role/GetAttendanceCount/GetAttendanceCountService";
-import { IEmployee } from "../HR/Attendance/IAttendnace";
+import { IEmployee } from "../HR/Attendance/IAttendance";
 const RMDashboard: React.FC = () => {
   const [data, setData] = useState<IData[]>([]);
   const [isVisible, setIsVisible] = useState(false);
@@ -34,7 +34,6 @@ const RMDashboard: React.FC = () => {
   const [fourthCart, setFourthCart] = useState(false);
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
-
   const GetDashboardCount = useCallback(
     (startDate: string, endDate: string, rmId: string) => {
       GetRMDashboardService({
@@ -47,7 +46,6 @@ const RMDashboard: React.FC = () => {
           console.log("Data fetched", dashboardData);
           setIsVisible(true);
           setData(dashboardData.data);
-
           const entries = dashboardData.data.flatMap((item: any) =>
             Object.entries(item.categories)
           );
@@ -58,10 +56,10 @@ const RMDashboard: React.FC = () => {
           setIsVisible(true);
         });
     },
-    // eslint-disable-next-line
+     // eslint-disable-next-line 
     [header]
-  ); // Ensure all necessary dependencies are passed
-  const getAttendaceRecord = async () => {
+  );
+  const getAttendanceRecord = async () => {
     try {
       const res = await GetAttendanceCountService({ header, eId: UserData.id });
       setEmployee(res.data);
@@ -70,24 +68,20 @@ const RMDashboard: React.FC = () => {
     }
   };
   useEffect(() => {
-    const currentDate = new Date(); // Example current date
-    // Calculate first day of current month
+    const currentDate = new Date();
     const firstDayOfMonth = startOfMonth(currentDate);
-    // Calculate last day of current month
     const lastDayOfMonth = endOfMonth(currentDate);
-    // Format the dates if needed
     const formattedFirstDay = format(firstDayOfMonth, "yyyy-MM-dd");
     const formattedLastDay = format(lastDayOfMonth, "yyyy-MM-dd");
-    getAttendaceRecord()
+    getAttendanceRecord()
     const fetchData = () => {
       GetDashboardCount(formattedFirstDay, formattedLastDay, UserData.id);
     };
     fetchData();
     const intervalId = setInterval(fetchData, 30000);
     return () => clearInterval(intervalId);
-     // eslint-disable-next-line
+     // eslint-disable-next-line 
   }, [GetDashboardCount, UserData.id]);
-
   const renderCountBox = (title: any, count: any, icon: string, link?: any) => {
     const content = (
       <div className="bg-white cursor-pointer m-2 p-3 rounded-2xl shadow-lg flex items-center justify-between transform transition-transform duration-200 hover:scale-105">
@@ -107,32 +101,27 @@ const RMDashboard: React.FC = () => {
         </div>
       </div>
     );
-
     return (
       <Grid item xs={12} sm={6} md={4} lg={3}>
         {content}
       </Grid>
     );
   };
-
   const onSubmit = async (value: any) => {
     const utcStartDate = new Date(value.startDate!);
     const formattedStartDate = format(utcStartDate, "yyyy-MM-dd'T'HH:mm:ss");
     value.startDate = formattedStartDate;
-
     const utcEndDate = new Date(value.endDate!);
     const formattedEndDate = format(utcEndDate, "yyyy-MM-dd'T'HH:mm:ss");
     value.endDate = formattedEndDate;
     GetDashboardCount(value.startDate, value.endDate, UserData.id);
   };
-
   const handleFirstCart = async () => {
     setFirstCart(true);
     setThirdCart(false);
     setSecondCart(false);
     setSelectedcard("1");
   };
-
   const handleSecondCart = async () => {
     setSecondCart(true);
     setFirstCart(false);
@@ -157,7 +146,6 @@ const RMDashboard: React.FC = () => {
   };
   const handleCategoryCart = async (index: any, key?: any) => {
     setSelectedCategoryIndex(index);
-    //setSelectedCategoryKey(key);
   };
   const handleDownloadPDF = () => {
     rmGeneratePDF(data);
@@ -165,8 +153,6 @@ const RMDashboard: React.FC = () => {
   const handleDownloadExcel = () => {
     rmGenerateExcel(data);
   };
-
-  // Check if selected index is valid
   const isValidIndex = (index: any) =>
     index >= 0 && index < categoryEntries.length;
   console.log("isValidIndex", isValidIndex);
@@ -182,14 +168,12 @@ const RMDashboard: React.FC = () => {
                 iconPath={<MotorSvg isActive={selectedCard === "1"} />}
                 isSelected={firstCart}
               />
-
               <CartButton
                 onClick={handleSecondCart}
                 tooltipTitle="View Chart"
                 iconPath={<ViewChartSvg isActive={selectedCard === "2"} />}
                 isSelected={secondCart}
               />
-
               <CartButton
                 onClick={handleThirdCart}
                 tooltipTitle="View Admin Data"
@@ -198,7 +182,7 @@ const RMDashboard: React.FC = () => {
               />
               <CartButton
                 onClick={handleFourthCart}
-                tooltipTitle="Monthly Attendace "
+                tooltipTitle="Monthly Attendance "
                 iconPath={<AttendanceDataSvg isActive={selectedCard === "4"} />}
                 isSelected={fourthCart}
               />
@@ -215,7 +199,7 @@ const RMDashboard: React.FC = () => {
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                               <DatePicker
                                 disableFuture
-                                value={input.value || null} // Initialize the value if it's undefined
+                                value={input.value || null}
                                 onChange={(date) => {
                                   input.onChange(date);
                                 }}
@@ -240,7 +224,7 @@ const RMDashboard: React.FC = () => {
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                               <DatePicker
                                 disableFuture
-                                value={input.value || null} // Initialize the value if it's undefined
+                                value={input.value || null}
                                 onChange={(date) => {
                                   input.onChange(date);
                                 }}
@@ -289,7 +273,6 @@ const RMDashboard: React.FC = () => {
               </div>
             </div>
           </div>
-
           <Grid item md={12}>
             <>
               <Grid container spacing={2}>
@@ -343,8 +326,7 @@ const RMDashboard: React.FC = () => {
                                       )
                                     )}
                                   </div>
-
-                                  {/* Selected Category Data */}
+                                  {}
                                   <Grid container>
                                     {isValidIndex(selectedCategoryIndex) && (
                                       <Grid container sx={{ margin: 1 }}>
@@ -371,7 +353,6 @@ const RMDashboard: React.FC = () => {
                           ))}
                         </>
                       )}
-
                       {secondCart && (
                         <>
                           {data.map((item, index) => (
@@ -428,7 +409,7 @@ const RMDashboard: React.FC = () => {
                         <div className="bg-blue-200 md:p-7 p-2">
                           <Grid container spacing={2}>
                             <Grid item md={6}>
-                              <AdminCommisionChart />
+                              <AdminCommissionChart />
                             </Grid>
                             <Grid item md={6}>
                               <AdminPolicyChart />
@@ -439,15 +420,12 @@ const RMDashboard: React.FC = () => {
                           </Grid>
                         </div>
                       )}
-
                       {fourthCart && employee && (
                         <>
                           <Typography className="text-lg font-medium text-gray-800">
                             Monthly Attendance Record
                           </Typography>
                           <AttendanceCard employee={employee} />
-                          
-                        
                         </>
                       )}
                     </>
@@ -463,5 +441,4 @@ const RMDashboard: React.FC = () => {
     </div>
   );
 };
-
 export default RMDashboard;

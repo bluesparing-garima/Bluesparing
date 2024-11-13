@@ -10,29 +10,25 @@ import { generateCompanyViewExcel } from "../../../utils/DashboardExcel";
 const CompanyFilterPayOut = () => {
   const title = "Get Payment Details Of Partner -";
   const location = useLocation();
-  const selectedCategory = location.state as string; // This is where you access the passed state
-
+  const selectedCategory = location.state as string;
   const { partnerId } = useParams();
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [selectedPartnerCode, setSelectedPartnerCode] = useState<string>();
   const [selectedPartnerName, setSelectedPartnerName] = useState<string>();
   const [companyDetails, setCompanyDetails] = useState<ICompanyView[]>(
     []
-  ); // State for all credit debits
-
+  );
   useEffect(() => {
     filterMonthlyPartnerPaymentWithCompany(partnerId!);
-    // eslint-disable-next-line
+     // eslint-disable-next-line 
   }, [partnerId]);
-
   const filterMonthlyPartnerPaymentWithCompany = async (partnerId: string) => {
     GetPartnerWithCompanyPaymentService({
       header,
       partnerId: partnerId!,
       category: selectedCategory,
-    }) // Call API to fetch credit debits
+    })
       .then((partners) => {
-        // On successful API call
         setCompanyDetails(partners.data);
         setTotalAmount(partners.totalAmount);
         setSelectedPartnerCode(partners.partnerCode);
@@ -46,7 +42,6 @@ const CompanyFilterPayOut = () => {
   const handleDownloadExcel = () => {
     generateCompanyViewExcel(companyDetails)
   };
-
   return (
     <>
       <div className="bg-blue-200 p-7 mt-3">
@@ -72,7 +67,6 @@ const CompanyFilterPayOut = () => {
               </button>
             </Tooltip>
           </div>
-
           <Typography variant="body2" className="text-sm text-gray-600 mb-2">
             Total Amount{" "}
             <span className="text-safekaroDarkOrange">{totalAmount}</span>
@@ -95,9 +89,6 @@ const CompanyFilterPayOut = () => {
                       {item.totalPayOutCommission}
                     </Typography>
                   </div>
-                  {/* Uncomment if needed
-                <img src={icon} alt={title} className="h-8 w-8" />
-                */}
                 </div>
               </Grid>
             ))}
@@ -108,5 +99,4 @@ const CompanyFilterPayOut = () => {
     </>
   );
 };
-
 export default CompanyFilterPayOut;

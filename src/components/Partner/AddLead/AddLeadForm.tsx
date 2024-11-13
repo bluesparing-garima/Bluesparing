@@ -31,11 +31,9 @@ import addLeadsService from "../../../api/Leads/AddLead/addLeadsService";
 import { documentTypes, policyCreatedByAdmin } from "../../Policy/IPolicyData";
 import useGetPartners from "../../../Hooks/Partner/useGetPartners";
 import toast, { Toaster } from "react-hot-toast";
-
 export interface addLeadRequestFormProps {
   initialValues: ILeadForm;
 }
-
 const AddLeadFormCard = (props: addLeadRequestFormProps) => {
   let { initialValues } = props;
   const [leadErrorMessage, setLeadErrorMessage] = useState("");
@@ -45,7 +43,6 @@ const AddLeadFormCard = (props: addLeadRequestFormProps) => {
   const [errors, setErrors] = useState<{ docName: string; file: string }[]>([
     { docName: "", file: "" },
   ]);
-
   const navigate = useNavigate();
   let [partners] = useGetPartners({ header: header, role: "partner" });
   let [policyTypes] = useGetPolicyTypes({ header: header });
@@ -57,18 +54,14 @@ const AddLeadFormCard = (props: addLeadRequestFormProps) => {
   const [selectedPartnerId, setSelectedPartnerId] = useState("");
   const [selectedRMName, setSelectedRMName] = useState("");
   const [selectedRMId, setSelectedRMId] = useState("");
-
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let userData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
-
-  // handle DocName change
   const handleChangeDocumentName = (newValue: any, index: any) => {
     const updatedDocuments = documents.map((doc, i) =>
       i === index ? { ...doc, docName: newValue?.value! } : doc
     );
     setDocuments(updatedDocuments);
   };
-
   const validateField = (index: number, name: string, value: string) => {
     const newErrors = [...errors];
     if (name === "docName" || name === "file") {
@@ -81,18 +74,14 @@ const AddLeadFormCard = (props: addLeadRequestFormProps) => {
   };
   const validateDocument = (document: Document, index: number) => {
     const isValidDocName = document.docName.trim() !== "";
-    // const isValidFile = document.file !== undefined && document.file !== null && document.file.size <= 2 * 1024 * 1024; // Max size 2MB
     const isValidFile = document.file !== undefined && document.file !== null;
     validateField(index, "docName", document.docName);
     validateField(index, "file", document.file);
-
     return isValidDocName && isValidFile;
   };
-
   const handleClickAddDocument = () => {
     setDocuments([...documents, { docName: "", file: "" }]);
   };
-
   const handleClickDeleteDocument = (index: any) => {
     setDocuments((prevDocuments) =>
       prevDocuments.filter((_, i) => i !== index)
@@ -100,23 +89,19 @@ const AddLeadFormCard = (props: addLeadRequestFormProps) => {
     const newErrors = errors.filter((_, i) => i !== index);
     setErrors(newErrors);
   };
-
   const handleFileInputChange = (event: any, index: any) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
       const fileType = file.type;
       const fileSize = file.size;
       const newErrors = [...errors];
-
       if (!ALLOWED_FILE_TYPES.includes(fileType)) {
-        // setErrorMessage("Invalid file type. Please upload an image or a PDF.");
         newErrors[index] = {
           ...newErrors[index],
           file: "Invalid file type. Please upload an image or a PDF.",
         };
         setErrors(newErrors);
       } else if (fileSize > MAX_FILE_SIZE) {
-        //setErrorMessage("File size exceeds the maximum limit.");
         newErrors[index] = {
           ...newErrors[index],
           file: "File size exceeds the maximum limit",
@@ -127,8 +112,6 @@ const AddLeadFormCard = (props: addLeadRequestFormProps) => {
         const newDocuments = [...documents];
         newDocuments[index] = { ...newDocuments[index], file: file };
         setDocuments(newDocuments);
-
-        // Clear the error if the file is valid
         if (newErrors[index]) {
           newErrors[index].file = "";
         }
@@ -136,15 +119,11 @@ const AddLeadFormCard = (props: addLeadRequestFormProps) => {
       }
     }
   };
-
   const onSubmit = (leadForm: any, form: any) => {
-    //validate conditions
     const formValid = documents.every((doc, index) =>
       validateDocument(doc, index)
     );
-    // const formValid = documents.length >= 0 ? true : false;
     if (formValid) {
-      // Submit form
       setLeadErrorMessage("");
       leadForm.relationshipManagerId =
         userData.role.toLowerCase() === "partner"
@@ -162,13 +141,11 @@ const AddLeadFormCard = (props: addLeadRequestFormProps) => {
         userData.role.toLowerCase() === "partner"
           ? userData.name
           : selectedPartnerName;
- 
       leadForm.createdBy = userData.role;
       leadForm.leadCreatedBy =
         userData.role.toLowerCase() === "partner" ? "" : userData.id;
       leadForm.status =
         userData.role.toLowerCase() === "partner" ? "Requested" : "Accepted";
-
       const formData = new FormData();
       formData.append("category", leadForm.category);
       formData.append("policyType", leadForm.policyType);
@@ -186,7 +163,6 @@ const AddLeadFormCard = (props: addLeadRequestFormProps) => {
       formData.append("status", leadForm.status);
       formData.append("createdBy", userData.name);
       documents.forEach((doc: Document) => {
-        // formData.append(doc.docName, doc.docName);\
         if (doc.file) {
           formData.append(doc.docName, doc.file);
         }
@@ -194,7 +170,6 @@ const AddLeadFormCard = (props: addLeadRequestFormProps) => {
       callAddLeadAPI(formData, form);
     }
   };
-
   const callAddLeadAPI = async (lead: any, form: any) => {
     try {
       const newLead = await addLeadsService({
@@ -206,7 +181,6 @@ const AddLeadFormCard = (props: addLeadRequestFormProps) => {
       } else {
         return { [FORM_ERROR]: `error` };
       }
-      //navigateToPolicies(`${newLead.message}`);
     } catch (err:any) {
       const errObj = await err;
       toast.error(errObj.message)
@@ -214,7 +188,6 @@ const AddLeadFormCard = (props: addLeadRequestFormProps) => {
       return { [FORM_ERROR]: `error${errObj.message}` };
     }
   };
-  // To be passed to React Final Form
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
       schema = schema();
@@ -225,29 +198,24 @@ const AddLeadFormCard = (props: addLeadRequestFormProps) => {
       const errors = err.inner.reduce((formError: any, innerError: any) => {
         return setIn(formError, innerError.path, innerError.message);
       }, {});
-
       return errors;
     }
   };
-
   const validationSchema = yup.object().shape({
     policyType: yup.string().nullable().required("Policy Type is required"),
     caseType: yup.string().nullable().required("Case Type is required"),
     companyName: yup.string().nullable().required("Company Name is required"),
   });
-
   const addValidate = validateFormValues(validationSchema);
   const handleSelectPolicyCreatedBy = (event: any, newValue: any) => {
     setSelectedPolicyCreatedBy(newValue.label);
   };
-
   const handleSelectPartnerChange = async (e: any) => {
     setSelectedPartnerId(e._id!);
     setSelectedPartnerName(e.fullName!);
     setSelectedRMId(e.headRMId!);
     setSelectedRMName(e.headRM!);
   };
-
   return (
     <>
       <React.Fragment>
@@ -266,7 +234,6 @@ const AddLeadFormCard = (props: addLeadRequestFormProps) => {
                         <div style={{ color: "red" }}>{leadErrorMessage}</div>
                       )}
                     </Grid>
-
                     <Grid item lg={4} md={4} sm={6} xs={12}>
                       <Field name="policyType">
                         {({ input, meta }) => (
@@ -280,7 +247,7 @@ const AddLeadFormCard = (props: addLeadRequestFormProps) => {
                                     ? input.value
                                     : initialValues.policyType || null
                                 }
-                                options={policyTypes} // Replace with your options array
+                                options={policyTypes}
                                 getOptionLabel={(option) =>
                                   typeof option === "string"
                                     ? option
@@ -308,7 +275,6 @@ const AddLeadFormCard = (props: addLeadRequestFormProps) => {
                         )}
                       </Field>
                     </Grid>
-
                     <Grid item lg={4} md={4} sm={6} xs={12}>
                       <Field name="caseType">
                         {({ input, meta }) => (
@@ -322,7 +288,7 @@ const AddLeadFormCard = (props: addLeadRequestFormProps) => {
                                     ? input.value
                                     : initialValues.caseType || null
                                 }
-                                options={caseTypes} // Replace with your options array
+                                options={caseTypes}
                                 getOptionLabel={(option) =>
                                   typeof option === "string"
                                     ? option
@@ -368,7 +334,7 @@ const AddLeadFormCard = (props: addLeadRequestFormProps) => {
                                     ? option
                                     : option.companyName || ""
                                 }
-                                options={companies} // Replace with your options array
+                                options={companies}
                                 onChange={(event, newValue) => {
                                   input.onChange(
                                     newValue ? newValue.companyName : ""
@@ -401,7 +367,7 @@ const AddLeadFormCard = (props: addLeadRequestFormProps) => {
                                   {...input}
                                   getOptionLabel={(option) => option.label}
                                   value={input.value || null}
-                                  options={policyCreatedByAdmin} // Replace with your options array
+                                  options={policyCreatedByAdmin}
                                   onChange={(event, newValue) => {
                                     input.onChange(newValue);
                                     handleSelectPolicyCreatedBy(
@@ -438,14 +404,11 @@ const AddLeadFormCard = (props: addLeadRequestFormProps) => {
                                 <FormControl fullWidth size="small">
                                   <Autocomplete
                                     {...input}
-                                    // getOptionLabel={(option) =>
-                                    //   option.
-                                    // }
                                     value={input.value || null}
                                     getOptionLabel={(option) =>
                                       `${option.fullName} - ${option.partnerId}`
                                     }
-                                    options={partners} // Replace with your options array
+                                    options={partners}
                                     onChange={(event, newValue) => {
                                       input.onChange(newValue);
                                       handleSelectPartnerChange(newValue);
@@ -509,7 +472,6 @@ const AddLeadFormCard = (props: addLeadRequestFormProps) => {
                                     (option) => option.value === doc.docName
                                   ) || null
                                 }
-                                //value={doc.docName}
                                 onChange={(e, newValue) =>
                                   handleChangeDocumentName(newValue!, index)
                                 }

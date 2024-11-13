@@ -1,7 +1,7 @@
-/* eslint-disable react-hooks/rules-of-hooks */
+
 import React, { useCallback, useEffect, useState } from "react";
 import { header, SafeKaroUser } from "../../context/constant";
-import { Box, Button, Grid, Tooltip as Tip } from "@mui/material";
+import {  Button, Grid, Tooltip as Tip } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import {
   Chart as ChartJS,
@@ -29,14 +29,13 @@ import getOperationDashboardService from "../../api/Dashboard/GetOperationDashbo
 import { Link } from "react-router-dom";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import PictureAsPdfSharpIcon from "@mui/icons-material/PictureAsPdfSharp";
-import { rmGenerateExcel as opertaionGenerateExcel } from "../../utils/DashboardExcel";
-import { rmGeneratePDF as opertaionGeneratePdf } from "../../utils/DashboardPdf";
-import { IEmployee } from "../HR/Attendance/IAttendnace";
+import { rmGenerateExcel as operationGenerateExcel } from "../../utils/DashboardExcel";
+import { rmGeneratePDF as operationGeneratePdf } from "../../utils/DashboardPdf";
+import { IEmployee } from "../HR/Attendance/IAttendance";
 import GetAttendanceCountService from "../../api/Role/GetAttendanceCount/GetAttendanceCountService";
 import AttendanceCard from "../HR/Attendance/AttendanceRecord/AttendanceCard";
-import { AttendanceDataSvg, EmployeeSvg, MotorSvg } from "./data/Svg";
+import { AttendanceDataSvg, EmployeeSvg } from "./data/Svg";
 import { CartButton } from "./dashboard";
-import dayjs from "dayjs";
 import { Toaster } from "react-hot-toast";
 
 ChartJS.register(
@@ -50,7 +49,7 @@ ChartJS.register(
   Legend
 );
 
-const operationDashboard: React.FC = () => {
+const OperationDashboard: React.FC = () => {
   const [data, setData] = useState<IData[]>([]);
   const [isVisible, setIsVisible] = useState(false);
   const [employee, setEmployee] = useState<IEmployee | null>();
@@ -71,7 +70,7 @@ const operationDashboard: React.FC = () => {
       });
   }, [UserData.id]);
 
-  const getAttendaceRecord = async () => {
+  const getAttendanceRecord = async () => {
     try {
       const res = await GetAttendanceCountService({ header, eId: UserData.id });
       setEmployee(res.data);
@@ -80,17 +79,18 @@ const operationDashboard: React.FC = () => {
     }
   };
   const handleDownloadPDF = () => {
-    opertaionGeneratePdf(data);
+    operationGeneratePdf(data);
   };
   const handleDownloadExcel = () => {
-    opertaionGenerateExcel(data);
+    operationGenerateExcel(data);
   };
 
   useEffect(() => {
     GetDashboardCount();
-    getAttendaceRecord();
+    getAttendanceRecord();
     const intervalId = setInterval(GetDashboardCount, 30000);
     return () => clearInterval(intervalId);
+     // eslint-disable-next-line 
   }, [GetDashboardCount]);
 
   const renderCountBox = (
@@ -276,4 +276,4 @@ const operationDashboard: React.FC = () => {
   );
 };
 
-export default operationDashboard;
+export default OperationDashboard;

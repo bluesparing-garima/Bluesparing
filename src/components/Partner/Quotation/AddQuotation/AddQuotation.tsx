@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-//import { useTranslation } from "react-i18next";
 import {
   Typography,
   Paper,
@@ -33,12 +32,10 @@ import getQuotationByLeadIdService from "../../../../api/Quatotion/GetQuotationB
 import dayjs from "dayjs";
 import editLeadService from "../../../../api/Leads/EditLead/editLeadService";
 import toast, { Toaster } from "react-hot-toast";
-
 const AddQuotation = () => {
   const title = "Add Comment";
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let userData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
-
   const navigate = useNavigate();
   const { leadId } = useParams();
   const location = useLocation();
@@ -53,8 +50,6 @@ const AddQuotation = () => {
   const [viewQuotationDetails, setViewQuotationDetails] = useState<
     IQuotations[]
   >([]);
-
-
   useEffect(() => {
     if (!isAdd && leadId) {
       getQuotationByLeadIdService({ header, leadId })
@@ -64,20 +59,16 @@ const AddQuotation = () => {
         .catch(async(error) => {
           const err = await error
           toast.error(err.message)
-         
         });
     }
   }, [isAdd, leadId]);
-
   useEffect(() => {
     if (!isAdd && leadId) {
       getLeadByIdService({ header, leadId })
         .then((leadDetails) => {
           const leadVMToLeadForm = convertILeadVMToILeadForm(leadDetails.data);
-
           setEditLeadDetails(leadVMToLeadForm);
           const updatedDocuments: Document[] = [];
-
           if (leadDetails.data.rcBack) {
             updatedDocuments.push({
               docName: "rcBack",
@@ -137,11 +128,9 @@ const AddQuotation = () => {
         .catch(async(error) => {
           const err = await error
           toast.error(err.message)
-         
         });
     }
   }, [isAdd, leadId]);
-
   const handleFileInputChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -156,22 +145,16 @@ const AddQuotation = () => {
       }
     }
   };
-
   const onSubmit = (quotationForm: any, form: any) => {
-
     quotationForm.relationshipManagerId = userData.headRMId;
     quotationForm.relationshipManagerName = userData.headRM;
     quotationForm.leadId = leadId;
-
     quotationForm.createdBy = userData.name;
     quotationForm.quotationImage = image;
     quotationForm.status = quotationForm.status.value;
-
     const editFrom = new FormData();
     editFrom.append("id", leadId!);
-   
     editFrom.append("status", quotationForm.status);
-
     if (editLeadDetails) {
       quotationForm.partnerId = userData.partnerId;
       quotationForm.partnerName = userData.name;
@@ -191,8 +174,6 @@ const AddQuotation = () => {
       );
       editFrom.append("leadCreatedBy", editLeadDetails.leadCreatedBy);
     }
-
-
     if (leadId && editLeadDetails?.createdOn) {
       let updatedon = editLeadDetails?.updatedOn || editLeadDetails?.createdOn;
       handleStatus(
@@ -203,10 +184,8 @@ const AddQuotation = () => {
         editLeadDetails?.timer
       );
     }
-
     callAddQuotationAPI(quotationForm, form);
   };
-
   const callAddQuotationAPI = async (quotationForm: any, form: any) => {
     const formData = new FormData();
     for (const [key, value] of Object.entries(quotationForm)) {
@@ -227,7 +206,6 @@ const AddQuotation = () => {
     } catch (error:any) {
       const err = await error
       toast.error(err.message)
-     
     }
   };
   const callEditLeadAPI = async (leadForm: any, leadId: string) => {
@@ -238,7 +216,6 @@ const AddQuotation = () => {
         leadId,
       });
       if (newLead.status === "success") {
-        // navigate(leadsPath());
       }
     } catch (error:any) {
       const err = await error
@@ -254,7 +231,6 @@ const AddQuotation = () => {
   ) => {
     let now = Date.now();
     switch (status.toLocaleLowerCase()) {
-      // case "payment pending":
       case "payment verified":
         const regDate = dayjs(createdOn);
         let diffInMilliseconds = dayjs().diff(regDate);
@@ -272,22 +248,17 @@ const AddQuotation = () => {
           const ms = dayjs(createdOn).valueOf();
           const result = ms + diff;
           const formattedDate = dayjs(result).toISOString();
-
           editFrom.append("updatedOn", formattedDate);
           callEditLeadAPI(editFrom, id);
         }
-
         break;
-
       default:
         break;
     }
   };
-
   const handleClickBooking = () => {
     navigate(bookingRequestNewPath(leadId!));
   };
-
   return (
     <>
       <div className="bg-blue-200 md:p-7 p-2">
@@ -308,7 +279,7 @@ const AddQuotation = () => {
               Lead /
             </Link>
             <span className="text-grey-600 text-sm">{title}</span>
-            {/* Add a full-width grey line here */}
+            {}
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
@@ -319,8 +290,6 @@ const AddQuotation = () => {
               <Form
                 mt={3}
                 onSubmit={onSubmit}
-                //initialValues={initialValues}
-                //validate={addValidate}
                 render={({ handleSubmit, submitError, submitting }) => (
                   <form onSubmit={handleSubmit} noValidate>
                     <Grid container spacing={2}>
@@ -399,7 +368,6 @@ const AddQuotation = () => {
                         >
                           {"Documents"}
                         </Typography>
-
                         <Grid container>
                           {documents.map((document, index) => (
                             <Grid item md={4} key={index}>
@@ -471,7 +439,6 @@ const AddQuotation = () => {
                           </Typography>
                         </Grid>
                       </Grid>
-
                       <Grid item lg={4} md={4} sm={6} xs={12}>
                         <Field name="status">
                           {({ input, meta }) => (
@@ -485,7 +452,7 @@ const AddQuotation = () => {
                                     userData.role.toLowerCase() === "partner"
                                       ? policyStatusPartner
                                       : policyStatusOperation
-                                  } // Replace with your options array
+                                  }
                                   onChange={(event, newValue) => {
                                     input.onChange(newValue);
                                   }}
@@ -538,7 +505,6 @@ const AddQuotation = () => {
                           )}
                         </Field>
                       </Grid>
-
                       <Grid item lg={12} md={12} sm={12} xs={12}>
                         {submitError && (
                           <div className="error text-safekaroDarkOrange">
@@ -548,7 +514,6 @@ const AddQuotation = () => {
                         <Button variant="contained" type="submit">
                           submit
                         </Button>
-
                         {userData.role.toLowerCase() === "operation" ? (
                           <>
                             {editLeadDetails &&
@@ -578,5 +543,4 @@ const AddQuotation = () => {
     </>
   );
 };
-
 export default AddQuotation;

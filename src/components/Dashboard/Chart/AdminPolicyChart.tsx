@@ -17,27 +17,22 @@ import { header } from "../../../context/constant";
 import { MoreVertical } from "react-feather";
 import GetPolicyDataService from "../../../api/Dashboard/GetPolicyData/GetPolicyDataService";
 import toast, { Toaster } from "react-hot-toast";
-
 const Card = styled(MuiCard)`
   margin-bottom: 20px;
 `;
-
 const Button = styled(MuiButton)`
   margin-right: 10px;
 `;
-
 const ChartWrapper = styled.div`
   height: 250px;
   width: 100%;
 `;
-
 const AdminPolicyChart = () => {
   const anchorRef = React.useRef<HTMLButtonElement>(null);
   const [policyLabelData, setPolicyLabelData] = useState<string[]>([]);
   const [policyValueData, setPolicyValueData] = useState<number[]>([]);
   const [title, setTitle] = React.useState("");
   const [open, setOpen] = React.useState(false);
-
   const fetchData = async (filter: string) => {
     setPolicyLabelData([]);
     setPolicyValueData([]);
@@ -50,24 +45,19 @@ const AdminPolicyChart = () => {
       const PolicyData = commissions.data.map(
         (item: any) => Object.values(item)[0]
       );
-
       setPolicyLabelData(PolicyLabel);
       setPolicyValueData(PolicyData);
     } catch (error:any) {
       const err = await error
       toast.error(err.message)
-      
     }
   };
-
   useEffect(() => {
-    fetchData("week"); // Initial fetch with default filter "week"
+    fetchData("week");
   }, []);
-
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
   };
-
   const handleClose = (event: Event | React.SyntheticEvent) => {
     if (
       anchorRef.current &&
@@ -77,7 +67,6 @@ const AdminPolicyChart = () => {
     }
     setOpen(false);
   };
-
   const memberData = {
     labels: policyLabelData,
     datasets: [
@@ -93,7 +82,6 @@ const AdminPolicyChart = () => {
       },
     ],
   };
-
   const memberOptions = {
     maintainAspectRatio: false,
     plugins: {
@@ -120,7 +108,6 @@ const AdminPolicyChart = () => {
       },
     },
   };
-
   return (
     <>
     <Card>
@@ -189,5 +176,4 @@ const AdminPolicyChart = () => {
     </>
   );
 };
-
 export default AdminPolicyChart;

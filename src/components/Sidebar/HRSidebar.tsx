@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import logo from "../../assets/login_logo.png";
-import useLogoClickHandler from "../../utils/useLogoClickHandler";
 import { IconButton } from "@mui/material";
-
 type MenuItem = {
   id: number;
   label: string;
@@ -10,7 +8,6 @@ type MenuItem = {
   link?: string;
   subMenu?: SubMenuItem[];
 };
-
 type SubMenuItem = {
   id: number;
   svgIcon?: string;
@@ -83,14 +80,11 @@ const HRSidebar: React.FC<SidebarProps> = ({
         "M7 11c-1.1 0-2-.9-2-2V8c0-1.1.9-2 2-2s2 .9 2 2v1c0 1.1-.9 2-2 2zm-2 6.993L9 18c.55 0 1-.45 1-1v-2c0-1.65-1.35-3-3-3s-3 1.35-3 3v2c0 .552.448.993 1 .993zM19 18h-6c-.553 0-1-.447-1-1s.447-1 1-1h6c.553 0 1 .447 1 1s-.447 1-1 1zm0-4h-6c-.553 0-1-.448-1-1s.447-1 1-1h6c.553 0 1 .448 1 1s-.447 1-1 1zm0-4h-6c-.553 0-1-.448-1-1s.447-1 1-1h6c.553 0 1 .448 1 1s-.447 1-1 1z",
     },
   ];
-
   const [activeMenuItem, setActiveMenuItem] = useState<number | null>(null);
   const [openSubMenus, setOpenSubMenus] = useState<number[]>([]);
-
   const handleMenuItemClick = (itemId: number) => {
     setActiveMenuItem(itemId === activeMenuItem ? null : itemId);
   };
-
   const toggleSubMenu = (parentId: number) => {
     if (openSubMenus.includes(parentId)) {
       setOpenSubMenus(openSubMenus.filter((id) => id !== parentId));
@@ -98,9 +92,6 @@ const HRSidebar: React.FC<SidebarProps> = ({
       setOpenSubMenus([...openSubMenus, parentId]);
     }
   };
-
-  const handleLogoClick = useLogoClickHandler();
-
   return (
     <div
       className={`${
@@ -238,5 +229,4 @@ const HRSidebar: React.FC<SidebarProps> = ({
     </div>
   );
 };
-
 export default HRSidebar;

@@ -1,24 +1,12 @@
-import React, {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  useMemo,
-} from "react";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { header, SafeKaroUser } from "../../context/constant";
 import NotificationBadge from "../../utils/NotificationBadge";
 import { Link } from "react-router-dom";
-import {
-  Avatar,
-  Button,
-  CircularProgress,
-  Menu,
-  MenuItem,
-} from "@mui/material";
+import { Avatar, Button, Menu, MenuItem } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import getRankBadgeDetailsService from "../../api/Rank/RankBadge/getRankBadgeDetailsService";
 import toast from "react-hot-toast";
-import { IAttendance } from "../HR/Attendance/IAttendnace";
+import { IAttendance } from "../HR/Attendance/IAttendance";
 import dayjs from "dayjs";
 import GetTodayAttendanceRecordService from "../../api/HR/Attendance/GetTodayAttendanceRecord/GetEmployeeDepartmentService";
 import MarkInTime from "../HR/Attendance/MarkAttendance/MarkInTime";
@@ -30,7 +18,6 @@ import {
   getNotifications,
   storeNotifications,
 } from "../../utils/NotificationSessionHandler";
-
 interface HeaderProps {
   isSidebarOpen: boolean;
   setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -40,12 +27,10 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
   const [userRank, setUserRank] = useState<any>();
   const storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   const UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
-  const audioRef = useRef<HTMLElement | null>(null);
   const [attendance, setAttendance] = useState<IAttendance | null>();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const [notificationData, setNotificationData] = useState<INotification[]>([]);
-
   const accessNotification = useMemo(() => {
     const role = UserData.role.toLowerCase();
     switch (role) {
@@ -59,7 +44,6 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
         return ["booking"];
     }
   }, [UserData.role]);
-
   const debounce = <T extends (...args: any[]) => void>(
     func: T,
     delay: number
@@ -79,7 +63,7 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
       UserData.role.toLowerCase()
     );
   }, [UserData.role]);
-
+  // eslint-disable-next-line
   const fetchNotification = useCallback(
     debounce(async () => {
       try {
@@ -89,7 +73,6 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
           type: "success",
           isView: false,
         });
-
         if (res.status === "success") {
           const filterData = res.data.filter(
             (ele: INotification) => ele.notificationFor === UserData.id
@@ -107,7 +90,6 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
               (ele: INotification) => !filterDataIds.has(ele._id)
             );
             storeNotifications(UserData.id, filterData);
-
             extraElements.forEach((ele: INotification) => {
               handlePlay(ele.title || "");
             });
@@ -116,16 +98,14 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
       } catch (error: any) {
         toast.error(error.message);
       }
-    }, 300), // Adjust the delay as necessary
+    }, 300),
     [UserData.id, accessNotification]
   );
-
   const fetchNotificationData = useCallback(() => {
     if (isViewNotification()) {
       fetchNotification();
     }
   }, [fetchNotification, isViewNotification]);
-
   useEffect(() => {
     if (isViewNotification()) {
       fetchNotificationData();
@@ -133,7 +113,6 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
       return () => clearInterval(intervalId);
     }
   }, [fetchNotificationData, isViewNotification]);
-
   const fetchData = async () => {
     try {
       const now = dayjs().format("YYYY-MM-DD");
@@ -147,18 +126,16 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
       console.log(error);
     }
   };
-
   const canMarkAttendance = useMemo(() => {
     const role = UserData.role.toLowerCase();
     return role !== "admin" && role !== "partner";
   }, [UserData.role]);
-
   useEffect(() => {
     if (userData) {
       fetchData();
     }
+    // eslint-disable-next-line
   }, [userData]);
-
   useEffect(() => {
     if (storedTheme) {
       const newData = JSON.parse(storedTheme);
@@ -175,33 +152,27 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
       }
     }
   }, [storedTheme]);
-
   const signOut = useCallback(() => {
     localStorage.clear();
     sessionStorage.clear();
     handleClose();
   }, []);
-
   const showToast = (msg: string) => {
     toast.custom((t) => <CustomToast t={t} message={msg} />);
   };
-
   const handlePlay = (msg: string) => {
     showToast(msg);
   };
-
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
-
   const handleClose = () => {
     setAnchorEl(null);
   };
-
-  const handleSidebar = ()=>{
+  const handleSidebar = () => {
     setSidebarOpen((prev) => !prev);
-    console.log('clicked');
-  }
+    console.log("clicked");
+  };
   return (
     <>
       <div className="flex items-center justify-between bg-white py-2 px-2">
@@ -301,7 +272,6 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
               >
                 <MenuItem onClick={handleClose}>Profile</MenuItem>
               </Link>
-
               {canMarkAttendance && (
                 <div>
                   <MenuItem onClick={handleClose}>
@@ -318,7 +288,6 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
                   </MenuItem>
                 </div>
               )}
-
               <Link to="/" onClick={signOut}>
                 <MenuItem>Logout</MenuItem>
               </Link>
@@ -326,14 +295,7 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
           </div>
         </div>
       </div>
-      {/* {isViewNotification() && (
-
-          <audio ref={audioRef} autoPlay>
-            <source src="/sound.mp3" type="audio/mpeg" />
-          </audio>
-      )} */}
     </>
   );
 });
-
 export default Header;

@@ -26,10 +26,8 @@ const RMGetMotorPolicies = () => {
   const endTime = sessionStorage.getItem("endDate");
   const [isLoading, setIsLoading] = useState(false);
   const [motorPolicies, setMotorPolicies] = useState<IViewPolicy[]>([]);
-
   const [stDate, setStDate] = useState(startTime || "");
   const [eDate, setEdate] = useState(endTime || "");
-
   const parsedData = useMemo(
     () =>
       motorPolicies?.map(
@@ -114,30 +112,27 @@ const RMGetMotorPolicies = () => {
             payOutAmount: motorPolicy.payOutAmount,
             payOutPaymentStatus: motorPolicy.payOutPaymentStatus,
             other: motorPolicy.other,
-            // documents: motorPolicy.documents,
-            // forceUpdate: forcedRenderCount,
           } as unknown as IViewPolicy)
       ) ?? [],
     [motorPolicies]
   );
-
   const columns = useMemo<MRT_ColumnDef<IViewPolicy>[]>(
     () =>
       [
         {
           header: "Booking Time",
           accessorKey: "bookingTimer",
-          visible: userData.role.toLowerCase() === "admin", //Conditional visibility
+          visible: userData.role.toLowerCase() === "admin",
           Cell: ({ row }: { row: { original: IViewPolicy } }) => (
             <Timer timer={row.original.bookingTimer!} />
           ),
           size: 200,
         },
         {
-          accessorKey: "leadTimer", //normal accessorKey
+          accessorKey: "leadTimer",
           header: "Lead Time",
           size: 100,
-          visible: userData.role === "admin", // Conditional visibility
+          visible: userData.role === "admin",
           Cell: ({ row }: { row: { original: IViewPolicy } }) => (
             <Timer timer={row.original.bookingTimer!} />
           ),
@@ -157,39 +152,38 @@ const RMGetMotorPolicies = () => {
           header: "Case Type",
           size: 100,
         },
-
         {
           accessorKey: "category",
           header: "Category",
           size: 100,
         },
         {
-          accessorKey: "productType", //normal accessorKey
+          accessorKey: "productType",
           header: "Product",
           size: 100,
         },
         {
-          accessorKey: "subCategory", //normal accessorKey
+          accessorKey: "subCategory",
           header: "Sub Category",
           size: 100,
         },
         {
-          accessorKey: "companyName", //normal accessorKey
+          accessorKey: "companyName",
           header: "Company Name",
           size: 100,
         },
         {
-          accessorKey: "vehicleNumber", //normal accessorKey
+          accessorKey: "vehicleNumber",
           header: "Vehicle Number",
           size: 100,
         },
         {
-          accessorKey: "broker", //normal accessorKey
+          accessorKey: "broker",
           header: "Broker",
           size: 100,
         },
         {
-          accessorKey: "partnerName", //normal accessorKey
+          accessorKey: "partnerName",
           header: "Partner Name",
           size: 100,
         },
@@ -279,27 +273,27 @@ const RMGetMotorPolicies = () => {
           size: 100,
         },
         {
-          accessorKey: "payInODPercentage", //normal accessorKey
+          accessorKey: "payInODPercentage",
           header: "PayIn OD %",
           size: 100,
         },
         {
-          accessorKey: "payInTPPercentage", //normal accessorKey
+          accessorKey: "payInTPPercentage",
           header: "PayIn TP %",
           size: 100,
         },
         {
-          accessorKey: "payInCommission", //normal accessorKey
+          accessorKey: "payInCommission",
           header: "PayIn Amount",
           size: 100,
         },
         {
-          accessorKey: "payInAmount", //normal accessorKey
+          accessorKey: "payInAmount",
           header: "PayIn Paid Amount",
           size: 100,
         },
         {
-          accessorKey: "payInBalance", //normal accessorKey
+          accessorKey: "payInBalance",
           header: "PayIn Balance",
           size: 100,
         },
@@ -307,70 +301,66 @@ const RMGetMotorPolicies = () => {
           header: "Revenue OD %",
           accessorKey: "revenue",
           Cell: ({ row }: { row: { original: IViewPolicy } }) => {
-            // Assuming `payInCommission` and `payOutCommission` are available in `row.original`
             const { payInODPercentage, payOutODPercentage } = row.original;
             const revenue =
               (payInODPercentage ?? 0) - (payOutODPercentage ?? 0);
-            return <span>{Math.round(revenue * 100) / 100}</span>; // Rounded to 2 decimal places
+            return <span>{Math.round(revenue * 100) / 100}</span>;
           },
-          size: 150, // Adjust size as needed
+          size: 150,
         },
         {
           header: "Revenue TP %",
           accessorKey: "revenue",
           Cell: ({ row }: { row: { original: IViewPolicy } }) => {
-            // Assuming `payInCommission` and `payOutCommission` are available in `row.original`
             const { payInTPPercentage, payOutTPPercentage } = row.original;
             const revenue =
               (payInTPPercentage ?? 0) - (payOutTPPercentage ?? 0);
-            return <span>{Math.round(revenue * 100) / 100}</span>; // Rounded to 2 decimal places
+            return <span>{Math.round(revenue * 100) / 100}</span>;
           },
-          size: 150, // Adjust size as needed
+          size: 150,
         },
         {
           header: "Revenue Amount",
           accessorKey: "revenue",
-          // Assuming `payInCommission` and `payOutCommission` are available in `row.original`
           Cell: ({ row }: { row: { original: IViewPolicy } }) => {
             const { payInCommission, payOutCommission } = row.original;
             const revenue = (payInCommission ?? 0) - (payOutCommission ?? 0);
-            return <span>{Math.round(revenue * 100) / 100}</span>; // Rounded to 2 decimal places
+            return <span>{Math.round(revenue * 100) / 100}</span>;
           },
-          size: 150, // Adjust size as needed
+          size: 150,
         },
         {
-          accessorKey: "fullName", //normal accessorKey
+          accessorKey: "fullName",
           header: "Full Name",
           size: 100,
         },
         {
-          accessorKey: "emailId", //normal accessorKey
+          accessorKey: "emailId",
           header: "Email",
           size: 100,
         },
         {
-          accessorKey: "phoneNumber", //normal accessorKey
+          accessorKey: "phoneNumber",
           header: "Phone Number",
           size: 100,
         },
         {
-          accessorKey: "vehicleAge", //normal accessorKey
+          accessorKey: "vehicleAge",
           header: "Vehicle Age",
           size: 100,
         },
         {
-          accessorKey: "mfgYear", //normal accessorKey
+          accessorKey: "mfgYear",
           header: "MFG Year",
           size: 100,
         },
         {
-          accessorKey: "tenure", //normal accessorKey
+          accessorKey: "tenure",
           header: "Tenure",
           size: 100,
         },
-
         {
-          accessorKey: "issueDate", //normal accessorKey
+          accessorKey: "issueDate",
           header: "Issue Date",
           size: 100,
         },
@@ -382,19 +372,16 @@ const RMGetMotorPolicies = () => {
       ].filter((column) => column.visible !== false),
     [userData.role]
   );
-
   useEffect(() => {
     if (stDate) {
       sessionStorage.setItem("startDate", stDate);
     }
   }, [stDate]);
-
   useEffect(() => {
     if (eDate) {
       sessionStorage.setItem("endDate", eDate);
     }
   }, [eDate]);
-
   useEffect(() => {
     const currentDate = new Date();
     const firstDayOfMonth = startOfMonth(currentDate);
@@ -407,9 +394,7 @@ const RMGetMotorPolicies = () => {
     if (eDate) {
       formattedLastDay = eDate;
     }
-
     getPolicies(formattedFirstDay, formattedLastDay);
-    // eslint-disable-next-line
   }, []);
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
@@ -446,7 +431,6 @@ const RMGetMotorPolicies = () => {
     startDate: yup.string().nullable().required("Start Date is required"),
     endDate: yup.string().nullable().required("End Date is required"),
   });
-
   const validate = validateFormValues(validationSchema);
   const onSubmit = async () => {
     if (stDate && eDate) {
@@ -491,7 +475,6 @@ const RMGetMotorPolicies = () => {
               style={{ width: "100%", borderColor: "grey-800" }}
             />
           </Typography>
-
           <React.Fragment>
             <Form
               validate={validate}
@@ -499,7 +482,7 @@ const RMGetMotorPolicies = () => {
               render={({ handleSubmit, submitting, errors, values }) => (
                 <form onSubmit={handleSubmit} noValidate>
                   <Grid container spacing={2}>
-                    {/* Account Code Selection */}
+                    {}
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Field name="startDate">
                         {({ input, meta }) => {
@@ -537,7 +520,7 @@ const RMGetMotorPolicies = () => {
                               <DatePicker
                                 disableFuture
                                 label="End Date"
-                                value={dayjs(eDate)} // Initialize the value if it's undefined
+                                value={dayjs(eDate)}
                                 onChange={(date) =>
                                   handleEndDateChange(date, input)
                                 }
@@ -557,7 +540,6 @@ const RMGetMotorPolicies = () => {
                         }}
                       </Field>
                     </Grid>
-
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Button
                         type="submit"
@@ -574,7 +556,6 @@ const RMGetMotorPolicies = () => {
               )}
             />
           </React.Fragment>
-
           <MaterialReactTable
             state={{ isLoading }}
             columns={columns}
@@ -586,5 +567,4 @@ const RMGetMotorPolicies = () => {
     </>
   );
 };
-
 export default RMGetMotorPolicies;

@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { useEffect, useRef, useState } from "react";
 import {
   TextField,
@@ -32,7 +31,6 @@ import useGetNewsCategories from "../../../../Hooks/website/Category/useGetNewsC
 export interface addPolicyTypeFormProps {
   initialValues: INewsForm;
 }
-// Custom Toolbar for ReactQuill
 const CustomToolbar = () => (
   <div id="toolbar">
     <select className="ql-header" defaultValue="" onChange={(e) => e.persist()}>
@@ -44,7 +42,7 @@ const CustomToolbar = () => (
     <button className="ql-italic" />
     <button className="ql-underline" />
     <button className="ql-link" />
-    <button className="ql-image" /> {/* Image button */}
+    <button className="ql-image" /> {}
   </div>
 );
 const AddNewsForm = (props: addPolicyTypeFormProps) => {
@@ -58,10 +56,9 @@ const AddNewsForm = (props: addPolicyTypeFormProps) => {
   const pathName = location.pathname.split("/");
   const isAddEdit = pathName[pathName.length - 1] as string;
   const isAdd = isAddEdit === ADD;
-  const [selectedFile, setSelectedFile] = useState<File | null>(null); // State for file upload
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [editorContent, setEditorContent] = useState<string>("");
   const quillRef = useRef<ReactQuill | null>(null);
-
   useEffect(() => {
     if (initialValues.description) {
       setEditorContent(initialValues.description);
@@ -70,25 +67,19 @@ const AddNewsForm = (props: addPolicyTypeFormProps) => {
   useEffect(() => {
     if (quillRef.current) {
       const editor = quillRef.current.getEditor();
-
-      // Use MutationObserver instead of deprecated events
       const observer = new MutationObserver(() => {
         console.log("DOM changed");
       });
-
       const editorContainer = editor.root;
       observer.observe(editorContainer, {
         childList: true,
         subtree: true,
       });
-
-      // Cleanup the observer when the component unmounts
       return () => {
         observer.disconnect();
       };
     }
   }, [quillRef]);
-  // To be passed to React Final Form
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
       schema = schema();
@@ -99,11 +90,9 @@ const AddNewsForm = (props: addPolicyTypeFormProps) => {
       const errors = err.inner.reduce((formError: any, innerError: any) => {
         return setIn(formError, innerError.path, innerError.message);
       }, {});
-
       return errors;
     }
   };
-
   const validationSchema = yup.object().shape({
     date: yup.string().required("Date is required").nullable(),
     website: yup.string().nullable().required("Website is required"),
@@ -119,9 +108,7 @@ const AddNewsForm = (props: addPolicyTypeFormProps) => {
       .min(1, "Author must be at least 1 character")
       .max(100, "Author cannot exceed 100 characters"),
   });
-
   const validate = validateFormValues(validationSchema);
-
   const onSubmit = async (newsForm: INewsForm) => {
     console.log("newsForm", newsForm);
     const isRegDateValid = dayjs(newsForm.date).isValid();
@@ -130,7 +117,7 @@ const AddNewsForm = (props: addPolicyTypeFormProps) => {
       return;
     }
     const formData = new FormData();
-    formData.append("image", selectedFile!); // Append the selected file to form data
+    formData.append("image", selectedFile!);
     let newsFormDate = dayjs(newsForm.date).format(DAY_FORMAT);
     formData.append("date", newsFormDate!);
     formData.append("categoryId", selectedCategoryId!);
@@ -140,20 +127,17 @@ const AddNewsForm = (props: addPolicyTypeFormProps) => {
     formData.append("description", editorContent);
     formData.append("category", newsForm.category!);
     formData.append("createdBy", "Admin");
-
     if (isAdd) {
       callAddNewsAPI(formData);
     } else {
       callEditNewsAPI(formData);
     }
   };
-
   const navigateToNews = (message: string) => {
     navigate(newsPath(), {
       state: message,
     });
   };
-
   const callAddNewsAPI = async (newsForm: any) => {
     try {
       const news = await addNewsServices({ header, news: newsForm });
@@ -163,7 +147,6 @@ const AddNewsForm = (props: addPolicyTypeFormProps) => {
       toast.error(err.message);
     }
   };
-
   const callEditNewsAPI = async (newsForm: any) => {
     try {
       const news = await editNewsService({ header, news: newsForm, newsId });
@@ -173,7 +156,6 @@ const AddNewsForm = (props: addPolicyTypeFormProps) => {
       toast.error(err.message);
     }
   };
-  // Handle file input for image upload
   const handleFileInputChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -189,43 +171,9 @@ const AddNewsForm = (props: addPolicyTypeFormProps) => {
       setErrorMessage("Invalid file type or file size exceeds the limit.");
     }
   };
-
-  // Handle content change from the editor
   const handleEditorChange = (content: string) => {
-    setEditorContent(content); // Set the content safely
+    setEditorContent(content);
   };
-
-  // // Custom image handler to upload and insert images
-  // const imageHandler = () => {
-  //   const input = document.createElement("input");
-  //   input.setAttribute("type", "file");
-  //   input.setAttribute("accept", "image/*");
-  //   input.click();
-
-  //   input.onchange = async () => {
-  //     const file = input.files ? input.files[0] : null;
-  //     if (file) {
-  //       const reader = new FileReader();
-  //       reader.onload = () => {
-  //         const quillEditor = quillRef.current?.getEditor();
-  //         const range = quillEditor?.getSelection(true); // Safe selection
-  //         quillEditor?.insertEmbed(range?.index || 0, "image", reader.result); // Insert image
-  //       };
-  //       reader.readAsDataURL(file);
-  //     }
-  //   };
-  // };
-
-  // Define custom toolbar and handler for the image upload
-  // const modules = {
-  //   toolbar: {
-  //     container: "#toolbar",
-  //     handlers: {
-  //       image: imageHandler, // Attach custom image handler
-  //     },
-  //   },
-  // };
-
   return (
     <>
       <Form
@@ -248,13 +196,12 @@ const AddNewsForm = (props: addPolicyTypeFormProps) => {
                               ? input.value
                               : initialValues.category || null
                           }
-                          options={categories} // Replace with your options array
+                          options={categories}
                           getOptionLabel={(option) =>
                             typeof option === "string"
                               ? option
                               : option.category || ""
                           }
-                          //getOptionLabel={(option) => option.category}
                           onChange={(event, newValue) => {
                             input.onChange(newValue.category);
                             setSelectedCategoryId(newValue._id);
@@ -301,7 +248,7 @@ const AddNewsForm = (props: addPolicyTypeFormProps) => {
                             options={[
                               { label: "Safekaro", value: "safekaro" },
                               { label: "BlueSparing", value: "bluesparing" },
-                            ]} // Replace with your options array
+                            ]}
                             renderInput={(params) => (
                               <TextField
                                 {...params}
@@ -359,7 +306,7 @@ const AddNewsForm = (props: addPolicyTypeFormProps) => {
                       <DatePicker
                         disableFuture
                         label="Publish Date"
-                        value={input.value || null} // Initialize the value if it's undefined
+                        value={input.value || null}
                         onChange={(date) => input.onChange(date)}
                         renderInput={(params: any) => (
                           <TextField
@@ -394,34 +341,14 @@ const AddNewsForm = (props: addPolicyTypeFormProps) => {
                 )}
               </Grid>
               <Grid item lg={12} md={12} sm={12} xs={12}>
-                {/* <Field name="description">
-                  {({ input, meta }) => (
-                    <TextField
-                      {...input}
-                      label="Enter Description"
-                      type="text"
-                      variant="outlined"
-                      size="small"
-                      rows={4}
-                      multiline
-                      className="rounded-sm w-full"
-                      error={meta.touched && Boolean(meta.error)}
-                      helperText={meta.touched && meta.error}
-                    />
-                  )}
-                </Field> */}
                 <CustomToolbar />
                 <ReactQuill
-                  ref={quillRef} // Attach the ref to the Quill instance
-                  value={editorContent} // Bind the editor content
-                  onChange={handleEditorChange} // Handle content changes
-                  //modules={modules} // Attach custom toolbar and image handler
-                  theme="snow" // Use the "snow" theme
+                  ref={quillRef}
+                  value={editorContent}
+                  onChange={handleEditorChange}
+                  theme="snow"
                   placeholder="Write something amazing..."
                 />
-                {/* <div>
-                  <div dangerouslySetInnerHTML={{ __html: editorContent }} />{" "}
-                </div> */}
               </Grid>
               <Grid item xs={12}>
                 <Button
@@ -442,5 +369,4 @@ const AddNewsForm = (props: addPolicyTypeFormProps) => {
     </>
   );
 };
-
 export default AddNewsForm;

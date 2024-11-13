@@ -18,7 +18,6 @@ import * as yup from "yup";
 import useGetCompanies from "../../../Hooks/Company/useGetCompanies";
 import useGetPolicyTypes from "../../../Hooks/Policy/useGetPolicyTypes";
 import useGetBrokers from "../../../Hooks/Broker/useGetBrokers";
-
 const PolicyPDFFormCard = () => {
   const location = useLocation();
   let [companies] = useGetCompanies({ header: header });
@@ -70,7 +69,6 @@ const PolicyPDFFormCard = () => {
         formData.append("companyName", values.companyName!);
         formData.append("brokerId", values.broker._id!);
         formData.append("broker", values.broker.brokerName!);
-
         motorPolicyPDFService({ header, file: formData })
           .then((response) => {
             if (response) {
@@ -92,10 +90,7 @@ const PolicyPDFFormCard = () => {
   return (
     <>
       <Card>
-        {/* <div>
-            <h1>Excel Sample Download</h1>
-            <DownloadExcel />
-          </div> */}
+       
         <CardContent>
           <Form
             onSubmit={onSubmit}
@@ -114,8 +109,7 @@ const PolicyPDFFormCard = () => {
                               value={
                                 input.value !== undefined ? input.value : null
                               }
-                              //value={input.value || null}
-                              options={policyTypes} // Replace with your options array
+                              options={policyTypes}
                               getOptionLabel={(option) =>
                                 typeof option === "string"
                                   ? option
@@ -159,7 +153,7 @@ const PolicyPDFFormCard = () => {
                                   ? option
                                   : option.companyName || ""
                               }
-                              options={companies} // Replace with your options array
+                              options={companies}
                               onChange={(event, newValue) => {
                                 input.onChange(
                                   newValue ? newValue.companyName : ""
@@ -199,8 +193,7 @@ const PolicyPDFFormCard = () => {
                                   : `${option.brokerName} - ${option.brokerCode}` ||
                                     ""
                               }
-                              options={brokers} // Replace with your options array
-                              // getOptionLabel={(option) => option.brokerName}
+                              options={brokers}
                               onChange={(event, newValue) => {
                                 input.onChange(newValue ? newValue : "");
                               }}
@@ -345,5 +338,4 @@ const PolicyPDFFormCard = () => {
     </>
   );
 };
-
 export default PolicyPDFFormCard;

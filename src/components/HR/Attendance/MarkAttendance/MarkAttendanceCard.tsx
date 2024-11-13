@@ -11,7 +11,7 @@ import {
 import CancelIcon from "@mui/icons-material/Cancel";
 import AccessAlarmIcon from "@mui/icons-material/AccessAlarm";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import { IAttendance, IEmployee } from "../IAttendnace";
+import { IAttendance, IEmployee } from "../IAttendance";
 import duration from "dayjs/plugin/duration";
 import MarkInTime from "./MarkInTime";
 import MarkOutTime from "./MarkOutTime";
@@ -161,8 +161,6 @@ const MarkAttendanceCard: React.FC<AttendanceCardProps> = ({
               </Typography>
             </div>
           </div>
-
-          {/* Today's Attendance */}
           <Typography
             variant="body2"
             className="mt-4"

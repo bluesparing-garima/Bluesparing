@@ -3,22 +3,17 @@ import { SafeKaroUser } from "../../../../context/constant";
 import GetTodayAttendanceRecordService from "../../../../api/HR/Attendance/GetTodayAttendanceRecord/GetEmployeeDepartmentService";
 import { header } from "../../../../context/constant";
 import { useEffect, useState } from "react";
-import { IAttendance, IEmployee } from "../IAttendnace";
-import { Button, CircularProgress } from "@mui/material";
-import MarkInTime from "./MarkInTime";
-import MarkOutTime from "./MarkOutTime";
+import { IAttendance, IEmployee } from "../IAttendance";
+import {  CircularProgress } from "@mui/material";
 import GetAttendanceCountService from "../../../../api/Role/GetAttendanceCount/GetAttendanceCountService";
 import MarkAttendanceCard from "./MarkAttendanceCard";
-import { Grid } from "react-feather";
-
 const MarkAttendance = () => {
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
   const id = UserData.id;
   const [attendance, setAttendance] = useState<IAttendance | null>();
   const [employee, setEmployee] = useState<IEmployee | null>();
-
-  const getAttendaceRecord = async () => {
+  const getAttendanceRecord = async () => {
     try {
       const res = await GetAttendanceCountService({ header, eId: UserData.id });
       setEmployee(res.data);
@@ -26,7 +21,7 @@ const MarkAttendance = () => {
       console.log(error);
     }
   };
-  const Fetchdata = async () => {
+  const FetchData = async () => {
     try {
       const now = dayjs().format("YYYY-MM-DD");
       const res = await GetTodayAttendanceRecordService({
@@ -39,13 +34,11 @@ const MarkAttendance = () => {
       console.log(error);
     }
   };
-
   useEffect(() => {
-    Fetchdata();
-    getAttendaceRecord();
-    // eslint-disable-next-line
+    FetchData();
+    getAttendanceRecord();
+     // eslint-disable-next-line 
   }, []);
-
   if (!employee || !attendance) {
     return <CircularProgress />;
   }
@@ -57,5 +50,4 @@ const MarkAttendance = () => {
     </>
   );
 };
-
 export default MarkAttendance;

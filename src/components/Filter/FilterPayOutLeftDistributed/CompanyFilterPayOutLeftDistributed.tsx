@@ -10,31 +10,26 @@ import { generateCompanyLeftDisExcel } from "../../../utils/DashboardExcel";
 const CompanyFilterPayOutLeftDistributed = () => {
   const title = "Get left Distributed Payment Details Of Partner -";
   const location = useLocation();
-  const selectedCategory = location.state as string; // This is where you access the passed state
-
+  const selectedCategory = location.state as string;
   const { partnerId } = useParams();
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [selectedPartnerCode, setSelectedPartnerCode] = useState<string>();
   const [selectedPartnerName, setSelectedPartnerName] = useState<string>();
-  const [companyDetails, setCompanyDetails] = useState<ICompanyLeftDis[]>([]); // State for all credit debits
-
+  const [companyDetails, setCompanyDetails] = useState<ICompanyLeftDis[]>([]);
   useEffect(() => {
     filterMonthlyPartnerPaymentWithCompany(partnerId!);
-    // eslint-disable-next-line
+     // eslint-disable-next-line 
   }, [partnerId]);
-
   const handleDownloadExcel = () => {
     generateCompanyLeftDisExcel(companyDetails);
   };
-
   const filterMonthlyPartnerPaymentWithCompany = async (partnerId: string) => {
     TotalPayOutLeftDistCompanyService({
       header,
       partnerId: partnerId!,
       category: selectedCategory,
-    }) // Call API to fetch credit debits
+    })
       .then((partners) => {
-        // On successful API call
         setCompanyDetails(partners.data);
         setTotalAmount(partners.totalAmount);
         setSelectedPartnerCode(partners.partnerCode);
@@ -45,7 +40,6 @@ const CompanyFilterPayOutLeftDistributed = () => {
         toast.error(err.message);
       });
   };
-
   return (
     <>
       <div className="bg-blue-200 p-7 mt-3">
@@ -71,7 +65,6 @@ const CompanyFilterPayOutLeftDistributed = () => {
               </button>
             </Tooltip>
           </div>
-
           <Typography variant="body2" className="text-sm text-gray-600 mb-2">
             Total Amount{" "}
             <span className="text-safekaroDarkOrange">{totalAmount}</span>
@@ -94,9 +87,6 @@ const CompanyFilterPayOutLeftDistributed = () => {
                       {item.totalPartnerBalance}
                     </Typography>
                   </div>
-                  {/* Uncomment if needed
-                <img src={icon} alt={title} className="h-8 w-8" />
-                */}
                 </div>
               </Grid>
             ))}
@@ -107,5 +97,4 @@ const CompanyFilterPayOutLeftDistributed = () => {
     </>
   );
 };
-
 export default CompanyFilterPayOutLeftDistributed;
