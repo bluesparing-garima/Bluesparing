@@ -155,6 +155,7 @@ import EmployeeAttendance from "./components/HR/Attendance/AttendanceRecord/Empl
 import AddAttendance from "./components/HR/Attendance/AddAttendance/AddAttendance";
 import MarkAttendance from "./components/HR/Attendance/MarkAttendance/MarkAttendance";
 import ITDashboard from "./components/Dashboard/ITDashboard";
+import UploadLogo from "./components/UploadLogo/UploadLogo";
 const routes = [
   {
     path: "/",
@@ -333,6 +334,15 @@ const routes = [
       {
         path: "",
         element: <ProfilePage />,
+      },
+    ],
+  },
+  {
+    path: "upload-logo",
+    children: [
+      {
+        path: "",
+        element: <UploadLogo />,
       },
     ],
   },

@@ -1,6 +1,7 @@
 import { refreshTokenAPI } from "../api/Token/RefreshTokenAPI";
 import { getAccessToken } from "../Hooks/Tokens/useToken";
 const BASE_URL = "https://api.bluesparing.com";
+// const BASE_URL = "https://api.safekaro.com";
 export interface FetchOptions extends RequestInit {
   body?: string | FormData | null;
 }

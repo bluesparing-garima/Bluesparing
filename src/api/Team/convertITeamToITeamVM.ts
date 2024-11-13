@@ -38,6 +38,7 @@ const convertITeamToITeamVM = (data: ITeams): ITeamsVM => {
     isActive: data.isActive ? data.isActive : true,
     createdBy: data.createdBy ? data.createdBy : "",
     updatedBy: data.updatedBy ? data.updatedBy : "",
+    companyLogo:data.companyLogo?data.companyLogo:"",
     createdOn: data.createdOn
       ? dayjs(data?.createdOn).format(DAYJS_DISPLAY_FORMAT)
       : "",

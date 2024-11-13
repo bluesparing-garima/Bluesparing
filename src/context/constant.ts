@@ -15,7 +15,7 @@ export const ALLOWED_FILE_TYPES = [
   "application/pdf",
 ];
 export const ALLOWED_BLOG_FILE_TYPES = ["image/jpeg", "image/png", "image/jpg"];
-export const imagePath = "https://api.safekaro.com/uploads/";
+export const imagePath = "https://api.bluesparing.com/uploads";
 export type SafeKaroContextType = {
   user: SafeKaroUser;
   header: Header;
@@ -42,13 +42,14 @@ export type SafeKaroUser = {
   name: string;
   email: string;
   role: string;
-  partnerId: string; 
+  partnerId: string;
   headRMId: string;
-  headRM: string; 
+  headRM: string;
   accessToken?: string;
   idToken: string;
   partnerCode: string;
   refreshToken?: string;
+  companyLogo?:any;
 };
 export type Header = {
   "Content-Type": string;

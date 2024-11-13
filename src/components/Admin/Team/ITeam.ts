@@ -70,6 +70,7 @@ export interface ITeamsVM {
   createdOn?: string;
   updatedOn?: string;
   updatedBy?: string;
+  companyLogo?:string;
   forceUpdate?: number;
 }
 export interface ITeams {
@@ -106,6 +107,7 @@ export interface ITeams {
   joiningDate?:string,
   createdBy?: string;
   createdOn?: string;
+  companyLogo?:string;
   updatedOn?: string;
   updatedBy?: string;
 }

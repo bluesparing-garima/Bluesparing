@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import logo from "../../assets/login_logo.png";
 import { IconButton } from "@mui/material";
+import { imagePath } from "../../context/constant";
 type MenuItem = {
   id: number;
   label: string;
@@ -81,6 +82,8 @@ const PartnerSidebar: React.FC<SidebarProps> = ({
         "M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z",
     },
   ];
+  const storedTheme: any = localStorage.getItem("user");
+  const UserData = storedTheme ? JSON.parse(storedTheme) : null;
   const [activeMenuItem, setActiveMenuItem] = useState<number | null>(null);
   const [openSubMenus, setOpenSubMenus] = useState<number[]>([]);
   const handleMenuItemClick = (itemId: number) => {
@@ -118,6 +121,28 @@ const PartnerSidebar: React.FC<SidebarProps> = ({
         </IconButton>
       </div>
       <div className="flex flex-col flex-1 overflow-hidden">
+        <div className="mx-1">
+          <picture className="mb-1 flex flex-col justify-center items-center ">
+            {UserData.companyLogo ? (
+              <>
+                <source
+                  srcSet={`${imagePath}/${UserData.companyLogo}`}
+                  type="image/png"
+                />
+                <img
+                  src={`${imagePath}/${UserData.companyLogo}`}
+                  className="w-36 h-12 mx-auto"
+                  alt="company Logo"
+                />
+              </>
+            ) : (
+              <>
+                <source srcSet={logo} type="image/png" />
+                <img src={logo} className="w-44 mx-auto" alt="company Logo" />
+              </>
+            )}
+          </picture>
+        </div>
         <div className="flex-1 py-7 overflow-y-auto bg-white">
           <ul className="space-y-2">
             {menuItems.map((item) => (
@@ -217,12 +242,12 @@ const PartnerSidebar: React.FC<SidebarProps> = ({
         </div>
       </div>
       <div className="mx-1">
-        <picture className="mb-1 flex justify-center items-center ">
-          <caption className="text-smfont-medium text-safekarolightOrange">
+        <picture className="mb-1 flex flex-col justify-center items-center ">
+          <caption className="text-sm font-medium text-safekarolightOrange">
             Powered By
           </caption>
           <source srcSet={logo} type="image/png" />
-          <img src={logo} className="w-32 mx-auto" alt="company Logo" />
+          <img src={logo} className="w-44 mx-auto" alt="company Logo" />
         </picture>
       </div>
     </div>

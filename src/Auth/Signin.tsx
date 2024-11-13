@@ -56,6 +56,14 @@ const Signin = () => {
           loginData.headRMId = bookingRequestDetails.headRMId!;
           loginData.headRM = bookingRequestDetails.headRM!;
           loginData.id = responseData.partnerId!;
+        } else {
+          const bookingRequestDetails = await getTeamDetailsService({
+            header,
+            teamId: responseData.partnerId,
+          });
+          console.log("bookingRequestDetails",bookingRequestDetails);
+          loginData.id = responseData.partnerId!;
+          loginData.companyLogo = bookingRequestDetails.companyLogo
         }
         localStorage.setItem("user", JSON.stringify(loginData));
         let role = responseData.role.toLowerCase();
@@ -174,21 +182,16 @@ const Signin = () => {
                   )}
                 />
               </div>
-              <div className="my-4 flex justify-center items-center gap-x-4">
-                <Link
-                  to="/signup"
-                  className="text-safekaroDarkOrange hover:underline"
-                  state={{ form: "Admin" }}
-                >
-                  Sign Up As a New User
-                </Link>
-                <Link
-                  to="/signup"
-                  className="text-safekaroDarkOrange hover:underline"
-                  state={{ form: "partner" }}
-                >
-                  Sign Up As a Partner
-                </Link>
+              <div className="my-4 border-b text-center">
+                <div className="leading-none px-2 inline-block text-sm text-gray-600 tracking-wide font-medium bg-white transform translate-y-1/2">
+                  {/* If you don't have account{" "} */}
+                  <Link
+                    to="/signup"
+                    className="text-safekaroDarkOrange hover:underline"
+                  >
+                    Sign Up As Partner
+                  </Link>
+                </div>
               </div>
             </div>
           </div>

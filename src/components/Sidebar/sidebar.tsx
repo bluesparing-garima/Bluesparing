@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import logo from "../../assets/login_logo.png";
-import useLogoClickHandler from "../../utils/useLogoClickHandler";
 import { IconButton } from "@mui/material";
+import { Link } from "react-router-dom";
+import { imagePath } from "../../context/constant";
+import { SafeKaroContext } from "../../context/SafeKaroContext";
 type MenuItem = {
   id: number;
   label: string;
@@ -368,6 +370,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen, setSidebarOpen }) => {
   const handleMenuItemClick = (itemId: number) => {
     setActiveMenuItem(itemId === activeMenuItem ? null : itemId);
   };
+
+  const storedTheme: any = localStorage.getItem("user");
+  const UserData = storedTheme ? JSON.parse(storedTheme) : null;
   const toggleSubMenu = (parentId: number) => {
     if (openSubMenus.includes(parentId)) {
       setOpenSubMenus(openSubMenus.filter((id) => id !== parentId));
@@ -375,14 +380,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen, setSidebarOpen }) => {
       setOpenSubMenus([...openSubMenus, parentId]);
     }
   };
-  const handleLogoClick = useLogoClickHandler();
+
   return (
     <div
-      className={`${
+      className={` ${
         isSidebarOpen ? "translate-x-0" : "-translate-x-full"
       } md:translate-x-0 sticky  top-0  z-20 md:flex flex-col w-60 bg-white h-screen shadow-lg border-r-2 border-[#FEF9F3] transition-transform delay-150 duration-200`}
     >
-      <div className="md:hidden flex w-full justify-end">
+      <div className="md:hidden flex w-full justify-end ">
         <IconButton onClick={() => setSidebarOpen((prev) => !prev)}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -401,14 +406,36 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen, setSidebarOpen }) => {
         </IconButton>
       </div>
       <div className="flex flex-col flex-1 overflow-hidden">
-        <div className="flex-1 py-7 overflow-y-auto bg-white">
+        <Link to="/dashboard" className="mx-1 my-2">
+          <picture className="mb-1 flex flex-col justify-center items-center ">
+            {UserData.companyLogo ? (
+              <>
+                <source
+                  srcSet={`${imagePath}/${UserData.companyLogo}`}
+                  type="image/png"
+                />
+                <img
+                  src={`${imagePath}/${UserData.companyLogo}`}
+                  className="w-36 h-12 mx-auto"
+                  alt="company Logo"
+                />
+              </>
+            ) : (
+              <>
+                <source srcSet={logo} type="image/png" />
+                <img src={logo} className="w-44 mx-auto" alt="company Logo" />
+              </>
+            )}
+          </picture>
+        </Link>
+        <div className="flex-1 py-7 overflow-y-auto bg-white hide-scrollbar">
           <ul className="space-y-2">
             {menuItems.map((item) => (
               <li
                 key={item.id}
                 className={
                   activeMenuItem === item.id
-                    ? "bg-safekaroDarkBlue text-white"
+                    ? "bg-safekaroDarkOrange text-white"
                     : "text-white-500"
                 }
               >
@@ -508,12 +535,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen, setSidebarOpen }) => {
         </div>
       </div>
       <div className="mx-1">
-        <picture className="mb-1 flex justify-center items-center ">
+        <picture className="mb-1 flex flex-col justify-center items-center ">
           <caption className="text-sm font-medium text-safekarolightOrange">
             Powered By
           </caption>
           <source srcSet={logo} type="image/png" />
-          <img src={logo} className="w-32 mx-auto" alt="company Logo" />
+          <img src={logo} className="w-44 mx-auto" alt="company Logo" />
         </picture>
       </div>
     </div>

@@ -135,7 +135,7 @@ const ViewPolicy = () => {
               Policy /
             </Link>
             <span className="text-grey-600 text-sm">{"View Policy"}</span>
-            {}
+            
             <hr
               className="mt-4 mb-2"
               style={{ width: "100%", borderColor: "grey-800" }}

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import logo from "../../assets/login_logo.png";
 import { IconButton } from "@mui/material";
+import { imagePath } from "../../context/constant";
 type MenuItem = {
   id: number;
   label: string;
@@ -14,11 +15,14 @@ type SubMenuItem = {
   label: string;
   link?: string;
 };
-interface SidebarProps{
+interface SidebarProps {
   isSidebarOpen: boolean;
   setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
-const PartnerSidebar: React.FC<SidebarProps> = ({isSidebarOpen,setSidebarOpen}) => {
+const PartnerSidebar: React.FC<SidebarProps> = ({
+  isSidebarOpen,
+  setSidebarOpen,
+}) => {
   const menuItems: MenuItem[] = [
     {
       id: 1,
@@ -86,6 +90,8 @@ const PartnerSidebar: React.FC<SidebarProps> = ({isSidebarOpen,setSidebarOpen}) 
       ],
     },
   ];
+  const storedTheme: any = localStorage.getItem("user");
+  const UserData = storedTheme ? JSON.parse(storedTheme) : null;
   const [activeMenuItem, setActiveMenuItem] = useState<number | null>(null);
   const [openSubMenus, setOpenSubMenus] = useState<number[]>([]);
   const handleMenuItemClick = (itemId: number) => {
@@ -100,10 +106,10 @@ const PartnerSidebar: React.FC<SidebarProps> = ({isSidebarOpen,setSidebarOpen}) 
   };
   return (
     <div
-    className={`${
-      isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-    } md:translate-x-0 sticky  top-0  z-20 md:flex flex-col w-60 bg-white h-screen shadow-lg border-r-2 border-[#FEF9F3] transition-transform delay-150 duration-200`}
-  >
+      className={`${
+        isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+      } md:translate-x-0 sticky  top-0  z-20 md:flex flex-col w-60 bg-white h-screen shadow-lg border-r-2 border-[#FEF9F3] transition-transform delay-150 duration-200`}
+    >
       <div className="md:hidden flex w-full justify-end">
         <IconButton onClick={() => setSidebarOpen((prev) => !prev)}>
           <svg
@@ -123,6 +129,28 @@ const PartnerSidebar: React.FC<SidebarProps> = ({isSidebarOpen,setSidebarOpen}) 
         </IconButton>
       </div>
       <div className="flex flex-col flex-1 overflow-hidden">
+        <div className="mx-1">
+          <picture className="mb-1 flex flex-col justify-center items-center ">
+            {UserData.companyLogo ? (
+              <>
+                <source
+                  srcSet={`${imagePath}/${UserData.companyLogo}`}
+                  type="image/png"
+                />
+                <img
+                  src={`${imagePath}/${UserData.companyLogo}`}
+                  className="w-36 h-12 mx-auto"
+                  alt="company Logo"
+                />
+              </>
+            ) : (
+              <>
+                <source srcSet={logo} type="image/png" />
+                <img src={logo} className="w-44 mx-auto" alt="company Logo" />
+              </>
+            )}
+          </picture>
+        </div>
         <div className="flex-1 py-7 overflow-y-auto bg-white">
           <ul className="space-y-2">
             {menuItems.map((item) => (
@@ -222,11 +250,13 @@ const PartnerSidebar: React.FC<SidebarProps> = ({isSidebarOpen,setSidebarOpen}) 
         </div>
       </div>
       <div className="mx-1">
-      <picture className="mb-1 flex justify-center items-center ">
-        <caption className="text-smfont-medium text-safekarolightOrange">Powered By</caption>
-        <source srcSet={logo} type="image/png" />
-        <img src={logo} className="w-32 mx-auto" alt="company Logo" />
-      </picture>
+        <picture className="mb-1 flex flex-col justify-center items-center ">
+          <caption className="text-sm font-medium text-safekarolightOrange">
+            Powered By
+          </caption>
+          <source srcSet={logo} type="image/png" />
+          <img src={logo} className="w-44 mx-auto" alt="company Logo" />
+        </picture>
       </div>
     </div>
   );

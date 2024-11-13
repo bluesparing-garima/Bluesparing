@@ -176,11 +176,11 @@ const ManageCards = () => {
   return (
     <div className="bg-blue-200 md:p-7 p-2 ">
       <Paper elevation={3} style={{ padding: 30 }}>
-        {}
+        
         <Typography className="text-safekaroDarkOrange" variant="h5">
           Wallet History Table
         </Typography>
-        {}
+        
         <Typography variant="h5" mb={2}>
           <div style={{ display: "flex", alignItems: "center" }}>
             <div style={{ flex: 1 }}>
@@ -193,7 +193,7 @@ const ManageCards = () => {
               <span className="text-grey-600 text-sm">Withdrawals</span>
             </div>
           </div>
-          {}
+          
           <hr
             className="mt-4"
             style={{ width: "100%", borderColor: "grey-800" }}
@@ -206,7 +206,7 @@ const ManageCards = () => {
             render={({ handleSubmit, submitting, errors, values }) => (
               <form onSubmit={handleSubmit} noValidate>
                 <Grid container spacing={2}>
-                  {}
+                  
                   <Grid item lg={3} md={3} sm={6} xs={12}>
                     <Field name="startDate">
                       {({ input, meta }) => (
@@ -271,7 +271,7 @@ const ManageCards = () => {
             )}
           />
         </React.Fragment>
-        {}
+        
         <MaterialReactTable
           state={{ isLoading }}
           columns={columns}
@@ -280,7 +280,7 @@ const ManageCards = () => {
           positionActionsColumn="last"
           renderRowActions={({ row }) => (
             <div style={{ display: "flex", flexWrap: "nowrap" }}>
-              {}
+              
               {row.original.credit ? (
                 <Tooltip title="View Wallet History">
                   <IconButton

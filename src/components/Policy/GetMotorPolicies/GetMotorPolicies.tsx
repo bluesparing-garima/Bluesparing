@@ -1282,7 +1282,7 @@ const GetMotorPolicies = () => {
                 ""
               )}
             </div>
-            {}
+            
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
@@ -1295,7 +1295,7 @@ const GetMotorPolicies = () => {
               render={({ handleSubmit, submitting, errors, values }) => (
                 <form onSubmit={handleSubmit} noValidate>
                   <Grid container spacing={2}>
-                    {}
+                    
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Field name="startDate">
                         {({ input, meta }) => {

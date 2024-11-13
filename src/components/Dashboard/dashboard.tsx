@@ -58,7 +58,6 @@ const Dashboard: React.FC = () => {
   const [selectedCard, setSelectedcard] = useState("1");
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
-
   const GetDashboardCount = useCallback((startDate, endDate) => {
     getAdminDashboardService({
       header,
@@ -68,12 +67,10 @@ const Dashboard: React.FC = () => {
       .then((dashboardData) => {
         setIsVisible(true);
         setData(dashboardData.data);
-        // Assuming dashboardData.data is an array
         const entries = dashboardData.data.flatMap((item: any) =>
           Object.entries(item.categories)
         );
         setCategoryEntries(entries);
-        // Access the key
         setSelectedCategory(entries[0][0]);
       })
       .catch((error) => {
@@ -87,12 +84,9 @@ const Dashboard: React.FC = () => {
     adminGenerateExcel(data);
   };
   useEffect(() => {
-    const currentDate = new Date(); // Example current date
-    // Calculate first day of current month
+    const currentDate = new Date();
     const firstDayOfMonth = startOfMonth(currentDate);
-    // Calculate last day of current month
     const lastDayOfMonth = endOfMonth(currentDate);
-    // Format the dates if needed
     const formattedFirstDay = format(firstDayOfMonth, "yyyy-MM-dd");
     const formattedLastDay = format(lastDayOfMonth, "yyyy-MM-dd");
     const fetchData = () => {
@@ -102,7 +96,6 @@ const Dashboard: React.FC = () => {
     const intervalId = setInterval(fetchData, 30000);
     return () => clearInterval(intervalId);
   }, [GetDashboardCount]);
-
   const renderCountBox = (
     title: any,
     count: any,
@@ -192,10 +185,9 @@ const Dashboard: React.FC = () => {
             {count}
           </Typography>
         </div>
-        {/* <img src={icon} alt={title} className="h-8 w-8" /> */}
+        {}
       </div>
     );
-
     return (
       <Grid item xs={12} sm={6} md={4} lg={3}>
         {link ? (
@@ -208,22 +200,15 @@ const Dashboard: React.FC = () => {
       </Grid>
     );
   };
-
   const onSubmit = async (value: any) => {
-    // Convert to local time zone
-    // Create a Date object from the UTC date string
     const utcStartDate = new Date(value.startDate!);
-    // Format the date
     const formattedStartDate = format(utcStartDate, "yyyy-MM-dd'T'HH:mm:ss");
     value.startDate = formattedStartDate;
-    // Create a Date object from the UTC date string
     const utcEndDate = new Date(value.endDate!);
     const formattedEndDate = format(utcEndDate, "yyyy-MM-dd'T'HH:mm:ss");
     value.endDate = formattedEndDate;
-
     GetDashboardCount(value.startDate, value.endDate);
   };
-
   const handleFirstCart = async () => {
     setFirstCart(true);
     setSelectedcard("1");
@@ -268,7 +253,6 @@ const Dashboard: React.FC = () => {
     setSelectedCategoryIndex(index);
     setSelectedCategory(key);
   };
-  // Check if selected index is valid
   const isValidIndex = (index: any) =>
     index >= 0 && index < categoryEntries.length;
   return (
@@ -283,21 +267,18 @@ const Dashboard: React.FC = () => {
                 iconPath={<MotorSvg isActive={selectedCard === "1"} />}
                 isSelected={firstCart}
               />
-
               <CartButton
                 onClick={handleSecondCart}
                 tooltipTitle="View Partner Data"
                 iconPath={<ViewPartnerSvg isActive={selectedCard === "2"} />}
                 isSelected={secondCart}
               />
-
               <CartButton
                 onClick={handleThirdCart}
                 tooltipTitle="View Chart"
                 iconPath={<ViewChartSvg isActive={selectedCard === "3"} />}
                 isSelected={thirdCart}
               />
-
               <CartButton
                 onClick={handleFourCart}
                 tooltipTitle="View Admin Data"
@@ -311,7 +292,6 @@ const Dashboard: React.FC = () => {
                 isSelected={fifthCart}
               />
             </div>
-
             <div className="flex md:mt-0 my-2 md:flex-row flex-col md:w-[60%] w-full justify-center items-center">
               <div className="md:w-[70%]">
                 <Form
@@ -325,7 +305,7 @@ const Dashboard: React.FC = () => {
                               <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <DatePicker
                                   disableFuture
-                                  value={input.value || null} // Initialize the value if it's undefined
+                                  value={input.value || null}
                                   onChange={(date) => {
                                     input.onChange(date);
                                   }}
@@ -350,7 +330,7 @@ const Dashboard: React.FC = () => {
                               <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <DatePicker
                                   disableFuture
-                                  value={input.value || null} // Initialize the value if it's undefined
+                                  value={input.value || null}
                                   onChange={(date) => {
                                     input.onChange(date);
                                   }}
@@ -532,7 +512,6 @@ const Dashboard: React.FC = () => {
                             ))}
                           </>
                         )}
-
                         {secondCart && (
                           <>
                             {data.map((item, index) => (
@@ -555,7 +534,6 @@ const Dashboard: React.FC = () => {
                                           selectedCategory
                                         )}
                                       </React.Fragment>
-
                                       {Object.entries(item.accounts).map(
                                         ([accountCode, account], index) => (
                                           <React.Fragment key={index}>
@@ -703,7 +681,6 @@ const Dashboard: React.FC = () => {
     </div>
   );
 };
-
 export const CartButton: React.FC<CartButtonProps> = ({
   onClick,
   tooltipTitle,

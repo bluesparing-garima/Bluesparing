@@ -25,6 +25,7 @@ const UploadPolicy = () => {
       setExcelUploaded(false);
     }
   }, [excelUploaded]);
+  
   const uploadFile = async (file: File | null) => {
     if (file) {
       try {

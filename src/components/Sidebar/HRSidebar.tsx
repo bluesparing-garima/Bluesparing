@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import logo from "../../assets/login_logo.png";
 import { IconButton } from "@mui/material";
+import { imagePath } from "../../context/constant";
 type MenuItem = {
   id: number;
   label: string;
@@ -80,6 +81,8 @@ const HRSidebar: React.FC<SidebarProps> = ({
         "M7 11c-1.1 0-2-.9-2-2V8c0-1.1.9-2 2-2s2 .9 2 2v1c0 1.1-.9 2-2 2zm-2 6.993L9 18c.55 0 1-.45 1-1v-2c0-1.65-1.35-3-3-3s-3 1.35-3 3v2c0 .552.448.993 1 .993zM19 18h-6c-.553 0-1-.447-1-1s.447-1 1-1h6c.553 0 1 .447 1 1s-.447 1-1 1zm0-4h-6c-.553 0-1-.448-1-1s.447-1 1-1h6c.553 0 1 .448 1 1s-.447 1-1 1zm0-4h-6c-.553 0-1-.448-1-1s.447-1 1-1h6c.553 0 1 .448 1 1s-.447 1-1 1z",
     },
   ];
+  const storedTheme: any = localStorage.getItem("user");
+  const UserData = storedTheme ? JSON.parse(storedTheme) : null;
   const [activeMenuItem, setActiveMenuItem] = useState<number | null>(null);
   const [openSubMenus, setOpenSubMenus] = useState<number[]>([]);
   const handleMenuItemClick = (itemId: number) => {
@@ -119,6 +122,25 @@ const HRSidebar: React.FC<SidebarProps> = ({
         </div>
       </div>
       <div className="flex flex-col flex-1 overflow-hidden">
+      <div className="mx-1">
+          <picture className="mb-1 flex flex-col justify-center items-center ">
+            {UserData.companyLogo ? (
+              <>
+                <source srcSet={`${imagePath}/${UserData.companyLogo}`} type="image/png" />
+                <img
+                  src={`${imagePath}/${UserData.companyLogo}`}
+                       className="w-36 h-12 mx-auto"
+                  alt="company Logo"
+                />
+              </>
+            ) : (
+              <>
+                <source srcSet={logo} type="image/png" />
+                <img src={logo} className="w-44 mx-auto" alt="company Logo" />
+              </>
+            )}
+          </picture>
+        </div>
         <div className="flex-1 py-7 overflow-y-auto bg-white">
           <ul className="space-y-2">
             {menuItems.map((item) => (
@@ -218,12 +240,12 @@ const HRSidebar: React.FC<SidebarProps> = ({
         </div>
       </div>
       <div className="mx-1">
-        <picture className="mb-1 flex justify-center items-center ">
-          <caption className="text-smfont-medium text-safekarolightOrange">
+        <picture className="mb-1 flex flex-col justify-center items-center ">
+          <caption className="text-sm font-medium text-safekarolightOrange">
             Powered By
           </caption>
           <source srcSet={logo} type="image/png" />
-          <img src={logo} className="w-32 mx-auto" alt="company Logo" />
+          <img src={logo} className="w-44 mx-auto" alt="company Logo" />
         </picture>
       </div>
     </div>

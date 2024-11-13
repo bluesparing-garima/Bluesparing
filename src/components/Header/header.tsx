@@ -288,6 +288,9 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
                   </MenuItem>
                 </div>
               )}
+              <Link to="/upload-logo" onClick={handleClose}>
+                <MenuItem>Upload Logo</MenuItem>
+              </Link>
               <Link to="/" onClick={signOut}>
                 <MenuItem>Logout</MenuItem>
               </Link>

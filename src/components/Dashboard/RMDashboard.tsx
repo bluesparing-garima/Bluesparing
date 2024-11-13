@@ -326,7 +326,7 @@ const RMDashboard: React.FC = () => {
                                       )
                                     )}
                                   </div>
-                                  {}
+                                  
                                   <Grid container>
                                     {isValidIndex(selectedCategoryIndex) && (
                                       <Grid container sx={{ margin: 1 }}>

@@ -1,16 +1,15 @@
 import React from "react";
 import logo from "../assets/login_logo.png";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Form, Field } from "react-final-form";
 import { FORM_ERROR } from "final-form";
 import { ISignUp } from "./IAuth";
-import {  Button, Grid } from "@mui/material";
+import { Button, Grid } from "@mui/material";
 import { header } from "../context/constant";
 import fetchInterceptor, { FetchOptions } from "../utils/fetchInterceptor ";
 const Signup = () => {
   const navigate = useNavigate();
-  const loc = useLocation().state as { form: string };
-  const role = loc.form.toLowerCase();
+
   const validate = (values: ISignUp) => {
     const errors: Partial<ISignUp> = {};
     if (!values.email) {
@@ -30,48 +29,21 @@ const Signup = () => {
     if (values.password !== values.confirmPassword) {
       errors.confirmPassword = "Passwords do not match";
     }
-    if (role === "admin" && !values.file) {
-      errors.file = "Please select a Logo";
-    } else if (role === "admin" && values.file) {
-      const maxSizeInBytes = 1 * 1024 * 1024;
-      if (values.file.size > maxSizeInBytes) {
-        errors.file = "Logo size should not exceed 1 MB";
-      }
-    }
+
     return errors;
   };
   const onSubmit = async (signUpData: ISignUp) => {
-    signUpData.role = role;
+    signUpData.role = "partner";
     signUpData.partnerId = "null";
-    if (role === "admin") {
-      signUpData.partnerCode = "Admin";
-    }
     try {
       const url = "/api/user/register";
-      let options: FetchOptions;
-      if (!!signUpData.file) {
-        const formData = new FormData();
-        Object.keys(signUpData).forEach((ele) => {
-          const value = signUpData[ele as keyof ISignUp];
-          if (value instanceof File) {
-            formData.append(ele, value);
-          } else {
-            formData.append(ele, value as string);
-          }
-        });
-        options = {
-          method: "POST",
-          body: formData,
-        };
-      } else {
-        options = {
-          headers: header,
-          method: "POST",
-          body: JSON.stringify({
-            ...signUpData,
-          }),
-        };
-      }
+      const options: FetchOptions = {
+        headers: header,
+        method: "POST",
+        body: JSON.stringify({
+          ...signUpData,
+        }),
+      };
       const responseData = await fetchInterceptor<any>(url, options);
       if (responseData.status === "success") {
         navigate("/");
@@ -100,11 +72,7 @@ const Signup = () => {
             <div>
               <picture>
                 <source srcSet={logo} type="image/png" />
-                <img
-                  src={logo}
-                  className="w-56 mx-auto"
-                  alt="company Logo"
-                />
+                <img src={logo} className="w-56 mx-auto" alt="company Logo" />
               </picture>
             </div>
             <div className="mt-3 flex flex-col items-center">
@@ -255,48 +223,7 @@ const Signup = () => {
                               </Field>
                             </div>
                           </Grid>
-                          {role === "admin" && (
-                            <Grid item lg={12} md={12} xs={12}>
-                              <label
-                                htmlFor="Logo"
-                                className="mb-2 block text-base font-medium text-[#07074D]"
-                              >
-                                Upload Logo
-                              </label>
-                              <Field name="file">
-                                {({ input, meta }) => (
-                                  <div>
-                                    <Grid item lg={12} xs={12}>
-                                      <input
-                                        type="file"
-                                        placeholder="Select logo (Svg,png,jpg format only)"
-                                        style={{
-                                          border: "1px solid #c4c4c4",
-                                          padding: "5px",
-                                          width: "100%",
-                                          borderRadius: "5px",
-                                        }}
-                                        onChange={(
-                                          event: React.ChangeEvent<HTMLInputElement>
-                                        ) => {
-                                          const file = event.target.files
-                                            ? event.target.files[0]
-                                            : null;
-                                          input.onChange(file);
-                                        }}
-                                        accept="image/*"
-                                      />
-                                      {meta.touched && meta.error && (
-                                        <span className="text-safekaroDarkOrange">
-                                          {meta.error}
-                                        </span>
-                                      )}
-                                    </Grid>
-                                  </div>
-                                )}
-                              </Field>
-                            </Grid>
-                          )}
+
                           <Grid item lg={12} md={12} sm={12} xs={12}>
                             {submitError && (
                               <div className="error text-safekaroDarkOrange">

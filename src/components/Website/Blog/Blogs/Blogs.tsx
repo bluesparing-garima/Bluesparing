@@ -175,7 +175,7 @@ const Blogs = () => {
                 Add Blog
               </Button>
             </div>
-            {}
+            
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
