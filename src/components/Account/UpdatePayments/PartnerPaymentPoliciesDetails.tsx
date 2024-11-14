@@ -327,7 +327,6 @@ function PartnerPaymentPoliciesDetails({
           res.data.transactionCode
         );
         const chunks = splitDataIntoChunks(policyData);
-        console.log(chunks);
         const promises = chunks.map((ele) => {
           let policyData = ele;
           return updateFilterPaymentsService({
@@ -337,7 +336,6 @@ function PartnerPaymentPoliciesDetails({
         });
         try {
           const accountResponse = await Promise.all(promises);
-          console.log("accountResponse", accountResponse);
           const s = accountResponse.length;
           if (accountResponse[s - 1].status === "success") {
             navigate(partnerDebitsPath());

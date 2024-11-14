@@ -40,7 +40,6 @@ export default function InputDialog({
       bookingData.timer = diffInMilliseconds.toString()
       bookingData.bookingStatus = "Rejected"
       bookingData.rejectionReason = reason;
-      console.log("bookingData", bookingData)
       let res = await callEditLeadAPI(bookingData, BookingId!)
       if (res.status === "success") {
         navigate(`/booking/reject`)

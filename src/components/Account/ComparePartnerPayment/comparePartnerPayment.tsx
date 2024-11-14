@@ -42,7 +42,6 @@ const ComparePartnerPayment: React.FC = () => {
     }
   };
   const uploadFile = async (file: File, startDate: string, endDate: string) => {
-    console.log(partnerCode);
     try {
       const formData = new FormData();
       formData.append("excel", file);
@@ -55,7 +54,6 @@ const ComparePartnerPayment: React.FC = () => {
       })
         .then((response) => {
           if (response.status === "Success") {
-            console.log(response);
             setExcelUploaded(true);
             setComparePolicyResult(response);
           }

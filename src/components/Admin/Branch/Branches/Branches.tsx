@@ -9,7 +9,6 @@ import { IBranchForm, IBranches, IBranchesVM } from "../IBranch";
 import { Button, IconButton, Paper, Tooltip, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { branchEditPath, branchAddPath } from "../../../../sitemap";
-import deletebranchService from "../../../../api/Branch/DeleteBranch/deleteBranchService";
 import dayjs from "dayjs";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
@@ -52,11 +51,8 @@ const Branches = () => {
     const p = getPaginationState(BRANCH_STORAGE_KEY);
     setPagination(p);
   }, []);
-  const [forcedRenderCount, setForcedRenderCount] = useState(0);
-  const forceRender = useCallback(
-    () => setForcedRenderCount(forcedRenderCount + 1),
-    [forcedRenderCount]
-  );
+  const forcedRenderCount = 0;
+
   const columns = useMemo<MRT_ColumnDef<IBranches>[]>(
     () => [
       {
@@ -106,28 +102,12 @@ const Branches = () => {
   useEffect(() => {
     updateLoading();
   }, [updateLoading]);
-  const handleClickDeleteBranch = (branch: IBranchesVM) => {
-    branchDeleteApiCall(branch.id!);
-  };
+
   const handleClickEditBranch = (branch: IBranchesVM) => {
     savePaginationState(pagination, BRANCH_STORAGE_KEY);
     navigate(branchEditPath(branch.id!));
   };
-  const branchDeleteApiCall = async (branchId: string) => {
-    setIsLoading(true);
-    deletebranchService({ header, branchId, branches })
-      .then((refreshedBranches) => {
-        setBranches(refreshedBranches);
-        forceRender();
-      })
-      .catch(async (error: any) => {
-        const err = await error;
-        toast.error(err.message);
-      })
-      .finally(() => {
-        updateLoading();
-      });
-  };
+ 
   const callUpdateBranchAPI = async (branch: IBranchesVM) => {
     var convertBranchVMToBranchForm = convertIBranchVMToIBranchForm(branch);
     const branchData: IBranchForm = {

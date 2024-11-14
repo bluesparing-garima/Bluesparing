@@ -122,8 +122,10 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
         eId: userData?.id,
       });
       setAttendance(res?.data[0]);
-    } catch (error) {
-      console.log(error);
+    } catch (error:any) {
+      const err= await error;
+      toast.error(err.message)
+    
     }
   };
   const canMarkAttendance = useMemo(() => {
@@ -171,7 +173,7 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
   };
   const handleSidebar = () => {
     setSidebarOpen((prev) => !prev);
-    console.log("clicked");
+   
   };
   return (
     <>

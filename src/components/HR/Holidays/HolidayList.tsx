@@ -47,7 +47,7 @@ const HolidaysList: React.FC = () => {
       case "hr":
         return "/hr/dashboard";
       case "booking":
-        return "/bookingdashboard";
+        return "/booking-dashboard";
       case "account":
         return "/accountdashboard";
       case "operation":

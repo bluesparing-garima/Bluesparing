@@ -9,7 +9,6 @@ import { IBrokerForm, IBrokers, IBrokersVM } from "../IBroker";
 import { Button, IconButton, Paper, Tooltip, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { brokerEditPath, brokerAddPath } from "../../../../sitemap";
-import deletebrokerService from "../../../../api/Broker/DeleteBroker/deleteBrokerService";
 import dayjs from "dayjs";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
@@ -75,11 +74,8 @@ const Brokers = () => {
   const handleClickChangeStatus = (broker: IBrokersVM) => {
     callUpdateBrokerAPI(broker);
   };
-  const [forcedRenderCount, setForcedRenderCount] = useState(0);
-  const forceRender = useCallback(
-    () => setForcedRenderCount(forcedRenderCount + 1),
-    [forcedRenderCount]
-  );
+  const forcedRenderCount = 0;
+ 
   const columns = useMemo<MRT_ColumnDef<IBrokers>[]>(
     () => [
       {
@@ -135,28 +131,12 @@ const Brokers = () => {
   useEffect(() => {
     updateLoading();
   }, [updateLoading]);
-  const handleClickDeleteBroker = (broker: IBrokersVM) => {
-    brokerDeleteApiCall(broker.id!);
-  };
+
   const handleClickEditBroker = (broker: IBrokersVM) => {
     savePaginationState(pagination, BROKER_STORAGE_KEY);
     navigate(brokerEditPath(broker.id!));
   };
-  const brokerDeleteApiCall = async (brokerId: string) => {
-    setIsLoading(true);
-    deletebrokerService({ header, brokerId, brokers })
-      .then((refreshedBrokers) => {
-        setBrokers(refreshedBrokers);
-        forceRender();
-      })
-      .catch(async (error: any) => {
-        const err = await error;
-        toast.error(err.message);
-      })
-      .finally(() => {
-        updateLoading();
-      });
-  };
+ 
   return (
     <>
       <div className="bg-blue-200 md:p-7 p-2">

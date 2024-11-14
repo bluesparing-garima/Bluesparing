@@ -13,7 +13,7 @@ const useLogoClickHandler = () => {
           navigate("/operationdashboard");
           break;
         case "booking":
-          navigate("/bookingdashboard");
+          navigate("/booking-dashboard");
           break;
         case "account":
           navigate("/accountdashboard");

@@ -169,7 +169,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       toast.error("Invalid  DOB, its MM/DD/YYYY from");
       return;
     }
-    console.log(teamForm);
+
     const formValid = documents.every((doc, index) =>
       validateDocument(doc, index)
     );

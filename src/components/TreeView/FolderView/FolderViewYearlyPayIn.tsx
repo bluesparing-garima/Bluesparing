@@ -59,7 +59,6 @@ const FolderView: React.FC<{
     if (!open && !childrenData) {
       setLoading(true);
       setError(null);
-      console.log(api);
       try {
         if (api === "year_payin") {
           if ("name" in node) {

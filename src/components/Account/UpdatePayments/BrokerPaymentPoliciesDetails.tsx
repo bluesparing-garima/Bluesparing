@@ -12,7 +12,6 @@ import {
 import MaterialReactTable from "material-react-table";
 import { useEffect, useState } from "react";
 import { IViewPolicy } from "../../Policy/IPolicy";
-import { useNavigate } from "react-router-dom";
 import { header } from "../../../context/constant";
 import { FORM_ERROR } from "final-form";
 import updateFilterPaymentsService from "../../../api/UpdatePayment/updateFilterPayments/updateFilterPaymentsService";

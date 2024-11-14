@@ -21,6 +21,7 @@ import { AttendanceDataSvg, MotorSvg, ViewAdminDataSvg, ViewChartSvg } from "./d
 import AttendanceCard from "../HR/Attendance/AttendanceRecord/AttendanceCard";
 import GetAttendanceCountService from "../../api/Role/GetAttendanceCount/GetAttendanceCountService";
 import { IEmployee } from "../HR/Attendance/IAttendance";
+import toast from "react-hot-toast";
 const RMDashboard: React.FC = () => {
   const [data, setData] = useState<IData[]>([]);
   const [isVisible, setIsVisible] = useState(false);
@@ -43,7 +44,7 @@ const RMDashboard: React.FC = () => {
         rmId,
       })
         .then((dashboardData) => {
-          console.log("Data fetched", dashboardData);
+   
           setIsVisible(true);
           setData(dashboardData.data);
           const entries = dashboardData.data.flatMap((item: any) =>
@@ -63,8 +64,10 @@ const RMDashboard: React.FC = () => {
     try {
       const res = await GetAttendanceCountService({ header, eId: UserData.id });
       setEmployee(res.data);
-    } catch (error) {
-      console.log(error);
+    } catch (error:any) {
+      const err= await error;
+      toast.error(err.message)
+    
     }
   };
   useEffect(() => {
@@ -155,7 +158,7 @@ const RMDashboard: React.FC = () => {
   };
   const isValidIndex = (index: any) =>
     index >= 0 && index < categoryEntries.length;
-  console.log("isValidIndex", isValidIndex);
+
   return (
     <div className="bg-blue-200 h-screen">
       <CardContent>

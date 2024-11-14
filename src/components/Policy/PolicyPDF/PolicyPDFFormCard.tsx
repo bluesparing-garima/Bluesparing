@@ -59,7 +59,6 @@ const PolicyPDFFormCard = () => {
     }
   };
   const onSubmit = (values: FormValues) => {
-    console.log(values);
     if (values.file) {
       try {
         const formData = new FormData();

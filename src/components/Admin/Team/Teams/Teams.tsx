@@ -177,7 +177,7 @@ const Teams = () => {
       isActive: !convertTeamVMToTeamForm.isActive,
     };
     const formData = createFormData(teamData);
-    console.log(teamData);
+
     editTeamService({ team: formData, teamId: team.id })
       .then((updatedTeam) => {
         GetTeams();

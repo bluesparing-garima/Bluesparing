@@ -34,6 +34,7 @@ import { IEmployee } from "../HR/Attendance/IAttendance";
 import GetAttendanceCountService from "../../api/Role/GetAttendanceCount/GetAttendanceCountService";
 import AttendanceCard from "../HR/Attendance/AttendanceRecord/AttendanceCard";
 import dayjs from "dayjs";
+import toast from "react-hot-toast";
 const AccountDashboard: React.FC = () => {
   const [data, setData] = useState<IAccountData[]>([]);
   const [isVisible, setIsVisible] = useState(false);
@@ -59,12 +60,13 @@ const AccountDashboard: React.FC = () => {
         setIsVisible(true);
       });
   }, []);
-  const getAttendaceRecord = async () => {
+  const getAttendanceRecord = async () => {
     try {
       const res = await GetAttendanceCountService({ header, eId: UserData.id });
       setEmployee(res.data);
-    } catch (error) {
-      console.log(error);
+    } catch (error:any) {
+      const err = await error;
+      toast.error(err.message)
     }
   };
   useEffect(() => {
@@ -73,7 +75,7 @@ const AccountDashboard: React.FC = () => {
     const lastDayOfMonth = endOfMonth(currentDate);
     const formattedFirstDay = format(firstDayOfMonth, "yyyy-MM-dd");
     const formattedLastDay = format(lastDayOfMonth, "yyyy-MM-dd");
-    getAttendaceRecord();
+    getAttendanceRecord();
     const fetchData = () => {
       GetDashboardCount(formattedFirstDay, formattedLastDay);
     };
@@ -182,7 +184,7 @@ const AccountDashboard: React.FC = () => {
             />
             <CartButton
               onClick={handleFourthCart}
-              tooltipTitle="Monthly Attendace "
+              tooltipTitle="Monthly Attendance "
               iconPath={<AttendanceDataSvg isActive={selectedCard === "4"} />}
               isSelected={fourthCart}
             />
@@ -290,7 +292,7 @@ const AccountDashboard: React.FC = () => {
                                     "Motor",
                                     item.policyCounts?.motor || 0,
                                     MotorIcon,
-                                    "/policy/motorpolicies"
+                                    "/policy/motor-policies"
                                   )}
                                 </Grid>
                                 <Grid container spacing={2}>

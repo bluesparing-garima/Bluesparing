@@ -40,8 +40,9 @@ const AddHolidayForm: React.FC<AddHolidayFormProps> = ({ initialValues }) => {
     (schema: yup.ObjectSchema<any>) => async (values: Record<string, any>) => {
       try {
         await schema.validate(values, { abortEarly: false });
-      } catch (err) {
-        console.log(err);
+      } catch (error: any) {
+        const err = await error;
+        toast.error(err.message);
       }
     };
 

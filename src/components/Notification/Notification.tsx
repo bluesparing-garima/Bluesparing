@@ -65,7 +65,7 @@ const Notification = () => {
       case "hr":
         return "/hr/dashboard";
       case "booking":
-        return "/bookingdashboard";
+        return "/booking-dashboard";
       case "account":
         return "/accountdashboard";
       case "operation":
@@ -140,8 +140,9 @@ const Notification = () => {
         });
         setNotificationData(result);
       }
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      const err = await error;
+      toast.error(err.message);
     }
   };
   return (

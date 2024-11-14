@@ -9,9 +9,12 @@ import getAccountService from "../../../api/Account/GetAccount/getAccountService
 import { DAYJS_DISPLAY_FORMAT, header } from "../../../context/constant";
 import toast, { Toaster } from "react-hot-toast";
 const Accounts = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const [accounts, setAccounts] = useState<IAccounts[]>([]);
   const navigate = useNavigate();
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 10,
+  });
   const handleAddAccountClick = () => {
     navigate(accountsAddPath());
   };
@@ -71,12 +74,7 @@ const Accounts = () => {
       updatedOn: dayjs(account.updatedOn).format(DAYJS_DISPLAY_FORMAT),
     } as IAccountsVM));
   }, [accounts]);
-  const updateLoading = useCallback(() => {
-    setIsLoading(accounts.length === 0);
-  }, [accounts]);
-  useEffect(() => {
-    updateLoading();
-  }, [updateLoading]);
+
   const handleClickViewCreditDebit = (account: IAccountsVM) => {
     navigate(accountCreditDebitViewPath(account.id!));
   };
@@ -112,10 +110,11 @@ const Accounts = () => {
             />
           </Typography>
           <MaterialReactTable
-            state={{ isLoading }}
+            state={{ pagination }}
             columns={columns}
             data={parsedData}
             enableRowActions
+            onPaginationChange={setPagination}
             positionActionsColumn="last"
             renderRowActions={({ row }) => (
               <div style={{ display: "flex", flexWrap: "nowrap" }}>

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import logo from "../../assets/login_logo.png";
-import useLogoClickHandler from "../../utils/useLogoClickHandler";
 import { IconButton } from "@mui/material";
 import { imagePath } from "../../context/constant";
 type MenuItem = {
@@ -28,7 +27,7 @@ const BookingSidebar: React.FC<SidebarProps> = ({
     {
       id: 1,
       label: "Dashboard",
-      link: "/#/bookingdashboard",
+      link: "/#/booking-dashboard",
       svgIcon: "M4 6h16M4 12h16M4 18h16",
     },
     {
@@ -40,7 +39,7 @@ const BookingSidebar: React.FC<SidebarProps> = ({
         {
           id: 21,
           label: "Motor",
-          link: "/#/policy/motorpolicies",
+          link: "/#/policy/motor-policies",
           svgIcon:
             "M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25m-2.25 0h-2.25m0 0v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v4.964m12-4.006v4.006m0 0v3.75m-12-7.756v3.75m0 0h12m-12 0V14.25m12-4.5V9m0 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25m-2.25 0h-2.25m0 0v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v4.964m12-4.006v4.006m0 0v3.75m-12-7.756v3.75m0 0h12m-12 0V14.25m12-4.5V9",
         },
@@ -104,7 +103,6 @@ const BookingSidebar: React.FC<SidebarProps> = ({
       setOpenSubMenus([...openSubMenus, parentId]);
     }
   };
-  const handleLogoClick = useLogoClickHandler();
   return (
     <div
       className={`${
@@ -247,11 +245,11 @@ const BookingSidebar: React.FC<SidebarProps> = ({
           </ul>
         </div>
       </div>
-      <div className="mx-1">
-        <picture className="mb-1 flex flex-col justify-center items-center ">
-          <caption className="text-sm font-medium text-safekarolightOrange">
-            Powered By
-          </caption>
+    <div className="mx-1 flex flex-col justify-center items-center">
+        <span className="text-sm font-medium text-safekarolightOrange">
+          Powered By
+        </span>
+        <picture className="mb-1 ">
           <source srcSet={logo} type="image/png" />
           <img src={logo} className="w-44 mx-auto" alt="company Logo" />
         </picture>

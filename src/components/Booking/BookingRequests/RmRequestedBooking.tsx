@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import {  useEffect, useMemo, useState } from "react";
 import { MaterialReactTable, type MRT_ColumnDef } from "material-react-table";
 import { Button, IconButton, Paper, Tooltip, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
@@ -17,7 +17,6 @@ import Papa from "papaparse";
 import toast, { Toaster } from "react-hot-toast";
 import GetRmReqBookingService from "../../../api/BookingRequest/GetRmReqBooking/GetRmReqBookingService";
 const RmRequestedBooking = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const [bookingRequests, setBookingRequests] = useState<IBookingRequests[]>(
     []
   );
@@ -264,7 +263,6 @@ const RmRequestedBooking = () => {
             />
           </Typography>
           <MaterialReactTable
-            state={{ isLoading }}
             columns={columns}
             data={parsedData}
             enableRowActions

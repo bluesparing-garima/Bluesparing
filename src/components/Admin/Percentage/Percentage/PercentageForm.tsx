@@ -113,7 +113,7 @@ const navigate = useNavigate()
         policy: policyFilter,
       });
       if(res.status ==="success"){
-        navigate("/policy/motorpolicies")
+        navigate("/policy/motor-policies")
       }
     } catch (err: any) {
       const errObj = await err;

@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import { IAddAttendanceProps } from "../../../../api/HR/getHrTypes";
 import AddAttendanceService from "../../../../api/HR/Attendance/AddAttendance/AddHolidayService";
 import { header } from "../../../../context/constant";
+import toast from "react-hot-toast";
 interface IMarkInTimeProps {
   attendance: IAttendance | null;
   setAttendance: React.Dispatch<
@@ -40,7 +41,8 @@ const MarkInTime: React.FC<IMarkInTimeProps> = ({
         setAttendance(res.data);
       }
     } catch (error: any) {
-      console.log(error);
+      const err = await error;
+      toast.error(err.message);
     }
   };
   return (

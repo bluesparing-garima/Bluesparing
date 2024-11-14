@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import { IAddAttendanceProps } from "../../../../api/HR/getHrTypes";
 import AddAttendanceService from "../../../../api/HR/Attendance/AddAttendance/AddHolidayService";
 import { header } from "../../../../context/constant";
+import toast from "react-hot-toast";
 interface IMarkOutTimeProps {
   attendance: IAttendance | null;
   setAttendance: React.Dispatch<React.SetStateAction<IAttendance | null | undefined>>
@@ -50,7 +51,8 @@ const MarkOutTime: React.FC<IMarkOutTimeProps> = ({ attendance ,setAttendance}) 
         setAttendance(res.data)
       }
     } catch (error: any) {
-      console.log(error);
+      const err = await error;
+      toast.error(err.message);
     }
   };
 

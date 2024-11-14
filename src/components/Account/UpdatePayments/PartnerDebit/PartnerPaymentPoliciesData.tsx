@@ -99,12 +99,12 @@ function PartnerPaymentPoliciesData({
     updatePolicies.forEach((p) => {
       const originPolicyData = findPolicyByNumber(p.policyNumber, policiesData);
       const preStatus = originPolicyData?.payOutPaymentStatus;
-      const newSataus = p.payOutPaymentStatus;
+      const newStatus = p.payOutPaymentStatus;
       if (preStatus === "Partial") {
-        if (newSataus === "Paid") {
+        if (newStatus === "Paid") {
           totalPaidAmount += originPolicyData?.payOutBalance!;
           leftAmount -= originPolicyData?.payOutBalance!;
-        } else if (newSataus === "Partial") {
+        } else if (newStatus === "Partial") {
           const diff = p.payOutAmount! - originPolicyData?.payOutAmount!;
           totalPaidAmount += diff;
           leftAmount -= diff;
@@ -112,7 +112,7 @@ function PartnerPaymentPoliciesData({
           leftAmount += originPolicyData?.payOutAmount!;
         }
       } else if (preStatus === "UnPaid") {
-        if (newSataus === "Paid") {
+        if (newStatus === "Paid") {
           totalPaidAmount += p.payOutCommission;
           leftAmount -= p.payOutCommission;
         } else {
@@ -120,7 +120,7 @@ function PartnerPaymentPoliciesData({
           leftAmount -= p.payOutAmount!;
         }
       } else {
-        if (newSataus === "Partial") {
+        if (newStatus === "Partial") {
           leftAmount += originPolicyData?.payOutAmount! - p.payOutAmount!;
         } else {
           leftAmount += p.payOutCommission;
@@ -279,14 +279,14 @@ function PartnerPaymentPoliciesData({
   };
   const updateAllPolicies = (
     status: string,
-    payoutAmout: number,
+    payoutAmount: number,
     payOutBalance: number,
     policyNumber: string
   ) => {
     const updateData = updatePolicies.map((policy) => {
       if (policy.policyNumber === policyNumber) {
         policy.payOutPaymentStatus = status;
-        policy.payOutAmount = payoutAmout;
+        policy.payOutAmount = payoutAmount;
         policy.payOutBalance = payOutBalance;
         policy.updatedOn = distributedDate;
       }
@@ -309,6 +309,7 @@ function PartnerPaymentPoliciesData({
         p.policyNumber!
       );
     });
+    
   }, [partialPaidList]);
   const splitDataIntoChunks = (data: any) => {
     const chunks = [];

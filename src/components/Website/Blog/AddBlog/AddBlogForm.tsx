@@ -68,7 +68,6 @@ const AddBlogForm = (props: addPolicyTypeFormProps) => {
     if (quillRef.current) {
       const editor = quillRef.current.getEditor();
       const observer = new MutationObserver(() => {
-        console.log("DOM changed");
       });
       const editorContainer = editor.root;
       observer.observe(editorContainer, {

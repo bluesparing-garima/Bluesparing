@@ -26,7 +26,6 @@ const AddTeam = () => {
         })
         .catch(async (error: any) => {
           const err = await error;
-          console.log("====>", "error");
           toast.error(err.message);
         });
     }

@@ -23,7 +23,7 @@ const Signin = () => {
   const roleDashboardMapping: { [key: string]: string } = {
     admin: "/dashboard",
     operation: "/operationdashboard",
-    booking: "/bookingdashboard",
+    booking: "/booking-dashboard",
     account: "/accountdashboard",
     rm: "/rm/dashboard",
     hr: "/hr/dashboard",
@@ -61,7 +61,6 @@ const Signin = () => {
             header,
             teamId: responseData.partnerId,
           });
-          console.log("bookingRequestDetails",bookingRequestDetails);
           loginData.id = responseData.partnerId!;
           loginData.companyLogo = bookingRequestDetails.companyLogo
         }

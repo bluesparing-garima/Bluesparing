@@ -4,9 +4,10 @@ import GetTodayAttendanceRecordService from "../../../../api/HR/Attendance/GetTo
 import { header } from "../../../../context/constant";
 import { useEffect, useState } from "react";
 import { IAttendance, IEmployee } from "../IAttendance";
-import {  CircularProgress } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import GetAttendanceCountService from "../../../../api/Role/GetAttendanceCount/GetAttendanceCountService";
 import MarkAttendanceCard from "./MarkAttendanceCard";
+import toast from "react-hot-toast";
 const MarkAttendance = () => {
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
@@ -17,8 +18,9 @@ const MarkAttendance = () => {
     try {
       const res = await GetAttendanceCountService({ header, eId: UserData.id });
       setEmployee(res.data);
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      const err = await error;
+      toast.error(err.message);
     }
   };
   const FetchData = async () => {
@@ -30,14 +32,15 @@ const MarkAttendance = () => {
         eId: id,
       });
       setAttendance(res.data[0]);
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      const err = await error;
+      toast.error(err.message);
     }
   };
   useEffect(() => {
     FetchData();
     getAttendanceRecord();
-     // eslint-disable-next-line 
+    // eslint-disable-next-line
   }, []);
   if (!employee || !attendance) {
     return <CircularProgress />;
@@ -45,7 +48,11 @@ const MarkAttendance = () => {
   return (
     <>
       <div className="bg-blue-200 px-2 h-screen">
-        <MarkAttendanceCard employee={employee} attendance={attendance} setAttendance={setAttendance} />
+        <MarkAttendanceCard
+          employee={employee}
+          attendance={attendance}
+          setAttendance={setAttendance}
+        />
       </div>
     </>
   );

@@ -38,7 +38,7 @@ import { CartButton } from "./dashboard";
 import { Field, Form } from "react-final-form";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -77,12 +77,14 @@ const BookingDashboard: React.FC = () => {
     },
     [UserData.id]
   );
-  const getAttendaceRecord = async () => {
+  const getAttendanceRecord = async () => {
     try {
       const res = await GetAttendanceCountService({ header, eId: UserData.id });
       setEmployee(res.data);
-    } catch (error) {
-      console.log(error);
+    } catch (error:any) {
+      const err= await error;
+      toast.error(err.message)
+      
     }
   };
   const handleFirstCart = async () => {
@@ -104,7 +106,7 @@ const BookingDashboard: React.FC = () => {
     const fetchData = () => {
       GetDashboardCount(formattedFirstDay, formattedLastDay);
     };
-    getAttendaceRecord();
+    getAttendanceRecord();
     fetchData();
     const intervalId = setInterval(fetchData, 30000);
     return () => clearInterval(intervalId);
@@ -171,7 +173,7 @@ const BookingDashboard: React.FC = () => {
             />
             <CartButton
               onClick={handleSecondCart}
-              tooltipTitle="Monthly Attendace "
+              tooltipTitle="Monthly Attendance "
               iconPath={<AttendanceDataSvg isActive={selectedCard === "2"} />}
               isSelected={secondCart}
             />
@@ -274,7 +276,7 @@ const BookingDashboard: React.FC = () => {
                         "Motor",
                         item.policyCounts?.motor || 0,
                         MotorIcon,
-                        "/policy/motorpolicies"
+                        "/policy/motor-policies"
                       )}
                     </Grid>
                     <Grid container spacing={2}>
@@ -282,13 +284,13 @@ const BookingDashboard: React.FC = () => {
                         "Net Premium",
                         item.premiums?.["Net Premium"] || 0,
                         NetPremiumIcon,
-                        "/policy/motorpolicies"
+                        "/policy/motor-policies"
                       )}
                       {renderCountBox(
                         "Final Premium",
                         item.premiums?.["Final Premium"] || 0,
                         FinalPremiumIcon,
-                        "/policy/motorpolicies"
+                        "/policy/motor-policies"
                       )}
                     </Grid>
                     <Grid container spacing={2}>
@@ -314,7 +316,7 @@ const BookingDashboard: React.FC = () => {
                         "Booked Booking",
                         item.bookingRequests?.["Booked Booking"] || 0,
                         BookedBookingIcon,
-                        "/policy/motorpolicies"
+                        "/policy/motor-policies"
                       )}
                       {renderCountBox(
                         "Rejected Booking",

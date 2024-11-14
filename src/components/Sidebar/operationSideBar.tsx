@@ -241,11 +241,11 @@ const PartnerSidebar: React.FC<SidebarProps> = ({
           </ul>
         </div>
       </div>
-      <div className="mx-1">
-        <picture className="mb-1 flex flex-col justify-center items-center ">
-          <caption className="text-sm font-medium text-safekarolightOrange">
-            Powered By
-          </caption>
+    <div className="mx-1 flex flex-col justify-center items-center">
+        <span className="text-sm font-medium text-safekarolightOrange">
+          Powered By
+        </span>
+        <picture className="mb-1 ">
           <source srcSet={logo} type="image/png" />
           <img src={logo} className="w-44 mx-auto" alt="company Logo" />
         </picture>

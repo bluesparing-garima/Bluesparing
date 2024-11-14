@@ -129,7 +129,7 @@ const ViewPolicyDetails = () => {
               Dashboard {" / "}
             </Link>
             <Link
-              to="/policy/motorpolicies"
+              to="/policy/motor-policies"
               className="text-addButton font-bold text-sm"
             >
               Policy /

@@ -337,7 +337,7 @@ const Sidebar = () => {
                       Model
                     </a>
                     <a
-                      href="/commision/payin"
+                      href="/commission/payin"
                       className="flex items-center px-4 py-2 mt-2 text-gray-500 hover:bg-safekaroDarkBlue hover:text-white hover:rounded-lg"
                       onClick={handleDropdownItemClick}
                     >
@@ -409,7 +409,7 @@ const Sidebar = () => {
                     Add Motor Policy
                   </a>
                   <a
-                    href="/policy/motorpolicies"
+                    href="/policy/motor-policies"
                     className="flex items-center px-4 py-2 mt-2 text-gray-500 hover:bg-safekaroDarkBlue hover:text-white hover:rounded-lg"
                     onClick={handleDropdownItemClick}
                   >

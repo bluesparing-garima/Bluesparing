@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { MaterialReactTable, type MRT_ColumnDef } from "material-react-table";
 
 import {  Paper, Typography } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import dayjs from "dayjs";
 
@@ -14,7 +14,6 @@ import {
   header,
 } from "../../context/constant";
 
-import { leadsAddPath } from "../../sitemap";
 import CountdownTimer from "../../utils/CountdownTimer";
 import GetRmLeadService from "../../api/BookingRequest/GetRmLead/GetRmLeadService";
 
@@ -50,11 +49,8 @@ const RmLead = () => {
     };
   }, [userData.id]);
 
-  const navigate = useNavigate();
 
-  const handleAddLeadClick = () => {
-    navigate(leadsAddPath());
-  };
+
   const parsedData = useMemo(
     () =>
       leads.map(

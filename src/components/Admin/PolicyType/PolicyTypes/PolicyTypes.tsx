@@ -109,7 +109,7 @@ const PolicyTypes = () => {
   useEffect(() => {
     getPolicyTypes();
   }, [getPolicyTypes]);
-  const callUpdatepolicyTypeAPI = async (policyType: IPolicyTypesVM) => {
+  const callUpdatePolicyTypeAPI = async (policyType: IPolicyTypesVM) => {
     var convertPolicyTypeVMToPolicyTypeForm =
       convertIPolicyTypeVMToIPolicyTypeForm(policyType);
     const policyTypeData: IPolicyTypeForm = {
@@ -130,7 +130,7 @@ const PolicyTypes = () => {
       });
   };
   const handleClickChangeStatus = (policyType: IPolicyTypesVM) => {
-    callUpdatepolicyTypeAPI(policyType);
+    callUpdatePolicyTypeAPI(policyType);
   };
   return (
     <>

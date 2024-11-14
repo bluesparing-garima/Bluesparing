@@ -56,7 +56,7 @@ import { IMakes } from "../../Admin/Make/IMake";
 import getPolicyByNumberService from "../../../api/Policies/GetPolicyByNumber/getPolicyByNumberService";
 import dayjs from "dayjs";
 import editPolicyService from "../../../api/Policies/EditPolicy/editPolicyService";
-import getVehicleNumberService from "../../../api/Policies/GetVehicleNumber/getVechicleNumberService";
+import getVehicleNumberService from "../../../api/Policies/GetVehicleNumber/getVehicleNumberService";
 export interface AddPolicyFormProps {
   initialValues: IAddEditPolicyForm;
 }
@@ -568,7 +568,6 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   };
   const validateVehicleNumber = async (e: any) => {
     const vehicleNumber = e.target.value;
-    console.log(vehicleNumber);
     try {
       const res = await getVehicleNumberService({
         header,

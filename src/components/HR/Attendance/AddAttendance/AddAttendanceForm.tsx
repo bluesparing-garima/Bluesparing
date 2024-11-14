@@ -25,8 +25,7 @@ const AddAttendanceForm: React.FC<AddAttendanceFormProps> = ({
     initialValues?.outTime || null
   );
   const [totalHours, setTotalHours] = useState<string | null>(null);
-  
-  
+
   const validationSchema = yup.object().shape({
     employeeName: yup
       .string()
@@ -57,13 +56,14 @@ const AddAttendanceForm: React.FC<AddAttendanceFormProps> = ({
       otherwise: yup.string().notRequired(),
     }),
   });
- 
+
   const validateFormValues =
     (schema: yup.ObjectSchema<any>) => async (values: Record<string, any>) => {
       try {
         await schema.validate(values, { abortEarly: false });
-      } catch (err) {
-        console.log(err);
+      } catch (error: any) {
+        const err = await error;
+        toast.error(err.message);
       }
     };
 
@@ -103,15 +103,15 @@ const AddAttendanceForm: React.FC<AddAttendanceFormProps> = ({
       if (values.attendanceType === "leave") {
         attendanceData.remarks = values.remarks;
         attendanceData.attendanceType = "leave";
-        attendanceData.inTime = "0:0"
-        attendanceData.outTime="0:0"
-        attendanceData.totalHours="0:0"
+        attendanceData.inTime = "0:0";
+        attendanceData.outTime = "0:0";
+        attendanceData.totalHours = "0:0";
       } else {
         attendanceData = {
           employeeName: initialValues?.employeeName || "",
           attendanceType: values.attendanceType,
           inTime: inTime ?? "0",
-          outTime: outTime ??null,
+          outTime: outTime ?? null,
           remarks: values.remarks || "",
           employeeId: initialValues?.employeeId || "",
           totalHours: totalHours ?? "0",
@@ -168,7 +168,11 @@ const AddAttendanceForm: React.FC<AddAttendanceFormProps> = ({
                       {({ input, meta }) => (
                         <TimePicker
                           label="In Time"
-                          value={inTime ? dayjs(inTime, "HH:mm") : dayjs().format("HH:mm")}
+                          value={
+                            inTime
+                              ? dayjs(inTime, "HH:mm")
+                              : dayjs().format("HH:mm")
+                          }
                           onChange={(newValue) => {
                             const formattedTime =
                               dayjs(newValue).format("HH:mm");
@@ -191,7 +195,11 @@ const AddAttendanceForm: React.FC<AddAttendanceFormProps> = ({
                       {({ input, meta }) => (
                         <TimePicker
                           label="Out Time"
-                          value={outTime ? dayjs(outTime, "HH:mm") : dayjs().format("HH:mm")}
+                          value={
+                            outTime
+                              ? dayjs(outTime, "HH:mm")
+                              : dayjs().format("HH:mm")
+                          }
                           onChange={(newValue) => {
                             const formattedTime =
                               dayjs(newValue).format("HH:mm");

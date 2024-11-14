@@ -19,7 +19,6 @@ import {
 } from "../../../../utils/PaginationHandler";
 import { convertIRankVMToIRankForm } from "../../../../api/Rank/convertIRankVMToIRankForm";
 import editRankService from "../../../../api/Rank/EditRank/editRankService";
-import deleteRankService from "../../../../api/Rank/DeleteRank/deleteRankService";
 import getRankService from "../../../../api/Rank/GetRank/getRankService";
 const Ranks = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -52,11 +51,8 @@ const Ranks = () => {
     const p = getPaginationState(BRANCH_STORAGE_KEY);
     setPagination(p);
   }, []);
-  const [forcedRenderCount, setForcedRenderCount] = useState(0);
-  const forceRender = useCallback(
-    () => setForcedRenderCount(forcedRenderCount + 1),
-    [forcedRenderCount]
-  );
+  const forcedRenderCount =0;
+  
   const columns = useMemo<MRT_ColumnDef<IRanks>[]>(
     () => [
       {
@@ -112,28 +108,12 @@ const Ranks = () => {
   useEffect(() => {
     updateLoading();
   }, [updateLoading]);
-  const handleClickDeleteRank = (rank: IRanksVM) => {
-    rankDeleteApiCall(rank.id!);
-  };
+
   const handleClickEditRank = (rank: IRanksVM) => {
     savePaginationState(pagination, BRANCH_STORAGE_KEY);
     navigate(rankEditPath(rank.id!));
   };
-  const rankDeleteApiCall = async (rankId: string) => {
-    setIsLoading(true);
-    deleteRankService({ header, rankId, ranks })
-      .then((refreshedRanks) => {
-        setRanks(refreshedRanks);
-        forceRender();
-      })
-      .catch(async (error: any) => {
-        const err = await error;
-        toast.error(err.message);
-      })
-      .finally(() => {
-        updateLoading();
-      });
-  };
+ 
   const callUpdateRankAPI = async (rank: IRanksVM) => {
     var convertRankVMToRankForm = convertIRankVMToIRankForm(rank);
     const rankData: IRankForm = {

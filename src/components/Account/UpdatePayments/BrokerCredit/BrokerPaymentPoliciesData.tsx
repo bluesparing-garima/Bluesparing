@@ -99,12 +99,12 @@ function BrokerPaymentPoliciesData({
     updatePolicies.forEach((p) => {
       const originPolicyData = findPolicyByNumber(p.policyNumber, policiesData);
       const preStatus = originPolicyData?.payInPaymentStatus;
-      const newSataus = p.payInPaymentStatus;
+      const newStatus = p.payInPaymentStatus;
       if (preStatus === "Partial") {
-        if (newSataus === "Paid") {
+        if (newStatus === "Paid") {
           totalPaidAmount += originPolicyData?.payInBalance!;
           leftAmount -= originPolicyData?.payInBalance!;
-        } else if (newSataus === "Partial") {
+        } else if (newStatus === "Partial") {
           const diff = p.payInAmount! - originPolicyData?.payInAmount!;
           totalPaidAmount += diff;
           leftAmount -= diff;
@@ -112,7 +112,7 @@ function BrokerPaymentPoliciesData({
           leftAmount += originPolicyData?.payInAmount!;
         }
       } else if (preStatus === "UnPaid") {
-        if (newSataus === "Paid") {
+        if (newStatus === "Paid") {
           totalPaidAmount += p.payInCommission;
           leftAmount -= p.payInCommission;
         } else {
@@ -120,7 +120,7 @@ function BrokerPaymentPoliciesData({
           leftAmount -= p.payInAmount!;
         }
       } else {
-        if (newSataus === "Partial") {
+        if (newStatus === "Partial") {
           leftAmount += originPolicyData?.payInAmount! - p.payInAmount!;
         } else {
           leftAmount += p.payInCommission;
@@ -303,7 +303,6 @@ function BrokerPaymentPoliciesData({
       } else {
         status = "Partial";
       }
-      console.log(status);
       updateAllPolicies(
         status,
         p.payInAmount!,
@@ -311,6 +310,7 @@ function BrokerPaymentPoliciesData({
         p.policyNumber!
       );
     });
+    // eslint-disable-next-line 
   }, [partialPaidList]);
   function addKeyValueToObjects<T extends Record<string, any>>(
     policyData: T[],

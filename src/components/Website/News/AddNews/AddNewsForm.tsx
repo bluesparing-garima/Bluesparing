@@ -67,9 +67,7 @@ const AddNewsForm = (props: addPolicyTypeFormProps) => {
   useEffect(() => {
     if (quillRef.current) {
       const editor = quillRef.current.getEditor();
-      const observer = new MutationObserver(() => {
-        console.log("DOM changed");
-      });
+      const observer = new MutationObserver(() => {});
       const editorContainer = editor.root;
       observer.observe(editorContainer, {
         childList: true,
@@ -110,7 +108,6 @@ const AddNewsForm = (props: addPolicyTypeFormProps) => {
   });
   const validate = validateFormValues(validationSchema);
   const onSubmit = async (newsForm: INewsForm) => {
-    console.log("newsForm", newsForm);
     const isRegDateValid = dayjs(newsForm.date).isValid();
     if (!isRegDateValid) {
       toast.error("Invalid Publish Date");

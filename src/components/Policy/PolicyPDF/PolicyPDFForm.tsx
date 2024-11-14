@@ -44,7 +44,7 @@ import { IMakes } from "../../Admin/Make/IMake";
 import getPolicyByNumberService from "../../../api/Policies/GetPolicyByNumber/getPolicyByNumberService";
 import dayjs from "dayjs";
 import { format } from "date-fns";
-import getVehicleNumberService from "../../../api/Policies/GetVehicleNumber/getVechicleNumberService";
+import getVehicleNumberService from "../../../api/Policies/GetVehicleNumber/getVehicleNumberService";
 
 export interface AddPolicyFormProps {
   initialValues: IPDFPolicyForm;
@@ -69,7 +69,7 @@ const PolicyPDFForm = (props: AddPolicyFormProps) => {
   let [companies] = useGetCompanies({ header: header });
   let [products] = useGetProducts({ header: header });
   let [productSubTypes] = useGetProductSubTypes({ header: header });
-  const [isVisibile, setIsVisibile] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const [selectedPartnerName, setSelectedPartnerName] = useState("");
   const [selectedPartnerId, setSelectedPartnerId] = useState("");
   const [selectedBrokerId, setSelectedBrokerId] = useState("");
@@ -116,9 +116,9 @@ const PolicyPDFForm = (props: AddPolicyFormProps) => {
       setProType(initialValues.productType);
       setCC(initialValues.cc ?? 0);
       if (initialValues.productType === "Goods Carrying Vehicle") {
-        setIsVisibile(true);
+        setIsVisible(true);
       } else {
-        setIsVisibile(false);
+        setIsVisible(false);
       }
       if (initialValues.make) {
         const filterModel = models.filter(
@@ -134,9 +134,9 @@ const PolicyPDFForm = (props: AddPolicyFormProps) => {
     if (selectedProduct) {
       const ProductId = selectedProduct._id;
       if (selectedProduct.productName === "Goods Carrying Vehicle") {
-        setIsVisibile(true);
+        setIsVisible(true);
       } else {
-        setIsVisibile(false);
+        setIsVisible(false);
       }
       setFilteredSubcategories(
         productSubTypes.filter((sub) => sub.productId === ProductId)
@@ -268,7 +268,6 @@ const PolicyPDFForm = (props: AddPolicyFormProps) => {
       toast.error("Invalid Registration  Date");
       return;
     }
-    console.log(policyForm.policyCreatedBy);
     if (policyForm.policyCreatedBy.toLowerCase() === "admin") {
       if (!selectedRMId) {
         setRMErrorMessage("Select Partner or RM");
@@ -319,7 +318,7 @@ const PolicyPDFForm = (props: AddPolicyFormProps) => {
         setPolicyErrorMessage("");
       }
     } catch {
-      console.error("eror");
+      console.error("error");
     }
   };
 
@@ -328,8 +327,7 @@ const PolicyPDFForm = (props: AddPolicyFormProps) => {
     setNetPremium(value);
   };
 
-  // Validationon textbox
-  // To be passed to React Final Form
+
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
       schema = schema();
@@ -445,13 +443,13 @@ const PolicyPDFForm = (props: AddPolicyFormProps) => {
         setPolicyErrorMessage("");
       }
     } catch {
-      console.error("eror");
+      console.error("error");
     }
   };
 
   const validateVehicleNumber = async (e: any) => {
     const vehicleNumber = e.target.value;
-    console.log(vehicleNumber);
+  
     try {
       const res = await getVehicleNumberService({
         header,
@@ -1075,7 +1073,7 @@ const PolicyPDFForm = (props: AddPolicyFormProps) => {
                         }}
                       </Field>
                     </Grid>
-                    {isVisibile ? (
+                    {isVisible ? (
                       <Grid item lg={4} md={4} sm={6} xs={12}>
                         <Field name="weight">
                           {({ input, meta }) => (

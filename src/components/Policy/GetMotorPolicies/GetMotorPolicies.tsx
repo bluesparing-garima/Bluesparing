@@ -780,7 +780,7 @@ const GetMotorPolicies = () => {
   useEffect(() => {
     updateLoading();
   }, [updateLoading]);
-  const [dataToPass, setdataToPass] = useState<any>();
+  const [dataToPass, setDataToPass] = useState<any>();
   const handleClickCalculatePayIn = async (policy: IViewPolicy) => {
     setDialogOpen(true);
     setDialogTitle("PayIn Calculation");
@@ -817,7 +817,7 @@ const GetMotorPolicies = () => {
        TP Commission: ${calculatedPayInTPAmount}
        Total Commission: ${payInCommission}
       `;
-      setdataToPass(data);
+      setDataToPass(data);
       const calcuation = {
         od: ODAmount,
         tp: TPAmount,
@@ -881,7 +881,7 @@ const GetMotorPolicies = () => {
       TP Commission: ${calculatedPayOutTPAmount}
        Total Commission: ${payOutCommission}
       `;
-      setdataToPass(data);
+      setDataToPass(data);
       const calcuation = {
         od: ODAmount,
         tp: TPAmount,
@@ -995,7 +995,7 @@ const GetMotorPolicies = () => {
         PayOut TPAmount: ${policyDetails.data.payOutTPAmount}
         Total Payout Commission: ${policyDetails.data.payOutCommission}
        `;
-        setdataToPass(data);
+        setDataToPass(data);
       })
       .catch(async (error: any) => {
         const err = await error;

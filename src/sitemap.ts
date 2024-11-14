@@ -51,7 +51,7 @@ export const motorPolicyEditCommissionPath = (policyId: string) =>
   `/policy/${policyId}/commission`;
 export const motorPolicyEditPath = (policyId: string) =>
   `/policy/${policyId}/edit`;
-export const motorPolicyPath = () => `/policy/motorpolicies`;
+export const motorPolicyPath = () => `/policy/motor-policies`;
 export const motorPolicyCreatePath = (bookingRequestId: string) =>
   `/policy/motor/${bookingRequestId}`;
 export const calculatePayInPolicyPath = () => `/policy/filter`;

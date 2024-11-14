@@ -4,7 +4,6 @@ import { IAddAttendancePayload } from "../../getHrTypes";
 
 const AddAttendanceAPI = async ({ header, attendanceData,id }: IAddAttendancePayload) => {
     const url = endpoint(id)
-    console.log("url",url);
     const options: FetchOptions = {
         method: id ? "PUT" : "POST",
         headers: header,

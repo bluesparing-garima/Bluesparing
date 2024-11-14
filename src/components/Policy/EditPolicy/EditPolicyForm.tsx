@@ -84,7 +84,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
   let [companies] = useGetCompanies({ header: header });
   let [products] = useGetProducts({ header: header });
   let [productSubTypes] = useGetProductSubTypes({ header: header });
-  const [isVisibile, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const [selectedBrokerId, setSelectedBrokerId] = useState("");
   const [selectedPartnerName, setSelectedPartnerName] = useState("");
   const [selectedPartnerId, setSelectedPartnerId] = useState("");
@@ -316,7 +316,6 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
     addedKeys.forEach((file, key) => {
       formData.append(key, file);
     });
-    console.log("policyForm",policyForm);
     callAddPolicyAPI(formData);
   };
   const onSubmit = async (policyForm: any) => {
@@ -514,7 +513,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
         setPolicyErrorMessage("");
       }
     } catch {
-      console.error("eror");
+      console.error("error");
     }
   };
   return (
@@ -1097,7 +1096,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                         )}
                       </Field>
                     </Grid>
-                    {isVisibile ? (
+                    {isVisible ? (
                       <Grid item lg={4} md={4} sm={6} xs={12}>
                         <Field name="weight">
                           {({ input, meta }) => (

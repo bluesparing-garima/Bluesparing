@@ -36,7 +36,7 @@ import GetAttendanceCountService from "../../api/Role/GetAttendanceCount/GetAtte
 import AttendanceCard from "../HR/Attendance/AttendanceRecord/AttendanceCard";
 import { AttendanceDataSvg, EmployeeSvg } from "./data/Svg";
 import { CartButton } from "./dashboard";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 
 ChartJS.register(
   CategoryScale,
@@ -74,8 +74,10 @@ const OperationDashboard: React.FC = () => {
     try {
       const res = await GetAttendanceCountService({ header, eId: UserData.id });
       setEmployee(res.data);
-    } catch (error) {
-      console.log(error);
+    } catch (error:any) {
+      const err= await error;
+      toast.error(err.message)
+      
     }
   };
   const handleDownloadPDF = () => {
@@ -151,7 +153,7 @@ const OperationDashboard: React.FC = () => {
             />
             <CartButton
               onClick={handleSecondCart}
-              tooltipTitle="Monthly Attendace "
+              tooltipTitle="Monthly Attendance "
               iconPath={<AttendanceDataSvg isActive={selectedCard === "2"} />}
               isSelected={secondCart}
             />

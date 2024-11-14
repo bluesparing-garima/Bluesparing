@@ -169,13 +169,13 @@ const EmployeeAttendance: React.FC = () => {
   useEffect(() => {
     fetchAllAttendanceRecords();
   }, []);
-  const generateDashBoardlink = () => {
+  const generateDashBoardLink = () => {
     const role = UserData.role.toLowerCase();
     switch (role) {
       case "hr":
         return "/hr/dashboard";
       case "booking":
-        return "/bookingdashboard";
+        return "/booking-dashboard";
       case "account":
         return "/accountdashboard";
       case "operation":
@@ -197,7 +197,7 @@ const EmployeeAttendance: React.FC = () => {
             <div style={{ display: "flex", alignItems: "center" }}>
               <div style={{ flex: 1 }}>
                 <Link
-                  to={generateDashBoardlink()}
+                  to={generateDashBoardLink()}
                   className="text-addButton font-bold text-sm"
                 >
                   Dashboard /

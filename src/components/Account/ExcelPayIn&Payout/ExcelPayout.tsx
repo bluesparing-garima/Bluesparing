@@ -35,7 +35,6 @@ const ExcelPayout = () => {
           .then((response) => {
             if (response.status.toLowerCase() === "success") {
               setExcelUploaded(true);
-              console.log(response.message);
               toast.success(response.message);
             }
           })

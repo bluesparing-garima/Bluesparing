@@ -33,7 +33,7 @@ const ComparePartnerResult: React.FC<ActivitiesProps> = ({
     const csv = Papa.unparse(rowData, { header: true });
     downloadCsv("partnerCompare.csv", csv);
   };
-  const safekarocolumns = useMemo<MRT_ColumnDef<IPolicyPartnerData>[]>(
+  const safekaroColumns = useMemo<MRT_ColumnDef<IPolicyPartnerData>[]>(
     () => [
       {
         accessorKey: "policyNumber",
@@ -92,7 +92,7 @@ const ComparePartnerResult: React.FC<ActivitiesProps> = ({
           <Grid container>
             <MaterialReactTable
               state={{ isLoading }}
-              columns={safekarocolumns}
+              columns={safekaroColumns}
               data={safekaroData}
               renderTopToolbarCustomActions={({ table }) => (
                 <>
