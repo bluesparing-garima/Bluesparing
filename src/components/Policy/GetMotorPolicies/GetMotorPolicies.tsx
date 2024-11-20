@@ -53,7 +53,6 @@ import React from "react";
 import { setIn } from "final-form";
 import * as yup from "yup";
 import deletePolicyService from "../../../api/Policies/DeletePolicy/deletePolicyService";
-import Timer from "../../../utils/Timer";
 import Papa from "papaparse";
 import useGetPartners from "../../../Hooks/Partner/useGetPartners";
 import { IPartners } from "../../Partner/IPartner";
@@ -223,7 +222,23 @@ const GetMotorPolicies = () => {
   };
 
   const handleExportRows = (rows: any[]) => {
-    const rowData = rows.map((row) => row.original);
+    const exclusiveCol = [
+      "policyId",
+      "id",
+      "uuid",
+      "brokerCode",
+      "policyNumber",
+      "partnerId",
+      "relationshipManagerId",'rcFront','rcBack','bookingDate','bookingTimer','leadDate','leadTimer'
+    ];
+    const rowData = rows.map((row) => {
+      const modifiedRow = { ...row.original };
+      exclusiveCol.forEach((col) => {
+        delete modifiedRow[col];
+      });
+
+      return modifiedRow;
+    });
     const csv = Papa.unparse(rowData, { header: true });
     downloadCsv("motor-policy.csv", csv);
   };
@@ -576,42 +591,42 @@ const GetMotorPolicies = () => {
           size: 100,
           visible:
             userData.role.toLowerCase() === "admin" ||
-            userData.role.toLowerCase() === "account", // Conditional visibility
+            userData.role.toLowerCase() === "account",
         },
         {
-          accessorKey: "payInTPPercentage", //normal accessorKey
+          accessorKey: "payInTPPercentage", 
           header: "PayIn TP %",
           size: 100,
           visible:
             userData.role.toLowerCase() === "admin" ||
-            userData.role.toLowerCase() === "account", // Conditional visibility
+            userData.role.toLowerCase() === "account", 
         },
         {
-          accessorKey: "payInCommission", //normal accessorKey
+          accessorKey: "payInCommission", 
           header: "PayIn Amount",
           size: 100,
           visible:
             userData.role.toLowerCase() === "admin" ||
-            userData.role.toLowerCase() === "account", // Conditional visibility
+            userData.role.toLowerCase() === "account", 
         },
         {
-          accessorKey: "payInAmount", //normal accessorKey
+          accessorKey: "payInAmount",
           header: "PayIn Paid Amount",
           size: 100,
           visible:
             userData.role.toLowerCase() === "admin" ||
-            userData.role.toLowerCase() === "account", // Conditional visibility
+            userData.role.toLowerCase() === "account",
         },
         {
-          accessorKey: "payInBalance", //normal accessorKey
+          accessorKey: "payInBalance",
           header: "PayIn Balance",
           size: 100,
           visible:
             userData.role.toLowerCase() === "admin" ||
-            userData.role.toLowerCase() === "account", // Conditional visibility
+            userData.role.toLowerCase() === "account",
         },
         {
-          accessorKey: "payOutODPercentage", //normal accessorKey
+          accessorKey: "payOutODPercentage",
           header: "PayOut OD %",
           size: 100,
           Cell: ({ cell }: any) => {
@@ -620,7 +635,7 @@ const GetMotorPolicies = () => {
           },
         },
         {
-          accessorKey: "payOutTPPercentage", //normal accessorKey
+          accessorKey: "payOutTPPercentage", 
           header: "PayOut TP %",
           size: 100,
           Cell: ({ cell }: any) => {
@@ -1419,7 +1434,7 @@ const GetMotorPolicies = () => {
                               <DatePicker
                                 disableFuture
                                 label="End Date"
-                                value={dayjs(eDate)} // Initialize the value if it's undefined
+                                value={dayjs(eDate)}
                                 onChange={(date) =>
                                   handleEndDateChange(date, input)
                                 }
