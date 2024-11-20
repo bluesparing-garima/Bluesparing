@@ -227,9 +227,20 @@ const GetMotorPolicies = () => {
       "id",
       "uuid",
       "brokerCode",
-      "policyNumber",
       "partnerId",
-      "relationshipManagerId",'rcFront','rcBack','bookingDate','bookingTimer','leadDate','leadTimer'
+      "relationshipManagerId",
+      "rcFront",
+      "rcBack",
+      "previousPolicy",
+      "survey",
+      "puc",
+      "fitness",
+      "proposal",
+      "currentPolicy",
+      "bookingDate",
+      "bookingTimer",
+      "leadDate",
+      "leadTimer",
     ];
     const rowData = rows.map((row) => {
       const modifiedRow = { ...row.original };
@@ -594,20 +605,20 @@ const GetMotorPolicies = () => {
             userData.role.toLowerCase() === "account",
         },
         {
-          accessorKey: "payInTPPercentage", 
+          accessorKey: "payInTPPercentage",
           header: "PayIn TP %",
           size: 100,
           visible:
             userData.role.toLowerCase() === "admin" ||
-            userData.role.toLowerCase() === "account", 
+            userData.role.toLowerCase() === "account",
         },
         {
-          accessorKey: "payInCommission", 
+          accessorKey: "payInCommission",
           header: "PayIn Amount",
           size: 100,
           visible:
             userData.role.toLowerCase() === "admin" ||
-            userData.role.toLowerCase() === "account", 
+            userData.role.toLowerCase() === "account",
         },
         {
           accessorKey: "payInAmount",
@@ -635,7 +646,7 @@ const GetMotorPolicies = () => {
           },
         },
         {
-          accessorKey: "payOutTPPercentage", 
+          accessorKey: "payOutTPPercentage",
           header: "PayOut TP %",
           size: 100,
           Cell: ({ cell }: any) => {
