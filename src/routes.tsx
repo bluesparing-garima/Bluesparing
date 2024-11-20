@@ -733,7 +733,7 @@ const routes = [
         element: <EditCommission />,
       },
       {
-        path: "motorpolicies",
+        path: "motor-policies",
         element: <GetMotorPolicies />,
       },
       {

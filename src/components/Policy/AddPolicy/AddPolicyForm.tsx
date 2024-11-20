@@ -72,10 +72,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
     { docName: "", file: "" },
   ]);
   let [policyTypes] = useGetPolicyTypes({ header: header });
-  let [relationshipManagers] = useGetPartners({
-    header: header,
-    role: "Relationship Manager",
-  });
+
   let [partners] = useGetPartners({ header: header, role: "partner" });
   let [caseTypes] = useGetCaseTypes({ header: header });
   let [makes] = useGetMakes({ header: header });
@@ -1576,55 +1573,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                             </Field>
                           </Grid>
                         )}
-                      {selectedPolicyCreatedBy &&
-                        selectedPolicyCreatedBy === "Relationship Manager" && (
-                          <Grid item lg={4} md={4} sm={6} xs={12}>
-                            <Field name="relationshipManagerName">
-                              {({ input, meta }) => (
-                                <div>
-                                  <FormControl fullWidth size="small">
-                                    <Autocomplete
-                                      {...input}
-                                      id="relationshipManagerName"
-                                      getOptionLabel={(option) =>
-                                        typeof option === "string"
-                                          ? option
-                                          : `${option.fullName} - ${option.partnerId}` ||
-                                            ""
-                                      }
-                                      value={
-                                        input.value !== undefined
-                                          ? input.value
-                                          : initialValues.relationshipManagerName ||
-                                            null
-                                      }
-                                      options={relationshipManagers}
-                                      onChange={(event, newValue) => {
-                                        input.onChange(
-                                          newValue ? newValue.fullName : ""
-                                        );
-                                        handleSelectRMChange(newValue);
-                                      }}
-                                      renderInput={(params) => (
-                                        <TextField
-                                          {...params}
-                                          className="rounded-sm w-full"
-                                          size="small"
-                                          label="Select Relationship Manager"
-                                          variant="outlined"
-                                          error={meta.touched && !!meta.error}
-                                          helperText={
-                                            meta.touched && meta.error
-                                          }
-                                        />
-                                      )}
-                                    />
-                                  </FormControl>
-                                </div>
-                              )}
-                            </Field>
-                          </Grid>
-                        )}
+                     
                       <Grid item md={12} mt={2}>
                         {rmErrorMessage && (
                           <div style={{ color: "red" }}>{rmErrorMessage}</div>
