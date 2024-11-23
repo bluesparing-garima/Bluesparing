@@ -59,6 +59,7 @@ import { IPartners } from "../../Partner/IPartner";
 import editPolicyService from "../../../api/Policies/EditPolicy/editPolicyService";
 import useGetBrokers from "../../../Hooks/Broker/useGetBrokers";
 import { IBroker } from "../../Admin/Broker/IBroker";
+import GetRenewedPolicyService from "../../../api/Policies/GetRenewedPolicy/GetRenewedPolicyService";
 //import { mkConfig, generateCsv, download } from "export-to-csv"; //or use your library of choice here
 interface MenuIconButtonProps {
   row: { original: IViewPolicy };
@@ -127,7 +128,7 @@ const GetRenewals = () => {
 
   const GetPolicies = useCallback(
     (startDate, endDate) =>
-      getMotorPolicyService({ header, startDate, endDate })
+      GetRenewedPolicyService({ header, startDate, endDate })
         .then((motorPolicy) => {
           setMotorPolicies(motorPolicy.data);
         })
@@ -140,11 +141,11 @@ const GetRenewals = () => {
 
   const GetPoliciesById = useCallback(
     (startDate, endDate) =>
-      getPolicyByPartnerIdService({
+      GetRenewedPolicyService({
         header,
-        partnerId: userData.partnerId,
         startDate,
         endDate,
+        partnerId: userData.partnerId,
       })
         .then((bookingRequestDetails) => {
           setMotorPolicies(bookingRequestDetails.data);

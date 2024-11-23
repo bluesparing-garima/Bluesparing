@@ -23,6 +23,12 @@ export interface GetMotorPoliciesProps {
   endDate?: string;
   rmId?: string;
 }
+export interface GetRenewedMotorPoliciesProps {
+  header?: Header;
+  startDate: string;
+  endDate: string;
+  partnerId?: string;
+}
 export interface GetPolicyByNumberProps {
   header?: Header;
   policyNumber: string;
