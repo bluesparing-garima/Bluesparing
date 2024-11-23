@@ -156,6 +156,7 @@ import AddAttendance from "./components/HR/Attendance/AddAttendance/AddAttendanc
 import MarkAttendance from "./components/HR/Attendance/MarkAttendance/MarkAttendance";
 import ITDashboard from "./components/Dashboard/ITDashboard";
 import UploadLogo from "./components/UploadLogo/UploadLogo";
+import GetRenewals from "./components/Policy/Renewals/GetRenewals";
 const routes = [
   {
     path: "/",
@@ -700,6 +701,10 @@ const routes = [
   {
     path: "policy",
     children: [
+      {
+        path: "/policy/renewals",
+        element: <GetRenewals />,
+      },
       {
         path: "/policy/motor/upload",
         element: <PolicyPDF />,
