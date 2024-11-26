@@ -28,6 +28,7 @@ const Signin = () => {
     rm: "/rm/dashboard",
     hr: "/hr/dashboard",
     it: "/it/dashboard",
+    superadmin:"/super-admin/dashboard",
     default: "/partnerdashboard",
   };
   const onSubmit = async (signInData: ISignIn) => {
