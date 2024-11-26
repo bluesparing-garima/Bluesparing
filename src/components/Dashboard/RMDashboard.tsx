@@ -17,7 +17,12 @@ import { rmGeneratePDF } from "../../utils/DashboardPdf";
 import { rmGenerateExcel } from "../../utils/DashboardExcel";
 import { CartButton } from "./dashboard";
 import SearchIcon from "@mui/icons-material/Search";
-import { AttendanceDataSvg, MotorSvg, ViewAdminDataSvg, ViewChartSvg } from "./data/Svg";
+import {
+  AttendanceDataSvg,
+  MotorSvg,
+  ViewAdminDataSvg,
+  ViewChartSvg,
+} from "./data/Svg";
 import AttendanceCard from "../HR/Attendance/AttendanceRecord/AttendanceCard";
 import GetAttendanceCountService from "../../api/Role/GetAttendanceCount/GetAttendanceCountService";
 import { IEmployee } from "../HR/Attendance/IAttendance";
@@ -44,7 +49,6 @@ const RMDashboard: React.FC = () => {
         rmId,
       })
         .then((dashboardData) => {
-   
           setIsVisible(true);
           setData(dashboardData.data);
           const entries = dashboardData.data.flatMap((item: any) =>
@@ -57,17 +61,16 @@ const RMDashboard: React.FC = () => {
           setIsVisible(true);
         });
     },
-     // eslint-disable-next-line 
+    // eslint-disable-next-line
     [header]
   );
   const getAttendanceRecord = async () => {
     try {
       const res = await GetAttendanceCountService({ header, eId: UserData.id });
       setEmployee(res.data);
-    } catch (error:any) {
-      const err= await error;
-      toast.error(err.message)
-    
+    } catch (error: any) {
+      const err = await error;
+      toast.error(err.message);
     }
   };
   useEffect(() => {
@@ -76,14 +79,14 @@ const RMDashboard: React.FC = () => {
     const lastDayOfMonth = endOfMonth(currentDate);
     const formattedFirstDay = format(firstDayOfMonth, "yyyy-MM-dd");
     const formattedLastDay = format(lastDayOfMonth, "yyyy-MM-dd");
-    getAttendanceRecord()
+    getAttendanceRecord();
     const fetchData = () => {
       GetDashboardCount(formattedFirstDay, formattedLastDay, UserData.id);
     };
     fetchData();
     const intervalId = setInterval(fetchData, 30000);
     return () => clearInterval(intervalId);
-     // eslint-disable-next-line 
+    // eslint-disable-next-line
   }, [GetDashboardCount, UserData.id]);
   const renderCountBox = (title: any, count: any, icon: string, link?: any) => {
     const content = (
@@ -329,7 +332,7 @@ const RMDashboard: React.FC = () => {
                                       )
                                     )}
                                   </div>
-                                  
+
                                   <Grid container>
                                     {isValidIndex(selectedCategoryIndex) && (
                                       <Grid container sx={{ margin: 1 }}>
