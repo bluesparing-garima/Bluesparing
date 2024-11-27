@@ -3,18 +3,18 @@ import { Link } from "react-router-dom";
 
 const SuperAdminDashBoard = () => {
   const data = [
-    { name: "Free", amount: "0" },
+    { name: "Free", amount: "₹ 0" },
     {
       name: "Star ",
-      amount: { start: "399", end: "999" },
+      amount: { start: "₹ 399", end: "₹ 999" },
     },
     {
       name: "Super Star",
-      amount: { start: "3000", end: "5000" },
+      amount: { start: "₹ 3000", end: "₹ 5000" },
     },
     {
       name: "Mega Star",
-      amount: { start: "10000", end: "50000" },
+      amount: { start: "₹ 10000", end: "₹ 50000" },
     },
     { name: "Free Plan Policies", amount: 100 },
     { name: "Star Plan Policies", amount: { start: "3000", end: "7000" } },
@@ -34,6 +34,7 @@ const SuperAdminDashBoard = () => {
     },
     { name: "Mega Plan Premium", amount: { start: "1 Cr", end: "10 Cr" } },
   ];
+  
 
   const renderCountBox = (
     title: string,
