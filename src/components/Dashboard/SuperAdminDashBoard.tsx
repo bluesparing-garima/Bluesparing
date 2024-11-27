@@ -38,7 +38,6 @@ const SuperAdminDashBoard = () => {
   const renderCountBox = (
     title: string,
     count: string | number | { start: string; end: string },
-    icon: string,
     path?: string
   ) => {
     let formattedCount: string;
@@ -67,7 +66,6 @@ const SuperAdminDashBoard = () => {
             {formattedCount}
           </Typography>
         </div>
-        <img src={icon} alt={title} className="h-8 w-8" />
       </div>
     );
 
@@ -81,9 +79,7 @@ const SuperAdminDashBoard = () => {
   return (
     <div className="bg-blue-200 h-screen p-4">
       <Grid container spacing={2}>
-        {data.map((item, index) =>
-          renderCountBox(item.name, item.amount, "/path/to/icon.png", "")
-        )}
+        {data.map((item, index) => renderCountBox(item.name, item.amount, ""))}
       </Grid>
     </div>
   );
