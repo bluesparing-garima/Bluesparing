@@ -92,6 +92,14 @@ const ViewCardHistory = () => {
         accessorKey: "remarks",
         header: "Remarks",
         size: 200,
+        muiTableBodyCellProps:{
+          sx:{
+            height: "122px",
+            overflow: "auto",
+            width: "100px",
+            display: "flex"
+          }
+        }
       },
     ],
     []

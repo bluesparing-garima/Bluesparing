@@ -79,6 +79,14 @@ const EmployeeAttendance: React.FC = () => {
         accessorKey: "remarks",
         header: "Remarks",
         size: 100,
+        muiTableBodyCellProps: {
+          sx: {
+            height: "122px",
+            overflow: "auto",
+            width: "100px",
+            display: "flex",
+          },
+        },
       },
     ],
     []
@@ -226,7 +234,6 @@ const EmployeeAttendance: React.FC = () => {
               render={({ handleSubmit, submitting, errors }) => (
                 <form onSubmit={handleSubmit} noValidate>
                   <Grid container spacing={2}>
-                    
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Field name="startDate">
                         {({ input, meta }) => (
@@ -255,7 +262,7 @@ const EmployeeAttendance: React.FC = () => {
                         )}
                       </Field>
                     </Grid>
-                    
+
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Field name="endDate">
                         {({ input, meta }) => (
@@ -284,7 +291,7 @@ const EmployeeAttendance: React.FC = () => {
                         )}
                       </Field>
                     </Grid>
-                    
+
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Button
                         type="submit"
@@ -301,7 +308,7 @@ const EmployeeAttendance: React.FC = () => {
               )}
             />
           </div>
-          
+
           <MaterialReactTable
             state={{ isLoading, pagination }}
             columns={columns}
