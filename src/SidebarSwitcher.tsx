@@ -10,7 +10,6 @@ import HRSidebar from "./components/Sidebar/HRSidebar";
 import ITSidebar from "./components/Sidebar/ITSidebar";
 import { SafeKaroUser } from "./context/constant";
 import Footer from "./components/Footer/Footer";
-import SuperAdminSideBar from "./components/Sidebar/SuperAdminSideBar";
 interface SidebarSwitcherProps {
   userData: SafeKaroUser | undefined;
   content: React.ReactNode;
@@ -52,9 +51,6 @@ const SidebarSwitcher: React.FC<SidebarSwitcherProps> = ({
       break;
     case "it":
       SidebarComponent = ITSidebar;
-      break;
-    case "superadmin":
-      SidebarComponent = SuperAdminSideBar;
       break;
     default:
       SidebarComponent = null;

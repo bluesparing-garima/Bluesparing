@@ -79,14 +79,14 @@ const Signup = () => {
               }}
             ></div>
           </div>
-          <div className="lg:w-1/2 xl:w-6/12 p-3 sm:p-2 overflow-scroll">
+          <div className="lg:w-1/2 xl:w-6/12 p-3 sm:p-2">
             <div>
-              <img src={logo} className="w-32 mx-auto" alt="" />
+              <img src={logo} className="w-56 mx-auto" alt="" />
             </div>
-            <div className="mt-3 flex flex-col items-center">
+            <div className="mt-2 flex flex-col items-center">
               <h1 className="text-2xl xl:text-3xl font-extrabold">Sign up</h1>
               <div className="w-full flex-1">
-                <div className="my-3 border-b text-center">
+                <div className="my-2 border-b text-center">
                   <div className="leading-none px-2 inline-block text-sm text-gray-600 tracking-wide font-medium bg-white transform translate-y-1/2"></div>
                 </div>
 
@@ -97,6 +97,36 @@ const Signup = () => {
                     render={({ handleSubmit, submitError }) => (
                       <form onSubmit={handleSubmit}>
                         <Grid container spacing={2}>
+                          <Grid item lg={12} md={12} sm={12} xs={12}>
+                            <div className="mb-1">
+                              <label
+                                htmlFor="role"
+                                className="mb-1 block text-base font-medium text-[#07074D]"
+                              >
+                                Register As
+                              </label>
+                              <Field name="role" initialValue="Admin">
+                                {({ input }) => (
+                                  <Autocomplete
+                                    {...input}
+                                    options={["Admin", "Partner"]}
+                                    defaultValue="Admin"
+                                    onChange={(event, value) =>
+                                      input.onChange(value)
+                                    }
+                                    renderInput={(params) => (
+                                      <TextField
+                                        {...params}
+                                        placeholder="Select role"
+                                        variant="outlined"
+                                        size="small"
+                                      />
+                                    )}
+                                  />
+                                )}
+                              </Field>
+                            </div>
+                          </Grid>
                           <Grid item lg={12} md={12} sm={6} xs={12}>
                             <div className="mb-1">
                               <label
@@ -234,36 +264,7 @@ const Signup = () => {
                               </Field>
                             </div>
                           </Grid>
-                          <Grid item lg={6} md={6} sm={6} xs={12}>
-                            <div className="mb-1">
-                              <label
-                                htmlFor="role"
-                                className="mb-1 block text-base font-medium text-[#07074D]"
-                              >
-                                Role
-                              </label>
-                              <Field name="role" initialValue="Admin">
-                                {({ input }) => (
-                                  <Autocomplete
-                                    {...input}
-                                    options={["Admin", "Partner"]}
-                                    defaultValue="Admin"
-                                    onChange={(event, value) =>
-                                      input.onChange(value)
-                                    }
-                                    renderInput={(params) => (
-                                      <TextField
-                                        {...params}
-                                        placeholder="Select role"
-                                        variant="outlined"
-                                       size="small"
-                                      />
-                                    )}
-                                  />
-                                )}
-                              </Field>
-                            </div>
-                          </Grid>
+
                           <Grid item lg={12} md={12} sm={12} xs={12}>
                             {submitError && (
                               <div className="error text-safekaroDarkOrange">
@@ -273,7 +274,7 @@ const Signup = () => {
                           </Grid>
                           <Button
                             type="submit"
-                            className="mt-5 ml-4 tracking-wide font-semibold bg-indigo-500 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
+                            className="mt-1 ml-4 tracking-wide font-semibold bg-indigo-500 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
                           >
                             <svg
                               className="w-6 h-6 -ml-2"
@@ -287,12 +288,20 @@ const Signup = () => {
                               <circle cx="8.5" cy="7" r="4" />
                               <path d="M20 8v6M23 11h-6" />
                             </svg>
-                            <span className="ml-3">Register</span>
+                            <span className="ml-3">Sign Up</span>
                           </Button>
                         </Grid>
                       </form>
                     )}
                   />
+                </div>
+                <div className="my-3 border-b text-center">
+                  <div className="leading-none px-2 inline-block text-sm text-gray-600 tracking-wide font-medium bg-white transform translate-y-1/2">
+                    If you have already account{" "}
+                    <a href="/#/" className="text-safekaroDarkOrange">
+                      Sign In
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>

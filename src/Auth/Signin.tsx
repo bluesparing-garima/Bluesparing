@@ -28,7 +28,6 @@ const Signin = () => {
     rm: "/rm/dashboard",
     hr: "/hr/dashboard",
     it: "/it/dashboard",
-    superadmin:"/super-admin/dashboard",
     default: "/partnerdashboard",
   };
   const onSubmit = async (signInData: ISignIn) => {
@@ -49,6 +48,9 @@ const Signin = () => {
         if (loginData.accessToken && loginData.refreshToken) {
           setTokens(loginData.accessToken!, loginData.refreshToken!);
         }
+        if (responseData.role.toLowerCase() === "superadmin") {
+          return { [FORM_ERROR]: `you are not authorized` };
+        }
         if (responseData.role !== "admin") {
           const bookingRequestDetails = await getTeamDetailsService({
             header,
@@ -63,7 +65,7 @@ const Signin = () => {
             teamId: responseData.partnerId,
           });
           loginData.id = responseData.partnerId!;
-          loginData.companyLogo = bookingRequestDetails.companyLogo
+          loginData.companyLogo = bookingRequestDetails.companyLogo;
         }
         localStorage.setItem("user", JSON.stringify(loginData));
         let role = responseData.role.toLowerCase();

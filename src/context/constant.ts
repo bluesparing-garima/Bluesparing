@@ -15,7 +15,7 @@ export const ALLOWED_FILE_TYPES = [
   "application/pdf",
 ];
 export const ALLOWED_BLOG_FILE_TYPES = ["image/jpeg", "image/png", "image/jpg"];
-export const imagePath = "https://api.bluesparing.com/uploads";
+export const imagePath = "https://iimapi.bluesparing.com/uploads";
 export type SafeKaroContextType = {
   user: SafeKaroUser;
   header: Header;
