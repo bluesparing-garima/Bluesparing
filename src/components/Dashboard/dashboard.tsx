@@ -174,7 +174,7 @@ const Dashboard: React.FC = () => {
         <div>
           <Typography
             variant="body2"
-            className="text-sm text-gray-600 mb-2 font-inter"
+            className="text-sm text-gray-600 mb-2 font-satoshi"
           >
             {title}
           </Typography>
@@ -426,7 +426,7 @@ const Dashboard: React.FC = () => {
                                                 title={`View ${category} Data`}
                                               >
                                                 <h2
-                                                  className={`w-full  font-inter md:text-xs text-[10px] font-semibold text-center ${
+                                                  className={`w-full  font-satoshi md:text-xs text-[10px] font-semibold text-center ${
                                                     catIndex ===
                                                     selectedCategoryIndex
                                                       ? "text-white"
@@ -468,7 +468,7 @@ const Dashboard: React.FC = () => {
                                                   title={`View ${category} Data`}
                                                 >
                                                   <h2
-                                                    className={`font-inter text-center ${
+                                                    className={`font-satoshi text-center ${
                                                       catIndex ===
                                                       selectedCategoryIndex
                                                         ? "text-[#0095FF]"

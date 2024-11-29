@@ -19,14 +19,14 @@ module.exports = {
         commission: "#013220",
       },
       fontFamily: {
-        inter: ['"Inter"', 'sans-serif'], 
+        inter: ['"Inter"', "sans-serif"],
+        satoshi: ['"Satoshi-Variable"', "sans-serif"],
       },
       animation: {
         "spin-slow": "spin 3s linear infinite",
         fadeIn: "fadeIn 0.5s ease-out forwards",
         fadeOut: "fadeOut 0.5s ease-in forwards",
       },
-      
     },
   },
   plugins: [],
