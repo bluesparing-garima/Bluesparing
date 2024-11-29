@@ -164,7 +164,7 @@ const SuperAdminSideBar: React.FC<SidebarProps> = ({
                 className={
                   activeMenuItem === item.id
                     ? "bg-safekaroDarkOrange text-white"
-                    : "text-white-500"
+                    : "text-white-500 "
                 }
               >
                 {item.subMenu ? (

@@ -96,7 +96,7 @@ const AccountDashboard: React.FC = () => {
         <div>
           <Typography
             variant="body2"
-            className="text-sm text-gray-600 mb-2 font-inter"
+            className="text-sm text-gray-600 mb-2 font-satoshi"
           >
             {title}
           </Typography>

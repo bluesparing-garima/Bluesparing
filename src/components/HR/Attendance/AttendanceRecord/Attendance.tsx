@@ -74,7 +74,7 @@ const Attendance: React.FC = () => {
         <div className="bg-blue-200 h-screen">
           <div className="bg-blue-200 w-full mt-1">
             <div className="flex md:hidden flex-col  my-2 w-1/2 justify-start items-start">
-              <span className="text-sm font-semibold font-inter">
+              <span className="text-sm font-semibold font-satoshi">
                 Select Department
               </span>
               <FormControl fullWidth>
@@ -92,7 +92,7 @@ const Attendance: React.FC = () => {
                     <MenuItem key={category} value={catIndex}>
                       <Tooltip title={`View ${category} Data`}>
                         <h2
-                          className={`font-inter font-semibold text-center ${
+                          className={`font-satoshi font-semibold text-center ${
                             catIndex === selectedCategoryIndex
                               ? "text-[#0095FF]"
                               : "text-black"
@@ -137,7 +137,7 @@ const Attendance: React.FC = () => {
                   >
                     <Tooltip title={`View ${category} Data`}>
                       <h2
-                        className={` font-inter font-semibold text-center ${
+                        className={` font-satoshi font-semibold text-center ${
                           catIndex === selectedCategoryIndex
                             ? "text-white"
                             : "text-black"
