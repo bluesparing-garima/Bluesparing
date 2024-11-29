@@ -1,6 +1,4 @@
 
-
-
 export const addRoleEndpoint = () => (`/api/roles`);
 
 export const editRoleEndpoint = (roleId: string) =>

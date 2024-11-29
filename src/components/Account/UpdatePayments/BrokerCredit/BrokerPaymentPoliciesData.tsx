@@ -256,7 +256,7 @@ function BrokerPaymentPoliciesData({
         type: "credit",
         accountCode: accountCode,
         amount: Number(brokerEnterAmount),
-        remarks: "",
+        remarks: remarks,
         partnerName: "",
         partnerId: "",
         brokerName: brokerName,

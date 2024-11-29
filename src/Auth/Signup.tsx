@@ -4,10 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { Form, Field } from "react-final-form";
 import { FORM_ERROR } from "final-form";
 import { ISignUp } from "./IAuth";
-import { Button, Grid } from "@mui/material";
+import { Autocomplete, Button, Grid, TextField } from "@mui/material";
 import { header } from "../context/constant";
 import fetchInterceptor, { FetchOptions } from "../utils/fetchInterceptor ";
+
 const Signup = () => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const navigate = useNavigate();
 
   const validate = (values: ISignUp) => {
@@ -33,8 +35,13 @@ const Signup = () => {
     return errors;
   };
   const onSubmit = async (signUpData: ISignUp) => {
-    signUpData.role = "partner";
+    const { role } = signUpData;
+    signUpData.role = role.toLowerCase();
     signUpData.partnerId = "null";
+    if (role === "admin") {
+      signUpData.partnerCode = "Admin";
+    }
+    console.log(signUpData);
     try {
       const url = "/api/user/register";
       const options: FetchOptions = {
@@ -52,9 +59,13 @@ const Signup = () => {
       }
     } catch (error) {
       console.error("Error uploading file:", error);
+      // Handle error, e.g., show an error message to the user
     }
+
+    // Simulate a server error for demonstration
     return { [FORM_ERROR]: "Sign up failed. Try again!" };
   };
+
   return (
     <>
       <div className="min-h-screen bg-gray-100 text-gray-900 flex justify-center">
@@ -70,17 +81,15 @@ const Signup = () => {
           </div>
           <div className="lg:w-1/2 xl:w-6/12 p-3 sm:p-2 overflow-scroll">
             <div>
-              <picture>
-                <source srcSet={logo} type="image/png" />
-                <img src={logo} className="w-56 mx-auto" alt="company Logo" />
-              </picture>
+              <img src={logo} className="w-32 mx-auto" alt="" />
             </div>
             <div className="mt-3 flex flex-col items-center">
               <h1 className="text-2xl xl:text-3xl font-extrabold">Sign up</h1>
               <div className="w-full flex-1">
-                <div className="my-4 border-b text-center">
+                <div className="my-3 border-b text-center">
                   <div className="leading-none px-2 inline-block text-sm text-gray-600 tracking-wide font-medium bg-white transform translate-y-1/2"></div>
                 </div>
+
                 <div className="mx-auto max-w-full px-20">
                   <Form
                     onSubmit={onSubmit}
@@ -92,7 +101,7 @@ const Signup = () => {
                             <div className="mb-1">
                               <label
                                 htmlFor="email"
-                                className="mb-2 block text-base font-medium text-[#07074D]"
+                                className="mb-1 block text-base font-medium text-[#07074D]"
                               >
                                 Email
                               </label>
@@ -103,7 +112,7 @@ const Signup = () => {
                                       {...input}
                                       type="email"
                                       placeholder="Email"
-                                      className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-3 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                                      className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-2 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                                     />
                                     {meta.error && meta.touched && (
                                       <span className="text-safekaroDarkOrange">
@@ -119,7 +128,7 @@ const Signup = () => {
                             <div className="mb-1">
                               <label
                                 htmlFor="name"
-                                className="mb-2 block text-base font-medium text-[#07074D]"
+                                className="mb-1 block text-base font-medium text-[#07074D]"
                               >
                                 Name
                               </label>
@@ -130,7 +139,7 @@ const Signup = () => {
                                       {...input}
                                       type="text"
                                       placeholder="Name"
-                                      className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-3 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                                      className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-2 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                                     />
                                     {meta.error && meta.touched && (
                                       <span className="text-safekaroDarkOrange">
@@ -146,7 +155,7 @@ const Signup = () => {
                             <div className="mb-1">
                               <label
                                 htmlFor="phoneNumber"
-                                className="mb-2 block text-base font-medium text-[#07074D]"
+                                className="mb-1 block text-base font-medium text-[#07074D]"
                               >
                                 Phone Number
                               </label>
@@ -157,61 +166,7 @@ const Signup = () => {
                                       {...input}
                                       type="number"
                                       placeholder="Phone Number"
-                                      className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-3 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                                    />
-                                    {meta.error && meta.touched && (
-                                      <span className="text-safekaroDarkOrange">
-                                        {meta.error}
-                                      </span>
-                                    )}
-                                  </div>
-                                )}
-                              </Field>
-                            </div>
-                          </Grid>
-                          <Grid item lg={6} md={6} sm={6} xs={12}>
-                            <div className="mb-1">
-                              <label
-                                htmlFor="password"
-                                className="mb-2 block text-base font-medium text-[#07074D]"
-                              >
-                                Password
-                              </label>
-                              <Field name="password">
-                                {({ input, meta }) => (
-                                  <div>
-                                    <input
-                                      {...input}
-                                      type="password"
-                                      placeholder="Password"
-                                      className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-3 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                                    />
-                                    {meta.error && meta.touched && (
-                                      <span className="text-safekaroDarkOrange">
-                                        {meta.error}
-                                      </span>
-                                    )}
-                                  </div>
-                                )}
-                              </Field>
-                            </div>
-                          </Grid>
-                          <Grid item lg={6} md={6} sm={6} xs={12}>
-                            <div className="mb-1">
-                              <label
-                                htmlFor="confirmPassword"
-                                className="mb-2 block text-base font-medium text-[#07074D]"
-                              >
-                                Confirm Password
-                              </label>
-                              <Field name="confirmPassword">
-                                {({ input, meta }) => (
-                                  <div>
-                                    <input
-                                      {...input}
-                                      type="password"
-                                      placeholder="Confirm Password"
-                                      className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-3 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                                      className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-2 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                                     />
                                     {meta.error && meta.touched && (
                                       <span className="text-safekaroDarkOrange">
@@ -224,6 +179,91 @@ const Signup = () => {
                             </div>
                           </Grid>
 
+                          <Grid item lg={6} md={6} sm={6} xs={12}>
+                            <div className="mb-1">
+                              <label
+                                htmlFor="password"
+                                className="mb-1 block text-base font-medium text-[#07074D]"
+                              >
+                                Password
+                              </label>
+                              <Field name="password">
+                                {({ input, meta }) => (
+                                  <div>
+                                    <input
+                                      {...input}
+                                      type="password"
+                                      placeholder="Password"
+                                      className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-2 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                                    />
+                                    {meta.error && meta.touched && (
+                                      <span className="text-safekaroDarkOrange">
+                                        {meta.error}
+                                      </span>
+                                    )}
+                                  </div>
+                                )}
+                              </Field>
+                            </div>
+                          </Grid>
+
+                          <Grid item lg={6} md={6} sm={6} xs={12}>
+                            <div className="mb-1">
+                              <label
+                                htmlFor="confirmPassword"
+                                className="mb-1 block text-base font-medium text-[#07074D]"
+                              >
+                                Confirm Password
+                              </label>
+                              <Field name="confirmPassword">
+                                {({ input, meta }) => (
+                                  <div>
+                                    <input
+                                      {...input}
+                                      type="password"
+                                      placeholder="Confirm Password"
+                                      className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-2 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                                    />
+                                    {meta.error && meta.touched && (
+                                      <span className="text-safekaroDarkOrange">
+                                        {meta.error}
+                                      </span>
+                                    )}
+                                  </div>
+                                )}
+                              </Field>
+                            </div>
+                          </Grid>
+                          <Grid item lg={6} md={6} sm={6} xs={12}>
+                            <div className="mb-1">
+                              <label
+                                htmlFor="role"
+                                className="mb-1 block text-base font-medium text-[#07074D]"
+                              >
+                                Role
+                              </label>
+                              <Field name="role" initialValue="Admin">
+                                {({ input }) => (
+                                  <Autocomplete
+                                    {...input}
+                                    options={["Admin", "Partner"]}
+                                    defaultValue="Admin"
+                                    onChange={(event, value) =>
+                                      input.onChange(value)
+                                    }
+                                    renderInput={(params) => (
+                                      <TextField
+                                        {...params}
+                                        placeholder="Select role"
+                                        variant="outlined"
+                                       size="small"
+                                      />
+                                    )}
+                                  />
+                                )}
+                              </Field>
+                            </div>
+                          </Grid>
                           <Grid item lg={12} md={12} sm={12} xs={12}>
                             {submitError && (
                               <div className="error text-safekaroDarkOrange">
@@ -262,4 +302,5 @@ const Signup = () => {
     </>
   );
 };
+
 export default Signup;

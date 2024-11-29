@@ -184,13 +184,10 @@ const Signin = () => {
               </div>
               <div className="my-4 border-b text-center">
                 <div className="leading-none px-2 inline-block text-sm text-gray-600 tracking-wide font-medium bg-white transform translate-y-1/2">
-                  {/* If you don't have account{" "} */}
-                  <Link
-                    to="/signup"
-                    className="text-safekaroDarkOrange hover:underline"
-                  >
-                    Sign Up As Partner
-                  </Link>
+                  If you don't have account{" "}
+                  <a href="/#/signup" className="text-safekaroDarkOrange">
+                    Sign Up
+                  </a>
                 </div>
               </div>
             </div>

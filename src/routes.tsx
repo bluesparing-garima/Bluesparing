@@ -158,6 +158,7 @@ import ITDashboard from "./components/Dashboard/ITDashboard";
 import UploadLogo from "./components/UploadLogo/UploadLogo";
 import GetRenewals from "./components/Policy/Renewals/GetRenewals";
 import SuperAdminDashBoard from "./components/Dashboard/SuperAdminDashBoard";
+import NewReq from "./components/Client/NewRequest/NewReq";
 const routes = [
   {
     path: "/",
@@ -183,6 +184,10 @@ const routes = [
       {
         path: "dashboard",
         element: <SuperAdminDashBoard />,
+      },
+      {
+        path: "client/new-rq",
+        element: <NewReq />,
       },
     ],
   },

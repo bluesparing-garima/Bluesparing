@@ -255,7 +255,7 @@ function PartnerPaymentPoliciesData({
         type: "debit",
         accountCode: accountCode,
         amount: Number(partnerAmount),
-        remarks: "",
+        remarks: remarks,
         brokerName: "",
         brokerId: "",
         partnerName: partnerName,
