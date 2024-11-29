@@ -13,6 +13,9 @@ import { AddEditRoleProps } from "../../../api/Role/getRolesTypes";
 import editRoleService from "../../../api/Role/EditRole/editRoleService";
 import getPartnersService from "../../../api/Partner/GetPartner/getPartnersService";
 import { IAdmin } from "../IAdmin";
+import { editTeamEndpoint } from "../../../api/Team/apiEndpoints";
+import editTeamService from "../../../api/Team/EditTeam/editTeamService";
+import { AddEditTeamProps } from "../../../api/Team/getTeamsTypes";
 
 const NewReq = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -124,13 +127,10 @@ const NewReq = () => {
 
   const changeStatus = async (row: IAdmin) => {
     try {
-      let payload: AddEditRoleProps = {
-        header,
-        role: { id: row._id, isActive: !row.isActive,roleName:row.role },
-      };
-
-      const res = await editRoleService(payload);
-      if (res.status === "success") {
+      const team = new FormData();
+      team.append("isActive", String(!row.isActive));
+      const res = await editTeamService({ team, teamId: row._id });
+      if (!!res.data) {
         fetchData();
       }
     } catch (error: any) {
