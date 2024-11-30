@@ -177,6 +177,7 @@ const NewBookingRequests = () => {
   const handleReject = (bookingForm: IBookingRequestsVM) => {
     setSelectedBookingId(bookingForm.id!);
     bookingForm.isRejected = true;
+    bookingForm.bookingAcceptedBy = userData.id;
     setBookingData(bookingForm);
     setOpen(true);
   };
