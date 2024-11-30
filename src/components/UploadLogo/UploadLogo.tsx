@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Button, Grid, Paper, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
@@ -6,7 +6,6 @@ import { Field, Form } from "react-final-form";
 import * as yup from "yup";
 import { AddEditTeamProps } from "../../api/Team/getTeamsTypes";
 import editTeamService from "../../api/Team/EditTeam/editTeamService";
-import { SafeKaroContext } from "../../context/SafeKaroContext";
 
 const schema = yup.object().shape({
   companyLogo: yup

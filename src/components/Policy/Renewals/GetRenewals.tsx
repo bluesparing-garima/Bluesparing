@@ -39,8 +39,6 @@ import dayjs from "dayjs";
 import getCalculatePayinService from "../../../api/CalcualtePayouts/GetCalculatePayin/getCalculatePayinService";
 import ConfirmationDialogBox from "../../../context/ConfirmationDialogBox";
 import getCalculatePayOutService from "../../../api/CalcualtePayouts/GetCalculatePayOut/getCalculatePayOutService";
-import getMotorPolicyService from "../../../api/Policies/GetMotorPolicy/getMotorPolicyService";
-import getPolicyByPartnerIdService from "../../../api/Policies/GetPolicyByPartnerId/getPolicyByPartnerIdService";
 import editMotorPolicyPaymentService from "../../../api/MotorPolicyPayment/EditMotorPolicyPayment/editMotorPolicyPaymentService";
 import getPolicyCompletedByIdService from "../../../api/Policies/GetPolicyCompletedById/getPolicyCompletedByIdService";
 import getPolicyWithPaymentService from "../../../api/Policies/GetPolicyWithPayment/getPolicyWithPaymentService";
