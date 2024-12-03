@@ -275,19 +275,19 @@ const Dashboard: React.FC = () => {
               />
               <CartButton
                 onClick={handleThirdCart}
-                tooltipTitle="View Chart"
+                tooltipTitle="View Admin Data"
                 iconPath={<ViewChartSvg isActive={selectedCard === "3"} />}
                 isSelected={thirdCart}
               />
               <CartButton
                 onClick={handleFourCart}
-                tooltipTitle="View Admin Data"
+                tooltipTitle="View Chart "
                 iconPath={<ViewAdminDataSvg isActive={selectedCard === "4"} />}
                 isSelected={fourCart}
               />
               <CartButton
                 onClick={handleFifthCart}
-                tooltipTitle="Monthly Attendace "
+                tooltipTitle="Monthly Attendance "
                 iconPath={<AttendanceDataSvg isActive={selectedCard === "5"} />}
                 isSelected={fifthCart}
               />
