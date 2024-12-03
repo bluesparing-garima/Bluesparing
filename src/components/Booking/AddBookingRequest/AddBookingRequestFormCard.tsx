@@ -10,7 +10,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Field, Form } from "react-final-form";
 import useGetPolicyTypes from "../../../Hooks/Policy/useGetPolicyTypes";
 import {
@@ -36,7 +36,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { FORM_ERROR, setIn } from "final-form";
 import * as yup from "yup";
 import toast, { Toaster } from "react-hot-toast";
-import getPolicyByNumberService from "../../../api/Policies/GetPolicyByNumber/getPolicyByNumberService";
+import validatePolicyNumberService from "../../../api/BookingRequest/ValidatePolicyNumber/validatePolicyNumberService";
 export interface addBookingRequestFormProps {
   initialValues: IBookingRequestForm;
 }
@@ -50,6 +50,7 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
   const [errors, setErrors] = useState<{ docName: string; file: string }[]>([
     { docName: "", file: "" },
   ]);
+  const timeRef = useRef<NodeJS.Timeout|null>(null)
   const navigate = useNavigate();
   let [policyTypes] = useGetPolicyTypes({ header: header });
   let [caseTypes] = useGetCaseTypes({ header: header });
@@ -369,22 +370,30 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
     productType: yup.string().required("Product Type is required").nullable(),
   });
   const addValidate = validateFormValues(validationSchema);
+
+  
   const handleChangePolicyNumber = async (e: any) => {
-    const policyNumber = e.target.value;
-    try {
-      const newPolicy = await getPolicyByNumberService({
-        header,
-        policyNumber,
-      });
-      if (newPolicy.exist === true) {
-        setPolicyErrorMessage(newPolicy.message);
-      } else {
-        setPolicyErrorMessage("");
-      }
-    } catch (error: any) {
-      const err = await error;
-      toast.error(err.message);
+    if(timeRef.current){
+      clearTimeout(timeRef.current)
     }
+    const policyNumber = e.target.value;
+    timeRef.current = setTimeout(async() => {
+      
+      try {
+        const newPolicy = await validatePolicyNumberService({
+          header,
+          policyNumber,
+        });
+        if (newPolicy.exist === true) {
+          setPolicyErrorMessage(newPolicy.message);
+        } else {
+          setPolicyErrorMessage("");
+        }
+      } catch (error: any) {
+        const err = await error;
+        toast.error(err.message);
+      }
+    }, 300);
   };
   return (
     <>

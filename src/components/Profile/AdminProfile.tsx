@@ -95,18 +95,7 @@ const AdminProfile: React.FC<IProfile> = ({
             />
           </Grid>
 
-          <Grid item xs={12} sm={6}>
-            <TextField
-              id="partner-id"
-              label="Partner ID"
-              value={partnerId}
-              variant="standard"
-              fullWidth
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-          </Grid>
+         
         </Grid>
       </Card>
     </Box>
