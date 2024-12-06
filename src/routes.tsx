@@ -157,6 +157,7 @@ import MarkAttendance from "./components/HR/Attendance/MarkAttendance/MarkAttend
 import ITDashboard from "./components/Dashboard/ITDashboard";
 import UploadLogo from "./components/UploadLogo/UploadLogo";
 import GetRenewals from "./components/Policy/Renewals/GetRenewals";
+
 const routes = [
   {
     path: "/",
@@ -167,6 +168,7 @@ const routes = [
       },
     ],
   },
+
   {
     path: "/signup",
     children: [
