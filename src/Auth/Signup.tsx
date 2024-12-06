@@ -1,19 +1,24 @@
 import React from "react";
 import logo from "../assets/login_logo.png";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Form, Field } from "react-final-form";
 import { FORM_ERROR } from "final-form";
-import { ISignUp } from "./IAuth";
-import { Autocomplete, Button, Grid, TextField } from "@mui/material";
+import { FormProps, ISignUp } from "./IAuth";
+import {
+  Autocomplete,
+  Button,
+  FormControl,
+  Grid,
+  TextField,
+} from "@mui/material";
 import { header } from "../context/constant";
 import fetchInterceptor, { FetchOptions } from "../utils/fetchInterceptor ";
-
+import useSubscription from "../Hooks/Subscription/useSubscription";
 const Signup = () => {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const navigate = useNavigate();
-
-  const validate = (values: ISignUp) => {
-    const errors: Partial<ISignUp> = {};
+  const [subsData] = useSubscription();
+  const validate = (values: FormProps) => {
+    const errors: Partial<FormProps> = {};
     if (!values.email) {
       errors.email = "Email is required";
     }
@@ -31,24 +36,35 @@ const Signup = () => {
     if (values.password !== values.confirmPassword) {
       errors.confirmPassword = "Passwords do not match";
     }
-
     return errors;
   };
-  const onSubmit = async (signUpData: ISignUp) => {
-    const { role } = signUpData;
-    signUpData.role = role.toLowerCase();
-    signUpData.partnerId = "null";
+  const onSubmit = async (signUpData: FormProps) => {
+    const { role, plans } = signUpData;
+    let payload: ISignUp = {
+      name: signUpData.name,
+      email: signUpData.email,
+      role: role,
+      partnerId: "",
+      password: signUpData.password,
+      phoneNumber: signUpData.phoneNumber,
+      confirmPassword: signUpData.confirmPassword,
+      partnerCode: signUpData.partnerCode,
+      file: signUpData.file,
+      planName: plans.planName,
+      planId: plans._id,
+    };
+    payload.role = role.toLowerCase();
+    payload.partnerId = "null";
     if (role === "admin") {
-      signUpData.partnerCode = "Admin";
+      payload.partnerCode = "Admin";
     }
-    console.log(signUpData);
     try {
       const url = "/api/user/register";
       const options: FetchOptions = {
         headers: header,
         method: "POST",
         body: JSON.stringify({
-          ...signUpData,
+          ...payload,
         }),
       };
       const responseData = await fetchInterceptor<any>(url, options);
@@ -59,13 +75,9 @@ const Signup = () => {
       }
     } catch (error) {
       console.error("Error uploading file:", error);
-      // Handle error, e.g., show an error message to the user
     }
-
-    // Simulate a server error for demonstration
     return { [FORM_ERROR]: "Sign up failed. Try again!" };
   };
-
   return (
     <>
       <div className="min-h-screen bg-gray-100 text-gray-900 flex justify-center">
@@ -89,7 +101,6 @@ const Signup = () => {
                 <div className="my-2 border-b text-center">
                   <div className="leading-none px-2 inline-block text-sm text-gray-600 tracking-wide font-medium bg-white transform translate-y-1/2"></div>
                 </div>
-
                 <div className="mx-auto max-w-full px-20">
                   <Form
                     onSubmit={onSubmit}
@@ -97,7 +108,7 @@ const Signup = () => {
                     render={({ handleSubmit, submitError }) => (
                       <form onSubmit={handleSubmit}>
                         <Grid container spacing={2}>
-                          <Grid item lg={12} md={12} sm={12} xs={12}>
+                          <Grid item lg={6} md={6} sm={12} xs={12}>
                             <div className="mb-1">
                               <label
                                 htmlFor="role"
@@ -126,6 +137,46 @@ const Signup = () => {
                                 )}
                               </Field>
                             </div>
+                          </Grid>
+                          <Grid item lg={6} md={6} sm={12} xs={12}>
+                            <label
+                              htmlFor="role"
+                              className="mb-1 block text-base font-medium text-[#07074D]"
+                            >
+                              Select Plans
+                            </label>
+                            <Field name="plans">
+                              {({ input, meta }) => (
+                                <FormControl fullWidth size="small">
+                                  <Autocomplete
+                                    {...input}
+                                    id="plans"
+                                    value={input.value || null}
+                                    options={subsData}
+                                    getOptionLabel={(option) =>
+                                      typeof option === "string"
+                                        ? option
+                                        : option?.planName || ""
+                                    }
+                                    onChange={(event, newValue) => {
+                                      input.onChange(
+                                        newValue ? newValue : null
+                                      );
+                                    }}
+                                    renderInput={(params) => (
+                                      <TextField
+                                        {...params}
+                                        label="Select  Plan"
+                                        size="small"
+                                        className="rounded-sm"
+                                        error={meta.touched && !!meta.error}
+                                        helperText={meta.touched && meta.error}
+                                      />
+                                    )}
+                                  />
+                                </FormControl>
+                              )}
+                            </Field>
                           </Grid>
                           <Grid item lg={12} md={12} sm={6} xs={12}>
                             <div className="mb-1">
@@ -208,7 +259,6 @@ const Signup = () => {
                               </Field>
                             </div>
                           </Grid>
-
                           <Grid item lg={6} md={6} sm={6} xs={12}>
                             <div className="mb-1">
                               <label
@@ -236,7 +286,6 @@ const Signup = () => {
                               </Field>
                             </div>
                           </Grid>
-
                           <Grid item lg={6} md={6} sm={6} xs={12}>
                             <div className="mb-1">
                               <label
@@ -264,7 +313,6 @@ const Signup = () => {
                               </Field>
                             </div>
                           </Grid>
-
                           <Grid item lg={12} md={12} sm={12} xs={12}>
                             {submitError && (
                               <div className="error text-safekaroDarkOrange">
@@ -311,5 +359,4 @@ const Signup = () => {
     </>
   );
 };
-
 export default Signup;
