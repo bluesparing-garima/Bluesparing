@@ -1,6 +1,6 @@
 import React from "react";
 import logo from "../assets/login_logo.png";
-import { Link, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { Form, Field } from "react-final-form";
 import { FORM_ERROR } from "final-form";
 import { FormProps, ISignUp } from "./IAuth";

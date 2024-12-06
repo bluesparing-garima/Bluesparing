@@ -32,6 +32,8 @@ export interface ITeamForm {
   isActive?: boolean;
   createdBy?: string;
   updatedBy?: string;
+  planId?:string;
+  planName?:string;
 }
 
 export interface ITeamsVM {
