@@ -8,6 +8,7 @@ import { SafeKaroUser, header } from "../context/constant";
 import getTeamDetailsService from "../api/Team/GetTeamDetails/getTeamDetailsService";
 import { setTokens } from "../Hooks/Tokens/useToken";
 import fetchInterceptor, { FetchOptions } from "../utils/fetchInterceptor ";
+import toast, { Toaster } from "react-hot-toast";
 const Signin = () => {
   const navigate = useNavigate();
   const validate = (values: ISignIn) => {
@@ -76,8 +77,9 @@ const Signin = () => {
       } else {
         return { [FORM_ERROR]: `${responseData.message}` };
       }
-    } catch (error) {
-      console.error("Error signing in:", error);
+    } catch (error:any) {
+      const err = await  error;
+      toast.error(err.message)
     }
   };
   return (
@@ -169,9 +171,9 @@ const Signin = () => {
                             className="w-6 h-6 -ml-2"
                             fill="none"
                             stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
                           >
                             <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
                             <circle cx="8.5" cy="7" r="4" />
@@ -187,9 +189,9 @@ const Signin = () => {
               <div className="my-4 border-b text-center">
                 <div className="leading-none px-2 inline-block text-sm text-gray-600 tracking-wide font-medium bg-white transform translate-y-1/2">
                   If you don't have account{" "}
-                  <a href="/#/signup" className="text-safekaroDarkOrange">
+                  <Link to="/signup" className="text-safekaroDarkOrange">
                     Sign Up
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -205,6 +207,7 @@ const Signin = () => {
           ></div>
         </div>
       </div>
+      <Toaster position="bottom-center" reverseOrder={false} />
     </div>
   );
 };

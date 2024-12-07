@@ -16,6 +16,7 @@ export interface ISignUp {
   name: string;
   email: string;
   role: string;
+  roleId?:string;
   partnerId?: string;
   password: string;
   phoneNumber: string;

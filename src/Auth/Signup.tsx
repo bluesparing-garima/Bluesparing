@@ -1,6 +1,6 @@
 import React from "react";
 import logo from "../assets/login_logo.png";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Form, Field } from "react-final-form";
 import { FORM_ERROR } from "final-form";
 import { FormProps, ISignUp } from "./IAuth";
@@ -14,9 +14,23 @@ import {
 import { header } from "../context/constant";
 import fetchInterceptor, { FetchOptions } from "../utils/fetchInterceptor ";
 import useSubscription from "../Hooks/Subscription/useSubscription";
+import useGetRoles from "../Hooks/Role/useGetRoles";
 const Signup = () => {
   const navigate = useNavigate();
   const [subsData] = useSubscription();
+  const [roles] = useGetRoles({ header });
+
+  const findRoleIdByName = (name: string) => {
+    const temp = name.toLowerCase();
+ 
+    const roleObj = roles.find((ele) => ele.roleName?.toLowerCase() === temp);
+
+    if (roleObj) {
+      return roleObj?._id;
+    } else {
+      return "";
+    }
+  };
   const validate = (values: FormProps) => {
     const errors: Partial<FormProps> = {};
     if (!values.email) {
@@ -52,6 +66,7 @@ const Signup = () => {
       file: signUpData.file,
       planName: plans.planName,
       planId: plans._id,
+      roleId:findRoleIdByName(role)
     };
     payload.role = role.toLowerCase();
     payload.partnerId = "null";
@@ -360,3 +375,5 @@ const Signup = () => {
   );
 };
 export default Signup;
+
+
