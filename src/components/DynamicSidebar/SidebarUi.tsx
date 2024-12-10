@@ -1,6 +1,8 @@
 import React, { FC, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ProtectedRoute from "../../utils/ProtectedRoute";
+import logo from "../../assets/login_logo.png";
+import { SafeKaroUser } from "../../context/constant";
 interface MenuItem {
   id: string;
   label: string;
@@ -23,7 +25,27 @@ const SidebarUi: FC<SidebarProps> = ({
   const navigate = useNavigate();
   const [activeMenuItem, setActiveMenuItem] = useState<string | null>(null);
   const [openSubMenus, setOpenSubMenus] = useState<string[]>([]);
-
+  const storedUser = localStorage.getItem("user");
+  const userData: SafeKaroUser | null = storedUser
+    ? JSON.parse(storedUser)
+    : null;
+  const generateDashBoardLink = () => {
+    const role = userData?.role.toLowerCase();
+    switch (role) {
+      case "hr":
+        return "/hr/dashboard";
+      case "booking":
+        return "/booking-dashboard";
+      case "account":
+        return "/accountdashboard";
+      case "operation":
+        return "/operationdashboard";
+      case "rm":
+        return "/rm/dashboard";
+      default:
+        return "/dashboard";
+    }
+  };
   const handleMenuItemClick = (item: MenuItem) => {
     if (item.link) {
       navigate(item.link);
@@ -42,7 +64,7 @@ const SidebarUi: FC<SidebarProps> = ({
 
   const renderMenuItems = (items: MenuItem[]) => {
     return items.map((item) => (
-      <ProtectedRoute accessByRole={item.role}>
+      <ProtectedRoute key={item.id} accessByRole={item.role}>
         <li
           key={item.id}
           className="relative overflow-auto max-h-60 scroll-hidden"
@@ -50,11 +72,11 @@ const SidebarUi: FC<SidebarProps> = ({
           <div
             className={`flex items-center px-2 py-1 text-[15px] cursor-pointer rounded-lg ${
               activeMenuItem === item.id
-                ? "bg-safekaroDarkBlue text-white"
-                : "text-black hover:bg-safekaroDarkBlue hover:text-white"
+                ? "bg-safekaroDarkOrange text-white"
+                : "text-black hover:bg-safekaroDarkOrange hover:text-white"
             }`}
             onClick={() => {
-              if (item.subMenu) {
+              if (item.subMenu && item.subMenu.length > 0) {
                 toggleSubMenu(item.id);
               } else {
                 handleMenuItemClick(item);
@@ -77,7 +99,7 @@ const SidebarUi: FC<SidebarProps> = ({
               </svg>
             )}
             {item.label}
-            {item.subMenu && (
+            {item.subMenu && item.subMenu.length > 0 && (
               <i
                 className={`fas fa-chevron-${
                   openSubMenus.includes(item.id) ? "up" : "down"
@@ -101,14 +123,13 @@ const SidebarUi: FC<SidebarProps> = ({
         isSidebarOpen ? "translate-x-0" : "-translate-x-full"
       } md:translate-x-0 sticky top-0 z-20 md:flex flex-col w-60 bg-white h-screen shadow-lg border-r-2 border-[#FEF9F3] transition-transform delay-150 duration-200`}
     >
-      <div className="flex items-center justify-center h-16 bg-white">
+      <Link to={generateDashBoardLink()} className="flex items-center justify-center h-16 bg-white">
         <img
-          src="/path-to-your-logo.png"
+          src={logo}
           alt="Logo"
           className="w-32 cursor-pointer"
-          onClick={() => console.log("Logo clicked")}
         />
-      </div>
+      </Link>
       <div className="md:hidden flex w-full justify-end">
         <button onClick={() => setSidebarOpen((prev) => !prev)}>
           <svg

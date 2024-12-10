@@ -157,6 +157,7 @@ import MarkAttendance from "./components/HR/Attendance/MarkAttendance/MarkAttend
 import ITDashboard from "./components/Dashboard/ITDashboard";
 import UploadLogo from "./components/UploadLogo/UploadLogo";
 import GetRenewals from "./components/Policy/Renewals/GetRenewals";
+import UpdatePlan from "./components/UpdatePlan/UpdatePlan";
 
 const routes = [
   {
@@ -229,6 +230,15 @@ const routes = [
       {
         path: "",
         element: <Dashboard />,
+      },
+    ],
+  },
+  {
+    path: "update-plan",
+    children: [
+      {
+        path: "",
+        element: <UpdatePlan />,
       },
     ],
   },

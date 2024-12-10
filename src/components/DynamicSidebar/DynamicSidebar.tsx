@@ -32,7 +32,6 @@ const DynamicSidebar: FC<DynamicSidebarProps> = ({
     : null;
   const [roleMenus] = useGetMenuByRoleId(userData?.roleId || "");
   const [subsData] = useGetSubsById(userData?.planId || "");
-
   const mapAssignByRole = () => {
     const roleName = userData?.role.toLowerCase();
     switch (roleName) {
@@ -72,7 +71,7 @@ const DynamicSidebar: FC<DynamicSidebarProps> = ({
         id: item._id,
         label: item.displayName,
         svgIcon: checkLock ? lockSvg : item.cssClass || defaultMenu,
-        link: checkLock ? "" : item.pageURL || undefined,
+        link: checkLock ? "update-plan" : item.pageURL || undefined,
         role:item.role||"",
         isLocked:checkLock,
         subMenu: [],
