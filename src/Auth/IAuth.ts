@@ -22,7 +22,8 @@ export interface ISignUp {
   phoneNumber: string;
   confirmPassword?: string;
   partnerCode?: string;
-  file?: any
+  file?: any;
+  joiningDate:string;
   planName: string;
   planId: string;
 

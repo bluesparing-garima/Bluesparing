@@ -66,6 +66,7 @@ const Signup = () => {
       file: signUpData.file,
       planName: plans.planName,
       planId: plans._id,
+      joiningDate:Date.now().toString(),
       roleId:findRoleIdByName(role)
     };
     payload.role = role.toLowerCase();
