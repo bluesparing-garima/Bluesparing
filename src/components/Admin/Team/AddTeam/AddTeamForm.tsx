@@ -25,6 +25,7 @@ import {
   MAX_FILE_SIZE,
   ALLOWED_FILE_TYPES,
   imagePath,
+  SafeKaroUser,
 } from "../../../../context/constant";
 import { useLocation, useNavigate } from "react-router-dom";
 import { teamPath } from "../../../../sitemap";
@@ -52,6 +53,8 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
   const { initialValues } = props;
   let [branches] = useGetBranches({ header: header });
   let [roles] = useGetRoles({ header: header });
+  let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
+  let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
   let [headRMs] = useGetRMList({
     header: header,
     role: "Relationship Manager",
@@ -208,6 +211,8 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
         teamForm.role = selectedRole;
         teamForm.headRMId = selectedRMId === undefined ? "" : selectedRMId;
         teamForm.headRM = selectedRMName;
+        teamForm.planId = UserData.planId;
+        teamForm.planName = UserData.planName;
         const formData = new FormData();
         const addedKeys = new Map<string, string>();
         Object.keys(teamForm).forEach((key) => {

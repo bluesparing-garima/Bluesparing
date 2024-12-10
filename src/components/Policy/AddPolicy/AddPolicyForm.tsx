@@ -579,7 +579,6 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   };
   const validateVehicleNumber = async (e: any) => {
     const vehicleNumber = e.target.value;
-    console.log(vehicleNumber);
     try {
       const res = await getVehicleNumberService({
         header,

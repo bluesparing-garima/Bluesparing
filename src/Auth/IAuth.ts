@@ -1,3 +1,5 @@
+import { ISubscription } from "../api/Subscriptions/subscriptionType";
+
 export type Header = {
   "Content-Type": string;
   "Access-Token": string;
@@ -14,15 +16,23 @@ export interface ISignUp {
   name: string;
   email: string;
   role: string;
+  roleId?:string;
   partnerId?: string;
   password: string;
   phoneNumber: string;
   confirmPassword?: string;
   partnerCode?: string;
-  file?:any
+  file?: any
+  planName: string;
+  planId: string;
+
 }
+export type FormProps = Omit<ISignUp, "planName" | "planId"> & {
+  plans: ISubscription;
+};;
+
 export interface IloginRes {
-  status:string;
+  status: string;
   message: string;
   token: string;
   name: string;
@@ -32,5 +42,5 @@ export interface IloginRes {
   partnerCode: string;
   phoneNumber: number;
   id: string;
-  refreshtoken?:string;
+  refreshtoken?: string;
 }
