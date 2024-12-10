@@ -1,0 +1,118 @@
+import { FC, useEffect, useState } from "react";
+import { SafeKaroUser } from "../../context/constant";
+import useGetSubsById from "../../Hooks/Subscription/useGetSubsById";
+import { IMenu } from "../../api/Menu/IMenuType";
+import useGetMenuByRoleId from "../../Hooks/Menu/useGetMenu";
+import SidebarUi from "./SidebarUi";
+import { CircularProgress } from "@mui/material";
+type MenuItem = {
+  id: string;
+  label: string;
+  svgIcon?: string;
+  link?: string;
+  role:string;
+  isLocked:boolean;
+  subMenu?: MenuItem[];
+};
+interface DynamicSidebarProps {
+  isSidebarOpen: boolean;
+  setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+const DynamicSidebar: FC<DynamicSidebarProps> = ({
+  isSidebarOpen,
+  setSidebarOpen,
+}) => {
+  const [subsIds, setSubsIds] = useState<string[]>([]);
+  const lockSvg =
+    "M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z";
+  const defaultMenu = "M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5";
+  const storedUser = localStorage.getItem("user");
+  const userData: SafeKaroUser | null = storedUser
+    ? JSON.parse(storedUser)
+    : null;
+  const [roleMenus] = useGetMenuByRoleId(userData?.roleId || "");
+  const [subsData] = useGetSubsById(userData?.planId || "");
+
+  const mapAssignByRole = () => {
+    const roleName = userData?.role.toLowerCase();
+    switch (roleName) {
+      case "partner":
+        return "assignedPartnerMenu";
+      case "booking":
+        return "assignedBookingMenu";
+      case "relationship manager":
+        return "assignedRMMenu";
+      case "operation":
+        return "assignedOperationMenu";
+      case "account":
+        return "assignedAccountMenu";
+      case "hr":
+        return "assignedHRMenu";
+      case "admin":
+        return "assignedAdminMenu";
+      default:
+        return "assignedMenu";
+    }
+  };
+
+  const isLockMenu = (id: string) => {
+    if (subsIds.includes(id)) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  function transformData(data: IMenu[]): MenuItem[] {
+    const map: { [key: string]: MenuItem } = {};
+    const menuItems: MenuItem[] = [];
+    data.forEach((item) => {
+      const checkLock = isLockMenu(item._id);
+      map[item._id] = {
+        id: item._id,
+        label: item.displayName,
+        svgIcon: checkLock ? lockSvg : item.cssClass || defaultMenu,
+        link: checkLock ? "" : item.pageURL || undefined,
+        role:item.role||"",
+        isLocked:checkLock,
+        subMenu: [],
+      };
+    });
+    data.forEach((item) => {
+      const menuItem = map[item._id];
+      if (item.parentId && item.parentId !== "0") {
+        const parent = map[item.parentId];
+        if (parent) {
+          parent.subMenu!.push(menuItem);
+        }
+      } else {
+        menuItems.push(menuItem);
+      }
+    });
+    return menuItems;
+  }
+
+  useEffect(() => {
+    const menuKey = mapAssignByRole();
+    if (subsData && menuKey && typeof menuKey === "string") {
+      let data = subsData[menuKey];
+      if (data) {
+        setSubsIds(data);
+      }
+    }
+  }, [subsData?._id]);
+  return (
+    <>
+      {roleMenus.length > 0 ? (
+        <SidebarUi
+          menuItems={transformData(roleMenus)}
+          setSidebarOpen={setSidebarOpen}
+          isSidebarOpen={isSidebarOpen}
+        />
+      ) : (
+        <CircularProgress />
+      )}
+    </>
+  );
+};
+export default DynamicSidebar;

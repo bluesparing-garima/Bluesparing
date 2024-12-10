@@ -50,6 +50,9 @@ export type SafeKaroUser = {
   partnerCode: string;
   refreshToken?: string;
   companyLogo?:any;
+  planName?:string;
+  planId?:string;
+  roleId?:string;
 };
 export type Header = {
   "Content-Type": string;

@@ -10,6 +10,7 @@ import HRSidebar from "./components/Sidebar/HRSidebar";
 import ITSidebar from "./components/Sidebar/ITSidebar";
 import { SafeKaroUser } from "./context/constant";
 import Footer from "./components/Footer/Footer";
+import DynamicSidebar from "./components/DynamicSidebar/DynamicSidebar";
 interface SidebarSwitcherProps {
   userData: SafeKaroUser | undefined;
   content: React.ReactNode;
@@ -23,38 +24,38 @@ const SidebarSwitcher: React.FC<SidebarSwitcherProps> = ({
 
   if (!userData) return null;
 
-  const role = userData.role.toLowerCase();
-  let SidebarComponent;
+  // const role = userData.role.toLowerCase();
+  let SidebarComponent = DynamicSidebar;
 
-  switch (role) {
-    case "admin":
-      SidebarComponent = Sidebar;
-      break;
-    case "partner":
-      SidebarComponent = PartnerSidebar;
-      break;
-    case "booking":
-      SidebarComponent = BookingSidebar;
-      break;
-    case "operation":
-      SidebarComponent = OperationSidebar;
-      break;
-    case "account":
-      SidebarComponent = AccountSidebar;
-      break;
-    case "relationship manager":
-    case "rm":
-      SidebarComponent = RMSidebar;
-      break;
-    case "hr":
-      SidebarComponent = HRSidebar;
-      break;
-    case "it":
-      SidebarComponent = ITSidebar;
-      break;
-    default:
-      SidebarComponent = null;
-  }
+  // switch (role) {
+  //   case "admin":
+  //     SidebarComponent = Sidebar;
+  //     break;
+  //   case "partner":
+  //     SidebarComponent = PartnerSidebar;
+  //     break;
+  //   case "booking":
+  //     SidebarComponent = BookingSidebar;
+  //     break;
+  //   case "operation":
+  //     SidebarComponent = OperationSidebar;
+  //     break;
+  //   case "account":
+  //     SidebarComponent = AccountSidebar;
+  //     break;
+  //   case "relationship manager":
+  //   case "rm":
+  //     SidebarComponent = RMSidebar;
+  //     break;
+  //   case "hr":
+  //     SidebarComponent = HRSidebar;
+  //     break;
+  //   case "it":
+  //     SidebarComponent = ITSidebar;
+  //     break;
+  //   default:
+  //     SidebarComponent = null;
+  // }
 
   return (
     <div className="flex  bg-gray-100">
@@ -73,7 +74,6 @@ const SidebarSwitcher: React.FC<SidebarSwitcherProps> = ({
 
       <div className="flex flex-col flex-1 overflow-y-auto">
         <Header isSidebarOpen={isSidebarOpen} setSidebarOpen={setSidebarOpen} />
-
         {content}
         <Footer />
       </div>
