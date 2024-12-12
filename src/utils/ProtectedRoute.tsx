@@ -1,12 +1,11 @@
 import React, { FC } from "react";
 import { SafeKaroUser } from "../context/constant";
+import { Navigate } from "react-router-dom";
 interface ProtectedRouteProps {
   children?: React.ReactNode;
-  accessByRole: string;
 }
 const ProtectedRoute: FC<ProtectedRouteProps> = ({
   children,
-  accessByRole,
 }) => {
   const storedUser = localStorage.getItem("user");
   const userData: SafeKaroUser | null = storedUser
@@ -15,9 +14,10 @@ const ProtectedRoute: FC<ProtectedRouteProps> = ({
   const currentRole = userData?.role.toLowerCase();
 
   const isAuthorized = () => {
-    return accessByRole.toLowerCase() === currentRole;
+    return !!currentRole
   };
-  return <>{isAuthorized() ? children : <> Unauthorized</>}</>;
+
+  return <>{isAuthorized() ? children : <> <Navigate to={"/"}/></>}</>;
 };
 
 export default ProtectedRoute;

@@ -2,7 +2,7 @@
 
 export const getMenuEndpoint = (roleId?: string) => {
   if (roleId) {
-    return (`/api/menus?roleId=${roleId}`)
+    return (`/api/menus/roleId/${roleId}`)
   } else {
     return (`/api/menus`);
   }

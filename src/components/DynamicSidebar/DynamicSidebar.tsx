@@ -10,8 +10,8 @@ type MenuItem = {
   label: string;
   svgIcon?: string;
   link?: string;
-  role:string;
-  isLocked:boolean;
+  role: string;
+  isLocked: boolean;
   subMenu?: MenuItem[];
 };
 interface DynamicSidebarProps {
@@ -72,8 +72,8 @@ const DynamicSidebar: FC<DynamicSidebarProps> = ({
         label: item.displayName,
         svgIcon: checkLock ? lockSvg : item.cssClass || defaultMenu,
         link: checkLock ? "update-plan" : item.pageURL || undefined,
-        role:item.role||"",
-        isLocked:checkLock,
+        role: item.role || "",
+        isLocked: checkLock,
         subMenu: [],
       };
     });
@@ -99,7 +99,10 @@ const DynamicSidebar: FC<DynamicSidebarProps> = ({
         setSubsIds(data);
       }
     }
+    // eslint-disable-next-line
   }, [subsData?._id]);
+
+
   return (
     <>
       {roleMenus.length > 0 ? (
