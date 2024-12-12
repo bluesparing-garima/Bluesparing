@@ -71,6 +71,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
   const isAddEdit = pathName[pathName.length - 1] as string;
   const isAdd = isAddEdit === ADD;
   const [rmErrorMessage, setRMErrorMessage] = useState("");
+
   useEffect(() => {
     if (!isAdd) {
       const updatedDocuments: Document[] = [];
@@ -125,6 +126,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       setDocuments(updatedDocuments);
     }
   }, [isAdd, initialValues]);
+
   useEffect(() => {
     if (!isAdd) {
       setSelectedRole(initialValues.role!);
@@ -135,6 +137,18 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       setFilteredHeadRM([]);
     }
   }, [initialValues, isAdd, headRMs]);
+
+  const  findRoleIdByName = (role:string)=>{
+    const r= role?.toLowerCase();
+    const newRole = roles?.find((ele)=>ele.roleName?.toLowerCase()===r);
+    if(newRole){
+      return newRole._id;
+    }else{
+      return ""
+    }
+  }
+
+  
   const handleChangeRole = async (e: any) => {
     const role = e.target.value;
     setSelectedRole(role);
@@ -176,11 +190,15 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
     const formValid = documents.every((doc, index) =>
       validateDocument(doc, index)
     );
+
     if (selectedRole === "Relationship Manager") {
       if (formValid) {
         teamForm.role = selectedRole;
+        teamForm.roleId = findRoleIdByName(selectedRole)
         teamForm.headRMId = selectedRMId === undefined ? "" : selectedRMId;
         teamForm.headRM = selectedRMName;
+        teamForm.planId = UserData.planName;
+        teamForm.planName = UserData.planName;
         const formData = new FormData();
         const addedKeys = new Map<string, string>();
         Object.keys(teamForm).forEach((key) => {
@@ -209,6 +227,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       } else if (formValid) {
         setRMErrorMessage("");
         teamForm.role = selectedRole;
+        teamForm.roleId = findRoleIdByName(selectedRole)
         teamForm.headRMId = selectedRMId === undefined ? "" : selectedRMId;
         teamForm.headRM = selectedRMName;
         teamForm.planId = UserData.planId;

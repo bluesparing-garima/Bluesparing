@@ -247,7 +247,7 @@ const PartnerDashboard: React.FC = () => {
             </div>
           </div>
           <Grid item md={12}>
-            {UserData.role === "Partner" ? (
+            {UserData.role.toLowerCase() === "partner" ? (
               <>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>

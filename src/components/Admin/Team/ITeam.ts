@@ -2,6 +2,7 @@ export interface ITeamForm {
   id?: string;
   branchName?: string;
   role: any;
+  roleId?:string;
   partnerId?: string;
   headRMId?: string;
   headRM?: string;
