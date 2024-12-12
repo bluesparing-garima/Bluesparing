@@ -15,6 +15,7 @@ import { header } from "../context/constant";
 import fetchInterceptor, { FetchOptions } from "../utils/fetchInterceptor ";
 import useSubscription from "../Hooks/Subscription/useSubscription";
 import useGetRoles from "../Hooks/Role/useGetRoles";
+import toast, { Toaster } from "react-hot-toast";
 const Signup = () => {
   const navigate = useNavigate();
   const [subsData] = useSubscription();
@@ -22,7 +23,7 @@ const Signup = () => {
 
   const findRoleIdByName = (name: string) => {
     const temp = name.toLowerCase();
- 
+
     const roleObj = roles.find((ele) => ele.roleName?.toLowerCase() === temp);
 
     if (roleObj) {
@@ -66,8 +67,8 @@ const Signup = () => {
       file: signUpData.file,
       planName: plans.planName,
       planId: plans._id,
-      joiningDate:Date.now().toString(),
-      roleId:findRoleIdByName(role)
+      joiningDate: Date.now().toString(),
+      roleId: findRoleIdByName(role),
     };
     payload.role = role.toLowerCase();
     payload.partnerId = "null";
@@ -89,8 +90,9 @@ const Signup = () => {
       } else {
         throw new Error("Failed to Register");
       }
-    } catch (error) {
-      console.error("Error uploading file:", error);
+    } catch (error: any) {
+      const err = await error;
+      toast.error(err.message);
     }
     return { [FORM_ERROR]: "Sign up failed. Try again!" };
   };
@@ -372,9 +374,8 @@ const Signup = () => {
           </div>
         </div>
       </div>
+      <Toaster position="bottom-center" reverseOrder={false} />
     </>
   );
 };
 export default Signup;
-
-

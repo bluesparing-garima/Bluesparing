@@ -38,7 +38,10 @@ const Teams = () => {
     () =>
       getTeamService({ header })
         .then((teamDetails) => {
-          setTeams(teamDetails.data);
+        const newTeamData =   teamDetails.data.filter((ele:any)=>{
+            return ele.role!=='superadmin'
+          })
+          setTeams(newTeamData);
         })
         .catch((error) => {
           console.error("Failed to fetch product details", error);
