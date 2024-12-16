@@ -71,6 +71,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   const [errors, setErrors] = useState<{ docName: string; file: string }[]>([
     { docName: "", file: "" },
   ]);
+
   let [policyTypes] = useGetPolicyTypes({ header: header });
   let [relationshipManagers] = useGetPartners({
     header: header,
@@ -91,6 +92,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   const [selectedRMName, setSelectedRMName] = useState("");
   const [selectedRMId, setSelectedRMId] = useState("");
   const navigate = useNavigate();
+  const [selectedMake, setSelectedMake] = useState<IMakes | undefined>();
   const [selectedPaymentMode, setSelectedPaymentMode] = useState();
   const [selectedPolicyCreatedBy, setSelectedPolicyCreatedBy] = useState<
     string | undefined
@@ -103,7 +105,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       return arg === val;
     });
   };
-  const [selectedMake, setSelectedMake] = useState<IMakes | undefined>();
+
   const [filteredSubcategories, setFilteredSubcategories] = useState<
     IProductSubTypes[]
   >([]);
@@ -447,15 +449,32 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
     const value = event.target.value;
     setNetPremium(value);
   };
+  const findMakeByName = (makePara:string) => {
+    const result = makes.find(
+      (ele) => String(ele.makeName) === String(makePara)
+    );
+    console.log(result);
+    if (result) {
+      return result._id;
+    } else {
+      return "";
+    }
+  };
+
   useEffect(() => {
     if (selectedMake) {
       const MakeId = selectedMake._id;
       const filterModel = models.filter((sub) => sub.makeId === MakeId);
       setFilteredSubModels(filterModel);
-    } else {
+    } else if( initialValues.make){
+      const MakeId = findMakeByName(initialValues.make);
+      console.log("makeId",MakeId);
+      const filterModel = models.filter((sub) => sub.makeId === MakeId);
+      setFilteredSubModels(filterModel);
+    }else {
       setFilteredSubModels([]);
     }
-  }, [selectedMake, models]);
+  }, [selectedMake, models, initialValues.make]);
   useEffect(() => {
     if (selectedProduct) {
       const ProductId = selectedProduct._id;

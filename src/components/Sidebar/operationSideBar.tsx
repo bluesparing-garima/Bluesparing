@@ -68,7 +68,7 @@ const PartnerSidebar: React.FC<SidebarProps> = ({
       ],
     },
     {
-      id: 10,
+      id: 4,
       label: "Mark Attendance",
       link: "/#/mark-attendance",
       svgIcon:

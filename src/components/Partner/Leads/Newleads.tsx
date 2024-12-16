@@ -70,6 +70,11 @@ const Leads = () => {
         size: 50,
       },
       {
+        accessorKey: "remarks",
+        header: "Remarks",
+        size: 100,
+      },
+      {
         header: "Created On",
         accessorKey: "createdOn",
         size: 50,

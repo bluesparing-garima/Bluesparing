@@ -24,7 +24,7 @@ const Signin = () => {
   const roleDashboardMapping: { [key: string]: string } = {
     admin: "/dashboard",
     operation: "/operationdashboard",
-    booking: "/booking-dashboard",
+    booking: "/bookingdashboard",
     account: "/accountdashboard",
     rm: "/rm/dashboard",
     hr: "/hr/dashboard",
