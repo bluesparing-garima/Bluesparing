@@ -199,11 +199,14 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       setDocuments(updatedDocuments);
     }
   }, [isAdd, initialValues]);
+
   useEffect(() => {
     if (initialValues.make) {
       setSelectedMake(foundMake());
     }
+    // eslint-disable-next-line
   }, [initialValues]);
+
   const handleFileInputChange = (event: any, index: any) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
@@ -245,6 +248,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       setOd(initialValues.od ?? 0);
       setIdv(initialValues.idv ?? 0);
     }
+    // eslint-disable-next-line
   }, [policyType]);
   const calculateYearDifference = (
     startDate: dayjs.Dayjs | string,
@@ -449,11 +453,10 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
     const value = event.target.value;
     setNetPremium(value);
   };
-  const findMakeByName = (makePara:string) => {
+  const findMakeByName = (makePara: string) => {
     const result = makes.find(
-      (ele) => String(ele.makeName) === String(makePara)
+      (ele) => String(ele.makeName?.trim()) === String(makePara)
     );
-    console.log(result);
     if (result) {
       return result._id;
     } else {
@@ -466,14 +469,15 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       const MakeId = selectedMake._id;
       const filterModel = models.filter((sub) => sub.makeId === MakeId);
       setFilteredSubModels(filterModel);
-    } else if( initialValues.make){
-      const MakeId = findMakeByName(initialValues.make);
-      console.log("makeId",MakeId);
+    } else if (initialValues.make) {
+      const searchMake = initialValues.make;
+      const MakeId = findMakeByName(searchMake.trim());
       const filterModel = models.filter((sub) => sub.makeId === MakeId);
       setFilteredSubModels(filterModel);
-    }else {
+    } else {
       setFilteredSubModels([]);
     }
+    // eslint-disable-next-line
   }, [selectedMake, models, initialValues.make]);
   useEffect(() => {
     if (selectedProduct) {
