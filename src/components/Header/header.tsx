@@ -122,10 +122,9 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
         eId: userData?.id,
       });
       setAttendance(res?.data[0]);
-    } catch (error:any) {
-      const err= await error;
-      toast.error(err.message)
-    
+    } catch (error: any) {
+      const err = await error;
+      toast.error(err.message);
     }
   };
   const canMarkAttendance = useMemo(() => {
@@ -173,7 +172,6 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
   };
   const handleSidebar = () => {
     setSidebarOpen((prev) => !prev);
-   
   };
   return (
     <>
@@ -290,9 +288,12 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
                   </MenuItem>
                 </div>
               )}
-              <Link to="/upload-logo" onClick={handleClose}>
-                <MenuItem>Upload Logo</MenuItem>
-              </Link>
+              {UserData.role?.toLowerCase().trim() === "admin" && (
+                <Link to="/upload-logo" onClick={handleClose}>
+                  <MenuItem>Upload Logo</MenuItem>
+                </Link>
+              )}
+
               <Link to="/" onClick={signOut}>
                 <MenuItem>Logout</MenuItem>
               </Link>

@@ -32,9 +32,9 @@ const Leads = () => {
         .then((leadDetails) => {
           setLeads(leadDetails.data);
         })
-        .catch(async(error) => {
-          const err = await error
-          toast.error(err.message)
+        .catch(async (error) => {
+          const err = await error;
+          toast.error(err.message);
         }),
     []
   );
@@ -44,9 +44,9 @@ const Leads = () => {
         .then((leadDetails) => {
           setLeads(leadDetails.data);
         })
-        .catch(async(error) => {
-          const err = await error
-          toast.error(err.message)
+        .catch(async (error) => {
+          const err = await error;
+          toast.error(err.message);
         }),
     [userData.id]
   );
@@ -56,9 +56,9 @@ const Leads = () => {
         .then((leadDetails) => {
           setLeads(leadDetails.data);
         })
-        .catch(async(error) => {
-          const err = await error
-          toast.error(err.message)
+        .catch(async (error) => {
+          const err = await error;
+          toast.error(err.message);
         }),
     [userData.partnerId]
   );
@@ -79,6 +79,20 @@ const Leads = () => {
   const navigate = useNavigate();
   const handleAddLeadClick = () => {
     navigate(leadsAddPath());
+  };
+
+  const checkViewDisplay = (status: string) => {
+    const comingStatus = status.toLowerCase().trim();
+
+    if (
+      comingStatus === "payment verified" ||
+      comingStatus === "booking pending" ||
+      comingStatus === "booked"
+    ) {
+      return true;
+    } else {
+      return false;
+    }
   };
   const parsedData = useMemo(
     () =>
@@ -107,8 +121,8 @@ const Leads = () => {
             status: lead.status,
             isActive: lead.isActive,
             createdOn: lead.createdOn,
-            updatedOn: (lead.updatedOn),
-           timer:lead.timer
+            updatedOn: lead.updatedOn,
+            timer: lead.timer,
           } as ILeadsVM)
       ) ?? [],
     [leads]
@@ -120,7 +134,13 @@ const Leads = () => {
         accessorKey: "timer",
         size: 100,
         Cell: ({ row }) => {
-          return <CountdownTimer registerDate={row.original.updatedOn || row.original.createdOn} status={row.original.status} timer={row.original.timer} />;
+          return (
+            <CountdownTimer
+              registerDate={row.original.updatedOn || row.original.createdOn}
+              status={row.original.status}
+              timer={row.original.timer}
+            />
+          );
         },
       },
       {
@@ -147,9 +167,13 @@ const Leads = () => {
         header: "Created On",
         accessorKey: "createdOn",
         size: 50,
-        Cell:({row})=>{
-          return(<span>{dayjs(row.original.createdOn).format(DAYJS_DISPLAY_FORMAT)}</span>)
-        }
+        Cell: ({ row }) => {
+          return (
+            <span>
+              {dayjs(row.original.createdOn).format(DAYJS_DISPLAY_FORMAT)}
+            </span>
+          );
+        },
       },
     ],
     []
@@ -200,7 +224,7 @@ const Leads = () => {
                 </Button>
               )}
             </div>
-            
+
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
@@ -214,7 +238,7 @@ const Leads = () => {
             positionActionsColumn="last"
             renderRowActions={({ row }) => {
               if (
-               ( row.original.status === "Payment Verified" ) &&
+                row.original.status === "Payment Verified" &&
                 userData.role.toLowerCase() === "operation"
               ) {
                 return (
@@ -280,7 +304,8 @@ const Leads = () => {
                 );
               }
               if (
-             (   row.original.status === ("Booking Pending") || row.original.status === "Booked") &&
+                (row.original.status === "Booking Pending" ||
+                  row.original.status === "Booked") &&
                 userData.role.toLowerCase() === "operation"
               ) {
                 return (
@@ -323,7 +348,7 @@ const Leads = () => {
                 return (
                   <>
                     <div style={{ display: "flex", flexWrap: "nowrap" }}>
-                      {row.original.status === "Payment Verified" ? (
+                      {checkViewDisplay(row.original.status!) ? (
                         <Tooltip title={"View Comment"}>
                           <IconButton
                             color="primary"
