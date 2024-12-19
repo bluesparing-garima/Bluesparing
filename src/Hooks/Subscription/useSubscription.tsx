@@ -21,6 +21,7 @@ const useSubscription = () => {
           console.error(res.status);
         });
     }
+    // eslint-disable-next-line
   }, [header, isLoading]);
 
   return [subsData];

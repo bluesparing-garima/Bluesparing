@@ -13,6 +13,7 @@ export interface ISubscription {
     assignedOperationMenu?:string[];
     assignedPartnerMenu?:string[];
     assignedRMMenu?:string[];
+    planDetails?:any;
     createdBy: string;
     updatedBy: string;
     createdOn: string;

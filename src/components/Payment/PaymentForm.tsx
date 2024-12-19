@@ -2,8 +2,10 @@ import { Button, Grid, Paper, TextField, Typography } from "@mui/material";
 import React from "react";
 import { Field, Form } from "react-final-form";
 import { Link } from "react-router-dom";
-import logo from "../../assets/Blue_Sparinglogo.png";
+import logo from "../../assets/Blue_Sparinglogo_ornage - Copy.png";
 import toast, { Toaster } from "react-hot-toast";
+import VerifyPaymentService from "../../api/Razorpay/VerifyPayment/VerifyPaymentService";
+import InitiatePaymentService from "../../api/Razorpay/InitiatePayment/InitiatePaymentService";
 interface RazorpayResponse {
   razorpay_order_id: string;
   razorpay_payment_id: string;
@@ -12,26 +14,15 @@ interface RazorpayResponse {
 
 const PaymentForm: React.FC = () => {
   const onSubmit = async (data: any) => {
-    const { amount, name, phone,email } = data;
+    const { amount, name, phone, email } = data;
     try {
-      // Step 1: Create order on the backend
-      const response = await fetch(
-        "https://iimapi.bluesparing.com/api/razorpay/initiate-payment",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ amount }),
-        }
-      );
-
-      const data = await response.json();
+      const response = InitiatePaymentService({ amount });
+      const data = await response;
 
       if (data.success) {
         const { order_id } = data;
         const options = {
-          key: "rzp_test_GzSWe8lvuzcLxS",
+          key: process.env.REACT_APP_API_KEY,
           amount: Number(amount) * 100,
           currency: "INR",
           name: "Blue Sparing",
@@ -47,7 +38,7 @@ const PaymentForm: React.FC = () => {
           },
           prefill: {
             name,
-            email:email,
+            email: email,
             contact: phone,
           },
           theme: {
@@ -63,29 +54,18 @@ const PaymentForm: React.FC = () => {
     }
   };
 
-  // Step 4: Call backend for payment verification
   const verifyPayment = async (
     razorpay_order_id: string,
     razorpay_payment_id: string,
     razorpay_signature: string
   ) => {
     try {
-      const response = await fetch(
-        "https://iimapi.bluesparing.com/api/razorpay/verify-payment",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            razorpay_order_id,
-            razorpay_payment_id,
-            razorpay_signature,
-          }),
-        }
-      );
-
-      const data = await response.json();
+      const response = VerifyPaymentService({
+        razorpay_order_id,
+        razorpay_payment_id,
+        razorpay_signature,
+      });
+      const data = await response;
 
       if (data.success) {
         toast.success("Payment verified successfully");
@@ -181,7 +161,7 @@ const PaymentForm: React.FC = () => {
                         label="Enter Phone Number"
                         type="number"
                         variant="outlined"
-                         size="small"
+                        size="small"
                         className="rounded-sm w-full"
                         error={meta.touched && Boolean(meta.error)}
                         helperText={meta.touched && meta.error}
