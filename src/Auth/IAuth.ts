@@ -51,4 +51,7 @@ export interface IUser {
   email: string;
   _id: string;
   phone: string;
+  planName?:string;
+  planId?:string;
+  planType?:string;
 }

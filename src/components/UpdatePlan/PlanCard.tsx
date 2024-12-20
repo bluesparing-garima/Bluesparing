@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import  { FC, useState } from "react";
 import { Box, Typography, Button } from "@mui/material";
 import { ISubscription } from "../../api/Subscriptions/subscriptionType";
 import InitiatePaymentService from "../../api/Razorpay/InitiatePayment/InitiatePaymentService";
@@ -10,11 +10,11 @@ import { useNavigate } from "react-router-dom";
 import { getFromSessionStorage } from "../../utils/HandleSessionStore";
 import { SESSION_USER } from "../../context/constant";
 import { IUser } from "../../Auth/IAuth";
-
+import { AddTransactionProps } from "../../api/Transaction/ITransaction";
+import AddTransactionServices from "../../api/Transaction/AddTranstion/AddTransactionServices";
 interface PlanCardProps {
   p: ISubscription;
 }
-
 const PlanCard: FC<PlanCardProps> = ({ p }) => {
   const [selectedPlan, setSelectedPlan] = useState<"monthly" | "yearly">(
     "monthly"
@@ -40,7 +40,6 @@ const PlanCard: FC<PlanCardProps> = ({ p }) => {
     try {
       const response = InitiatePaymentService({ amount });
       const data = await response;
-
       if (data.success) {
         const { order_id } = data;
         const options = {
@@ -61,19 +60,31 @@ const PlanCard: FC<PlanCardProps> = ({ p }) => {
           prefill: {
             name: user.name,
             email: user.email,
-            contact:user.phone,
+            contact: user.phone,
           },
           theme: {
             color: "#e59411",
           },
         };
-
         const razorpay = new (window as any).Razorpay(options);
         razorpay.open();
       }
     } catch (error) {
       toast.error("Error initiating payment");
     }
+  };
+  const CalculateCurrentDate = (): string => {
+    const currentDate = new Date();
+    return currentDate.toISOString();
+  };
+  const calculatePlanEndDate = (): string => {
+    const currentDate = new Date();
+    if (selectedPlan === "monthly") {
+      currentDate.setMonth(currentDate.getMonth() + 1);
+    } else if (selectedPlan === "yearly") {
+      currentDate.setFullYear(currentDate.getFullYear() + 1);
+    }
+    return currentDate.toISOString();
   };
   const verifyPayment = async (
     razorpay_order_id: string,
@@ -87,17 +98,33 @@ const PlanCard: FC<PlanCardProps> = ({ p }) => {
         razorpay_signature,
       });
       const data = await response;
-
       if (data.success) {
-        navigate("/");
+        const data: AddTransactionProps = {
+          userId: user._id,
+          transactionId: razorpay_payment_id,
+          orderId: razorpay_order_id,
+          createdBy: user.name,
+          transactionStatus: "success",
+          planId: p._id,
+          planType: p.planName,
+          planStartDate: CalculateCurrentDate(),
+          planEndDate: calculatePlanEndDate(),
+        };
+
+        const res = await AddTransactionServices({ data });
+        if (res.success) {
+          navigate("/");
+        } else {
+          navigate("/signup");
+        }
       } else {
         navigate("/signup");
       }
     } catch (error) {
       toast.error("Error verifying payment");
+      navigate("/signup");
     }
   };
-
   return (
     <Box
       sx={{
@@ -119,11 +146,9 @@ const PlanCard: FC<PlanCardProps> = ({ p }) => {
           PER {selectedPlan.toUpperCase()}
         </Typography>
       </Box>
-
       <Typography variant="h3" fontWeight="bold" mt={1}>
         ₹{selectedPlan === "monthly" ? p.monthlyAmount : p.annualAmount}
       </Typography>
-
       <Box mt={2}>
         <Button
           variant={selectedPlan === "monthly" ? "contained" : "outlined"}
@@ -142,7 +167,6 @@ const PlanCard: FC<PlanCardProps> = ({ p }) => {
           Yearly
         </Button>
       </Box>
-
       <Box mt={1} textAlign="left">
         <Typography variant="body1" fontWeight="bold" gutterBottom>
           Plan Features:
@@ -157,13 +181,11 @@ const PlanCard: FC<PlanCardProps> = ({ p }) => {
             __html: p.planDetails,
           }}
         />
-
         <Typography className="font-satoshi">
           <span className="font-semibold text-[#027AAE]">Policy Limit:</span>
           <span className="font-medium"> {p.policyCount}</span>
         </Typography>
       </Box>
-
       <Button
         variant="contained"
         sx={{ mt: 3, px: 4, borderRadius: 1, backgroundColor: "#027AAE" }}
@@ -175,5 +197,4 @@ const PlanCard: FC<PlanCardProps> = ({ p }) => {
     </Box>
   );
 };
-
 export default PlanCard;

@@ -1,13 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Button, Typography, Box, Card, CardContent } from "@mui/material";
+import {  Typography, Box, Card, CardContent } from "@mui/material";
 const UnAuthorizedPage: React.FC = () => {
   return (
-    <Box className="flex items-center justify-center min-h-screen bg-gray-100">
-      <Card className="max-w-lg w-full shadow-lg">
+    <Box className="flex items-center justify-center min-h-[88%] bg-blue-200">
+      <Card className="max-w-lg w-full shadow-lg bg-[#F5F0CD]">
         <CardContent>
           <Box className="flex flex-col items-center">
-            {}
             <Box className="bg-yellow-500 rounded-full p-4 mb-4">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -25,7 +24,7 @@ const UnAuthorizedPage: React.FC = () => {
               </svg>
             </Box>
 
-            <Typography variant="h5" className="text-gray-800 font-bold mb-2">
+            <Typography variant="h5" className="text-gray-800 font-bold mb-2 font-satoshi">
               Whoops!
             </Typography>
 
@@ -33,7 +32,7 @@ const UnAuthorizedPage: React.FC = () => {
               variant="body1"
               className="uppercase text-gray-600 font-satoshi font-bold mb-4 text-center"
             >
-              Yor are unauthorized .
+              Yor are unauthorized.
             </Typography>
 
             <Box className="flex items-center gap-2">

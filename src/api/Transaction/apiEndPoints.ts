@@ -1,3 +1,3 @@
 export const addTransaction = ()=>{
-    return ""
+    return "/api/transaction"
 }
