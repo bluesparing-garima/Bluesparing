@@ -6,18 +6,21 @@ import { IVerifyResponsePayload } from "../../api/Razorpay/IRazorpay";
 import toast from "react-hot-toast";
 import VerifyPaymentService from "../../api/Razorpay/VerifyPayment/VerifyPaymentService";
 import logo from "../../assets/Blue_Sparinglogo_ornage - Copy.png";
+import { useNavigate } from "react-router-dom";
+import { getFromSessionStorage } from "../../utils/HandleSessionStore";
+import { SESSION_USER } from "../../context/constant";
+import { IUser } from "../../Auth/IAuth";
+
 interface PlanCardProps {
   p: ISubscription;
-  name?: string;
-  phone?: string;
-  email?: string;
 }
 
-const PlanCard: FC<PlanCardProps> = ({ p, name, phone, email }) => {
+const PlanCard: FC<PlanCardProps> = ({ p }) => {
   const [selectedPlan, setSelectedPlan] = useState<"monthly" | "yearly">(
     "monthly"
   );
-
+  const user = getFromSessionStorage(SESSION_USER) as IUser;
+  const navigate = useNavigate();
   const getAmount = () => {
     if (selectedPlan === "monthly") {
       return p.monthlyAmount;
@@ -29,6 +32,10 @@ const PlanCard: FC<PlanCardProps> = ({ p, name, phone, email }) => {
     setSelectedPlan(planType);
   };
   const handleMakePayment = async () => {
+    if (!(user as IUser)?._id) {
+      navigate("/signup");
+      return;
+    }
     const amount = getAmount();
     try {
       const response = InitiatePaymentService({ amount });
@@ -52,9 +59,9 @@ const PlanCard: FC<PlanCardProps> = ({ p, name, phone, email }) => {
             );
           },
           prefill: {
-            name: name ? name : "",
-            email: email,
-            contact: phone,
+            name: user.name,
+            email: user.email,
+            contact:user.phone,
           },
           theme: {
             color: "#e59411",
@@ -82,9 +89,9 @@ const PlanCard: FC<PlanCardProps> = ({ p, name, phone, email }) => {
       const data = await response;
 
       if (data.success) {
-        toast.success("Payment verified successfully");
+        navigate("/");
       } else {
-        toast.error("Payment verification failed");
+        navigate("/signup");
       }
     } catch (error) {
       toast.error("Error verifying payment");

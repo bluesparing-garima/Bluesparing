@@ -69,7 +69,8 @@ function App() {
       <SafekaroProvider>
         {currentUrl === "/" ||
         currentUrl === "/signup" ||
-        currentUrl === "/403" ? (
+        currentUrl === "/403" ||
+        (currentUrl === "/update-plan" && !userData?.accessToken) ? (
           <> {content}</>
         ) : (
           <SidebarSwitcher userData={userData} content={content} />

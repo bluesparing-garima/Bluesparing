@@ -234,8 +234,9 @@ const routes = [
       },
     ],
   },
+ 
   {
-    path: "update-plan",
+    path: "/update-plan",
     children: [
       {
         path: "",

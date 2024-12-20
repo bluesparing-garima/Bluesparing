@@ -16,14 +16,14 @@ export interface ISignUp {
   name: string;
   email: string;
   role: string;
-  roleId?:string;
+  roleId?: string;
   partnerId?: string;
   password: string;
   phoneNumber: string;
   confirmPassword?: string;
   partnerCode?: string;
   file?: any;
-  joiningDate:string;
+  joiningDate: string;
   planName: string;
   planId: string;
 
@@ -44,4 +44,11 @@ export interface IloginRes {
   phoneNumber: number;
   id: string;
   refreshtoken?: string;
+}
+
+export interface IUser {
+  name: string;
+  email: string;
+  _id: string;
+  phone: string;
 }
