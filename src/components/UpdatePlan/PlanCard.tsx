@@ -3,7 +3,7 @@ import { Box, Typography, Button } from "@mui/material";
 import { ISubscription } from "../../api/Subscriptions/subscriptionType";
 import InitiatePaymentService from "../../api/Razorpay/InitiatePayment/InitiatePaymentService";
 import { IVerifyResponsePayload } from "../../api/Razorpay/IRazorpay";
-import toast from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import VerifyPaymentService from "../../api/Razorpay/VerifyPayment/VerifyPaymentService";
 import logo from "../../assets/fav.png";
 import { useNavigate } from "react-router-dom";
@@ -145,15 +145,13 @@ const PlanCard: FC<PlanCardProps> = ({ p }) => {
                   response.razorpay_signature
                 );
               } catch (error) {
-                AddTransactionServices({
-                  data: makeTransactionPayload("", "", false),
-                });
+                handleTransaction("error", "error", false);
               }
             },
             prefill: {
-              name: user.name,
-              email: user.email,
-              contact: user.phone,
+              name: user ? user.name : userData.name,
+              email: user ? user.email : userData.email,
+              contact: user ? user.phone : userData.phoneNumber,
             },
             theme: {
               color: "#e59411",
@@ -163,9 +161,7 @@ const PlanCard: FC<PlanCardProps> = ({ p }) => {
           razorpay.open();
         }
       } catch (error) {
-        AddTransactionServices({
-          data: makeTransactionPayload("", "", false),
-        });
+        handleTransaction("error", "error", false);
         toast.error("Error initiating payment");
       }
     }
@@ -264,6 +260,7 @@ const PlanCard: FC<PlanCardProps> = ({ p }) => {
       >
         Make Payment
       </Button>
+      <Toaster position="bottom-center" reverseOrder={true} />
     </Box>
   );
 };
