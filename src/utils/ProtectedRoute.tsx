@@ -1,6 +1,7 @@
 import React, { FC } from "react";
 import { SafeKaroUser } from "../context/constant";
 import { Navigate } from "react-router-dom";
+import UpdatePlan from "../components/UpdatePlan/UpdatePlan";
 interface ProtectedRouteProps {
   children?: React.ReactNode;
 }
@@ -16,7 +17,9 @@ const ProtectedRoute: FC<ProtectedRouteProps> = ({
   const isAuthorized = () => {
     return !!currentRole
   };
-
+if(!userData?.transactionStatus ){
+  return <UpdatePlan/>
+}
   return <>{isAuthorized() ? children : <> <Navigate to={"/"}/></>}</>;
 };
 

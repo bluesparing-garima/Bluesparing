@@ -40,7 +40,9 @@ const Signin = () => {
         body: JSON.stringify(signInData),
       };
       const responseData = await fetchInterceptor<any>(url, options);
+      console.log(responseData);
       if (responseData.status === "success") {
+        
         let loginData: SafeKaroUser = {
           ...responseData,
           headRMId: "",
@@ -72,6 +74,10 @@ const Signin = () => {
         let role = responseData.role.toLowerCase();
         if (role === "relationship manager") {
           role = "rm";
+        }
+        if(!responseData.transactionStatus){
+          navigate("/update-plan")
+          return;
         }
         navigate(roleDashboardMapping[role] || roleDashboardMapping.default);
       } else {

@@ -7,7 +7,7 @@ import toast, { Toaster } from "react-hot-toast";
 import VerifyPaymentService from "../../api/Razorpay/VerifyPayment/VerifyPaymentService";
 import logo from "../../assets/fav.png";
 import { useNavigate } from "react-router-dom";
-import { getFromSessionStorage } from "../../utils/HandleSessionStore";
+import { getFromSessionStorage, updateLocalStorage } from "../../utils/HandleStore";
 import { SafeKaroUser, SESSION_USER } from "../../context/constant";
 import { IUser } from "../../Auth/IAuth";
 import { AddTransactionProps } from "../../api/Transaction/ITransaction";
@@ -56,7 +56,7 @@ const PlanCard: FC<PlanCardProps> = ({ p }) => {
   ): AddTransactionProps => {
     if (userData?.role) {
       const payload: AddTransactionProps = {
-        userId: userData._id,
+        userId: userData.id,
         transactionId: pId,
         orderId: oId,
         createdBy: userData.name,
@@ -99,6 +99,14 @@ const PlanCard: FC<PlanCardProps> = ({ p }) => {
     return false;
   };
 
+
+  const handleNavigation = ()=>{
+    if(userData?.role){
+      navigate("/dashboard")
+    }else{
+      navigate("/")
+    }
+  }
   const handleTransaction = async (
     tId: string,
     oId: string,
@@ -122,7 +130,8 @@ const PlanCard: FC<PlanCardProps> = ({ p }) => {
 
     if (p.planName.toLowerCase().trim() === "free") {
       handleTransaction("free", "free", true);
-      navigate("/");
+      updateLocalStorage({transactionStatus:true})
+      handleNavigation()
     } else {
       try {
         const response = InitiatePaymentService({ amount });
@@ -181,14 +190,15 @@ const PlanCard: FC<PlanCardProps> = ({ p }) => {
 
       if (response.success) {
         handleTransaction(razorpay_payment_id, razorpay_order_id, true);
-        navigate("/");
+        updateLocalStorage({transactionStatus:true})
+        handleNavigation()
       } else {
         toast.error("Payment verification failed");
       }
     } catch (error) {
       handleTransaction("free", "free", false);
       toast.error("Error verifying payment");
-      navigate("/");
+      handleNavigation()
     }
   };
   return (
