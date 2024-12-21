@@ -15,7 +15,7 @@ import fetchInterceptor, { FetchOptions } from "../utils/fetchInterceptor ";
 import useSubscription from "../Hooks/Subscription/useSubscription";
 import useGetRoles from "../Hooks/Role/useGetRoles";
 import toast, { Toaster } from "react-hot-toast";
-import { storeInSessionStorage } from "../utils/HandleSessionStore";
+import { storeInSessionStorage } from "../utils/HandleStore";
 const Signup = () => {
   const navigate = useNavigate();
   const [subsData] = useSubscription();

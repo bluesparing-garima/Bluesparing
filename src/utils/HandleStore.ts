@@ -28,3 +28,14 @@ export function updateSessionStorage<IUser>(key: string, newData: Partial<IUser>
         console.error("Error updating data in sessionStorage:", error);
     }
 }
+export function updateLocalStorage(newData:any): void {
+    const key = 'user'
+    try {
+        const existingData = localStorage.getItem(key);
+        const parsedData = existingData ? JSON.parse(existingData) : {};
+        const updatedData = { ...parsedData, ...newData };
+        localStorage.setItem(key, JSON.stringify(updatedData));
+    } catch (error) {
+        console.error("Error updating data in sessionStorage:", error);
+    }
+}
