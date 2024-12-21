@@ -6,8 +6,8 @@ const AddTransactionServices = async ({
     data
 }: IAddTransaction): Promise<any> => {
     try {
-        const res = AddTransactionAPI({
-            data
+        const res =await AddTransactionAPI({
+        data
         });
         return res;
     } catch (error) {

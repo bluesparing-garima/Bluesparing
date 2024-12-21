@@ -1,14 +1,14 @@
-import  { FC, useState } from "react";
+import { FC, useState } from "react";
 import { Box, Typography, Button } from "@mui/material";
 import { ISubscription } from "../../api/Subscriptions/subscriptionType";
 import InitiatePaymentService from "../../api/Razorpay/InitiatePayment/InitiatePaymentService";
 import { IVerifyResponsePayload } from "../../api/Razorpay/IRazorpay";
 import toast from "react-hot-toast";
 import VerifyPaymentService from "../../api/Razorpay/VerifyPayment/VerifyPaymentService";
-import logo from "../../assets/Blue_Sparinglogo_ornage - Copy.png";
+import logo from "../../assets/fav.png";
 import { useNavigate } from "react-router-dom";
 import { getFromSessionStorage } from "../../utils/HandleSessionStore";
-import { SESSION_USER } from "../../context/constant";
+import { SafeKaroUser, SESSION_USER } from "../../context/constant";
 import { IUser } from "../../Auth/IAuth";
 import { AddTransactionProps } from "../../api/Transaction/ITransaction";
 import AddTransactionServices from "../../api/Transaction/AddTranstion/AddTransactionServices";
@@ -20,57 +20,14 @@ const PlanCard: FC<PlanCardProps> = ({ p }) => {
     "monthly"
   );
   const user = getFromSessionStorage(SESSION_USER) as IUser;
+  let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
+  let userData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
   const navigate = useNavigate();
   const getAmount = () => {
     if (selectedPlan === "monthly") {
       return p.monthlyAmount;
     } else {
       return p.annualAmount;
-    }
-  };
-  const handlePlanChange = (planType: "monthly" | "yearly") => {
-    setSelectedPlan(planType);
-  };
-  const handleMakePayment = async () => {
-    if (!(user as IUser)?._id) {
-      navigate("/signup");
-      return;
-    }
-    const amount = getAmount();
-    try {
-      const response = InitiatePaymentService({ amount });
-      const data = await response;
-      if (data.success) {
-        const { order_id } = data;
-        const options = {
-          key: process.env.REACT_APP_API_KEY,
-          amount: Number(amount) * 100,
-          currency: "INR",
-          name: "Blue Sparing",
-          description: `Payment for ${p.planName} plan`,
-          image: logo,
-          order_id: order_id,
-          handler: (response: IVerifyResponsePayload) => {
-            verifyPayment(
-              response.razorpay_order_id,
-              response.razorpay_payment_id,
-              response.razorpay_signature
-            );
-          },
-          prefill: {
-            name: user.name,
-            email: user.email,
-            contact: user.phone,
-          },
-          theme: {
-            color: "#e59411",
-          },
-        };
-        const razorpay = new (window as any).Razorpay(options);
-        razorpay.open();
-      }
-    } catch (error) {
-      toast.error("Error initiating payment");
     }
   };
   const CalculateCurrentDate = (): string => {
@@ -86,43 +43,156 @@ const PlanCard: FC<PlanCardProps> = ({ p }) => {
     }
     return currentDate.toISOString();
   };
+  const calculateFreePlanEndDate = (): string => {
+    const currentDate = new Date();
+    currentDate.setMonth(currentDate.getMonth() + 1);
+    return currentDate.toISOString();
+  };
+
+  const makeTransactionPayload = (
+    pId: string,
+    oId: string,
+    status: boolean
+  ): AddTransactionProps => {
+    if (userData?.role) {
+      const payload: AddTransactionProps = {
+        userId: userData._id,
+        transactionId: pId,
+        orderId: oId,
+        createdBy: userData.name,
+        transactionStatus: status,
+        planId: p._id,
+        planType: p.planName,
+        planStartDate: CalculateCurrentDate(),
+        planEndDate:
+          p.planName?.toLowerCase() === "free"
+            ? calculateFreePlanEndDate()
+            : calculatePlanEndDate(),
+      };
+      return payload;
+    } else {
+      const payload: AddTransactionProps = {
+        userId: user._id,
+        transactionId: pId,
+        orderId: oId,
+        createdBy: user.name,
+        transactionStatus: status,
+        planId: p._id,
+        planType: p.planName,
+        planStartDate: CalculateCurrentDate(),
+        planEndDate: calculatePlanEndDate(),
+      };
+      sessionStorage.clear();
+      return payload;
+    }
+  };
+  const handlePlanChange = (planType: "monthly" | "yearly") => {
+    setSelectedPlan(planType);
+  };
+
+  const isCheckUserData = () => {
+    if (userData?.role) {
+      return true;
+    } else if (user?._id) {
+      return true;
+    }
+    return false;
+  };
+
+  const handleTransaction = async (
+    tId: string,
+    oId: string,
+    status: boolean
+  ) => {
+    try {
+      AddTransactionServices({
+        data: makeTransactionPayload(tId, oId, status),
+      });
+    } catch (error: any) {
+      const err = await error;
+      toast.error(err.message);
+    }
+  };
+  const handleMakePayment = async () => {
+    if (!isCheckUserData()) {
+      navigate("/signup");
+      return;
+    }
+    const amount = getAmount();
+
+    if (p.planName.toLowerCase().trim() === "free") {
+      handleTransaction("free", "free", true);
+      navigate("/");
+    } else {
+      try {
+        const response = InitiatePaymentService({ amount });
+        const data = await response;
+        if (data.success) {
+          const { order_id } = data;
+          const options = {
+            key: process.env.REACT_APP_API_KEY,
+            amount: Number(amount) * 100,
+            currency: "INR",
+            name: "Blue Sparing",
+            description: `Payment for ${p.planName} plan`,
+            image: logo,
+            order_id: order_id,
+            handler: async (response: IVerifyResponsePayload) => {
+              try {
+                await verifyPayment(
+                  response.razorpay_order_id,
+                  response.razorpay_payment_id,
+                  response.razorpay_signature
+                );
+              } catch (error) {
+                AddTransactionServices({
+                  data: makeTransactionPayload("", "", false),
+                });
+              }
+            },
+            prefill: {
+              name: user.name,
+              email: user.email,
+              contact: user.phone,
+            },
+            theme: {
+              color: "#e59411",
+            },
+          };
+          const razorpay = new (window as any).Razorpay(options);
+          razorpay.open();
+        }
+      } catch (error) {
+        AddTransactionServices({
+          data: makeTransactionPayload("", "", false),
+        });
+        toast.error("Error initiating payment");
+      }
+    }
+  };
+
   const verifyPayment = async (
     razorpay_order_id: string,
     razorpay_payment_id: string,
     razorpay_signature: string
   ) => {
     try {
-      const response = VerifyPaymentService({
+      const response = await VerifyPaymentService({
         razorpay_order_id,
         razorpay_payment_id,
         razorpay_signature,
       });
-      const data = await response;
-      if (data.success) {
-        const data: AddTransactionProps = {
-          userId: user._id,
-          transactionId: razorpay_payment_id,
-          orderId: razorpay_order_id,
-          createdBy: user.name,
-          transactionStatus: "success",
-          planId: p._id,
-          planType: p.planName,
-          planStartDate: CalculateCurrentDate(),
-          planEndDate: calculatePlanEndDate(),
-        };
 
-        const res = await AddTransactionServices({ data });
-        if (res.success) {
-          navigate("/");
-        } else {
-          navigate("/signup");
-        }
+      if (response.success) {
+        handleTransaction(razorpay_payment_id, razorpay_order_id, true);
+        navigate("/");
       } else {
-        navigate("/signup");
+        toast.error("Payment verification failed");
       }
     } catch (error) {
+      handleTransaction("free", "free", false);
       toast.error("Error verifying payment");
-      navigate("/signup");
+      navigate("/");
     }
   };
   return (

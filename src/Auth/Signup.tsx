@@ -87,7 +87,7 @@ const Signup = () => {
       if (responseData.status === "success") {
         const data = {
           name:responseData.user.name,
-          _id:responseData.user._id,
+          _id:responseData.user.partnerId,
           phone:responseData.user.phoneNumber,
           email:responseData.user.email
         }
