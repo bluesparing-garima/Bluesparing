@@ -1,6 +1,5 @@
-import React from "react";
 import logo from "../assets/login_logo.png";
-import { useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { Form, Field } from "react-final-form";
 import { FORM_ERROR } from "final-form";
 import { FormProps, ISignUp } from "./IAuth";
@@ -11,11 +10,12 @@ import {
   Grid,
   TextField,
 } from "@mui/material";
-import { header } from "../context/constant";
+import { header, SESSION_USER } from "../context/constant";
 import fetchInterceptor, { FetchOptions } from "../utils/fetchInterceptor ";
 import useSubscription from "../Hooks/Subscription/useSubscription";
 import useGetRoles from "../Hooks/Role/useGetRoles";
 import toast, { Toaster } from "react-hot-toast";
+import { storeInSessionStorage } from "../utils/HandleSessionStore";
 const Signup = () => {
   const navigate = useNavigate();
   const [subsData] = useSubscription();
@@ -23,7 +23,6 @@ const Signup = () => {
 
   const findRoleIdByName = (name: string) => {
     const temp = name.toLowerCase();
-
     const roleObj = roles.find((ele) => ele.roleName?.toLowerCase() === temp);
 
     if (roleObj) {
@@ -86,7 +85,14 @@ const Signup = () => {
       };
       const responseData = await fetchInterceptor<any>(url, options);
       if (responseData.status === "success") {
-        navigate("/");
+        const data = {
+          name:responseData.user.name,
+          _id:responseData.user.partnerId,
+          phone:responseData.user.phoneNumber,
+          email:responseData.user.email
+        }
+        storeInSessionStorage(SESSION_USER,data)
+        navigate("/update-plan");
       } else {
         throw new Error("Failed to Register");
       }
@@ -360,6 +366,16 @@ const Signup = () => {
                       </form>
                     )}
                   />
+                </div>
+                <div className="my-3 border-b text-center">
+                  <div className="leading-none px-2 inline-block text-sm text-gray-600 tracking-wide font-medium bg-white transform translate-y-1/2">
+                    <a
+                      href="/#/update-plan"
+                      className="text-safekaroDarkOrange"
+                    >
+                      View Plans
+                    </a>
+                  </div>
                 </div>
                 <div className="my-3 border-b text-center">
                   <div className="leading-none px-2 inline-block text-sm text-gray-600 tracking-wide font-medium bg-white transform translate-y-1/2">

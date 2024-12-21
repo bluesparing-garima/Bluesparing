@@ -88,3 +88,4 @@ export const POLICY_TYPE_STORAGE_KEY = "paginationPolicyType";
 export const FUEL_TYPE_STORAGE_KEY = "paginationFuelType";
 export const MAKE_STORAGE_KEY = "paginationMake";
 export const MODEL_STORAGE_KEY = "paginationModel";
+export const SESSION_USER = "session_user";

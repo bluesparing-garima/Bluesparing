@@ -159,6 +159,7 @@ import UploadLogo from "./components/UploadLogo/UploadLogo";
 import GetRenewals from "./components/Policy/Renewals/GetRenewals";
 import UpdatePlan from "./components/UpdatePlan/UpdatePlan";
 import PaymentForm from "./components/Payment/PaymentForm";
+import UnAuthorizedPage from "./Auth/UnAuthorizedPage";
 
 const routes = [
   {
@@ -234,12 +235,22 @@ const routes = [
       },
     ],
   },
+ 
   {
-    path: "update-plan",
+    path: "/update-plan",
     children: [
       {
         path: "",
         element: <UpdatePlan />,
+      },
+    ],
+  },
+  {
+    path: "/unauthorized",
+    children: [
+      {
+        path: "",
+        element: <UnAuthorizedPage />,
       },
     ],
   },

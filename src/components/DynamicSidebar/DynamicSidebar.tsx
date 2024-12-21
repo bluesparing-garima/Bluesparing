@@ -71,7 +71,7 @@ const DynamicSidebar: FC<DynamicSidebarProps> = ({
         id: item._id,
         label: item.displayName,
         svgIcon: checkLock ? lockSvg : item.cssClass || defaultMenu,
-        link: checkLock ? "update-plan" : item.pageURL || undefined,
+        link: checkLock ? "unauthorized" : item.pageURL || undefined,
         role: item.role || "",
         isLocked: checkLock,
         subMenu: [],
