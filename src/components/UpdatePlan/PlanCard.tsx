@@ -209,7 +209,6 @@ const PlanCard: FC<PlanCardProps> = ({ p }) => {
         backgroundColor: "white",
         boxShadow: 3,
         borderRadius: 2,
-        overflow: "hidden",
         textAlign: "center",
         padding: 2,
       }}
@@ -248,7 +247,7 @@ const PlanCard: FC<PlanCardProps> = ({ p }) => {
           Plan Features:
         </Typography>
         <div
-          className="font-satoshi  hide-scrollbar"
+          className="font-satoshi "
           style={{
             maxHeight: "8rem",
             overflowY: "auto",

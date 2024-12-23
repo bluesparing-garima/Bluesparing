@@ -2,6 +2,8 @@ import React from "react";
 import { Card, Avatar, Grid, Box, Typography, Divider } from "@mui/material";
 import { deepPurple } from "@mui/material/colors";
 import { ITeamsVM } from "../Admin/Team/ITeam";
+import { DAYJS_DISPLAY_FORMAT, imagePath } from "../../context/constant";
+import dayjs from "dayjs";
 const ProfileUi: React.FC<ITeamsVM> = ({
   email,
   fullName,
@@ -12,28 +14,41 @@ const ProfileUi: React.FC<ITeamsVM> = ({
   dateOfBirth,
   address,
   pincode,
-  image,
+  profileImage,
+  planName,
+  transactionStatus,
   isActive,
+  gender,
+  joiningDate,
 }) => {
   const data = [
     { key: "Email", value: email },
     { key: "Name", value: fullName },
     { key: "Phone Number", value: phoneNumber },
-    { key: "Salary", value: `₹ ${salary?.toLocaleString()}` },
+    { key: "Salary", value:role==='admin'?"": `₹ ${salary?.toLocaleString()}` },
     { key: "Branch Name", value: branchName },
     { key: "DOB", value: dateOfBirth },
+    {
+      key: "Joining Date",
+      value: dayjs(joiningDate).format(DAYJS_DISPLAY_FORMAT),
+    },
+    { key: "Gender", value: gender },
     { key: "Address", value: address },
     { key: "Pincode", value: pincode },
+    { key: "Plan", value: planName },
     { key: "Role", value: role },
-    { key: "Status", value: isActive?"Active":"Inactive" },
+    { key: "Status", value: isActive ? "Active" : "Inactive" },
+    { key: "Payment Status", value: transactionStatus ? "Success" : "Pending" },
   ];
+
   return (
     <Box
       sx={{
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        bgcolor: "#e3f2fd",
+        bgcolor: "#bfdbfe",
+        minHeight: "80vh",
         padding: 2,
         fontFamily: "'Satoshi', sans-serif",
       }}
@@ -49,9 +64,9 @@ const ProfileUi: React.FC<ITeamsVM> = ({
           alignItems: "center",
         }}
       >
-        <div >
+        <div>
           <Avatar
-            src={image}
+            src={`${imagePath}/${profileImage}`}
             alt={fullName}
             sx={{
               bgcolor: deepPurple[500],
@@ -70,21 +85,18 @@ const ProfileUi: React.FC<ITeamsVM> = ({
         <Box sx={{ flexGrow: 1, textAlign: { xs: "center", md: "left" } }}>
           <Divider sx={{ marginY: 2 }} />
           <Grid container spacing={2}>
-            {data.map((ele) => (
-              <Grid item xs={12} sm={6} key={ele.key}>
-                <Typography sx={{ fontWeight: 600 }}>{ele.key}:</Typography>
-                <Typography
-                  sx={{
-                    fontSize: 14,
-                    backgroundColor: "#f0f0f0",
-                    padding: 0.5,
-                    borderRadius: 1,
-                  }}
-                >
-                  {ele.value}
-                </Typography>
-              </Grid>
-            ))}
+            {data
+              .filter((ele) => ele.value)
+              .map((ele) => (
+                <Grid item xs={12} sm={6} key={ele.key}>
+                  <Typography className="font-satoshi font-bold">
+                    {ele.key}:
+                  </Typography>
+                  <Typography className="font-sm font-satoshi bg-[#f0f0f0] p-1 rounded capitalize font-medium">
+                    {ele.value}
+                  </Typography>
+                </Grid>
+              ))}
           </Grid>
         </Box>
       </Card>

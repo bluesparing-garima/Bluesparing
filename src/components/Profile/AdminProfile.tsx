@@ -94,8 +94,6 @@ const AdminProfile: React.FC<IProfile> = ({
               }}
             />
           </Grid>
-
-         
         </Grid>
       </Card>
     </Box>

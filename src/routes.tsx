@@ -158,8 +158,8 @@ import ITDashboard from "./components/Dashboard/ITDashboard";
 import UploadLogo from "./components/UploadLogo/UploadLogo";
 import GetRenewals from "./components/Policy/Renewals/GetRenewals";
 import UpdatePlan from "./components/UpdatePlan/UpdatePlan";
-import PaymentForm from "./components/Payment/PaymentForm";
 import UnAuthorizedPage from "./Auth/UnAuthorizedPage";
+import Subscription from "./components/Subscrition/Subscription";
 
 const routes = [
   {
@@ -372,11 +372,11 @@ const routes = [
     ],
   },
   {
-    path: "payment",
+    path: "subscription",
     children: [
       {
         path: "",
-        element: <PaymentForm />,
+        element: <Subscription />,
       },
     ],
   },

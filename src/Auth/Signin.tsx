@@ -40,9 +40,7 @@ const Signin = () => {
         body: JSON.stringify(signInData),
       };
       const responseData = await fetchInterceptor<any>(url, options);
-      console.log(responseData);
       if (responseData.status === "success") {
-        
         let loginData: SafeKaroUser = {
           ...responseData,
           headRMId: "",
@@ -70,22 +68,23 @@ const Signin = () => {
           loginData.id = responseData.partnerId!;
           loginData.companyLogo = bookingRequestDetails.companyLogo;
         }
+        
         localStorage.setItem("user", JSON.stringify(loginData));
         let role = responseData.role.toLowerCase();
         if (role === "relationship manager") {
           role = "rm";
         }
-        if(!responseData.transactionStatus){
-          navigate("/update-plan")
+        if (!responseData.transactionStatus) {
+          navigate("/update-plan");
           return;
         }
         navigate(roleDashboardMapping[role] || roleDashboardMapping.default);
       } else {
         return { [FORM_ERROR]: `${responseData.message}` };
       }
-    } catch (error:any) {
-      const err = await  error;
-      toast.error(err.message)
+    } catch (error: any) {
+      const err = await error;
+      toast.error(err.message);
     }
   };
   return (
