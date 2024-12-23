@@ -32,6 +32,7 @@ const DynamicSidebar: FC<DynamicSidebarProps> = ({
     : null;
   const [roleMenus] = useGetMenuByRoleId(userData?.roleId || "");
   const [subsData] = useGetSubsById(userData?.planId || "");
+  
   const mapAssignByRole = () => {
     const roleName = userData?.role.toLowerCase();
     switch (roleName) {

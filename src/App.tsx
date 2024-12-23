@@ -70,7 +70,7 @@ function App() {
         {currentUrl === "/" ||
         currentUrl === "/signup" ||
         currentUrl === "/403" ||
-        (currentUrl === "/update-plan" && !userData?.accessToken) ? (
+        (currentUrl === "/update-plan" && ( !userData?.transactionStatus)) ? (
           <> {content}</>
         ) : (
           <SidebarSwitcher userData={userData} content={content} />

@@ -27,6 +27,7 @@ const convertITeamToITeamVM = (data: ITeams): ITeamsVM => {
     accountNumber: data.accountNumber ? data.accountNumber : "",
     salary: data.salary ? data.salary : 0,
     image: data.image ? data.image! : "",
+    profileImage: data.profileImage ? data.profileImage! : "",
     adharCardBack: data.adharCardBack ? data.adharCardBack! : "",
     adharCardFront: data.adharCardFront ? data.adharCardFront! : "",
     panCard: data.panCard ? data.panCard! : "",
@@ -45,6 +46,8 @@ const convertITeamToITeamVM = (data: ITeams): ITeamsVM => {
     updatedOn: data.updatedOn
       ? dayjs(data?.updatedOn).format(DAYJS_DISPLAY_FORMAT)
       : "",
+    planName:data.planName?data.planName:"",
+    transactionStatus:data.transactionStatus?data.transactionStatus:false
   };
   return teamViewModel;
 };

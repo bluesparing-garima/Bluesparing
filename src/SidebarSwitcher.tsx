@@ -15,7 +15,6 @@ const SidebarSwitcher: React.FC<SidebarSwitcherProps> = ({
   content,
 }) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
-
   if (!userData) return null;
 
   let SidebarComponent = DynamicSidebar;
@@ -37,10 +36,8 @@ const SidebarSwitcher: React.FC<SidebarSwitcherProps> = ({
 
       <div className="flex flex-col flex-1 overflow-y-auto">
         <Header isSidebarOpen={isSidebarOpen} setSidebarOpen={setSidebarOpen} />
-        <ProtectedRoute >
-        {content}
-        </ProtectedRoute>
-       
+        <ProtectedRoute>{content}</ProtectedRoute>
+
         <Footer />
       </div>
     </div>

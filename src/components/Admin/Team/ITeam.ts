@@ -58,8 +58,9 @@ export interface ITeamsVM {
   accountNumber?: string;
   password?: string;
   salary?: number;
+  image?:string;
   //document?: any[];
-  image?: string;
+  profileImage?: string;
   adharCardBack?: string;
   adharCardFront?: string;
   panCard?: string;
@@ -75,6 +76,8 @@ export interface ITeamsVM {
   updatedBy?: string;
   companyLogo?:string;
   forceUpdate?: number;
+  planName?:string;
+  transactionStatus?:boolean;
 }
 export interface ITeams {
   _id?: string;
@@ -99,6 +102,7 @@ export interface ITeams {
   salary?: number;
   // document?: any[];
   image?: string;
+  profileImage?:string;
   adharCardBack?: string;
   adharCardFront?: string;
   panCard?: string;
@@ -113,6 +117,8 @@ export interface ITeams {
   companyLogo?:string;
   updatedOn?: string;
   updatedBy?: string;
+  planName?:string;
+  transactionStatus?:boolean;
 }
 
 export interface ITeam {
