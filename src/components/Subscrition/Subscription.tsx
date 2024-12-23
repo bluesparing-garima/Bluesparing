@@ -24,9 +24,29 @@ const Subscription = () => {
     pageIndex: 0,
     pageSize: 10,
   });
-
   const columns = useMemo<MRT_ColumnDef<ITransaction>[]>(
     () => [
+      { accessorKey: "fullName",
+        header: "Full Name",
+        size: 200,},
+      { accessorKey: "email",
+        header: "Email",
+        size: 200,},
+      { accessorKey: "phoneNumber",
+        header: "Phone Number",
+        size: 200,},
+      { accessorKey: "users",
+        header: "User Limit",
+        size: 200,},
+      { accessorKey: "policyCount",
+        header: "Policy Limit",
+        size: 200,},
+      { accessorKey: "monthlyAmount",
+        header: "Monthly Amount",
+        size: 200,},
+      { accessorKey: "annualAmount",
+        header: "Annual Amount",
+        size: 200,},
       {
         accessorKey: "planType",
         header: "Plan Name",
