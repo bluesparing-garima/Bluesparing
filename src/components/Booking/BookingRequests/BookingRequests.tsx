@@ -48,7 +48,7 @@ const BookingRequests = () => {
   );
   const GetBookingByOperationIdRequests = useCallback(
     () =>
-      getBookingRequestByOperationIdService({ header, userId: userData.id })
+      getBookingRequestByOperationIdService({ header, userId: userData.profileId })
         .then((bookingRequestDetails) => {
           setBookingRequests(bookingRequestDetails.data);
         })
@@ -57,13 +57,13 @@ const BookingRequests = () => {
           toast.error(err.message);
           console.error("Failed to fetch Booking details", error);
         }),
-    [userData.id]
+    [userData.profileId]
   );
   const GetBookingByPartnerIdRequests = useCallback(
     () =>
       getBookingRequestByPartnerIdService({
         header,
-        partnerId: userData.partnerId,
+        partnerId: userData.profileId,
       })
         .then((bookingRequestDetails) => {
           setBookingRequests(bookingRequestDetails.data);
@@ -72,13 +72,13 @@ const BookingRequests = () => {
           const err = await error;
           toast.error(err.message);
         }),
-    [userData.partnerId]
+    [userData.profileId]
   );
   const GetBookingByBookingIdRequests = useCallback(
     () =>
       getBookingRequestByBookingIdService({
         header,
-        bookingRequestId: userData.id,
+        bookingRequestId: userData.profileId,
       })
         .then((bookingRequestDetails) => {
           setBookingRequests(bookingRequestDetails.data);
@@ -87,7 +87,7 @@ const BookingRequests = () => {
           const err = await error;
           toast.error(err.message);
         }),
-    [userData.id]
+    [userData.profileId]
   );
   useEffect(() => {
     if (userData.role.toLowerCase() === "operation") {

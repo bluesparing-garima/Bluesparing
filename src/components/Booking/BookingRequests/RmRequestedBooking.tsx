@@ -35,14 +35,14 @@ const RmRequestedBooking = () => {
       });
   };
   useEffect(() => {
-    const rmId = userData.id;
+    const rmId = userData.profileId;
     const controller = new AbortController();
     const signal = controller.signal;
     GetBookingRequests(rmId, signal);
     return () => {
       controller.abort();
     };
-  }, [userData.id]);
+  }, [userData.profileId]);
   const columns = useMemo<MRT_ColumnDef<IBookingRequests>[]>(
     () => [
       {

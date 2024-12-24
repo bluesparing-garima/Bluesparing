@@ -8,7 +8,7 @@ import { ITeamsVM } from "../Admin/Team/ITeam";
 const ProfilePage = () => {
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
-  const id = UserData.id;
+  const id = UserData.profileId;
   const [userData, setUserData] = useState<ITeamsVM>();
   const fetchUserData = async () => {
     const data = await getTeamDetailsService({ header, teamId: id });

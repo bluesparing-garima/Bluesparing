@@ -143,7 +143,7 @@ const GetRenewals = () => {
         header,
         startDate,
         endDate,
-        partnerId: userData.partnerId,
+        partnerId: userData.profileId,
       })
         .then((bookingRequestDetails) => {
           setMotorPolicies(bookingRequestDetails.data);
@@ -152,14 +152,14 @@ const GetRenewals = () => {
           const err = await error;
           toast.error(err.message);
         }),
-    [userData.partnerId]
+    [userData.profileId]
   );
 
   const GetPoliciesByPolicyCompletedById = useCallback(
     (startDate, endDate) =>
       getPolicyCompletedByIdService({
         header,
-        policyCompletedById: userData.id,
+        policyCompletedById: userData.profileId,
         startDate,
         endDate,
       })
@@ -170,7 +170,7 @@ const GetRenewals = () => {
           const err = await error;
           toast.error(err.message);
         }),
-    [userData.id]
+    [userData.profileId]
   );
 
   useEffect(() => {

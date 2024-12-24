@@ -44,7 +44,7 @@ const PartnerDashboard: React.FC = () => {
         header,
         startDate,
         endDate,
-        partnerId: UserData.partnerId,
+        partnerId: UserData.profileId,
       })
         .then((dashboardData) => {
           setIsVisible(true);
@@ -55,7 +55,7 @@ const PartnerDashboard: React.FC = () => {
           console.error("Failed to fetch product details", error);
         });
     },
-    [UserData.partnerId]
+    [UserData.profileId]
   );
   useEffect(() => {
     const currentDate = new Date();
@@ -376,12 +376,12 @@ const PartnerDashboard: React.FC = () => {
                             <Grid container spacing={2}>
                               <Grid item md={6}>
                                 <PayOutCommissionChart
-                                  partnerId={UserData.partnerId!}
+                                  partnerId={UserData.profileId!}
                                 />
                               </Grid>
                               <Grid item md={6}>
                                 <PartnerPolicyChart
-                                  partnerId={UserData.partnerId!}
+                                  partnerId={UserData.profileId!}
                                 />
                               </Grid>
                             </Grid>

@@ -285,7 +285,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
       userData.role.toLowerCase() === "admin"
         ? selectedPartnerId
         : policyForm.policyCreatedBy === "Direct"
-        ? userData.partnerId
+        ? userData.profileId
         : selectedPartnerId;
     policyForm.partnerName =
       userData.role.toLowerCase() === "admin"
@@ -296,7 +296,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
     policyForm.createdBy = userData.name;
     policyForm.vehicleNumber = policyForm.vehicleNumber.toUpperCase();
     policyForm.rto = policyForm.vehicleNumber.substring(0, 4);
-    policyForm.policyCompletedBy = userData.id;
+    policyForm.policyCompletedBy = userData.profileId;
     policyForm.netPremium = netPremium;
     policyForm.brokerId = selectedBrokerId;
     policyForm.bookingRMId = userData.headRMId;

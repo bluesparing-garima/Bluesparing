@@ -30,7 +30,7 @@ const HrDashBoard: React.FC = () => {
           header,
           startDate: formattedFirstDay,
           endDate: formattedLastDay,
-          hrId: UserData.id,
+          hrId: UserData.profileId,
         });
         if (response.status === "success") {
           setData(response.data);
@@ -90,7 +90,7 @@ if(UserData.role.toLowerCase()==="hr"){
         header,
         startDate: value.startDate,
         endDate: value.endDate,
-        hrId: UserData.id,
+        hrId: UserData.profileId,
       });
       if (response.status === "success") {
         setData(response.data);

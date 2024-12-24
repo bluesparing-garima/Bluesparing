@@ -412,7 +412,7 @@ const RMGetMotorPolicies = () => {
   const getPolicies = async (startDate: string, endDate: string) => {
     setIsLoading(true);
     try {
-      const rmId = userData.id;
+      const rmId = userData.profileId;
       const res = await GetRmPoliciesService({
         header,
         startDate,

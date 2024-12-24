@@ -156,7 +156,7 @@ const AddQuotation = () => {
     editFrom.append("id", leadId!);
     editFrom.append("status", quotationForm.status);
     if (editLeadDetails) {
-      quotationForm.partnerId = userData.partnerId;
+      quotationForm.partnerId = userData.profileId;
       quotationForm.partnerName = userData.name;
        editFrom.append("partnerId", editLeadDetails.partnerId!);
     editFrom.append("partnerName", editLeadDetails?.partnerName!);

@@ -43,7 +43,7 @@ const Notification = () => {
       });
       if (res.status === "success") {
         const filterData = res.data.filter(
-          (ele: INotification) => ele.notificationFor === UserData.id
+          (ele: INotification) => ele.notificationFor === UserData.profileId
         );
         setNotificationData(filterData);
       }

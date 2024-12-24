@@ -137,7 +137,7 @@ const ViewCardHistory = () => {
       header,
       startDate: newStartDate,
       endDate: newEndDate,
-      partnerId: userData.partnerId!,
+      partnerId: userData.profileId!,
     })
       .then((partnerHistoryCardDetails) => {
         setPartnerHistoryCard(partnerHistoryCardDetails.data);

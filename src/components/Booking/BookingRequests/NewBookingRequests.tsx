@@ -177,12 +177,12 @@ const NewBookingRequests = () => {
   const handleReject = (bookingForm: IBookingRequestsVM) => {
     setSelectedBookingId(bookingForm.id!);
     bookingForm.isRejected = true;
-    bookingForm.bookingAcceptedBy = userData.id;
+    bookingForm.bookingAcceptedBy = userData.profileId;
     setBookingData(bookingForm);
     setOpen(true);
   };
   const handleClickAcceptBooking = (bookingForm: IBookingRequestsVM) => {
-    bookingForm.bookingAcceptedBy = userData.id;
+    bookingForm.bookingAcceptedBy = userData.profileId;
     bookingForm.bookingStatus = "accepted";
     bookingForm.updatedBy = userData.role;
     bookingForm.updatedOn = "";

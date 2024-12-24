@@ -101,7 +101,7 @@ const Subscription = () => {
       setIsLoading(true);
       const res = await GetAdminSubscriptionService({
         header,
-        id: userData?.id || "",
+        id: userData?.profileId || "",
       });
 
       if (res.status === "success") {

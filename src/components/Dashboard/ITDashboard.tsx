@@ -40,7 +40,7 @@ const ITDashboard: React.FC = () => {
   const [employee, setEmployee] = useState<IEmployee | null>();
   const getAttendanceRecord = async () => {
     try {
-      const res = await GetAttendanceCountService({ header, eId: UserData.id });
+      const res = await GetAttendanceCountService({ header, eId: UserData.profileId });
       setEmployee(res.data);
     } catch (error) {}
   };

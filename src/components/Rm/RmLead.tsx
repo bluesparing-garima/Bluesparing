@@ -40,14 +40,14 @@ const RmLead = () => {
   };
 
   useEffect(() => {
-    const rmId = userData.id;
+    const rmId = userData.profileId;
     const controller = new AbortController();
     const signal = controller.signal;
     GetLeads(rmId, signal);
     return () => {
       controller.abort();
     };
-  }, [userData.id]);
+  }, [userData.profileId]);
 
 
 

@@ -26,7 +26,7 @@ const RejectionPolicies = () => {
   let userData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
   const GetBookingRequests = useCallback(() => {
     if (userData.role === "Partner") {
-      const partnerId = userData.partnerId;
+      const partnerId = userData.profileId;
       RejectedBookingPartnerService({ header, partnerId })
         .then((bookingRequestDetails) => {
           setBookingRequests([...bookingRequestDetails.data]);
@@ -191,7 +191,7 @@ const RejectionPolicies = () => {
     bookingForm.isRejected = false;
     bookingForm.updatedBy = userData.role;
     bookingForm.rejectionReason = "";
-    bookingForm.bookingAcceptedBy = userData.id;
+    bookingForm.bookingAcceptedBy = userData.profileId;
     bookingForm.timer = "";
     if (id) {
       callEditLeadAPI(bookingForm, id);
