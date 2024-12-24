@@ -45,7 +45,7 @@ const ManageCards = () => {
         partnerId:
           userData.role.toLowerCase() === "admin"
             ? partnerId
-            : userData.partnerId,
+            : userData.profileId,
         startDate,
         endDate,
       })
@@ -60,7 +60,7 @@ const ManageCards = () => {
         });
     },
      // eslint-disable-next-line 
-    [userData.partnerId]
+    [userData.profileId]
   );
   useEffect(() => {
     const currentDate = new Date();

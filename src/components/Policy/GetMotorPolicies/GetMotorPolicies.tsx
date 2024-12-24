@@ -142,7 +142,7 @@ const GetMotorPolicies = () => {
     (startDate, endDate) =>
       getPolicyByPartnerIdService({
         header,
-        partnerId: userData.partnerId,
+        partnerId: userData.profileId,
         startDate,
         endDate,
       })
@@ -153,14 +153,14 @@ const GetMotorPolicies = () => {
           const err = await error;
           toast.error(err.message);
         }),
-    [userData.partnerId]
+    [userData.profileId]
   );
 
   const GetPoliciesByPolicyCompletedById = useCallback(
     (startDate, endDate) =>
       getPolicyCompletedByIdService({
         header,
-        policyCompletedById: userData.id,
+        policyCompletedById: userData.profileId,
         startDate,
         endDate,
       })
@@ -171,7 +171,7 @@ const GetMotorPolicies = () => {
           const err = await error;
           toast.error(err.message);
         }),
-    [userData.id]
+    [userData.profileId]
   );
 
   useEffect(() => {

@@ -49,26 +49,22 @@ const Signin = () => {
         if (loginData.accessToken && loginData.refreshToken) {
           setTokens(loginData.accessToken!, loginData.refreshToken!);
         }
-        if (responseData.role.toLowerCase() === "superadmin") {
-          return { [FORM_ERROR]: `you are not authorized` };
-        }
-        if (responseData.role !== "admin") {
+
+        if (responseData.role.toLowerCase().trim() !== "admin") {
           const bookingRequestDetails = await getTeamDetailsService({
             header,
-            teamId: responseData.partnerId,
+            teamId: responseData.profileId,
           });
           loginData.headRMId = bookingRequestDetails.headRMId!;
           loginData.headRM = bookingRequestDetails.headRM!;
-          loginData.id = responseData.partnerId!;
         } else {
           const bookingRequestDetails = await getTeamDetailsService({
             header,
-            teamId: responseData.partnerId,
+            teamId: responseData.profileId,
           });
-          loginData.id = responseData.partnerId!;
           loginData.companyLogo = bookingRequestDetails.companyLogo;
         }
-        
+
         localStorage.setItem("user", JSON.stringify(loginData));
         let role = responseData.role.toLowerCase();
         if (role === "relationship manager") {

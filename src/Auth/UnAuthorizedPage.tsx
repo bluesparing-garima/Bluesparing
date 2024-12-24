@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import {  Typography, Box, Card, CardContent } from "@mui/material";
 const UnAuthorizedPage: React.FC = () => {
   return (
-    <Box className="flex items-center justify-center min-h-[88%] bg-blue-200">
+    <Box className="  bg-blue-200 h-[88vh] flex justify-center items-center  p-3">
       <Card className="max-w-lg w-full shadow-lg bg-[#F5F0CD]">
         <CardContent>
           <Box className="flex flex-col items-center">

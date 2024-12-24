@@ -66,7 +66,7 @@ const RMDashboard: React.FC = () => {
   );
   const getAttendanceRecord = async () => {
     try {
-      const res = await GetAttendanceCountService({ header, eId: UserData.id });
+      const res = await GetAttendanceCountService({ header, eId: UserData.profileId });
       setEmployee(res.data);
     } catch (error: any) {
       const err = await error;
@@ -81,13 +81,13 @@ const RMDashboard: React.FC = () => {
     const formattedLastDay = format(lastDayOfMonth, "yyyy-MM-dd");
     getAttendanceRecord();
     const fetchData = () => {
-      GetDashboardCount(formattedFirstDay, formattedLastDay, UserData.id);
+      GetDashboardCount(formattedFirstDay, formattedLastDay, UserData.profileId);
     };
     fetchData();
     const intervalId = setInterval(fetchData, 30000);
     return () => clearInterval(intervalId);
     // eslint-disable-next-line
-  }, [GetDashboardCount, UserData.id]);
+  }, [GetDashboardCount, UserData.profileId]);
   const renderCountBox = (title: any, count: any, icon: string, link?: any) => {
     const content = (
       <div className="bg-white cursor-pointer m-2 p-3 rounded-2xl shadow-lg flex items-center justify-between transform transition-transform duration-200 hover:scale-105">
@@ -120,7 +120,7 @@ const RMDashboard: React.FC = () => {
     const utcEndDate = new Date(value.endDate!);
     const formattedEndDate = format(utcEndDate, "yyyy-MM-dd'T'HH:mm:ss");
     value.endDate = formattedEndDate;
-    GetDashboardCount(value.startDate, value.endDate, UserData.id);
+    GetDashboardCount(value.startDate, value.endDate, UserData.profileId);
   };
   const handleFirstCart = async () => {
     setFirstCart(true);

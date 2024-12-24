@@ -56,7 +56,7 @@ const PlanCard: FC<PlanCardProps> = ({ p }) => {
   ): AddTransactionProps => {
     if (userData?.role) {
       const payload: AddTransactionProps = {
-        userId: userData.id,
+        userId: userData.profileId,
         transactionId: pId,
         orderId: oId,
         createdBy: userData.name,

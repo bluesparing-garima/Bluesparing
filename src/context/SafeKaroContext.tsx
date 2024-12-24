@@ -24,15 +24,15 @@ const SafeKaroContext = createContext<SafeKaroContextType>({
 // Initial state values
 const initialUserState: SafeKaroUser = {
   isLoggedIn: false,
-  id: "",
   name: "",
   email: "",
   role: "",
-  partnerId: "",
+  profileId: "",
   partnerCode: "",
   headRMId: "",
   headRM: "",
   idToken: "",
+  parentAdminId:""
 };
 
 const initialHeader: Header = {

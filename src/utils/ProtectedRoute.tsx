@@ -1,34 +1,68 @@
 import React, { FC } from "react";
-import { SafeKaroUser } from "../context/constant";
+import {
+  CURRENT_ROLE_MENUS,
+  CURRENT_SUBSID,
+  SafeKaroUser,
+} from "../context/constant";
 import { Navigate, useLocation } from "react-router-dom";
-import UpdatePlan from "../components/UpdatePlan/UpdatePlan";
 import UnAuthorizedPage from "../Auth/UnAuthorizedPage";
+import useLocalStorage from "../Hooks/LocalStorage/useLocalStorage";
+import { IMenu } from "../api/Menu/IMenuType";
 interface ProtectedRouteProps {
   children?: React.ReactNode;
 }
 const ProtectedRoute: FC<ProtectedRouteProps> = ({ children }) => {
+  const [subsLocalData, setSubsLocalData] = useLocalStorage<string[]>(
+    CURRENT_SUBSID,
+    []
+  );
+  const [currentMenus, setCurrentMenu] = useLocalStorage<IMenu[]>(
+    CURRENT_ROLE_MENUS,
+    []
+  );
   const storedUser = localStorage.getItem("user");
   const userData: SafeKaroUser | null = storedUser
     ? JSON.parse(storedUser)
     : null;
-  const currentRole = userData?.role.toLowerCase();
+
   const location = useLocation();
-  const currentUrl = location.pathname;
+  const currentUrl = location.pathname.toLowerCase().trim();
 
-
-  const isAuthorized = () => {
-    return !!currentRole;
+  const getMenuIdByPath = () => {
+    if (currentMenus.length > 0) {
+      const menu = currentMenus.find(
+        (ele) => ele.pageURL.toLowerCase().trim() === currentUrl
+      );
+      if (menu) {
+        return menu._id;
+      }
+    } else {
+      return "-1";
+    }
   };
-  if (!userData?.transactionStatus) {
-    return <UnAuthorizedPage />;
-  }
+  const isAuthorized = () => {
+    if (!userData?.transactionStatus) {
+      return false;
+    }
+    const menuId = getMenuIdByPath();
+    if (menuId === "-1") {
+      return false;
+    }
+    if (menuId) {
+      const isAuth = subsLocalData?.includes(menuId);
+      return isAuth;
+    }
+
+    return false;
+  };
+
   return (
     <>
       {isAuthorized() ? (
         children
       ) : (
         <>
-          <Navigate to={"/unauthorized"} />
+          <UnAuthorizedPage />
         </>
       )}
     </>

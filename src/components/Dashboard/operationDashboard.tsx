@@ -59,7 +59,7 @@ const OperationDashboard: React.FC = () => {
   let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
   const [selectedCard, setSelectedcard] = useState("1");
   const GetDashboardCount = useCallback(() => {
-    getOperationDashboardService({ header, operationUserId: UserData.id })
+    getOperationDashboardService({ header, operationUserId: UserData.profileId })
       .then((dashboardData) => {
         setIsVisible(true);
         setData(dashboardData.data);
@@ -68,11 +68,11 @@ const OperationDashboard: React.FC = () => {
         setIsVisible(true);
         console.error("Failed to fetch product details", error);
       });
-  }, [UserData.id]);
+  }, [UserData.profileId]);
 
   const getAttendanceRecord = async () => {
     try {
-      const res = await GetAttendanceCountService({ header, eId: UserData.id });
+      const res = await GetAttendanceCountService({ header, eId: UserData.profileId });
       setEmployee(res.data);
     } catch (error:any) {
       const err= await error;

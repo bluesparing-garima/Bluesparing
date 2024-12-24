@@ -75,10 +75,10 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
         });
         if (res.status === "success") {
           const filterData = res.data.filter(
-            (ele: INotification) => ele.notificationFor === UserData.id
+            (ele: INotification) => ele.notificationFor === UserData.profileId
           );
           setNotificationData(filterData);
-          const storeNotification = getNotifications(UserData.id);
+          const storeNotification = getNotifications(UserData.profileId);
           if (
             storeNotification.length > 0 &&
             filterData.length > storeNotification.length
@@ -89,7 +89,7 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
             const extraElements = filterData.filter(
               (ele: INotification) => !filterDataIds.has(ele._id)
             );
-            storeNotifications(UserData.id, filterData);
+            storeNotifications(UserData.profileId, filterData);
             extraElements.forEach((ele: INotification) => {
               handlePlay(ele.title || "");
             });
@@ -99,7 +99,7 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
         toast.error(error.message);
       }
     }, 300),
-    [UserData.id, accessNotification]
+    [UserData.profileId, accessNotification]
   );
   const fetchNotificationData = useCallback(() => {
     if (isViewNotification()) {

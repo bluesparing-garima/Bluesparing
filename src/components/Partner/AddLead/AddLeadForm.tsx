@@ -135,7 +135,7 @@ const AddLeadFormCard = (props: addLeadRequestFormProps) => {
           : selectedRMName;
       leadForm.partnerId =
         userData.role.toLowerCase() === "partner"
-          ? userData.partnerId
+          ? userData.profileId
           : selectedPartnerId;
       leadForm.partnerName =
         userData.role.toLowerCase() === "partner"
@@ -143,7 +143,7 @@ const AddLeadFormCard = (props: addLeadRequestFormProps) => {
           : selectedPartnerName;
       leadForm.createdBy = userData.role;
       leadForm.leadCreatedBy =
-        userData.role.toLowerCase() === "partner" ? "" : userData.id;
+        userData.role.toLowerCase() === "partner" ? "" : userData.profileId;
       leadForm.status =
         userData.role.toLowerCase() === "partner" ? "Requested" : "Accepted";
       const formData = new FormData();
