@@ -22,6 +22,7 @@ export interface GetMotorPoliciesProps {
   startDate?: string;
   endDate?: string;
   rmId?: string;
+  parentAdminId?:string;
 }
 export interface GetRenewedMotorPoliciesProps {
   header?: Header;

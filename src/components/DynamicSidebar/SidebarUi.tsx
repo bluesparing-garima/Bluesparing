@@ -1,5 +1,5 @@
 import React, { FC, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import logo from "../../assets/login_logo.png";
 import { SafeKaroUser } from "../../context/constant";
 interface MenuItem {
@@ -67,14 +67,18 @@ const SidebarUi: FC<SidebarProps> = ({
         key={item.id}
         className="relative overflow-auto max-h-60 hide-scrollbar"
       >
-        <div
-          className={`flex items-center px-2 py-1 text-[15px] cursor-pointer rounded-lg ${
-            activeMenuItem === item.id
-              ? "bg-safekaroDarkOrange text-white"
-              : "text-black hover:bg-safekaroDarkOrange hover:text-white"
-          }`}
-          onClick={() => {
+        <NavLink
+          to={item.link || "#"}
+          className={({ isActive }) =>
+            `flex items-center px-2 py-1 text-[15px] cursor-pointer rounded-lg ${
+              isActive || activeMenuItem === item.id
+                ? "bg-safekaroDarkOrange text-white"
+                : "text-black hover:bg-safekaroDarkOrange hover:text-white"
+            }`
+          }
+          onClick={(e) => {
             if (item.subMenu && item.subMenu.length > 0) {
+              e.preventDefault(); // Prevent navigation for submenu toggles
               toggleSubMenu(item.id);
             } else {
               handleMenuItemClick(item);
@@ -104,7 +108,7 @@ const SidebarUi: FC<SidebarProps> = ({
               } text-sm text-gray-400 ml-auto`}
             />
           )}
-        </div>
+        </NavLink>
         {item.subMenu && openSubMenus.includes(item.id) && (
           <ul className="ml-4 mt-2 space-y-2 border-l border-gray-200 pl-2">
             {renderMenuItems(item.subMenu)}

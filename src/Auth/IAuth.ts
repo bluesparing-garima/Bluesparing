@@ -29,6 +29,7 @@ export interface ISignUp {
   companyLogo?:any;
   profileImage?:any;
   gender:string;
+  isActive?:boolean;
 }
 export type FormProps = Omit<ISignUp, "planName" | "planId"> & {
   plans: ISubscription;

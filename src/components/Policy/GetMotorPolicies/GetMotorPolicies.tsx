@@ -127,7 +127,7 @@ const GetMotorPolicies = () => {
 
   const GetPolicies = useCallback(
     (startDate, endDate) =>
-      getMotorPolicyService({ header, startDate, endDate })
+      getMotorPolicyService({ header, startDate, endDate,parentAdminId:userData.parentAdminId })
         .then((motorPolicy) => {
           setMotorPolicies(motorPolicy.data);
         })

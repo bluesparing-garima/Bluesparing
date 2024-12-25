@@ -62,7 +62,7 @@ const Dashboard: React.FC = () => {
     getAdminDashboardService({
       header,
       startDate,
-      endDate,
+      endDate,parentAdminId:UserData.parentAdminId
     })
       .then((dashboardData) => {
         setIsVisible(true);
@@ -387,7 +387,7 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
           <Grid item md={12}>
-            {UserData.role === "admin" ? (
+            {UserData.role.toLowerCase() === "admin" ? (
               <>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>

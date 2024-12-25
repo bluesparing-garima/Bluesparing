@@ -686,6 +686,10 @@ const routes = [
     ],
   },
   {
+    path: "reject",
+    element: <RejectionPolicies />,
+  },
+  {
     path: "booking",
     children: [
       {
@@ -695,10 +699,6 @@ const routes = [
       {
         path: "new",
         element: <NewBookingRequests />,
-      },
-      {
-        path: "reject",
-        element: <RejectionPolicies />,
       },
       {
         path: "add",
@@ -1028,6 +1028,14 @@ const routes = [
     ],
   },
   {
+    path: "/withdrawal",
+    element: <ManageCards />,
+  },
+  {
+    path: "/withdrawal/:partnerId",
+    element: <ManageCards />,
+  },
+  {
     path: "partnerdashboard",
     children: [
       {
@@ -1038,14 +1046,7 @@ const routes = [
         path: "/partnerdashboard/card",
         element: <ViewCardHistory />,
       },
-      {
-        path: "/partnerdashboard/withdrawal",
-        element: <ManageCards />,
-      },
-      {
-        path: "/partnerdashboard/withdrawal/:partnerId",
-        element: <ManageCards />,
-      },
+     
       {
         path: "/partnerdashboard/:transactionCode/:partnerId/:startDate/:endDate/card-history",
         element: <ViewCardHistory />,

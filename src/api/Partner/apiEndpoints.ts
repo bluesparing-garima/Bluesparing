@@ -1,6 +1,8 @@
-
+import { SafeKaroUser } from "../../context/constant";
+let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
+let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
 export const getPartnerEndpoint = (role: string) =>
- (`/api/user-profile/byRole?role=${role}`);
+ (`/api/user-profile/byRole/${UserData.parentAdminId}?role=${role}`);
 
 export const historyPartnerEndpoint = (partnerId: string) =>
  (`/api/statement/manage/${partnerId}`);

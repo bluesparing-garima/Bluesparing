@@ -361,6 +361,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
     const isRegDateValid = dayjs(policyForm.registrationDate).isValid();
     const isEndDateValid = dayjs(policyForm.endDate).isValid();
     const isGcv = proType === "Goods Carrying Vehicle";
+    policyForm['parentAdminId'] = userData.parentAdminId;
     if (isGcv) {
       const w = policyForm.weight;
       if (w <= 0) {

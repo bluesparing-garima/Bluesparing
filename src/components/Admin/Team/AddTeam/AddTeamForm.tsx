@@ -138,17 +138,16 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
     }
   }, [initialValues, isAdd, headRMs]);
 
-  const  findRoleIdByName = (role:string)=>{
-    const r= role?.toLowerCase();
-    const newRole = roles?.find((ele)=>ele.roleName?.toLowerCase()===r);
-    if(newRole){
+  const findRoleIdByName = (role: string) => {
+    const r = role?.toLowerCase();
+    const newRole = roles?.find((ele) => ele.roleName?.toLowerCase() === r);
+    if (newRole) {
       return newRole._id;
-    }else{
-      return ""
+    } else {
+      return "";
     }
-  }
+  };
 
-  
   const handleChangeRole = async (e: any) => {
     const role = e.target.value;
     setSelectedRole(role);
@@ -186,7 +185,6 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       toast.error("Invalid  DOB, its MM/DD/YYYY from");
       return;
     }
-
     const formValid = documents.every((doc, index) =>
       validateDocument(doc, index)
     );
@@ -194,10 +192,10 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
     if (selectedRole === "Relationship Manager") {
       if (formValid) {
         teamForm.role = selectedRole;
-        teamForm.roleId = findRoleIdByName(selectedRole)
+        teamForm.roleId = findRoleIdByName(selectedRole);
         teamForm.headRMId = selectedRMId === undefined ? "" : selectedRMId;
         teamForm.headRM = selectedRMName;
-        teamForm.planId = UserData.planName;
+        teamForm.planId = UserData.planId;
         teamForm.planName = UserData.planName;
         const formData = new FormData();
         const addedKeys = new Map<string, string>();
@@ -227,7 +225,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       } else if (formValid) {
         setRMErrorMessage("");
         teamForm.role = selectedRole;
-        teamForm.roleId = findRoleIdByName(selectedRole)
+        teamForm.roleId = findRoleIdByName(selectedRole);
         teamForm.headRMId = selectedRMId === undefined ? "" : selectedRMId;
         teamForm.headRM = selectedRMName;
         teamForm.planId = UserData.planId;
@@ -537,8 +535,8 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                                 : ""
                             }
                             options={filteredHeadRM || []}
-                            isOptionEqualToValue={
-                              (option, value) => option?._id === value?._id
+                            isOptionEqualToValue={(option, value) =>
+                              option?._id === value?._id
                             }
                             onChange={(event, newValue) => {
                               input.onChange(newValue || null);

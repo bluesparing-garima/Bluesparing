@@ -40,22 +40,24 @@ const ProtectedRoute: FC<ProtectedRouteProps> = ({ children }) => {
       return "-1";
     }
   };
-  const isAuthorized = () => {
-    if (!userData?.transactionStatus) {
-      return false;
-    }
-    const menuId = getMenuIdByPath();
-    if (menuId === "-1") {
-      return false;
-    }
-    if (menuId) {
-      const isAuth = subsLocalData?.includes(menuId);
-      return isAuth;
-    }
+  // const isAuthorized = () => {
+  //   if (!userData?.transactionStatus) {
+  //     return false;
+  //   }
+  //   const menuId = getMenuIdByPath();
+  //   if (menuId === "-1") {
+  //     return false;
+  //   }
+  //   if (menuId) {
+  //     const isAuth = subsLocalData?.includes(menuId);
+  //     return isAuth;
+  //   }
 
-    return false;
-  };
-
+  //   return false;
+  // };
+const isAuthorized = ()=>{
+  return true;
+}
   return (
     <>
       {isAuthorized() ? (

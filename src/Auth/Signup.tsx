@@ -107,36 +107,34 @@ const Signup = () => {
   //   callAddClientAPI(generateFormData(obj));
   // };
   const onSubmit = async (signUpData: FormProps) => {
-    const { role, plans, companyLogo, profileImage ,gender} = signUpData;
+    const { role, plans, companyLogo, profileImage, gender } = signUpData;
     let payload: ISignUp = {
       name: signUpData.name,
       email: signUpData.email,
       role: role,
-      profileId: "",
       password: signUpData.password,
       phoneNumber: signUpData.phoneNumber,
       confirmPassword: signUpData.confirmPassword,
       partnerCode: signUpData.partnerCode,
       file: signUpData.file,
+      isActive: false,
       planName: plans.planName,
       planId: plans._id,
       joiningDate: Date.now().toString(),
       roleId: findRoleIdByName(role),
       companyLogo,
-      profileImage,gender
+      profileImage,
+      gender: gender.toLowerCase(),
     };
     payload.role = role.toLowerCase();
-    payload.profileId = "null";
-    if (role === "admin") {
-      payload.partnerCode = "Admin";
-    }
     try {
       const url = "/api/user/register";
       const options: FetchOptions = {
         method: "POST",
-        body:generateFormData(payload)
+        body: generateFormData(payload),
       };
       const responseData = await fetchInterceptor<any>(url, options);
+ 
       if (responseData.status === "success") {
         const data = {
           name: responseData.user.name,
@@ -243,7 +241,6 @@ const Signup = () => {
                                     renderInput={(params) => (
                                       <TextField
                                         {...params}
-                                        label="Select  Plan"
                                         size="small"
                                         className="rounded-sm"
                                         error={meta.touched && !!meta.error}
@@ -255,7 +252,7 @@ const Signup = () => {
                               )}
                             </Field>
                           </Grid>
-                          <Grid item lg={12} md={12} sm={6} xs={12}>
+                          <Grid item lg={6} md={6} sm={6} xs={12}>
                             <div className="mb-1">
                               <label
                                 htmlFor="email"
@@ -336,37 +333,49 @@ const Signup = () => {
                               </Field>
                             </div>
                           </Grid>
-                          <Grid item lg={4} md={4} sm={6} xs={12}>
-                <Field name="gender">
-                  {({ input, meta }) => (
-                    <FormControl
-                      fullWidth
-                      variant="outlined"
-                      size="small"
-                      error={meta.touched && Boolean(meta.error)}
-                    >
-                      <InputLabel>Select Gender</InputLabel>
-                      <Select
-                        {...input}
-                        input={<OutlinedInput label="Select Gender" />}
-                      >
-                        {["Male", "Female", "Other"].map((option) => (
-                          <MenuItem
-                            className="capitalized"
-                            key={option}
-                            value={option}
-                          >
-                            {option}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                      {meta.touched && meta.error && (
-                        <FormHelperText>{meta.error}</FormHelperText>
-                      )}
-                    </FormControl>
-                  )}
-                </Field>
-              </Grid>
+                          <Grid item lg={6} md={6} sm={6} xs={12}>
+                            <label
+                              htmlFor="role"
+                              className="mb-1 block text-base font-medium text-[#07074D]"
+                            >
+                              Gender
+                            </label>
+                            <Field name="gender">
+                              {({ input, meta }) => (
+                                <FormControl
+                                  fullWidth
+                                  variant="outlined"
+                                  size="small"
+                                  error={meta.touched && Boolean(meta.error)}
+                                >
+                                  <InputLabel>Select Gender</InputLabel>
+                                  <Select
+                                    {...input}
+                                    input={
+                                      <OutlinedInput />
+                                    }
+                                  >
+                                    {["Male", "Female", "Other"].map(
+                                      (option) => (
+                                        <MenuItem
+                                          className="capitalized"
+                                          key={option}
+                                          value={option}
+                                        >
+                                          {option}
+                                        </MenuItem>
+                                      )
+                                    )}
+                                  </Select>
+                                  {meta.touched && meta.error && (
+                                    <FormHelperText>
+                                      {meta.error}
+                                    </FormHelperText>
+                                  )}
+                                </FormControl>
+                              )}
+                            </Field>
+                          </Grid>
                           <Grid item lg={6} md={6} sm={6} xs={12}>
                             <div className="mb-1">
                               <label
@@ -398,7 +407,7 @@ const Signup = () => {
                             <div className="mb-1">
                               <label
                                 htmlFor="confirmPassword"
-                                className="mb-1 block text-base font-medium text-[#07074D]"
+                                className="mb-1 block text-base font-satoshi font-medium text-[#07074D]"
                               >
                                 Confirm Password
                               </label>
@@ -422,7 +431,7 @@ const Signup = () => {
                             </div>
                           </Grid>
                           <Grid item lg={6} md={6} xs={12}>
-                            <FormLabel className="font-satoshi  font-medium ">
+                            <FormLabel     className="mb-1 block text-base font-satoshi font-medium text-[#07074D]" >
                               Profile Image
                             </FormLabel>
                             <Field name="profileImage">
@@ -457,7 +466,7 @@ const Signup = () => {
                             </Field>
                           </Grid>
                           <Grid item lg={6} md={6} xs={12}>
-                            <FormLabel className="font-satoshi font-medium ">
+                            <FormLabel className="mb-1 block text-base font-satoshi font-medium text-[#07074D]" >
                               Company Logo
                             </FormLabel>
                             <Field name="companyLogo">

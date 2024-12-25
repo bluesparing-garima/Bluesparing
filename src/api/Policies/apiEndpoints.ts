@@ -10,9 +10,9 @@ export const archivePolicyEndpoint = (startDate: string, endDate: string) =>
   `/api/policy/motor/in-active?startDate=${startDate}&endDate=${endDate}`
 );
 
-export const getPolicyEndpoint = (startDate: string, endDate: string) =>
+export const getPolicyEndpoint = (startDate: string, endDate: string,parentAdminId:string) =>
 (
-  `/api/policy/motor/date-range?startDate=${startDate}&endDate=${endDate}`
+  `/api/policy/motor/date-range/${parentAdminId}?startDate=${startDate}&endDate=${endDate}`
 );
 export const getPolicyByNumberEndpoint = (policyNumber: string) =>
 (

@@ -40,6 +40,10 @@ const Signin = () => {
         body: JSON.stringify(signInData),
       };
       const responseData = await fetchInterceptor<any>(url, options);
+      if (responseData.role.toLowerCase().trim() === "superadmin") {
+        toast.error("super admin can't login ");
+        return;
+      }
       if (responseData.status === "success") {
         let loginData: SafeKaroUser = {
           ...responseData,
@@ -70,7 +74,7 @@ const Signin = () => {
         if (role === "relationship manager") {
           role = "rm";
         }
-        if (!responseData.transactionStatus) {
+        if (!responseData.transactionStatus && responseData.role.toLowerCase().trim() === "admin") {
           navigate("/update-plan");
           return;
         }

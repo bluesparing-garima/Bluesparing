@@ -2,6 +2,32 @@
 .App {
   text-align: center;
 }
+#root{
+  margin: 0;
+  font-family: "Satoshi-Variable", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::-webkit-scrollbar {
+  width: 12px; /* Width of the scrollbar */
+  height: 12px; /* Height of the scrollbar for horizontal scrolling */
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Background of the scrollbar track */
+  border-radius: 10px; /* Rounded corners */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888; /* Scrollbar color */
+  border-radius: 10px; /* Rounded corners */
+  border: 3px solid #f1f1f1; /* Creates space around the thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #e59411; /* Darker color on hover */
+}
 
 .App-logo {
   height: 40vmin;
