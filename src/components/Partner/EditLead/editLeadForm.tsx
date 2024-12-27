@@ -277,22 +277,7 @@ const EditLeadForm = (props: addLeadRequestFormProps) => {
                                   <span>{errors[index].docName}</span>
                                 )}
                               </Grid>
-                              <input
-                                id={`file ${index}`}
-                                type="file"
-                                onChange={(e) =>
-                                  handleFileInputChange(e, index)
-                                }
-                                style={{
-                                  position: "absolute",
-                                  opacity: 0,
-                                  width: "100%",
-                                  height: "100%",
-                                  top: 0,
-                                  left: 0,
-                                  cursor: "pointer",
-                                }}
-                              />
+                             
                               <Grid item lg={4} md={4} sm={4} xs={12}>
                                 <FileView fileName={formatFilename(doc.file)}>
                                   <input
