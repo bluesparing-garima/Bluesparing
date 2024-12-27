@@ -4,7 +4,7 @@ import { SafeKaroUser } from "../../context/constant";
   let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
 
 export const addLeadEndpoint = () =>
- (`/api/lead-generate/${UserData.parentAdminId}`);
+ (`/api/lead-generate`);
 
 export const editLeadEndpoint = (leadId: string) =>
  (`/api/lead-generate/${leadId}`);

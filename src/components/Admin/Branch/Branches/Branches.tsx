@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import {  useEffect, useMemo, useState } from "react";
 import { MaterialReactTable, type MRT_ColumnDef } from "material-react-table";
 import {
   BRANCH_STORAGE_KEY,
@@ -32,25 +32,27 @@ const Branches = () => {
     savePaginationState(pagination, BRANCH_STORAGE_KEY);
     navigate(branchAddPath());
   };
-  const GetBranches = useCallback(
-    () =>
-      getBranchesService({ header })
-        .then((branchesDetails) => {
-          setBranches(branchesDetails.data);
-        })
-        .catch(async (error) => {
-          const err = await error;
-          toast.error(err.message);
-        }),
-    []
-  );
+  const GetBranches = () => {
+    setIsLoading(true);
+    getBranchesService({ header })
+      .then((branchesDetails) => {
+        setBranches(branchesDetails.data);
+      })
+      .catch(async (error) => {
+        const err = await error;
+        toast.error(err.message);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
   useEffect(() => {
     GetBranches();
-  }, [GetBranches]);
-  useEffect(() => {
     const p = getPaginationState(BRANCH_STORAGE_KEY);
     setPagination(p);
   }, []);
+
   const forcedRenderCount = 0;
 
   const columns = useMemo<MRT_ColumnDef<IBranches>[]>(
@@ -96,18 +98,12 @@ const Branches = () => {
       ) ?? [],
     [branches, forcedRenderCount]
   );
-  const updateLoading = useCallback(async () => {
-    setIsLoading(branches.length >= 0 ? false : true);
-  }, [branches]);
-  useEffect(() => {
-    updateLoading();
-  }, [updateLoading]);
 
   const handleClickEditBranch = (branch: IBranchesVM) => {
     savePaginationState(pagination, BRANCH_STORAGE_KEY);
     navigate(branchEditPath(branch.id!));
   };
- 
+
   const callUpdateBranchAPI = async (branch: IBranchesVM) => {
     var convertBranchVMToBranchForm = convertIBranchVMToIBranchForm(branch);
     const branchData: IBranchForm = {
@@ -115,6 +111,7 @@ const Branches = () => {
       branchName: convertBranchVMToBranchForm.branchName,
       isActive: !convertBranchVMToBranchForm.isActive,
     };
+    setIsLoading(true);
     editBranchService({ header, branch: branchData })
       .then((updatedBranch) => {
         GetBranches();
@@ -124,7 +121,7 @@ const Branches = () => {
         toast.error(err.message);
       })
       .finally(() => {
-        updateLoading();
+        setIsLoading(false);
       });
   };
   const handleClickChangeStatus = (branch: IBranchesVM) => {
@@ -156,7 +153,7 @@ const Branches = () => {
                 Add Branch
               </Button>
             </div>
-           
+
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}

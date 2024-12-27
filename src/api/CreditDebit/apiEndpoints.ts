@@ -1,4 +1,7 @@
+import { SafeKaroUser } from "../../context/constant";
 
+let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
+let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
 export const getAccountManageEndpoint = () =>
  (`/api/account-manage`);
 export const getAccountManageByAccountIdEndpoint = (accountId: string) =>
@@ -10,11 +13,11 @@ export const addCreditDebitEndpoint = () =>
 export const addAccountManage = () =>
  (`/api/account-manage`);
 export const getCreditDebitsEndpoint = () =>
- (`/api/credit-debit`);
+ (`/api/credit-debit/${UserData.parentAdminId}`);
 export const editCreditDebitEndpoint = (creditDebitId: string) =>
- (`/api/credit-debit/${creditDebitId}`);
+ (`/api/credit-debit/${creditDebitId}/${UserData.parentAdminId}`);
 export const getCreditDebitsByIdEndpoint = (creditDebitId: string) =>
- (`/api/credit-debit/${creditDebitId}`);
+ (`/api/credit-debit/${creditDebitId}/${UserData.parentAdminId}`);
 export const getCreditDebitsByBrokerEndpoint = (
   brokerId: string,
   startDate: string,
@@ -34,7 +37,7 @@ export const getCreditDebitsByBrokerEndpoint = (
   
 export const getCreditDebitsByPartnerEndpoint = (partnerId: string) =>
  (
-    `/api/credit-debit/partner-id?partnerId=${partnerId}`
+    `/api/credit-debit/partner-id/${UserData.parentAdminId}?partnerId=${partnerId}`
   );
 export const getCreditDebitsByPartnerDateRangeEndpoint = (
   partnerId: string,
@@ -42,7 +45,7 @@ export const getCreditDebitsByPartnerDateRangeEndpoint = (
   endDate: string
 ) =>
  (
-    `/api/credit-debit/partner-id?partnerId=${partnerId}&startDate=${startDate}&endDate=${endDate}`
+    `/api/credit-debit/partner-id/${UserData.parentAdminId}?partnerId=${partnerId}&startDate=${startDate}&endDate=${endDate}`
   );
 
 export const getDebitDetailsEndpoint = (

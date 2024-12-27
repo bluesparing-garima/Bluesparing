@@ -162,7 +162,7 @@ export const getPartnerDashboardEndpoint = (
   endDate: string
 ) =>
 (
-  `/api/partner-dashboard?partnerId=${partnerId}&startDate=${startDate}&endDate=${endDate}`
+  `/${UserData.parentAdminId}?partnerId=${partnerId}&startDate=${startDate}&endDate=${endDate}`
 );
 
 export const getBookingDashboardEndpoint = (
@@ -180,7 +180,7 @@ export const getAccountDashboardEndpoint = (
   endDate: string
 ) =>
 (
-  `/api/account-dashboard?startDate=${startDate}&endDate=${endDate}`
+  `/api/account-dashboard/${UserData.parentAdminId}?startDate=${startDate}&endDate=${endDate}`
 );
 
 export const getCommissionDataEndpoint = (filter: string) =>
@@ -223,7 +223,7 @@ export const getRmDashboardEndpoints = (
   rmId: string
 ) =>
 (
-  `/api/relationship-manager-dashboard?startDate=${startDate}&endDate=${endDate}&rmId=${rmId}`
+  `/api/relationship-manager-dashboard/${UserData.parentAdminId}?startDate=${startDate}&endDate=${endDate}&rmId=${rmId}`
 );
 export const GetMonthlyPaidPayoutEndpoint = (
   startDate: string,

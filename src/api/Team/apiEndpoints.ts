@@ -2,7 +2,7 @@ import { SafeKaroUser } from "../../context/constant";
 let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
 let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
 export const addTeamEndpoint = () =>
-(`/api/user-profile/${UserData.parentAdminId}`);
+(`/api/user-profile`);
 export const getRMListEndpoint = (role: string) =>
 (`/api/user-profile/byRole/${UserData.parentAdminId}?role=${role}`);
 
@@ -15,7 +15,7 @@ export const getEmployeeEndpoint = () =>
 (`/api/user-profile/exclude-partner/${UserData.parentAdminId}`);
 
 export const getTeamDetailsEndpoint = (teamId: string) =>
-(`/api/user-profile/${teamId}/${UserData.parentAdminId}`);
+(`/api/user-profile/${teamId}`);
 
 export const deleteTeamEndpoint = (teamId: string) =>
 (`/api/user-profile/${teamId}/${UserData.parentAdminId}`);

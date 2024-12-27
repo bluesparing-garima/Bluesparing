@@ -25,6 +25,9 @@ import editLeadService from "../../../api/Leads/EditLead/editLeadService";
 import { leadsPath } from "../../../sitemap";
 import { documentTypes } from "../../Policy/IPolicyData";
 import toast, { Toaster } from "react-hot-toast";
+import FileView from "../../../utils/FileView";
+import { formatFilename } from "../../../utils/convertLocaleStringToNumber";
+
 export interface addLeadRequestFormProps {
   initialValues: ILeadForm;
 }
@@ -141,9 +144,9 @@ const EditLeadForm = (props: addLeadRequestFormProps) => {
       if (newLead.status === "success") {
         navigate(leadsPath());
       }
-    } catch (error:any) {
-      const err = await error
-      toast.error(err.message)
+    } catch (error: any) {
+      const err = await error;
+      toast.error(err.message);
     }
   };
   const handleChangeDocumentName = (newValue: any, index: any) => {
@@ -206,6 +209,9 @@ const EditLeadForm = (props: addLeadRequestFormProps) => {
     }
     setDocuments(updatedDocuments);
   }, [initialValues]);
+
+
+
   return (
     <>
       <div className="bg-blue-200 p-1">
@@ -271,20 +277,42 @@ const EditLeadForm = (props: addLeadRequestFormProps) => {
                                   <span>{errors[index].docName}</span>
                                 )}
                               </Grid>
+                              <input
+                                id={`file ${index}`}
+                                type="file"
+                                onChange={(e) =>
+                                  handleFileInputChange(e, index)
+                                }
+                                style={{
+                                  position: "absolute",
+                                  opacity: 0,
+                                  width: "100%",
+                                  height: "100%",
+                                  top: 0,
+                                  left: 0,
+                                  cursor: "pointer",
+                                }}
+                              />
                               <Grid item lg={4} md={4} sm={4} xs={12}>
-                                <input
-                                  id={`file ${index}`}
-                                  type="file"
-                                  onChange={(e) =>
-                                    handleFileInputChange(e, index)
-                                  }
-                                  style={{
-                                    border: "1px solid #c4c4c4",
-                                    padding: "5px",
-                                    width: "100%",
-                                    borderRadius: "5px",
-                                  }}
-                                />
+                                <FileView fileName={formatFilename(doc.file)}>
+                                  <input
+                                    id={`file ${index}`}
+                                    type="file"
+                                    onChange={(e) =>
+                                      handleFileInputChange(e, index)
+                                    }
+                                    style={{
+                                      position: "absolute",
+                                      opacity: 0,
+                                      width: "100%",
+                                      height: "100%",
+                                      top: 0,
+                                      left: 0,
+                                      cursor: "pointer",
+                                    }}
+                                  />
+                                </FileView>
+
                                 {errors[index]?.file && (
                                   <span style={{ color: "red" }}>
                                     {errors[index].file}

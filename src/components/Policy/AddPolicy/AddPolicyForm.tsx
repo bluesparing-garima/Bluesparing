@@ -57,6 +57,8 @@ import getPolicyByNumberService from "../../../api/Policies/GetPolicyByNumber/ge
 import dayjs from "dayjs";
 import editPolicyService from "../../../api/Policies/EditPolicy/editPolicyService";
 import getVehicleNumberService from "../../../api/Policies/GetVehicleNumber/getVehicleNumberService";
+import { formatFilename } from "../../../utils/convertLocaleStringToNumber";
+import FileView from "../../../utils/FileView";
 export interface AddPolicyFormProps {
   initialValues: IAddEditPolicyForm;
 }
@@ -361,7 +363,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
     const isRegDateValid = dayjs(policyForm.registrationDate).isValid();
     const isEndDateValid = dayjs(policyForm.endDate).isValid();
     const isGcv = proType === "Goods Carrying Vehicle";
-    policyForm['parentAdminId'] = userData.parentAdminId;
+    policyForm["parentAdminId"] = userData.parentAdminId;
     if (isGcv) {
       const w = policyForm.weight;
       if (w <= 0) {
@@ -1713,19 +1715,25 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                                 )}
                               </Grid>
                               <Grid item lg={4} md={4} sm={4} xs={12}>
-                                <input
-                                  id={`file ${index}`}
-                                  type="file"
-                                  onChange={(e) =>
-                                    handleFileInputChange(e, index)
-                                  }
-                                  style={{
-                                    border: "1px solid #c4c4c4",
-                                    padding: "5px",
-                                    width: "100%",
-                                    borderRadius: "5px",
-                                  }}
-                                />
+                                <FileView fileName={formatFilename(doc.file)}>
+                                  <input
+                                    id={`file ${index}`}
+                                    type="file"
+                                    onChange={(e) =>
+                                      handleFileInputChange(e, index)
+                                    }
+                                    style={{
+                                      position: "absolute",
+                                      opacity: 0,
+                                      width: "100%",
+                                      height: "100%",
+                                      top: 0,
+                                      left: 0,
+                                      cursor: "pointer",
+                                    }}
+                                  />
+                                </FileView>
+
                                 {errors[index]?.file && (
                                   <span style={{ color: "red" }}>
                                     {errors[index].file}

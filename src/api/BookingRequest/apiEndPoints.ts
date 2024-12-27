@@ -3,7 +3,7 @@ import { SafeKaroUser } from "../../context/constant";
 let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
 let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
 export const addBookingRequestEndpoint = () =>
-  (`/api/booking-request/${UserData.parentAdminId}`);
+  (`/api/booking-request`);
 export const getBookingRequestByIdEndpoint = (bookingRequestId: string) =>
 (
   `/api/booking-request/booking-id/${bookingRequestId}`

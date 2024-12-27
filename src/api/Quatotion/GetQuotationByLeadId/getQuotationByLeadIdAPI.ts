@@ -1,5 +1,5 @@
 import fetchInterceptor, { FetchOptions } from "../../../utils/fetchInterceptor ";
-import { getQuotationByleadIdEndpoint as endpoint } from "../apiEndpoints";
+import { getQuotationByLeadIdEndpoint as endpoint } from "../apiEndpoints";
 import { GetQuotationByLeadIdProps } from "../getQuotationTypes";
 const getQuotationByLeadIdAPI = async ({ header, leadId }: GetQuotationByLeadIdProps) => {
   const url = endpoint(leadId)
