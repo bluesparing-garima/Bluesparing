@@ -1,10 +1,10 @@
 import getProductsAPI from "./getProductsAPI";
 import { GetProductProps } from "../getProductsTypes";
 
-const getProductService = async ({ header }: GetProductProps): Promise<any> => {
+const getProductService = async ({ header,category }: GetProductProps): Promise<any> => {
   try {
     const res = await getProductsAPI({
-      header: header,
+      header: header,category
     })
     return res;
   } catch (error) {

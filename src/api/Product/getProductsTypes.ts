@@ -8,6 +8,7 @@ export interface AddEditProductProps {
 
 export interface GetProductProps {
   header?: Header;
+  category:string
 }
 
 export interface GetProductDetailsProps {

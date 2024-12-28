@@ -7,6 +7,7 @@ import { ILeads, IQuotations } from "../../IPartner";
 import getLeadByIdService from "../../../../api/Leads/GetLeadById/getLeadByIdService";
 import FileDisplay from "../../../../utils/FileDisplay";
 import toast, { Toaster } from "react-hot-toast";
+import { DocumentViewer } from "../../EditLead/editLead";
 const ViewQuotation = () => {
   const title = "View Comments";
   const { leadId } = useParams();
@@ -26,9 +27,9 @@ const ViewQuotation = () => {
         .then((leadDetails) => {
           setViewQuotationDetails(leadDetails.data);
         })
-        .catch(async(error) => {
-          const err = await error
-          toast.error(err.message)
+        .catch(async (error) => {
+          const err = await error;
+          toast.error(err.message);
         });
     }
   }, [isAdd, leadId]);
@@ -94,9 +95,9 @@ const ViewQuotation = () => {
           }
           setDocuments(updatedDocuments);
         })
-        .catch(async(error) => {
-          const err = await error
-          toast.error(err.message)
+        .catch(async (error) => {
+          const err = await error;
+          toast.error(err.message);
         });
     }
   }, [isAdd, leadId]);
@@ -120,7 +121,7 @@ const ViewQuotation = () => {
               Lead /
             </Link>
             <span className="text-grey-600 text-sm">{title}</span>
-            
+
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
@@ -206,28 +207,16 @@ const ViewQuotation = () => {
                   </Typography>
                   <Grid container>
                     {documents.map((document, index) => (
-                      <Grid item md={4} key={index}>
-                        <Typography
-                          className="text-addButton"
-                          variant="subtitle1"
-                          component="h4"
-                        >
-                          {document.docName}
-                        </Typography>
-                        {document.file.endsWith(".pdf") ? (
-                          <embed
-                            src={document.file}
-                            type="application/pdf"
-                            width="400"
-                            height="400"
-                          />
-                        ) : (
-                          <img
-                            src={document.file}
-                            alt={document.docName}
-                            style={{ maxWidth: "100%" }}
-                          />
-                        )}
+                      <Grid
+                        item
+                        md={4}
+                        key={index}
+                        style={{ flex: "0 0 auto" }}
+                      >
+                        <DocumentViewer
+                          docName={document.docName}
+                          file={document.file}
+                        />
                       </Grid>
                     ))}
                   </Grid>

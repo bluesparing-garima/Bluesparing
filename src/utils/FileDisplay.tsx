@@ -4,11 +4,16 @@ interface FileDisplayProps {
 }
 const FileDisplay: React.FC<FileDisplayProps> = ({ url }) => {
   const fileType = getFileType(url);
+
   return (
-    <div>
+    <div
+      className="cursor-pointer"
+      onClick={() => window.open(`${url}`, "_blank")}
+    >
       {fileType === "image" && (
         <img
           src={url}
+          loading="lazy"
           alt="Uploaded content"
           style={{ maxWidth: "100%", height: "100px" }}
         />

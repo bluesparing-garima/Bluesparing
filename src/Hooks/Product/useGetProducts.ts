@@ -5,12 +5,12 @@ import { IProducts } from "../../components/Admin/Product/IProduct";
 
 export const defaultProduct: IProducts[] = [];
 
-const useGetProducts = ({ header }: GetProductProps) => {
+const useGetProducts = ({ header,category }: GetProductProps) => {
   const [products, setProducts] = useState<IProducts[]>(defaultProduct);
   const isLoading = useRef(true);
   useEffect(() => {
     if (isLoading.current) {
-      getProductsService({ header })
+      getProductsService({ header,category })
         .then((apiResponse) => {
           isLoading.current = false;
           const productList = apiResponse.data.filter(

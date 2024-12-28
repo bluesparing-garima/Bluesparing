@@ -210,8 +210,6 @@ const EditLeadForm = (props: addLeadRequestFormProps) => {
     setDocuments(updatedDocuments);
   }, [initialValues]);
 
-
-
   return (
     <>
       <div className="bg-blue-200 p-1">
@@ -277,7 +275,7 @@ const EditLeadForm = (props: addLeadRequestFormProps) => {
                                   <span>{errors[index].docName}</span>
                                 )}
                               </Grid>
-                             
+
                               <Grid item lg={4} md={4} sm={4} xs={12}>
                                 <FileView fileName={formatFilename(doc.file)}>
                                   <input
