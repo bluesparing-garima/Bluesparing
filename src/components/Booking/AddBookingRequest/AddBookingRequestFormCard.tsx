@@ -55,7 +55,7 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
   let [policyTypes] = useGetPolicyTypes({ header: header });
   let [caseTypes] = useGetCaseTypes({ header: header });
   let [companies] = useGetCompanies({ header: header });
-  let [products] = useGetProducts({ header: header });
+  let [products] = useGetProducts({ header: header,category:"motor" });
   let [productSubTypes] = useGetProductSubTypes({ header: header });
   let [partners] = useGetPartners({ header: header, role: "partner" });
   const [selectedProduct, setSelectedProduct] = useState<IProducts>();

@@ -23,7 +23,7 @@ export interface addPolicyTypeFormProps {
 }
 const AddProductSubTypeForm = (props: addPolicyTypeFormProps) => {
   const { initialValues } = props;
-  let [products] = useGetProducts({ header: header });
+  let [products] = useGetProducts({ header: header,category:"motor" });
   const navigate = useNavigate();
   const [selectedProductName, setSelectedProductName] = useState("");
   const [selectedProductId, setSelectedProductId] = useState("");

@@ -32,7 +32,7 @@ import toast, { Toaster } from "react-hot-toast";
 import useGetPartners from "../../../../Hooks/Partner/useGetPartners";
 import { useNavigate } from "react-router-dom";
 const PercentageForm = () => {
-  let [products] = useGetProducts({ header: header });
+  let [products] = useGetProducts({ header: header,category:"motor" });
   let [companies] = useGetCompanies({ header: header });
   let [partners] = useGetPartners({ header: header, role: "partner" });
   let [makes] = useGetMakes({ header: header });

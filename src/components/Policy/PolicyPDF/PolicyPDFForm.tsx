@@ -67,7 +67,7 @@ const PolicyPDFForm = (props: AddPolicyFormProps) => {
   let [fuelTypes] = useGetFuelTypes({ header: header });
   let [brokers] = useGetBrokers({ header: header });
   let [companies] = useGetCompanies({ header: header });
-  let [products] = useGetProducts({ header: header });
+  let [products] = useGetProducts({ header: header,category:"motor" });
   let [productSubTypes] = useGetProductSubTypes({ header: header });
   const [isVisible, setIsVisible] = useState(false);
   const [selectedPartnerName, setSelectedPartnerName] = useState("");
