@@ -176,7 +176,7 @@ export interface IAddEditPolicyForm {
   registrationDate: string;
   endDate: string;
   issueDate: string;
-  idv: number;
+  idv: number|undefined;
   od: number;
   tp: number;
   netPremium: number;

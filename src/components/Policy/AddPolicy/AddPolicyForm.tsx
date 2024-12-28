@@ -1122,6 +1122,23 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                       </Field>
                     </Grid>
                     <Grid item lg={4} md={4} sm={6} xs={12}>
+                      <Field name="mfgYear">
+                        {({ input, meta }) => (
+                          <TextField
+                            {...input}
+                            fullWidth
+                            size="small"
+                            type="number"
+                            label="Enter MFG Year"
+                            className="rounded-sm w-full"
+                            variant="outlined"
+                            error={meta.touched && Boolean(meta.error)}
+                            helperText={meta.touched && meta.error}
+                          />
+                        )}
+                      </Field>
+                    </Grid>
+                    <Grid item lg={4} md={4} sm={6} xs={12}>
                       <Field name="registrationDate">
                         {({ input, meta }) => (
                           <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -1222,23 +1239,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                         <div className="text-[red] text-sm">{vehicleErr}</div>
                       )}
                     </Grid>
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field name="mfgYear">
-                        {({ input, meta }) => (
-                          <TextField
-                            {...input}
-                            fullWidth
-                            size="small"
-                            type="number"
-                            label="Enter MFG Year"
-                            className="rounded-sm w-full"
-                            variant="outlined"
-                            error={meta.touched && Boolean(meta.error)}
-                            helperText={meta.touched && meta.error}
-                          />
-                        )}
-                      </Field>
-                    </Grid>
+                    
 
                     <Grid item lg={4} md={4} sm={6} xs={12}>
                       <Field name="ncb">

@@ -44,6 +44,7 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
         return ["booking"];
     }
   }, [UserData.role]);
+  
   const debounce = <T extends (...args: any[]) => void>(
     func: T,
     delay: number

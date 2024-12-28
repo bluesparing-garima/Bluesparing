@@ -15,12 +15,12 @@ export const getEmployeeEndpoint = () =>
 (`/api/user-profile/exclude-partner/${UserData.parentAdminId}`);
 
 export const getTeamDetailsEndpoint = (teamId: string) =>
-(`/api/user-profile/${teamId}`);
+(`/api/user-profile/${teamId}/${UserData.parentAdminId}`);
 
 export const deleteTeamEndpoint = (teamId: string) =>
 (`/api/user-profile/${teamId}/${UserData.parentAdminId}`);
 
 export const validateEmailEndpoint = (emailId: string) =>
-(`/api/user-profile/check-email?email=${emailId}`);
+(`/api/user-profile/check-email/?email=${emailId}/${UserData.parentAdminId}`);
 export const getTeamByRmEndpoint = (remId: string) =>
 (`/api/user-profile/headRMId/${UserData.parentAdminId}?headRMId=${remId}`);

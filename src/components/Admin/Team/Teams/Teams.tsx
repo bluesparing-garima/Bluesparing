@@ -38,9 +38,9 @@ const Teams = () => {
     () =>
       getTeamService({ header })
         .then((teamDetails) => {
-        const newTeamData =   teamDetails.data.filter((ele:any)=>{
-            return ele.role!=='superadmin'
-          })
+          const newTeamData = teamDetails.data.filter((ele: any) => {
+            return ele.role !== "superadmin";
+          });
           setTeams(newTeamData);
         })
         .catch((error) => {
@@ -56,7 +56,7 @@ const Teams = () => {
     savePaginationState(pagination, TEAM_STORAGE_KEY);
     navigate(teamAddPath());
   };
-  const forcedRenderCount= 0;
+  const forcedRenderCount = 0;
   const columns = useMemo<MRT_ColumnDef<ITeams>[]>(
     () => [
       {
@@ -70,7 +70,7 @@ const Teams = () => {
         size: 200,
       },
       {
-        accessorKey: "partnerId",
+        accessorKey: "partnerCode",
         header: "Partner Code",
         size: 200,
       },
@@ -105,6 +105,7 @@ const Teams = () => {
     ],
     []
   );
+  
   const parsedData = useMemo(() => {
     const filteredTeams =
       UserData.role.toLowerCase() === "hr"
@@ -138,6 +139,7 @@ const Teams = () => {
         qualification: team.qualification!,
         bankProof: team.bankProof!,
         experience: team.experience!,
+        profileImage: team.profileImage,
         other: team.other!,
         isActive: team.isActive,
         joiningDate: dayjs(team.joiningDate).format(DAYJS_DISPLAY_FORMAT),
@@ -146,6 +148,7 @@ const Teams = () => {
         createdOn: dayjs(team.createdOn).format(DAYJS_DISPLAY_FORMAT),
         updatedOn: dayjs(team.updatedOn).format(DAYJS_DISPLAY_FORMAT),
         forceUpdate: forcedRenderCount,
+        partnerCode: team.partnerCode,
       })) ?? []
     );
   }, [teams, forcedRenderCount, UserData.role]);
@@ -223,29 +226,32 @@ const Teams = () => {
     }
   };
   const handleClickDownloadDocument = (team: ITeamsVM) => {
+    if (team.profileImage) {
+      downloadFile(`${imagePath}/${team?.profileImage!}`, "profileImage");
+    }
     if (team.image) {
-      downloadFile(`${imagePath}${team?.image!}`, "image");
+      downloadFile(`${imagePath}/${team?.image!}`, "image");
     }
     if (team.adharCardBack) {
-      downloadFile(`${imagePath}${team?.adharCardBack!}`, "adharCardBack");
+      downloadFile(`${imagePath}/${team?.adharCardBack!}`, "adharCardBack");
     }
     if (team.adharCardFront) {
-      downloadFile(`${imagePath}${team?.adharCardFront!}`, "adharCardFront");
+      downloadFile(`${imagePath}/${team?.adharCardFront!}`, "adharCardFront");
     }
     if (team.panCard) {
-      downloadFile(`${imagePath}${team?.panCard!}`, "panCard");
+      downloadFile(`${imagePath}/${team?.panCard!}`, "panCard");
     }
     if (team.qualification) {
-      downloadFile(`${imagePath}${team?.qualification!}`, "qualification");
+      downloadFile(`${imagePath}/${team?.qualification!}`, "qualification");
     }
     if (team.experience) {
-      downloadFile(`${imagePath}${team?.experience!}`, "experience");
+      downloadFile(`${imagePath}/${team?.experience!}`, "experience");
     }
     if (team.bankProof) {
-      downloadFile(`${imagePath}${team?.bankProof!}`, "bankProof");
+      downloadFile(`${imagePath}/${team?.bankProof!}`, "bankProof");
     }
     if (team.other) {
-      downloadFile(`${imagePath}${team?.other!}`, "other");
+      downloadFile(`${imagePath}/${team?.other!}`, "other");
     }
   };
   return (

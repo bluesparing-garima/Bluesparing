@@ -371,14 +371,21 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       return errors;
     }
   };
-  const checkEmailExists = async (e: any) => {
+  const debounce = (func: (...args: any[]) => void, delay: number) => {
+    let timer: NodeJS.Timeout;
+    return (...args: any[]) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => func(...args), delay);
+    };
+  };
+  const debouncedCheckEmailExists = debounce(async (e: any) => {
     const email = e.target.value;
     try {
       const emailCheck = await validateEmailService({
         header,
         email,
       });
-      if (emailCheck.status === "success") {
+      if (emailCheck.status === "success" && emailCheck.data.length>0) {
         setEmailErrorMessage("Email already exist");
         return true;
       } else {
@@ -386,9 +393,11 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
         return false;
       }
     } catch {
+      setEmailErrorMessage("Error validating email");
       return false;
     }
-  };
+  }, 300); // 300ms debounce delay
+
   const validationSchema = yup.object().shape({
     fullName: yup
       .string()
@@ -440,7 +449,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       .required("Account number is required")
       .matches(/^\d+$/, "Account number must contain only digits")
       .min(6, "Account number must be at least 6 digits")
-      .max(12, "Account number must be at most 12 digits"),
+      .max(16, "Account number must be at most 12 digits"),
     salary: yup
       .string()
       .required("salary is required")
@@ -614,7 +623,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                       variant="outlined"
                       size="small"
                       className="rounded-sm w-full"
-                      onChangeCapture={checkEmailExists}
+                      onChangeCapture={debouncedCheckEmailExists}
                       error={meta.touched && Boolean(meta.error)}
                       helperText={meta.touched && meta.error}
                     />
@@ -728,6 +737,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                             : initialValues.dateOfBirth || null
                         }
                         onChange={(date) => input.onChange(date)}
+                          inputFormat="DD/MM/YYYY"
                         renderInput={(params: any) => (
                           <TextField
                             variant="outlined"
@@ -801,6 +811,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                             : initialValues.joiningDate || null
                         }
                         onChange={(date) => input.onChange(date)}
+                            inputFormat="DD/MM/YYYY"
                         renderInput={(params: any) => (
                           <TextField
                             variant="outlined"
