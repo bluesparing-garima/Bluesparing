@@ -54,6 +54,7 @@ const Signin = () => {
           setTokens(loginData.accessToken!, loginData.refreshToken!);
         }
 
+        localStorage.setItem("user", JSON.stringify(loginData));
         if (responseData.role.toLowerCase().trim() !== "admin") {
           const bookingRequestDetails = await getTeamDetailsService({
             header,

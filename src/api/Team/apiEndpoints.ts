@@ -15,7 +15,7 @@ export const getEmployeeEndpoint = () =>
 (`/api/user-profile/exclude-partner/${UserData.parentAdminId}`);
 
 export const getTeamDetailsEndpoint = (teamId: string) =>
-(`/api/user-profile/${teamId}/${UserData.parentAdminId}`);
+(`/api/user-profile/${teamId}/${UserData?.parentAdminId}`);
 
 export const deleteTeamEndpoint = (teamId: string) =>
 (`/api/user-profile/${teamId}/${UserData.parentAdminId}`);
