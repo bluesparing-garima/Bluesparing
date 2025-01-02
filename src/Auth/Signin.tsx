@@ -59,6 +59,7 @@ const Signin = () => {
           const bookingRequestDetails = await getTeamDetailsService({
             header,
             teamId: responseData.profileId,
+            parentAdminId:responseData.parentAdminId
           });
           loginData.headRMId = bookingRequestDetails.headRMId!;
           loginData.headRM = bookingRequestDetails.headRM!;
@@ -66,6 +67,7 @@ const Signin = () => {
           const bookingRequestDetails = await getTeamDetailsService({
             header,
             teamId: responseData.profileId,
+            parentAdminId:responseData.parentAdminId
           });
           loginData.companyLogo = bookingRequestDetails.companyLogo;
         }

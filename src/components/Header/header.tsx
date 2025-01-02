@@ -120,7 +120,7 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
       const res = await GetTodayAttendanceRecordService({
         header,
         d: now,
-        eId: userData?.id,
+        eId: userData?.profileId,
       });
       setAttendance(res?.data[0]);
     } catch (error: any) {
