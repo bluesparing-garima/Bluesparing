@@ -11,12 +11,12 @@ import toast from "react-hot-toast";
 const MarkAttendance = () => {
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
-  const id = UserData.id;
+  const id = UserData.profileId;
   const [attendance, setAttendance] = useState<IAttendance | null>();
   const [employee, setEmployee] = useState<IEmployee | null>();
   const getAttendanceRecord = async () => {
     try {
-      const res = await GetAttendanceCountService({ header, eId: UserData.id });
+      const res = await GetAttendanceCountService({ header, eId: UserData.profileId });
       setEmployee(res.data);
     } catch (error: any) {
       const err = await error;

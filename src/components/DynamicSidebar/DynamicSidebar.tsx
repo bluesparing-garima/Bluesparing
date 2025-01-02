@@ -1,10 +1,15 @@
 import { FC, useEffect, useState } from "react";
-import { SafeKaroUser } from "../../context/constant";
+import {
+  CURRENT_ROLE_MENUS,
+  CURRENT_SUBSID,
+  SafeKaroUser,
+} from "../../context/constant";
 import useGetSubsById from "../../Hooks/Subscription/useGetSubsById";
 import { IMenu } from "../../api/Menu/IMenuType";
 import useGetMenuByRoleId from "../../Hooks/Menu/useGetMenu";
 import SidebarUi from "./SidebarUi";
 import { CircularProgress } from "@mui/material";
+import useLocalStorage from "../../Hooks/LocalStorage/useLocalStorage";
 type MenuItem = {
   id: string;
   label: string;
@@ -23,6 +28,11 @@ const DynamicSidebar: FC<DynamicSidebarProps> = ({
   setSidebarOpen,
 }) => {
   const [subsIds, setSubsIds] = useState<string[]>([]);
+  const [_, setSubsLocalData] = useLocalStorage<string[]>(CURRENT_SUBSID, []);
+  const [cuuentMenus, setCurrentMenu] = useLocalStorage<IMenu[]>(
+    CURRENT_ROLE_MENUS,
+    []
+  );
   const lockSvg =
     "M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z";
   const defaultMenu = "M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5";
@@ -31,8 +41,9 @@ const DynamicSidebar: FC<DynamicSidebarProps> = ({
     ? JSON.parse(storedUser)
     : null;
   const [roleMenus] = useGetMenuByRoleId(userData?.roleId || "");
+
   const [subsData] = useGetSubsById(userData?.planId || "");
-  
+
   const mapAssignByRole = () => {
     const roleName = userData?.role.toLowerCase();
     switch (roleName) {
@@ -98,12 +109,16 @@ const DynamicSidebar: FC<DynamicSidebarProps> = ({
       let data = subsData[menuKey];
       if (data) {
         setSubsIds(data);
+        setSubsLocalData(data);
       }
     }
     // eslint-disable-next-line
   }, [subsData?._id]);
 
-
+  useEffect(() => {
+    setCurrentMenu(roleMenus);
+    // eslint-disable-next-line
+  }, [roleMenus.length]);
   return (
     <>
       {roleMenus.length > 0 ? (

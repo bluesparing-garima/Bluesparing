@@ -53,7 +53,7 @@ const AddPolicyFormCard = () => {
           issueDate: isAdd ? "" : editPolicyDetails?.issueDate!,
           endDate: isAdd ? "" : editPolicyDetails?.endDate!,
           registrationDate: isAdd ? "" : editPolicyDetails?.registrationDate!,
-          idv: isAdd ? 0 : editPolicyDetails?.idv!,
+          idv: isAdd ? undefined : editPolicyDetails?.idv!,
           od: isAdd ? 0 : editPolicyDetails?.od!,
           tp: isAdd ? 0 : editPolicyDetails?.tp!,
           netPremium: isAdd ? 0 : editPolicyDetails?.netPremium!,

@@ -4,13 +4,13 @@ import { GetMotorPoliciesProps } from "../getPoliciesTypes";
 const getMotorPolicyService = async ({
   header,
   startDate,
-  endDate,
+  endDate,parentAdminId
 }: GetMotorPoliciesProps):Promise<any>=> {
   try {
     const res = await  getMotorPolicyAPI({
       header: header,
       startDate: startDate,
-      endDate: endDate,
+      endDate: endDate,parentAdminId
     })
     return res
   } catch (error) {

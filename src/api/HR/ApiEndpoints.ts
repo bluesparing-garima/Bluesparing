@@ -1,3 +1,6 @@
+import { SafeKaroUser } from "../../context/constant";
+let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
+let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
 export const holidaysAddEndpoint = () => {
     return ("/api/holiday-calendar")
 }
@@ -45,7 +48,7 @@ export const attendanceGetDashboardEndpoint = () => {
     return `/api/attendance/stats`;
 }
 export const HrDashBoardEndpoint = (sd: string, ed: string, hrId: string) => {
-    return (`/api/hr-dashboard?startDate=${sd}&endDate=${ed}&hrId=${hrId}`)
+    return (`/api/hr-dashboard/${UserData.parentAdminId}?startDate=${sd}&endDate=${ed}&hrId=${hrId}`)
 }
 export const dateFilerAttendanceEndPoint = (st: string, et: string, eid: string) => {
     return (`/api/attendance/employee/date-range?startDate=${st}&endDate=${et}&employeeId=${eid}`);

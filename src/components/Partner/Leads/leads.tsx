@@ -40,7 +40,7 @@ const Leads = () => {
   );
   const GetLeadByIdRequests = useCallback(
     () =>
-      getLeadByUserIdService({ header, userId: userData.id })
+      getLeadByUserIdService({ header, userId: userData.profileId })
         .then((leadDetails) => {
           setLeads(leadDetails.data);
         })
@@ -48,11 +48,11 @@ const Leads = () => {
           const err = await error;
           toast.error(err.message);
         }),
-    [userData.id]
+    [userData.profileId]
   );
   const GetLeadByPartnerIdRequests = useCallback(
     () =>
-      getLeadByPartnerIdService({ header, partnerId: userData.partnerId })
+      getLeadByPartnerIdService({ header, partnerId: userData.profileId})
         .then((leadDetails) => {
           setLeads(leadDetails.data);
         })
@@ -60,7 +60,7 @@ const Leads = () => {
           const err = await error;
           toast.error(err.message);
         }),
-    [userData.partnerId]
+    [userData.profileId]
   );
   useEffect(() => {
     if (userData.role.toLowerCase() === "operation") {

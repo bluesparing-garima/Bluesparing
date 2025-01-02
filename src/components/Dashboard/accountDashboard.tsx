@@ -62,7 +62,7 @@ const AccountDashboard: React.FC = () => {
   }, []);
   const getAttendanceRecord = async () => {
     try {
-      const res = await GetAttendanceCountService({ header, eId: UserData.id });
+      const res = await GetAttendanceCountService({ header, eId: UserData.profileId });
       setEmployee(res.data);
     } catch (error:any) {
       const err = await error;

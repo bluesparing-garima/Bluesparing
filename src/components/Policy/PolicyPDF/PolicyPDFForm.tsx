@@ -67,7 +67,7 @@ const PolicyPDFForm = (props: AddPolicyFormProps) => {
   let [fuelTypes] = useGetFuelTypes({ header: header });
   let [brokers] = useGetBrokers({ header: header });
   let [companies] = useGetCompanies({ header: header });
-  let [products] = useGetProducts({ header: header });
+  let [products] = useGetProducts({ header: header,category:"motor" });
   let [productSubTypes] = useGetProductSubTypes({ header: header });
   const [isVisible, setIsVisible] = useState(false);
   const [selectedPartnerName, setSelectedPartnerName] = useState("");
@@ -228,7 +228,7 @@ const PolicyPDFForm = (props: AddPolicyFormProps) => {
       userData.role.toLowerCase() === "admin"
         ? selectedPartnerId
         : policyForm.policyCreatedBy === "Direct"
-        ? userData.partnerId
+        ? userData.profileId
         : selectedPartnerId;
     policyForm.partnerName =
       userData.role.toLowerCase() === "admin"
@@ -239,7 +239,7 @@ const PolicyPDFForm = (props: AddPolicyFormProps) => {
     policyForm.createdBy = userData.name;
     policyForm.vehicleNumber = policyForm.vehicleNumber.toUpperCase();
     policyForm.rto = policyForm.vehicleNumber.substring(0, 4);
-    policyForm.policyCompletedBy = userData.id;
+    policyForm.policyCompletedBy = userData.profileId;
     policyForm.netPremium = netPremium;
     policyForm.brokerId = selectedBrokerId;
 

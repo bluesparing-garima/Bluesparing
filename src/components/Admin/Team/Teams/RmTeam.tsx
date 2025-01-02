@@ -35,7 +35,7 @@ const RmTeams = () => {
     []
   );
   useEffect(() => {
-    const rmId = userData.id;
+    const rmId = userData.profileId;
     GetTeams(rmId);
      // eslint-disable-next-line
   }, [GetTeams]);
@@ -141,7 +141,7 @@ const RmTeams = () => {
   }, [updateLoading]);
   const callUpdateTeamAPI = async (team: ITeamsVM) => {
     var convertTeamVMToTeamForm: ITeamForm = convertITeamVMToITeamForm(team);
-    const rmId = userData.id;
+    const rmId = userData.profileId;
     const teamData: ITeamForm = {
       ...convertTeamVMToTeamForm,
       isActive: !convertTeamVMToTeamForm.isActive,

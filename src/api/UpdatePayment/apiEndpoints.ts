@@ -1,4 +1,7 @@
+import { SafeKaroUser } from "../../context/constant";
 
+let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
+let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
 export const getFilterPartnerPoliciesForBrokerEndpoint = (
   startDate: string,
   endDate: string,
@@ -13,7 +16,7 @@ export const getFilterPaidPoliciesForPartnerEndpoint = (
   partnerId: string
 ) =>
 
-  `/api/policy/motor/payment/partner-id/paid-status?startDate=${startDate}&endDate=${endDate}&partnerId=${partnerId}`
+  `/api/policy/motor/payment/partner-id/paid-status/${UserData.parentAdminId}?startDate=${startDate}&endDate=${endDate}&partnerId=${partnerId}`
 
 
 export const getFilterBrokerPoliciesForPartnerEndpoint = (
@@ -29,7 +32,7 @@ export const getFilterPaidPartialUnpaid = (
   endDate: string,
   partnerId: string
 ) =>
-  `/api/policy/motor/payment/partner-id/status?startDate=${startDate}&endDate=${endDate}&partnerId=${partnerId}`
+  `/api/policy/motor/payment/partner-id/status/${UserData.parentAdminId}?startDate=${startDate}&endDate=${endDate}&partnerId=${partnerId}`
 
 
 export const getFilterPaidPartialUnpaidForBroker = (
@@ -38,15 +41,15 @@ export const getFilterPaidPartialUnpaidForBroker = (
   brokerId: string
 ) =>
 
-  `/api/policy/motor/payment/broker-id/status?startDate=${startDate}&endDate=${endDate}&brokerId=${brokerId}`
+  `/api/policy/motor/payment/broker-id/status/${UserData.parentAdminId}?startDate=${startDate}&endDate=${endDate}&brokerId=${brokerId}`
 
 
 export const updateFilterPaymentsEndpoint = () =>
-  (`/api/policy/motor/payment/status-manage`);
+  (`/api/policy/motor/payment/status-manage/${UserData.parentAdminId}`);
 export const addBalanceInPartner = () =>
   (`/api/statement/manage`);
 export const getFilterPaidPoliciesForBrokerEndpoint = (
   startDate: string,
   endDate: string,
   partnerId: string
-) => (`/api/policy/motor/payment/broker-id/paid-status?brokerId=${partnerId}&startDate=${startDate}&endDate=${endDate}`)
+) => (`/api/policy/motor/payment/broker-id/paid-status/${UserData.parentAdminId}?brokerId=${partnerId}&startDate=${startDate}&endDate=${endDate}`)

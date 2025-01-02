@@ -56,6 +56,9 @@ import { IMakes } from "../../Admin/Make/IMake";
 import getPolicyByNumberService from "../../../api/Policies/GetPolicyByNumber/getPolicyByNumberService";
 import dayjs from "dayjs";
 import editPolicyService from "../../../api/Policies/EditPolicy/editPolicyService";
+
+import FileView from "../../../utils/FileView";
+import { formatFilename } from "../../../utils/convertLocaleStringToNumber";
 import getVehicleNumberService from "../../../api/Policies/GetVehicleNumber/getVehicleNumberService";
 export interface AddPolicyFormProps {
   initialValues: IAddEditPolicyForm;
@@ -71,7 +74,6 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   const [errors, setErrors] = useState<{ docName: string; file: string }[]>([
     { docName: "", file: "" },
   ]);
-
   let [policyTypes] = useGetPolicyTypes({ header: header });
   let [relationshipManagers] = useGetPartners({
     header: header,
@@ -84,7 +86,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   let [fuelTypes] = useGetFuelTypes({ header: header });
   let [brokers] = useGetBrokers({ header: header });
   let [companies] = useGetCompanies({ header: header });
-  let [products] = useGetProducts({ header: header });
+  let [products] = useGetProducts({ header: header, category: "motor" });
   let [productSubTypes] = useGetProductSubTypes({ header: header });
   const [selectedPartnerName, setSelectedPartnerName] = useState("");
   const [selectedPartnerId, setSelectedPartnerId] = useState("");
@@ -92,7 +94,6 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   const [selectedRMName, setSelectedRMName] = useState("");
   const [selectedRMId, setSelectedRMId] = useState("");
   const navigate = useNavigate();
-  const [selectedMake, setSelectedMake] = useState<IMakes | undefined>();
   const [selectedPaymentMode, setSelectedPaymentMode] = useState();
   const [selectedPolicyCreatedBy, setSelectedPolicyCreatedBy] = useState<
     string | undefined
@@ -105,7 +106,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       return arg === val;
     });
   };
-
+  const [selectedMake, setSelectedMake] = useState<IMakes | undefined>();
   const [filteredSubcategories, setFilteredSubcategories] = useState<
     IProductSubTypes[]
   >([]);
@@ -122,9 +123,10 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   const isAdd = pathName[pathName.length - 1] === ADD;
   const [netPremium, setNetPremium] = useState(Number(od) + Number(tp));
   const [proType, setProType] = useState(initialValues.productType || "");
-  const [cc, setCC] = useState(0);
-  const [idv, setIdv] = useState(0);
+  const [cc, setCC] = useState<number>();
+  const [idv, setIdv] = useState<number>();
   const [tenure, setTenure] = useState(1);
+  const [endTime, setEndTime] = useState<dayjs.Dayjs>();
   useEffect(() => {
     if (!isAdd) {
       setOd(initialValues.od ?? 0);
@@ -141,6 +143,10 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       setCC(initialValues.cc ?? 0);
       setIdv(initialValues.idv ?? 0);
       setTenure(initialValues.tenure ?? 1);
+      setEndTime(
+        dayjs(initialValues.endDate) ??
+          dayjs(initialValues.issueDate).add(1, "year").subtract(1, "day")
+      );
       const updatedDocuments: Document[] = [];
       if (initialValues.rcBack) {
         updatedDocuments.push({
@@ -199,14 +205,12 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       setDocuments(updatedDocuments);
     }
   }, [isAdd, initialValues]);
-
   useEffect(() => {
     if (initialValues.make) {
       setSelectedMake(foundMake());
     }
     // eslint-disable-next-line
   }, [initialValues]);
-
   const handleFileInputChange = (event: any, index: any) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
@@ -237,19 +241,21 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       }
     }
   };
+
   useEffect(() => {
     if (policyType === "Third Party Only/ TP") {
       setTp(initialValues.tp ?? 0);
       setOd(0);
-      setIdv(0);
+      setIdv(undefined);
     }
     if (policyType === "Own Damage Only/ OD") {
       setTp(0);
       setOd(initialValues.od ?? 0);
-      setIdv(initialValues.idv ?? 0);
+      setIdv(initialValues.idv ?? undefined);
     }
     // eslint-disable-next-line
   }, [policyType]);
+
   const calculateYearDifference = (
     startDate: dayjs.Dayjs | string,
     endDate: dayjs.Dayjs | string
@@ -273,6 +279,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
     validateField(index, "file", document.file);
     return isValidDocName && isValidFile;
   };
+
   const validateField = (index: number, name: string, value: string) => {
     const newErrors = [...errors];
     if (name === "docName" || name === "file") {
@@ -283,12 +290,13 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
     }
     setErrors(newErrors);
   };
+
   const bindValues = async (policyForm: any) => {
     policyForm.issueDate = dayjs(policyForm.issueDate).format(DAY_FORMAT);
     policyForm.registrationDate = dayjs(policyForm.registrationDate).format(
       DAY_FORMAT
     );
-    policyForm.endDate = dayjs(policyForm.endDate).format(DAY_FORMAT);
+    policyForm.endDate = dayjs(endTime).format(DAY_FORMAT);
     const yearDifference = calculateYearDifference(
       policyForm.registrationDate,
       policyForm.issueDate
@@ -356,11 +364,22 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       callEditPolicyAPI(formData, policyId!);
     }
   };
+
+  const validateDateWithMfg = (mgfYear: string, valueStr: string) => {
+    const yearValue = dayjs(valueStr).year();
+    if (Number(mgfYear) > Number(yearValue)) {
+      return true;
+    }
+    return false;
+  };
+
   const onSubmit = async (policyForm: any, form: any) => {
     const isIssueDateValid = dayjs(policyForm.issueDate).isValid();
     const isRegDateValid = dayjs(policyForm.registrationDate).isValid();
-    const isEndDateValid = dayjs(policyForm.endDate).isValid();
+    const isEndDateValid = dayjs(endTime).isValid();
     const isGcv = proType === "Goods Carrying Vehicle";
+    const startDate = dayjs(policyForm.issueDate);
+    const endDate = dayjs(policyForm.endDate);
     if (isGcv) {
       const w = policyForm.weight;
       if (w <= 0) {
@@ -380,6 +399,32 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       toast.error("Invalid Registration  Date");
       return;
     }
+
+    if (endDate.isBefore(startDate)) {
+      toast.error("End Date cannot be earlier than the Issue Date");
+      return;
+    }
+    if (
+      validateDateWithMfg(
+        policyForm.mfgYear as string,
+        policyForm.registrationDate as string
+      )
+    ) {
+      toast.error(
+        "Registration date cannot be earlier than the manufacturing year"
+      );
+      return;
+    }
+    if (
+      validateDateWithMfg(
+        policyForm.mfgYear as string,
+        policyForm.issueDate as string
+      )
+    ) {
+      toast.error("Issue date cannot be earlier than the manufacturing year");
+      return;
+    }
+
     const formValid = documents.every((doc, index) =>
       validateDocument(doc, index)
     );
@@ -453,32 +498,15 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
     const value = event.target.value;
     setNetPremium(value);
   };
-  const findMakeByName = (makePara: string) => {
-    const result = makes.find(
-      (ele) => String(ele.makeName?.trim()) === String(makePara)
-    );
-    if (result) {
-      return result._id;
-    } else {
-      return "";
-    }
-  };
-
   useEffect(() => {
     if (selectedMake) {
       const MakeId = selectedMake._id;
       const filterModel = models.filter((sub) => sub.makeId === MakeId);
       setFilteredSubModels(filterModel);
-    } else if (initialValues.make) {
-      const searchMake = initialValues.make;
-      const MakeId = findMakeByName(searchMake.trim());
-      const filterModel = models.filter((sub) => sub.makeId === MakeId);
-      setFilteredSubModels(filterModel);
     } else {
       setFilteredSubModels([]);
     }
-    // eslint-disable-next-line
-  }, [selectedMake, models, initialValues.make]);
+  }, [selectedMake, models]);
   useEffect(() => {
     if (selectedProduct) {
       const ProductId = selectedProduct._id;
@@ -547,7 +575,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       .string()
       .required("Registration Date is required")
       .nullable(),
-    endDate: yup.string().required("End Date is required").nullable(),
+    // endDate: yup.string().required("End Date is required").nullable(),
     issueDate: yup.string().required("Issue Date is required").nullable(),
     policyType: yup.string().required("Policy Type is required").nullable(),
     caseType: yup.string().nullable().required("Case Type is required"),
@@ -602,6 +630,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   };
   const validateVehicleNumber = async (e: any) => {
     const vehicleNumber = e.target.value;
+    console.log(vehicleNumber);
     try {
       const res = await getVehicleNumberService({
         header,
@@ -1071,6 +1100,45 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                       </Field>
                     </Grid>
                     <Grid item lg={4} md={4} sm={6} xs={12}>
+                      <Field name="tenure">
+                        {({ input, meta }) => (
+                          <TextField
+                            {...input}
+                            fullWidth
+                            size="small"
+                            type="number"
+                            value={tenure}
+                            onChange={(event) => {
+                              input.onChange(event);
+                              let t = event.target.value;
+                              setTenure(Number(t));
+                            }}
+                            label="Enter Tenure"
+                            variant="outlined"
+                            error={meta.touched && Boolean(meta.error)}
+                            helperText={meta.touched && meta.error}
+                          />
+                        )}
+                      </Field>
+                    </Grid>
+                    <Grid item lg={4} md={4} sm={6} xs={12}>
+                      <Field name="mfgYear">
+                        {({ input, meta }) => (
+                          <TextField
+                            {...input}
+                            fullWidth
+                            size="small"
+                            type="number"
+                            label="Enter MFG Year"
+                            className="rounded-sm w-full"
+                            variant="outlined"
+                            error={meta.touched && Boolean(meta.error)}
+                            helperText={meta.touched && meta.error}
+                          />
+                        )}
+                      </Field>
+                    </Grid>
+                    <Grid item lg={4} md={4} sm={6} xs={12}>
                       <Field name="registrationDate">
                         {({ input, meta }) => (
                           <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -1101,8 +1169,17 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                             <DatePicker
                               disableFuture
                               label="Issue Date"
+                              inputFormat="DD/MM/YYYY"
                               value={input.value || null}
-                              onChange={(date) => input.onChange(date)}
+                              onChange={(date) => {
+                                input.onChange(date);
+                                if (date) {
+                                  const endDate = dayjs(date)
+                                    .add(tenure, "year")
+                                    .subtract(1, "day");
+                                  setEndTime(endDate);
+                                }
+                              }}
                               renderInput={(params: any) => (
                                 <TextField
                                   variant="outlined"
@@ -1125,7 +1202,8 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                             <DatePicker
                               disablePast
                               label="End Date"
-                              value={input.value || null}
+                              value={input.value || endTime}
+                              inputFormat="DD/MM/YYYY"
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
                                 <TextField
@@ -1161,45 +1239,8 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                         <div className="text-[red] text-sm">{vehicleErr}</div>
                       )}
                     </Grid>
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field name="mfgYear">
-                        {({ input, meta }) => (
-                          <TextField
-                            {...input}
-                            fullWidth
-                            size="small"
-                            type="number"
-                            label="Enter MFG Year"
-                            className="rounded-sm w-full"
-                            variant="outlined"
-                            error={meta.touched && Boolean(meta.error)}
-                            helperText={meta.touched && meta.error}
-                          />
-                        )}
-                      </Field>
-                    </Grid>
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field name="tenure">
-                        {({ input, meta }) => (
-                          <TextField
-                            {...input}
-                            fullWidth
-                            size="small"
-                            type="number"
-                            value={tenure}
-                            onChange={(event) => {
-                              input.onChange(event);
-                              let t = event.target.value;
-                              setTenure(Number(t));
-                            }}
-                            label="Enter Tenure"
-                            variant="outlined"
-                            error={meta.touched && Boolean(meta.error)}
-                            helperText={meta.touched && meta.error}
-                          />
-                        )}
-                      </Field>
-                    </Grid>
+                    
+
                     <Grid item lg={4} md={4} sm={6} xs={12}>
                       <Field name="ncb">
                         {({ input, meta }) => {
@@ -1712,19 +1753,25 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                                 )}
                               </Grid>
                               <Grid item lg={4} md={4} sm={4} xs={12}>
-                                <input
-                                  id={`file ${index}`}
-                                  type="file"
-                                  onChange={(e) =>
-                                    handleFileInputChange(e, index)
-                                  }
-                                  style={{
-                                    border: "1px solid #c4c4c4",
-                                    padding: "5px",
-                                    width: "100%",
-                                    borderRadius: "5px",
-                                  }}
-                                />
+                                <FileView fileName={formatFilename(doc.file)}>
+                                  <input
+                                    id={`file-${index}`}
+                                    type="file"
+                                    onChange={(e) =>
+                                      handleFileInputChange(e, index)
+                                    }
+                                    style={{
+                                      position: "absolute",
+                                      opacity: 0,
+                                      width: "100%",
+                                      height: "100%",
+                                      top: 0,
+                                      left: 0,
+                                      cursor: "pointer",
+                                    }}
+                                  />
+                                </FileView>
+
                                 {errors[index]?.file && (
                                   <span style={{ color: "red" }}>
                                     {errors[index].file}

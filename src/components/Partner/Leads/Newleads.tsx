@@ -128,7 +128,7 @@ const Leads = () => {
     updateLoading();
   }, [updateLoading]);
   const handleClickAcceptLead = (leadForm: ILeadsVM) => {
-    leadForm.leadCreatedBy = userData.id;
+    leadForm.leadCreatedBy = userData.profileId;
     leadForm.status = "accepted";
     leadForm.updatedBy = userData.role;
     leadForm.updatedOn = "";

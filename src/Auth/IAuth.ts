@@ -17,7 +17,7 @@ export interface ISignUp {
   email: string;
   role: string;
   roleId?: string;
-  partnerId?: string;
+  profileId?: string;
   password: string;
   phoneNumber: string;
   confirmPassword?: string;
@@ -26,7 +26,10 @@ export interface ISignUp {
   joiningDate: string;
   planName: string;
   planId: string;
-
+  companyLogo?:any;
+  profileImage?:any;
+  gender:string;
+  isActive?:boolean;
 }
 export type FormProps = Omit<ISignUp, "planName" | "planId"> & {
   plans: ISubscription;

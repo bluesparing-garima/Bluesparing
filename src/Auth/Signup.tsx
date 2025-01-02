@@ -1,5 +1,5 @@
 import logo from "../assets/login_logo.png";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Form, Field } from "react-final-form";
 import { FORM_ERROR } from "final-form";
 import { FormProps, ISignUp } from "./IAuth";
@@ -7,7 +7,13 @@ import {
   Autocomplete,
   Button,
   FormControl,
+  FormHelperText,
+  FormLabel,
   Grid,
+  InputLabel,
+  MenuItem,
+  OutlinedInput,
+  Select,
   TextField,
 } from "@mui/material";
 import { header, SESSION_USER } from "../context/constant";
@@ -52,46 +58,91 @@ const Signup = () => {
     }
     return errors;
   };
+  const generateFormData = (obj: any) => {
+    const formData = new FormData();
+    Object.keys(obj).forEach((key) => {
+      const value = obj[key];
+      if (value === undefined || value === null) {
+        return;
+      }
+      if (value instanceof File || value instanceof Blob) {
+        formData.append(key, value);
+      } else {
+        formData.append(key, value.toString());
+      }
+    });
+    return formData;
+  };
+  // const onSubmit = (data: any) => {
+  //   const {
+  //     name,
+  //     email,
+  //     originalPassword,
+  //     gender,
+  //     joiningDate,
+  //     phoneNumber,
+  //     profileImage,
+  //     plan,
+  //     companyLogo,
+  //   } = data;
+  //   const obj = {
+  //     name,
+  //     email,
+  //     originalPassword,
+  //     password: originalPassword,
+  //     gender,
+  //     joiningDate: dayjs(joiningDate).format(DAY_FORMAT),
+  //     isActive: true,
+  //     phoneNumber,
+  //     profileImage,
+  //     role: "admin",
+  //     headRmId: UserData.id,
+  //     headRM: UserData.name,
+  //     confirmPassword: originalPassword,
+  //     planId: selectedPlanId,
+  //     roleId: findRoleIdByName(),
+  //     planName: plan.planName || "",
+  //     companyLogo,
+  //   };
+  //   callAddClientAPI(generateFormData(obj));
+  // };
   const onSubmit = async (signUpData: FormProps) => {
-    const { role, plans } = signUpData;
+    const { role, plans, companyLogo, profileImage, gender } = signUpData;
     let payload: ISignUp = {
       name: signUpData.name,
       email: signUpData.email,
       role: role,
-      partnerId: "",
       password: signUpData.password,
       phoneNumber: signUpData.phoneNumber,
       confirmPassword: signUpData.confirmPassword,
       partnerCode: signUpData.partnerCode,
       file: signUpData.file,
+      isActive: false,
       planName: plans.planName,
       planId: plans._id,
       joiningDate: Date.now().toString(),
       roleId: findRoleIdByName(role),
+      companyLogo,
+      profileImage,
+      gender: gender.toLowerCase(),
     };
     payload.role = role.toLowerCase();
-    payload.partnerId = "null";
-    if (role === "admin") {
-      payload.partnerCode = "Admin";
-    }
     try {
       const url = "/api/user/register";
       const options: FetchOptions = {
-        headers: header,
         method: "POST",
-        body: JSON.stringify({
-          ...payload,
-        }),
+        body: generateFormData(payload),
       };
       const responseData = await fetchInterceptor<any>(url, options);
+ 
       if (responseData.status === "success") {
         const data = {
-          name:responseData.user.name,
-          _id:responseData.user.partnerId,
-          phone:responseData.user.phoneNumber,
-          email:responseData.user.email
-        }
-        storeInSessionStorage(SESSION_USER,data)
+          name: responseData.user.name,
+          _id: responseData.user.partnerId,
+          phone: responseData.user.phoneNumber,
+          email: responseData.user.email,
+        };
+        storeInSessionStorage(SESSION_USER, data);
         navigate("/update-plan");
       } else {
         throw new Error("Failed to Register");
@@ -190,7 +241,6 @@ const Signup = () => {
                                     renderInput={(params) => (
                                       <TextField
                                         {...params}
-                                        label="Select  Plan"
                                         size="small"
                                         className="rounded-sm"
                                         error={meta.touched && !!meta.error}
@@ -202,7 +252,7 @@ const Signup = () => {
                               )}
                             </Field>
                           </Grid>
-                          <Grid item lg={12} md={12} sm={6} xs={12}>
+                          <Grid item lg={6} md={6} sm={6} xs={12}>
                             <div className="mb-1">
                               <label
                                 htmlFor="email"
@@ -284,6 +334,49 @@ const Signup = () => {
                             </div>
                           </Grid>
                           <Grid item lg={6} md={6} sm={6} xs={12}>
+                            <label
+                              htmlFor="role"
+                              className="mb-1 block text-base font-medium text-[#07074D]"
+                            >
+                              Gender
+                            </label>
+                            <Field name="gender">
+                              {({ input, meta }) => (
+                                <FormControl
+                                  fullWidth
+                                  variant="outlined"
+                                  size="small"
+                                  error={meta.touched && Boolean(meta.error)}
+                                >
+                                  <InputLabel>Select Gender</InputLabel>
+                                  <Select
+                                    {...input}
+                                    input={
+                                      <OutlinedInput />
+                                    }
+                                  >
+                                    {["Male", "Female", "Other"].map(
+                                      (option) => (
+                                        <MenuItem
+                                          className="capitalized"
+                                          key={option}
+                                          value={option}
+                                        >
+                                          {option}
+                                        </MenuItem>
+                                      )
+                                    )}
+                                  </Select>
+                                  {meta.touched && meta.error && (
+                                    <FormHelperText>
+                                      {meta.error}
+                                    </FormHelperText>
+                                  )}
+                                </FormControl>
+                              )}
+                            </Field>
+                          </Grid>
+                          <Grid item lg={6} md={6} sm={6} xs={12}>
                             <div className="mb-1">
                               <label
                                 htmlFor="password"
@@ -314,7 +407,7 @@ const Signup = () => {
                             <div className="mb-1">
                               <label
                                 htmlFor="confirmPassword"
-                                className="mb-1 block text-base font-medium text-[#07074D]"
+                                className="mb-1 block text-base font-satoshi font-medium text-[#07074D]"
                               >
                                 Confirm Password
                               </label>
@@ -336,6 +429,76 @@ const Signup = () => {
                                 )}
                               </Field>
                             </div>
+                          </Grid>
+                          <Grid item lg={6} md={6} xs={12}>
+                            <FormLabel     className="mb-1 block text-base font-satoshi font-medium text-[#07074D]" >
+                              Profile Image
+                            </FormLabel>
+                            <Field name="profileImage">
+                              {({ input, meta }) => (
+                                <div>
+                                  <Grid item lg={12} xs={12}>
+                                    <input
+                                      type="file"
+                                      style={{
+                                        border: "1px solid #c4c4c4",
+                                        padding: "5px",
+                                        width: "100%",
+                                        borderRadius: "5px",
+                                      }}
+                                      onChange={(
+                                        event: React.ChangeEvent<HTMLInputElement>
+                                      ) => {
+                                        const file = event.target.files
+                                          ? event.target.files[0]
+                                          : null;
+                                        input.onChange(file);
+                                      }}
+                                    />
+                                    {meta.touched && meta.error && (
+                                      <span style={{ color: "red" }}>
+                                        {meta.error}
+                                      </span>
+                                    )}
+                                  </Grid>
+                                </div>
+                              )}
+                            </Field>
+                          </Grid>
+                          <Grid item lg={6} md={6} xs={12}>
+                            <FormLabel className="mb-1 block text-base font-satoshi font-medium text-[#07074D]" >
+                              Company Logo
+                            </FormLabel>
+                            <Field name="companyLogo">
+                              {({ input, meta }) => (
+                                <div>
+                                  <Grid item lg={12} xs={12}>
+                                    <input
+                                      type="file"
+                                      style={{
+                                        border: "1px solid #c4c4c4",
+                                        padding: "5px",
+                                        width: "100%",
+                                        borderRadius: "5px",
+                                      }}
+                                      onChange={(
+                                        event: React.ChangeEvent<HTMLInputElement>
+                                      ) => {
+                                        const file = event.target.files
+                                          ? event.target.files[0]
+                                          : null;
+                                        input.onChange(file);
+                                      }}
+                                    />
+                                    {meta.touched && meta.error && (
+                                      <span style={{ color: "red" }}>
+                                        {meta.error}
+                                      </span>
+                                    )}
+                                  </Grid>
+                                </div>
+                              )}
+                            </Field>
                           </Grid>
                           <Grid item lg={12} md={12} sm={12} xs={12}>
                             {submitError && (

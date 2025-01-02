@@ -55,7 +55,7 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
   let [policyTypes] = useGetPolicyTypes({ header: header });
   let [caseTypes] = useGetCaseTypes({ header: header });
   let [companies] = useGetCompanies({ header: header });
-  let [products] = useGetProducts({ header: header });
+  let [products] = useGetProducts({ header: header,category:"motor" });
   let [productSubTypes] = useGetProductSubTypes({ header: header });
   let [partners] = useGetPartners({ header: header, role: "partner" });
   const [selectedProduct, setSelectedProduct] = useState<IProducts>();
@@ -207,14 +207,14 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
         : selectedRMName;
     bookingForm.partnerId =
       userData.role.toLowerCase() === "partner"
-        ? userData.partnerId
+        ? userData.profileId
         : selectedPartnerId;
     bookingForm.partnerName =
       userData.role.toLowerCase() === "partner"
         ? userData.name
         : selectedPartnerName;
     bookingForm.createdBy = userData.name;
-    bookingForm.bookingCreatedBy = userData.id;
+    bookingForm.bookingCreatedBy = userData.profileId;
     const formData = new FormData();
     formData.append("policyNumber", bookingForm.policyNumber);
     formData.append("category", bookingForm.category);
@@ -275,7 +275,7 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
       bookingForm.partnerId = initialValues.partnerId;
       bookingForm.partnerName = initialValues.partnerName;
       bookingForm.createdBy = userData.name;
-      bookingForm.bookingCreatedBy = userData.id;
+      bookingForm.bookingCreatedBy = userData.profileId;
       const formData = new FormData();
       formData.append("leadId", leadId);
       formData.append("policyNumber", bookingForm.policyNumber);

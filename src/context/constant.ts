@@ -38,11 +38,10 @@ export const headerForm: any = {
 };
 export type SafeKaroUser = {
   isLoggedIn: boolean;
-  id: string;
   name: string;
   email: string;
   role: string;
-  partnerId: string;
+  profileId: string;
   headRMId: string;
   headRM: string;
   accessToken?: string;
@@ -54,6 +53,7 @@ export type SafeKaroUser = {
   planId?:string;
   roleId?:string;
   transactionStatus?:boolean;
+  parentAdminId?:string;
 };
 export type Header = {
   "Content-Type": string;
@@ -90,3 +90,5 @@ export const FUEL_TYPE_STORAGE_KEY = "paginationFuelType";
 export const MAKE_STORAGE_KEY = "paginationMake";
 export const MODEL_STORAGE_KEY = "paginationModel";
 export const SESSION_USER = "session_user";
+export const CURRENT_SUBSID = 'currentSubscriptionIds'
+export const CURRENT_ROLE_MENUS = 'currentRoleMenu'

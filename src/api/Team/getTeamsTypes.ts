@@ -18,6 +18,7 @@ export interface GetEmployeesProps {
 export interface GetTeamDetailsProps {
   header?: Header;
   teamId?: string;
+  parentAdminId?:string;
 }
 
 export interface DeleteTeamProps {

@@ -62,7 +62,7 @@ const Dashboard: React.FC = () => {
     getAdminDashboardService({
       header,
       startDate,
-      endDate,
+      endDate,parentAdminId:UserData.parentAdminId
     })
       .then((dashboardData) => {
         setIsVisible(true);
@@ -77,6 +77,7 @@ const Dashboard: React.FC = () => {
         setIsVisible(true);
       });
   }, []);
+  
   const handleDownloadPDF = () => {
     adminGeneratePdf(data);
   };
@@ -96,110 +97,7 @@ const Dashboard: React.FC = () => {
     const intervalId = setInterval(fetchData, 30000);
     return () => clearInterval(intervalId);
   }, [GetDashboardCount]);
-  const renderCountBox = (
-    title: any,
-    count: any,
-    icon: string,
-    link?: any,
-    selectedCategory?: any
-  ) => {
-    if (link === "/total payout amount") {
-      link = "/payouts";
-    }
-    if (link === "/total payin amount") {
-      link = "/payins";
-    }
-    if (link === "/total policy count" || link === "/monthly policy count") {
-      link = "/policy/motor-policies";
-    }
-    if (link === "/monthly payout amount") {
-      link = "/payouts/monthly";
-    }
-    if (link === "/monthly payin") {
-      link = "/payins/monthly";
-    }
-    if (link === "/total received payin amount") {
-      link = "/payins/recieved";
-    }
-    if (link === "/monthly received payin") {
-      link = "/payins/recieved/monthly";
-    }
-    if (link === "/total payin balance") {
-      link = "/payins/balance";
-    }
-    if (link === "/monthly payin balance") {
-      link = "/payins/balance/monthly";
-    }
-    if (link === "/total left dist.") {
-      link = "/payins/leftDistributed";
-    }
-    if (link === "/monthly payin left dist.") {
-      link = "/payins/leftDistributed/monthly";
-    }
-    if (link === "/monthly paid payout amount") {
-      link = "/payouts/monthly/paid";
-    }
-    if (link === "/monthly payout balance") {
-      link = "/payouts/monthly/balance";
-    }
-    if (link === "/monthly payout left dist.") {
-      link = "/payouts/monthly/leftDistributed";
-    }
-    if (link === "/total paid payout amount") {
-      link = "/payouts/paid";
-    }
-    if (link === "/total payout balance") {
-      link = "/payouts/balance";
-    }
-    if (link === "/total payout left dist.") {
-      link = "/payouts/leftDistributed";
-    }
-    if (link === "/monthly net premium") {
-      link = "/netpremium/monthly_preminum";
-    }
-    if (link === "/monthly final premium") {
-      link = "/finalpremium/monthly";
-    }
-    if (link === "/total net premium") {
-      link = "/netpremium";
-    }
-    if (link === "/total final premium") {
-      link = "/finalpremium";
-    }
-    if (link === "/total revenue" || link === "/monthly revenue") {
-      link = "/dashboard";
-    }
-    const content = (
-      <div className="bg-white m-2 p-3 rounded-[10.33px] shadow-lg flex items-center justify-between transform transition-transform duration-200 hover:scale-105">
-        <div>
-          <Typography
-            variant="body2"
-            className="text-sm text-gray-600 mb-2 font-satoshi"
-          >
-            {title}
-          </Typography>
-          <Typography
-            variant="h5"
-            className="text-base font-bold text-[#202224]"
-          >
-            {count}
-          </Typography>
-        </div>
-        {}
-      </div>
-    );
-    return (
-      <Grid item xs={12} sm={6} md={4} lg={3}>
-        {link ? (
-          <Link to={link} state={selectedCategory}>
-            {content}
-          </Link>
-        ) : (
-          content
-        )}
-      </Grid>
-    );
-  };
+
   const onSubmit = async (value: any) => {
     const utcStartDate = new Date(value.startDate!);
     const formattedStartDate = format(utcStartDate, "yyyy-MM-dd'T'HH:mm:ss");
@@ -387,7 +285,7 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
           <Grid item md={12}>
-            {UserData.role === "admin" ? (
+            {UserData.role.toLowerCase() === "admin" ? (
               <>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
@@ -681,6 +579,7 @@ const Dashboard: React.FC = () => {
     </div>
   );
 };
+
 export const CartButton: React.FC<CartButtonProps> = ({
   onClick,
   tooltipTitle,
@@ -704,4 +603,110 @@ export const CartButton: React.FC<CartButtonProps> = ({
     </div>
   );
 };
+
+const renderCountBox = (
+  title: any,
+  count: any,
+  icon: string,
+  link?: any,
+  selectedCategory?: any
+) => {
+  if (link === "/total payout amount") {
+    link = "/payouts";
+  }
+  if (link === "/total payin amount") {
+    link = "/payins";
+  }
+  if (link === "/total policy count" || link === "/monthly policy count") {
+    link = "/policy/motor-policies";
+  }
+  if (link === "/monthly payout amount") {
+    link = "/payouts/monthly";
+  }
+  if (link === "/monthly payin") {
+    link = "/payins/monthly";
+  }
+  if (link === "/total received payin amount") {
+    link = "/payins/recieved";
+  }
+  if (link === "/monthly received payin") {
+    link = "/payins/recieved/monthly";
+  }
+  if (link === "/total payin balance") {
+    link = "/payins/balance";
+  }
+  if (link === "/monthly payin balance") {
+    link = "/payins/balance/monthly";
+  }
+  if (link === "/total left dist.") {
+    link = "/payins/leftDistributed";
+  }
+  if (link === "/monthly payin left dist.") {
+    link = "/payins/leftDistributed/monthly";
+  }
+  if (link === "/monthly paid payout amount") {
+    link = "/payouts/monthly/paid";
+  }
+  if (link === "/monthly payout balance") {
+    link = "/payouts/monthly/balance";
+  }
+  if (link === "/monthly payout left dist.") {
+    link = "/payouts/monthly/leftDistributed";
+  }
+  if (link === "/total paid payout amount") {
+    link = "/payouts/paid";
+  }
+  if (link === "/total payout balance") {
+    link = "/payouts/balance";
+  }
+  if (link === "/total payout left dist.") {
+    link = "/payouts/leftDistributed";
+  }
+  if (link === "/monthly net premium") {
+    link = "/netpremium/monthly_preminum";
+  }
+  if (link === "/monthly final premium") {
+    link = "/finalpremium/monthly";
+  }
+  if (link === "/total net premium") {
+    link = "/netpremium";
+  }
+  if (link === "/total final premium") {
+    link = "/finalpremium";
+  }
+  if (link === "/total revenue" || link === "/monthly revenue") {
+    link = "/dashboard";
+  }
+  const content = (
+    <div className="bg-white m-2 p-3 rounded-[10.33px] shadow-lg flex items-center justify-between transform transition-transform duration-200 hover:scale-105">
+      <div>
+        <Typography
+          variant="body2"
+          className="text-sm text-gray-600 mb-2 font-satoshi"
+        >
+          {title}
+        </Typography>
+        <Typography
+          variant="h5"
+          className="text-base font-bold text-[#202224]"
+        >
+          {count}
+        </Typography>
+      </div>
+      {}
+    </div>
+  );
+  return (
+    <Grid item xs={12} sm={6} md={4} lg={3}>
+      {link ? (
+        <Link to={link} state={selectedCategory}>
+          {content}
+        </Link>
+      ) : (
+        content
+      )}
+    </Grid>
+  );
+};
+
 export default Dashboard;

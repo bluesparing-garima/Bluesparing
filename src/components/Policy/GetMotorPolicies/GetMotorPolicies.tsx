@@ -87,7 +87,7 @@ const GetMotorPolicies = () => {
   const [motorPolicies, setMotorPolicies] = useState<IViewPolicy[]>([]);
   const [DialogTitle, setDialogTitle] = useState("Title");
   const [calculationData, setCalculationData] = useState<IPolicyPayment>();
-
+  const [globalFilter, setGlobalFilter] = useState("");
   const [stDate, setStDate] = useState(startTime || "");
   const [eDate, setEdate] = useState(endTime || "");
 
@@ -127,7 +127,12 @@ const GetMotorPolicies = () => {
 
   const GetPolicies = useCallback(
     (startDate, endDate) =>
-      getMotorPolicyService({ header, startDate, endDate })
+      getMotorPolicyService({
+        header,
+        startDate,
+        endDate,
+        parentAdminId: userData.parentAdminId,
+      })
         .then((motorPolicy) => {
           setMotorPolicies(motorPolicy.data);
         })
@@ -142,7 +147,7 @@ const GetMotorPolicies = () => {
     (startDate, endDate) =>
       getPolicyByPartnerIdService({
         header,
-        partnerId: userData.partnerId,
+        partnerId: userData.profileId,
         startDate,
         endDate,
       })
@@ -153,14 +158,14 @@ const GetMotorPolicies = () => {
           const err = await error;
           toast.error(err.message);
         }),
-    [userData.partnerId]
+    [userData.profileId]
   );
 
   const GetPoliciesByPolicyCompletedById = useCallback(
     (startDate, endDate) =>
       getPolicyCompletedByIdService({
         header,
-        policyCompletedById: userData.id,
+        policyCompletedById: userData.profileId,
         startDate,
         endDate,
       })
@@ -171,7 +176,7 @@ const GetMotorPolicies = () => {
           const err = await error;
           toast.error(err.message);
         }),
-    [userData.id]
+    [userData.profileId]
   );
 
   useEffect(() => {
@@ -1484,11 +1489,17 @@ const GetMotorPolicies = () => {
           </React.Fragment>
 
           <MaterialReactTable
-            state={{ isLoading }}
+            state={{
+              isLoading,
+              globalFilter: globalFilter.trim(), // Combine both states here
+            }}
             columns={columns}
             data={parsedData}
             enableRowActions
             editingMode="cell"
+            enableGlobalFilter
+            globalFilterFn="fuzzy" // Use default fuzzy filtering
+            onGlobalFilterChange={(value) => setGlobalFilter(value || "")}
             enableEditing={userData.role?.toLowerCase() === "admin"}
             muiTableBodyCellEditTextFieldProps={({ cell }) => {
               const editableColumns = [
@@ -1623,6 +1634,7 @@ const GetMotorPolicies = () => {
               );
             }}
           />
+
           <ConfirmationDialogBox
             open={dialogOpen}
             onClose={handleCloseDialog}

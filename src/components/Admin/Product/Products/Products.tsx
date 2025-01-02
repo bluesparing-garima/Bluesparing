@@ -37,7 +37,7 @@ const Products = () => {
   };
   const GetProducts = useCallback(
     () =>
-      getProductsService({ header })
+      getProductsService({ header,category:"motor" })
         .then((productsDetails) => {
           setProducts(productsDetails.data);
         })

@@ -56,7 +56,7 @@ export const motorPolicyCreatePath = (bookingRequestId: string) =>
   `/policy/motor/${bookingRequestId}`;
 export const calculatePayInPolicyPath = () => `/policy/filter`;
 export const policyFilterByDatePolicyPath = () => `/policy/filter-date`;
-export const categoryPath = () => `/category`;
+export const categoryPath = () => `/categories`;
 export const categoryAddPath = () => `/categories/add`;
 export const categoryEditPath = (categoryId: string) =>
   `/categories/${categoryId}/edit`;

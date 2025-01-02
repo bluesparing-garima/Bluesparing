@@ -40,6 +40,10 @@ const Signin = () => {
         body: JSON.stringify(signInData),
       };
       const responseData = await fetchInterceptor<any>(url, options);
+      if (responseData.role.toLowerCase().trim() === "superadmin") {
+        toast.error("super admin can't login ");
+        return;
+      }
       if (responseData.status === "success") {
         let loginData: SafeKaroUser = {
           ...responseData,
@@ -49,32 +53,31 @@ const Signin = () => {
         if (loginData.accessToken && loginData.refreshToken) {
           setTokens(loginData.accessToken!, loginData.refreshToken!);
         }
-        if (responseData.role.toLowerCase() === "superadmin") {
-          return { [FORM_ERROR]: `you are not authorized` };
-        }
-        if (responseData.role !== "admin") {
+
+        localStorage.setItem("user", JSON.stringify(loginData));
+        if (responseData.role.toLowerCase().trim() !== "admin") {
           const bookingRequestDetails = await getTeamDetailsService({
             header,
-            teamId: responseData.partnerId,
+            teamId: responseData.profileId,
+            parentAdminId:responseData.parentAdminId
           });
           loginData.headRMId = bookingRequestDetails.headRMId!;
           loginData.headRM = bookingRequestDetails.headRM!;
-          loginData.id = responseData.partnerId!;
         } else {
           const bookingRequestDetails = await getTeamDetailsService({
             header,
-            teamId: responseData.partnerId,
+            teamId: responseData.profileId,
+            parentAdminId:responseData.parentAdminId
           });
-          loginData.id = responseData.partnerId!;
           loginData.companyLogo = bookingRequestDetails.companyLogo;
         }
-        
+
         localStorage.setItem("user", JSON.stringify(loginData));
         let role = responseData.role.toLowerCase();
         if (role === "relationship manager") {
           role = "rm";
         }
-        if (!responseData.transactionStatus) {
+        if (!responseData.transactionStatus && responseData.role.toLowerCase().trim() === "admin") {
           navigate("/update-plan");
           return;
         }

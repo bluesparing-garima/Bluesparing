@@ -5,9 +5,9 @@ import { GetMotorPoliciesProps } from "../getPoliciesTypes";
 const getMotorPolicyAPI = async ({
   header,
   startDate,
-  endDate,
+  endDate,parentAdminId
 }: GetMotorPoliciesProps) => {
-  const url = endpoint(startDate!,endDate!)
+  const url = endpoint(startDate!,endDate!,parentAdminId!)
   const options: FetchOptions= {
     method: "GET",
     headers: header,

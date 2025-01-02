@@ -62,7 +62,7 @@ const BookingDashboard: React.FC = () => {
     (startDate: string, endDate: string) => {
       getBookingDashboardService({
         header,
-        bookingUserId: UserData.id,
+        bookingUserId: UserData.profileId,
         startDate,
         endDate,
       })
@@ -75,11 +75,11 @@ const BookingDashboard: React.FC = () => {
           console.error("Failed to fetch product details", error);
         });
     },
-    [UserData.id]
+    [UserData.profileId]
   );
   const getAttendanceRecord = async () => {
     try {
-      const res = await GetAttendanceCountService({ header, eId: UserData.id });
+      const res = await GetAttendanceCountService({ header, eId: UserData.profileId });
       setEmployee(res.data);
     } catch (error:any) {
       const err= await error;

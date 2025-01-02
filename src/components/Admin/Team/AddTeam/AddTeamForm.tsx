@@ -138,17 +138,16 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
     }
   }, [initialValues, isAdd, headRMs]);
 
-  const  findRoleIdByName = (role:string)=>{
-    const r= role?.toLowerCase();
-    const newRole = roles?.find((ele)=>ele.roleName?.toLowerCase()===r);
-    if(newRole){
+  const findRoleIdByName = (role: string) => {
+    const r = role?.toLowerCase();
+    const newRole = roles?.find((ele) => ele.roleName?.toLowerCase() === r);
+    if (newRole) {
       return newRole._id;
-    }else{
-      return ""
+    } else {
+      return "";
     }
-  }
+  };
 
-  
   const handleChangeRole = async (e: any) => {
     const role = e.target.value;
     setSelectedRole(role);
@@ -186,7 +185,6 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       toast.error("Invalid  DOB, its MM/DD/YYYY from");
       return;
     }
-
     const formValid = documents.every((doc, index) =>
       validateDocument(doc, index)
     );
@@ -194,10 +192,10 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
     if (selectedRole === "Relationship Manager") {
       if (formValid) {
         teamForm.role = selectedRole;
-        teamForm.roleId = findRoleIdByName(selectedRole)
+        teamForm.roleId = findRoleIdByName(selectedRole);
         teamForm.headRMId = selectedRMId === undefined ? "" : selectedRMId;
         teamForm.headRM = selectedRMName;
-        teamForm.planId = UserData.planName;
+        teamForm.planId = UserData.planId;
         teamForm.planName = UserData.planName;
         const formData = new FormData();
         const addedKeys = new Map<string, string>();
@@ -227,7 +225,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       } else if (formValid) {
         setRMErrorMessage("");
         teamForm.role = selectedRole;
-        teamForm.roleId = findRoleIdByName(selectedRole)
+        teamForm.roleId = findRoleIdByName(selectedRole);
         teamForm.headRMId = selectedRMId === undefined ? "" : selectedRMId;
         teamForm.headRM = selectedRMName;
         teamForm.planId = UserData.planId;
@@ -373,14 +371,21 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       return errors;
     }
   };
-  const checkEmailExists = async (e: any) => {
+  const debounce = (func: (...args: any[]) => void, delay: number) => {
+    let timer: NodeJS.Timeout;
+    return (...args: any[]) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => func(...args), delay);
+    };
+  };
+  const debouncedCheckEmailExists = debounce(async (e: any) => {
     const email = e.target.value;
     try {
       const emailCheck = await validateEmailService({
         header,
         email,
       });
-      if (emailCheck.status === "success") {
+      if (emailCheck.status === "success" && emailCheck.data.length>0) {
         setEmailErrorMessage("Email already exist");
         return true;
       } else {
@@ -388,9 +393,11 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
         return false;
       }
     } catch {
+      setEmailErrorMessage("Error validating email");
       return false;
     }
-  };
+  }, 300); // 300ms debounce delay
+
   const validationSchema = yup.object().shape({
     fullName: yup
       .string()
@@ -442,7 +449,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       .required("Account number is required")
       .matches(/^\d+$/, "Account number must contain only digits")
       .min(6, "Account number must be at least 6 digits")
-      .max(12, "Account number must be at most 12 digits"),
+      .max(16, "Account number must be at most 12 digits"),
     salary: yup
       .string()
       .required("salary is required")
@@ -537,8 +544,8 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                                 : ""
                             }
                             options={filteredHeadRM || []}
-                            isOptionEqualToValue={
-                              (option, value) => option?._id === value?._id
+                            isOptionEqualToValue={(option, value) =>
+                              option?._id === value?._id
                             }
                             onChange={(event, newValue) => {
                               input.onChange(newValue || null);
@@ -616,7 +623,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                       variant="outlined"
                       size="small"
                       className="rounded-sm w-full"
-                      onChangeCapture={checkEmailExists}
+                      onChangeCapture={debouncedCheckEmailExists}
                       error={meta.touched && Boolean(meta.error)}
                       helperText={meta.touched && meta.error}
                     />
@@ -730,6 +737,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                             : initialValues.dateOfBirth || null
                         }
                         onChange={(date) => input.onChange(date)}
+                          inputFormat="DD/MM/YYYY"
                         renderInput={(params: any) => (
                           <TextField
                             variant="outlined"
@@ -803,6 +811,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                             : initialValues.joiningDate || null
                         }
                         onChange={(date) => input.onChange(date)}
+                            inputFormat="DD/MM/YYYY"
                         renderInput={(params: any) => (
                           <TextField
                             variant="outlined"

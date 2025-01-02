@@ -7,7 +7,10 @@ import { convertILeadVMToILeadForm } from "../../../api/Leads/convertILeadVMToIL
 import getLeadByIdService from "../../../api/Leads/GetLeadById/getLeadByIdService";
 import EditLeadForm from "./editLeadForm";
 import toast, { Toaster } from "react-hot-toast";
-
+interface DocumentViewerProps {
+  docName: string;
+  file: string;
+}
 const EditLead = () => {
   const title = "Edit Lead";
   const { leadId } = useParams();
@@ -82,9 +85,9 @@ const EditLead = () => {
           }
           setDocuments(updatedDocuments);
         })
-        .catch(async(error:any) => {
-          const err = await error
-          toast.error(err.message)
+        .catch(async (error: any) => {
+          const err = await error;
+          toast.error(err.message);
           console.error("Failed to fetch Lead details", error);
         });
     }
@@ -183,28 +186,16 @@ const EditLead = () => {
 
                   <Grid container mb={2}>
                     {documents.map((document, index) => (
-                      <Grid item md={4} key={index}>
-                        <Typography
-                          className="text-addButton"
-                          variant="subtitle1"
-                          component="h4"
-                        >
-                          {document.docName}
-                        </Typography>
-                        {document.file.endsWith(".pdf") ? (
-                          <embed
-                            src={document.file}
-                            type="application/pdf"
-                            width="400"
-                            height="400"
-                          />
-                        ) : (
-                          <img
-                            src={document.file}
-                            alt={document.docName}
-                            style={{ maxWidth: "100%" }}
-                          />
-                        )}
+                      <Grid
+                        item
+                        md={4}
+                        key={index}
+                        style={{ flex: "0 0 auto" }}
+                      >
+                        <DocumentViewer
+                          docName={document.docName}
+                          file={document.file}
+                        />
                       </Grid>
                     ))}
                   </Grid>
@@ -258,4 +249,48 @@ const EditLead = () => {
   );
 };
 
+export const DocumentViewer: React.FC<DocumentViewerProps> = ({
+  docName,
+  file,
+}) => {
+  return (
+    <div
+      style={{
+        height: "400px",
+        overflowY: "auto",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "flex-start",
+        border: "1px solid #ddd",
+        padding: "10px",
+        boxSizing: "border-box",
+        cursor: "pointer",
+      }}
+      onClick={() => window.open(`${file}`, "_blank")}
+    >
+      <Typography
+        className="text-addButton"
+        variant="subtitle1"
+        component="h4"
+        style={{ marginBottom: "10px" }}
+      >
+        {docName}
+      </Typography>
+      {file.endsWith(".pdf") ? (
+        <embed
+          src={file}
+          type="application/pdf"
+          style={{ width: "100%", flexGrow: 1 }}
+        />
+      ) : (
+        <img
+          src={file}
+          alt={docName}
+          style={{ maxWidth: "100%", maxHeight: "100%", flexGrow: 1 }}
+        />
+      )}
+    </div>
+  );
+};
 export default EditLead;

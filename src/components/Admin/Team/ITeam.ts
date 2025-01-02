@@ -76,6 +76,7 @@ export interface ITeamsVM {
   updatedBy?: string;
   companyLogo?:string;
   forceUpdate?: number;
+  partnerCode?:string;
   planName?:string;
   transactionStatus?:boolean;
 }
@@ -102,7 +103,7 @@ export interface ITeams {
   salary?: number;
   // document?: any[];
   image?: string;
-  profileImage?:string;
+  profileImage?: string;
   adharCardBack?: string;
   adharCardFront?: string;
   panCard?: string;
@@ -118,6 +119,7 @@ export interface ITeams {
   updatedOn?: string;
   updatedBy?: string;
   planName?:string;
+  partnerCode?:string;
   transactionStatus?:boolean;
 }
 

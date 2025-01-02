@@ -27,7 +27,7 @@ const UploadLogo = () => {
   const onSubmit = (data: any) => {
     const team = new FormData();
     team.append("companyLogo", data.companyLogo);
-    const teamId = UserData.id;
+    const teamId = UserData.profileId;
     const payload: AddEditTeamProps = { team, teamId };
     callEditTeamApi(payload);
   };
