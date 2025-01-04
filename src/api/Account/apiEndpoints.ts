@@ -1,16 +1,14 @@
-import { SafeKaroUser } from "../../context/constant";
-let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
-let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
+
 export const addAccountEndpoint = () =>
   (`/api/account`);
 export const getAccountsEndpoint = () =>
-  (`/api/account/${UserData.parentAdminId}`);
+  (`/api/account`);
 export const editAccountEndpoint = (accountId: string) =>
   (`/api/account/${accountId}`);
 export const getAccountsByIdEndpoint = (accountId: string) =>
-  (`/api/account/${accountId}/${UserData.parentAdminId}`);
+  (`/api/account/${accountId}`);
 export const getAccountsCreditDebitByIdEndpoint = (accountId: string) =>
-  (`/api/account/account-details/${accountId}/${UserData.parentAdminId}`);
+  (`/api/account/account-details/${accountId}`);
 
 export const getAccountDetailsByBrokerEndpoint = (
   startDate: string,

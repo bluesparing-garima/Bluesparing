@@ -48,7 +48,7 @@ export const attendanceGetDashboardEndpoint = () => {
     return `/api/attendance/stats`;
 }
 export const HrDashBoardEndpoint = (sd: string, ed: string, hrId: string) => {
-    return (`/api/hr-dashboard/${UserData.parentAdminId}?startDate=${sd}&endDate=${ed}&hrId=${hrId}`)
+    return (`/api/hr-dashboard?startDate=${sd}&endDate=${ed}&hrId=${hrId}`)
 }
 export const dateFilerAttendanceEndPoint = (st: string, et: string, eid: string) => {
     return (`/api/attendance/employee/date-range?startDate=${st}&endDate=${et}&employeeId=${eid}`);

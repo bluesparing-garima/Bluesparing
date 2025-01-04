@@ -4,7 +4,7 @@ export interface getAdminDashboardProps {
   header: Header;
   startDate: string;
   endDate: string;
-  parentAdminId?:string;
+
 }
 
 export interface getPartnerDashboardProps {

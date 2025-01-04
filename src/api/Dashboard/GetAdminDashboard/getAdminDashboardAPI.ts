@@ -5,9 +5,9 @@ import { getAdminDashboardProps } from "../getDashboardTypes";
 const getAdminDashboardAPI = async ({
   header,
   startDate,
-  endDate,parentAdminId
+  endDate
 }: getAdminDashboardProps) => {
-  const url = endpoint(startDate, endDate,parentAdminId!)
+  const url = endpoint(startDate, endDate!)
   const options: FetchOptions = {
     method: "GET",
     headers: header

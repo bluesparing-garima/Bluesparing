@@ -26,7 +26,7 @@ export interface ICreditDebitForm {
   createdBy?: any;
   updatedBy?: any;
   transactionCode?:string
-  parentAdminId?:string;
+
 }
 
 export interface ICreditDebits {

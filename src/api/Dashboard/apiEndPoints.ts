@@ -1,10 +1,6 @@
-import { SafeKaroUser } from "../../context/constant";
-
-let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
-let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
-export const getDashboardEndpoint = (startDate: string, endDate: string, parentAdminId: string) =>
+export const getDashboardEndpoint = (startDate: string, endDate: string) =>
 (
-  `/api/dashboard/${parentAdminId}?startDate=${startDate}&endDate=${endDate}`
+  `/api/dashboard?startDate=${startDate}&endDate=${endDate}`
 );
 export const getTotalPartnerPaymentEndpoint = (category: string) =>
   (`/api/dashboard/partner-admin?category=${category}`);
@@ -161,9 +157,9 @@ export const getPartnerDashboardEndpoint = (
   startDate: string,
   endDate: string
 ) =>
-(
-  `/${UserData.parentAdminId}?partnerId=${partnerId}&startDate=${startDate}&endDate=${endDate}`
-);
+  (
+    `/api/partner-dashboard?partnerId=${partnerId}&startDate=${startDate}&endDate=${endDate}`
+  );
 
 export const getBookingDashboardEndpoint = (
   bookingUserId: string,
@@ -174,13 +170,13 @@ export const getBookingDashboardEndpoint = (
   `/api/booking-dashboard/${bookingUserId}?startDate=${startDate}&endDate=${endDate}`
 );
 export const getOperationDashboardEndpoint = (operationUserId: string) =>
-  (`/api/operation-dashboard/${operationUserId}/${UserData.parentAdminId}`);
+  (`/api/operation-dashboard/${operationUserId}`);
 export const getAccountDashboardEndpoint = (
   startDate: string,
   endDate: string
 ) =>
 (
-  `/api/account-dashboard/${UserData.parentAdminId}?startDate=${startDate}&endDate=${endDate}`
+  `/api/account-dashboard?startDate=${startDate}&endDate=${endDate}`
 );
 
 export const getCommissionDataEndpoint = (filter: string) =>
@@ -223,7 +219,7 @@ export const getRmDashboardEndpoints = (
   rmId: string
 ) =>
 (
-  `/api/relationship-manager-dashboard/${UserData.parentAdminId}?startDate=${startDate}&endDate=${endDate}&rmId=${rmId}`
+  `/api/relationship-manager-dashboard?startDate=${startDate}&endDate=${endDate}&rmId=${rmId}`
 );
 export const GetMonthlyPaidPayoutEndpoint = (
   startDate: string,

@@ -1,7 +1,3 @@
-import { SafeKaroUser } from "../../context/constant";
-
-  let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
-  let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
 
 export const addLeadEndpoint = () =>
  (`/api/lead-generate`);
@@ -13,13 +9,13 @@ export const getLeadByIdEndpoint = (leadId: string) =>
  (`/api/lead-generate/${leadId}`);
 
 export const getLeadEndpoint = () =>
- (`/api/lead-generate/${UserData.parentAdminId}`);
+ (`/api/lead-generate`);
 
 export const getLeadByPartnerIdEndpoint = (partnerId: string) =>
- (`/api/lead-generate/partner-id/${partnerId}/${UserData.parentAdminId}`);
+ (`/api/lead-generate/partner-id/${partnerId}`);
 
 export const getLeadByUserIdEndpoint = (userId: string) =>
- (`/api/lead-generate/created-by/${userId}/${UserData.parentAdminId}`);
+ (`/api/lead-generate/created-by/${userId}`);
 
 export const acceptLeadEndpoint = (leadId: string) =>
  (`/api/lead-generate/accepted-lead/${leadId}`);

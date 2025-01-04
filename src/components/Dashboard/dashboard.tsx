@@ -62,7 +62,7 @@ const Dashboard: React.FC = () => {
     getAdminDashboardService({
       header,
       startDate,
-      endDate,parentAdminId:UserData.parentAdminId
+      endDate
     })
       .then((dashboardData) => {
         setIsVisible(true);
@@ -77,7 +77,6 @@ const Dashboard: React.FC = () => {
         setIsVisible(true);
       });
   }, []);
-  
   const handleDownloadPDF = () => {
     adminGeneratePdf(data);
   };

@@ -10,5 +10,4 @@ const useSafekaroContextAuth = () => {
 
   return context;
 };
-
 export default useSafekaroContextAuth;

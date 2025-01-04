@@ -26,11 +26,9 @@ const Signup = () => {
   const navigate = useNavigate();
   const [subsData] = useSubscription();
   const [roles] = useGetRoles({ header });
-
   const findRoleIdByName = (name: string) => {
     const temp = name.toLowerCase();
     const roleObj = roles.find((ele) => ele.roleName?.toLowerCase() === temp);
-
     if (roleObj) {
       return roleObj?._id;
     } else {
@@ -73,39 +71,6 @@ const Signup = () => {
     });
     return formData;
   };
-  // const onSubmit = (data: any) => {
-  //   const {
-  //     name,
-  //     email,
-  //     originalPassword,
-  //     gender,
-  //     joiningDate,
-  //     phoneNumber,
-  //     profileImage,
-  //     plan,
-  //     companyLogo,
-  //   } = data;
-  //   const obj = {
-  //     name,
-  //     email,
-  //     originalPassword,
-  //     password: originalPassword,
-  //     gender,
-  //     joiningDate: dayjs(joiningDate).format(DAY_FORMAT),
-  //     isActive: true,
-  //     phoneNumber,
-  //     profileImage,
-  //     role: "admin",
-  //     headRmId: UserData.id,
-  //     headRM: UserData.name,
-  //     confirmPassword: originalPassword,
-  //     planId: selectedPlanId,
-  //     roleId: findRoleIdByName(),
-  //     planName: plan.planName || "",
-  //     companyLogo,
-  //   };
-  //   callAddClientAPI(generateFormData(obj));
-  // };
   const onSubmit = async (signUpData: FormProps) => {
     const { role, plans, companyLogo, profileImage, gender } = signUpData;
     let payload: ISignUp = {
@@ -134,7 +99,6 @@ const Signup = () => {
         body: generateFormData(payload),
       };
       const responseData = await fetchInterceptor<any>(url, options);
- 
       if (responseData.status === "success") {
         const data = {
           name: responseData.user.name,

@@ -1,7 +1,4 @@
 
-import { SafeKaroUser } from "../../context/constant";
-let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
-let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
 export const addBookingRequestEndpoint = () =>
   (`/api/booking-request`);
 export const getBookingRequestByIdEndpoint = (bookingRequestId: string) =>
@@ -14,7 +11,7 @@ export const getBookingRequestEndpoint = () =>
   (`/api/booking-request`);
 
 export const getBookingRequestAdminEndpoint = () =>
-  (`/api/booking-request/accepted-bookings/${UserData.parentAdminId}`);
+  (`/api/booking-request/accepted-bookings`);
 export const validateBookingRequestEndpoint = (policyNumber: string) =>
 (
   `/api/booking-request/validatePolicyNumber?policyNumber=${policyNumber}`
@@ -23,7 +20,7 @@ export const getBookingRequestByOperationIdEndpoint = (userId: string) =>
   (`/api/booking-request/created-by/${userId}`);
 
 export const getBookingRequestbyPartnerIdEndpoint = (partnerId: string) =>
-  (`/api/booking-request/partner/${partnerId}/${UserData.parentAdminId}`);
+  (`/api/booking-request/partner/${partnerId}`);
 
 export const acceptBookingRequest = (bookingId: string) =>
 (
@@ -31,17 +28,17 @@ export const acceptBookingRequest = (bookingId: string) =>
 );
 
 export const getBookingRequestbyBookingIdEndpoint = (userId: string) =>
-  (`/api/booking-request/accepted-by/${userId}/${UserData.parentAdminId}`);
+  (`/api/booking-request/accepted-by/${userId}`);
 
 export const getRejectedBookingReqEndpoint = () => {
-  return ((`/api/booking-request/rejected-bookings/${UserData.parentAdminId}`))
+  return ((`/api/booking-request/rejected-bookings`))
 
 }
 export const rejectedBookingPartnerEndpoint = (partnerId: string) => {
-  return ((`/api/booking-request/rejected-partner-id/${UserData.parentAdminId}?partnerId=${partnerId}`))
+  return ((`/api/booking-request/rejected-partner-id?partnerId=${partnerId}`))
 }
-export const RmRequestedBookingEndPoint = (rmId:string) =>
-  (`/api/booking-request/relationship-/${UserData.parentAdminId}?relationshipManagerId=${rmId}`);
+export const RmRequestedBookingEndPoint = (rmId: string) =>
+  (`/api/booking-request/relationship-manager?relationshipManagerId=${rmId}`);
 
-export const RmLeadEndpoint = (rmId:string) =>
+export const RmLeadEndpoint = (rmId: string) =>
   (`/api/lead-generate/relationship-manager?relationshipManagerId=${rmId}`);

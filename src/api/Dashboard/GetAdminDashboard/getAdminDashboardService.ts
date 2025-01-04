@@ -3,13 +3,13 @@ import { getAdminDashboardProps } from "../getDashboardTypes";
 const getAdminDashboardService = async ({
   header,
   startDate,
-  endDate,parentAdminId
+  endDate
 }: getAdminDashboardProps):Promise<any> => {
   try {
     const res = await getAdminDashboardAPI({
       header: header,
       startDate: startDate,
-      endDate: endDate,parentAdminId
+      endDate: endDate
     })
 
     return res;

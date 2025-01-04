@@ -131,7 +131,6 @@ const GetMotorPolicies = () => {
         header,
         startDate,
         endDate,
-        parentAdminId: userData.parentAdminId,
       })
         .then((motorPolicy) => {
           setMotorPolicies(motorPolicy.data);
