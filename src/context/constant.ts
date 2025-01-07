@@ -58,6 +58,8 @@ export type SafeKaroUser = {
   planId?:string;
   roleId?:string;
   transactionStatus?:boolean;
+  profileImage?: string;
+  
 };
 export type Header = {
   "Content-Type": string;

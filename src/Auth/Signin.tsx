@@ -5,7 +5,6 @@ import { Button, Grid } from "@mui/material";
 import { FORM_ERROR } from "final-form";
 import { ISignIn } from "./IAuth";
 import { SafeKaroUser, header } from "../context/constant";
-import getTeamDetailsService from "../api/Team/GetTeamDetails/getTeamDetailsService";
 import { setTokens } from "../Hooks/Tokens/useToken";
 import fetchInterceptor, { FetchOptions } from "../utils/fetchInterceptor ";
 import toast, { Toaster } from "react-hot-toast";
@@ -21,6 +20,7 @@ const Signin = () => {
     }
     return errors;
   };
+  
   const roleDashboardMapping: { [key: string]: string } = {
     admin: "/dashboard",
     operation: "/operationdashboard",
@@ -40,6 +40,7 @@ const Signin = () => {
         body: JSON.stringify(signInData),
       };
       const responseData = await fetchInterceptor<any>(url, options);
+
       if (responseData.role.toLowerCase().trim() === "superadmin") {
         toast.error("super admin can't login ");
         return;
@@ -47,34 +48,19 @@ const Signin = () => {
       if (responseData.status === "success") {
         let loginData: SafeKaroUser = {
           ...responseData,
-          headRMId: "",
-          headRM: "",
         };
         if (loginData.accessToken && loginData.refreshToken) {
           setTokens(loginData.accessToken!, loginData.refreshToken!);
         }
-
-        if (responseData.role.toLowerCase().trim() !== "admin") {
-          const bookingRequestDetails = await getTeamDetailsService({
-            header,
-            teamId: responseData.profileId,
-          });
-          loginData.headRMId = bookingRequestDetails.headRMId!;
-          loginData.headRM = bookingRequestDetails.headRM!;
-        } else {
-          const bookingRequestDetails = await getTeamDetailsService({
-            header,
-            teamId: responseData.profileId,
-          });
-          loginData.companyLogo = bookingRequestDetails.companyLogo;
-        }
-
         localStorage.setItem("user", JSON.stringify(loginData));
         let role = responseData.role.toLowerCase();
         if (role === "relationship manager") {
           role = "rm";
         }
-        if (!responseData.transactionStatus && responseData.role.toLowerCase().trim() === "admin") {
+        if (
+          !responseData.transactionStatus &&
+          responseData.role.toLowerCase().trim() === "admin"
+        ) {
           navigate("/update-plan");
           return;
         }

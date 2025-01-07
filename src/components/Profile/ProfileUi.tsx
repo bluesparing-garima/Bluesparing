@@ -6,7 +6,7 @@ import { DAYJS_DISPLAY_FORMAT, imagePath } from "../../context/constant";
 import dayjs from "dayjs";
 const ProfileUi: React.FC<ITeamsVM> = ({
   email,
-  fullName,
+  name,
   phoneNumber,
   role,
   salary,
@@ -23,7 +23,7 @@ const ProfileUi: React.FC<ITeamsVM> = ({
 }) => {
   const data = [
     { key: "Email", value: email },
-    { key: "Name", value: fullName },
+    { key: "Name", value: name },
     { key: "Phone Number", value: phoneNumber },
     { key: "Salary", value:role==='admin'?"": `₹ ${salary?.toLocaleString()}` },
     { key: "Branch Name", value: branchName },
@@ -67,7 +67,7 @@ const ProfileUi: React.FC<ITeamsVM> = ({
         <div>
           <Avatar
             src={`${imagePath}/${profileImage}`}
-            alt={fullName}
+            alt={name}
             sx={{
               bgcolor: deepPurple[500],
               width: 120,
@@ -79,7 +79,7 @@ const ProfileUi: React.FC<ITeamsVM> = ({
               boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.2)",
             }}
           >
-            {fullName?.charAt(0).toUpperCase()}
+            {name?.charAt(0).toUpperCase()}
           </Avatar>
         </div>
         <Box sx={{ flexGrow: 1, textAlign: { xs: "center", md: "left" } }}>

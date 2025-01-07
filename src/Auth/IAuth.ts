@@ -57,4 +57,5 @@ export interface IUser {
   planName?:string;
   planId?:string;
   planType?:string;
+  role?:string;
 }

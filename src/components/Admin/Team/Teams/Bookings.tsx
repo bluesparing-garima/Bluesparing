@@ -97,7 +97,7 @@ const Bookings = () => {
             role: team.role!,
             headRMId: team.headRMId!,
             headRM: team.headRM!,
-            fullName: team.fullName!,
+            fullName: team.name!,
             password: team.originalPassword!,
             phoneNumber: team.phoneNumber!,
             email: team.email!,

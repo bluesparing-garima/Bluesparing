@@ -103,8 +103,10 @@ const PlanCard: FC<PlanCardProps> = ({ p }) => {
   const handleNavigation = ()=>{
     if(userData?.role){
       navigate("/dashboard")
+      sessionStorage.clear()
     }else{
       navigate("/")
+      sessionStorage.clear()
     }
   }
   const handleTransaction = async (
@@ -124,6 +126,7 @@ const PlanCard: FC<PlanCardProps> = ({ p }) => {
   const handleMakePayment = async () => {
     if (!isCheckUserData()) {
       navigate("/signup");
+      sessionStorage.clear()
       return;
     }
     const amount = getAmount();

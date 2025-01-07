@@ -2,9 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Typography, Paper } from "@mui/material";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { ADD, header, SafeKaroUser } from "../../../../context/constant";
-import { ITeamForm } from "../ITeam";
+import { IAppUser } from "../ITeam";
 import AddTeamForm from "./AddTeamForm";
-import { convertITeamVMToITeamForm } from "../../../../api/Team/convertITeamVMToITeamForm";
 import getTeamDetailsService from "../../../../api/Team/GetTeamDetails/getTeamDetailsService";
 import toast, { Toaster } from "react-hot-toast";
 const AddTeam = () => {
@@ -12,7 +11,7 @@ const AddTeam = () => {
   const location = useLocation();
   const pathName = location.pathname.split("/");
   const isAdd = pathName[pathName.length - 1] === ADD;
-  const [editTeamDetails, setEditTeamDetails] = useState<ITeamForm | undefined>(
+  const [editTeamDetails, setEditTeamDetails] = useState<IAppUser | undefined>(
     undefined
   );
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
@@ -21,8 +20,7 @@ const AddTeam = () => {
     if (!isAdd && teamId) {
       getTeamDetailsService({ header, teamId })
         .then((teamDetails) => {
-          const teamVMToTeamForm = convertITeamVMToITeamForm(teamDetails);
-          setEditTeamDetails(teamVMToTeamForm);
+          setEditTeamDetails(teamDetails);
         })
         .catch(async (error: any) => {
           const err = await error;
@@ -57,45 +55,11 @@ const AddTeam = () => {
               style={{ width: "100%", borderColor: "grey-800" }}
             />
           </Typography>
-          <AddTeamForm
-            initialValues={{
-              id: isAdd ? "0" : editTeamDetails?.id || "",
-              branchName: isAdd ? "" : editTeamDetails?.branchName || "",
-              partnerId: isAdd ? "" : editTeamDetails?.partnerId || "",
-              role: isAdd ? "" : editTeamDetails?.role || "",
-              headRMId: isAdd ? "" : editTeamDetails?.headRMId || "",
-              headRM: isAdd ? "" : editTeamDetails?.headRM || "",
-              bankName: isAdd ? "" : editTeamDetails?.bankName || "",
-              fullName: isAdd ? "" : editTeamDetails?.fullName || "",
-              phoneNumber: isAdd ? "" : editTeamDetails?.phoneNumber || "",
-              email: isAdd ? "" : editTeamDetails?.email || "",
-              dateOfBirth: isAdd ? "" : editTeamDetails?.dateOfBirth || "",
-              gender: isAdd ? "" : editTeamDetails?.gender || "",
-              address: isAdd ? "" : editTeamDetails?.address || "",
-              pincode: isAdd ? "" : editTeamDetails?.pincode || "",
-              password: isAdd ? "" : editTeamDetails?.originalPassword || "",
-              IFSC: isAdd ? "" : editTeamDetails?.IFSC || "",
-              accountHolderName: isAdd
-                ? ""
-                : editTeamDetails?.accountHolderName || "",
-              accountNumber: isAdd ? "" : editTeamDetails?.accountNumber || "",
-              salary: isAdd ? 10000 : editTeamDetails?.salary || 0,
-              image: isAdd ? "" : editTeamDetails?.image || "",
-              adharCardBack: isAdd ? "" : editTeamDetails?.adharCardBack || "",
-              adharCardFront: isAdd
-                ? ""
-                : editTeamDetails?.adharCardFront || "",
-              panCard: isAdd ? "" : editTeamDetails?.panCard || "",
-              qualification: isAdd ? "" : editTeamDetails?.qualification || "",
-              bankProof: isAdd ? "" : editTeamDetails?.bankProof || "",
-              experience: isAdd ? "" : editTeamDetails?.experience || "",
-              other: isAdd ? "" : editTeamDetails?.other || "",
-              isActive: isAdd ? true : editTeamDetails?.isActive || true,
-              joiningDate: isAdd ? "" : editTeamDetails?.joiningDate || "",
-              createdBy: "Admin",
-              updatedBy: "Admin",
-            }}
-          />
+          {editTeamDetails ? (
+            <AddTeamForm initialValues={editTeamDetails} />
+          ) : (
+            <AddTeamForm />
+          )}
         </Paper>
       </div>
       <Toaster position="bottom-center" reverseOrder={false} />

@@ -2,12 +2,13 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { MaterialReactTable, type MRT_ColumnDef } from "material-react-table";
 import {
   DAYJS_DISPLAY_FORMAT,
+  DAYJS_DISPLAY_FORMAT_TABLES,
   header,
   imagePath,
   SafeKaroUser,
   TEAM_STORAGE_KEY,
 } from "../../../../context/constant";
-import { ITeamForm, ITeams, ITeamsVM } from "../ITeam";
+import { IAppUser, ITeamForm, ITeams, ITeamsVM } from "../ITeam";
 import { Button, IconButton, Paper, Tooltip, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { teamEditPath, teamAddPath } from "../../../../sitemap";
@@ -21,9 +22,11 @@ import {
   getPaginationState,
   savePaginationState,
 } from "../../../../utils/PaginationHandler";
+import generateFormData from "../../../../utils/generateFromData";
+
 const Teams = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [teams, setTeams] = useState<ITeams[]>([]);
+  const [teams, setTeams] = useState<IAppUser[]>([]);
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
   const [pagination, setPagination] = useState({
@@ -39,7 +42,7 @@ const Teams = () => {
       getTeamService({ header })
         .then((teamDetails) => {
           const newTeamData = teamDetails.data.filter((ele: any) => {
-            return ele.role !== "superadmin";
+            return ele.role.toLowerCase() !== "superadmin";
           });
           setTeams(newTeamData);
         })
@@ -56,8 +59,7 @@ const Teams = () => {
     savePaginationState(pagination, TEAM_STORAGE_KEY);
     navigate(teamAddPath());
   };
-  const forcedRenderCount = 0;
-  const columns = useMemo<MRT_ColumnDef<ITeams>[]>(
+  const columns = useMemo<MRT_ColumnDef<IAppUser>[]>(
     () => [
       {
         accessorKey: "branchName",
@@ -70,12 +72,12 @@ const Teams = () => {
         size: 200,
       },
       {
-        accessorKey: "partnerCode",
-        header: "Partner Code",
+        accessorKey: "userCode",
+        header: "User Code",
         size: 200,
       },
       {
-        accessorKey: "fullName",
+        accessorKey: "name",
         header: "Full Name",
         size: 200,
       },
@@ -100,91 +102,37 @@ const Teams = () => {
       {
         header: "Created On",
         accessorKey: "createdOn",
-        size: 50,
+        size: 200,
+        Cell: ({ cell }) => {
+          const dateValue = cell.getValue<Date>();
+          return dateValue
+            ? dayjs(dateValue).format(DAYJS_DISPLAY_FORMAT_TABLES)
+            : "-";
+        },
       },
     ],
     []
   );
-  
+
   const parsedData = useMemo(() => {
     const filteredTeams =
       UserData.role.toLowerCase() === "hr"
-        ? teams.filter((team: ITeams) => team.role?.toLowerCase() !== "partner")
+        ? teams.filter((team) => team.role?.toLowerCase() !== "partner")
         : teams;
-    return (
-      filteredTeams.map((team: ITeams) => ({
-        id: team._id!,
-        branchName: team.branchName!,
-        partnerId: team.partnerId!,
-        role: team.role!,
-        headRMId: team.headRMId!,
-        headRM: team.headRM!,
-        fullName: team.fullName!,
-        password: team.originalPassword!,
-        phoneNumber: team.phoneNumber!,
-        email: team.email!,
-        dateOfBirth: dayjs(team?.dateOfBirth).format(DAYJS_DISPLAY_FORMAT),
-        gender: team.gender!,
-        address: team.address!,
-        pincode: team.pincode!,
-        bankName: team.bankName!,
-        IFSC: team.IFSC!,
-        accountHolderName: team.accountHolderName!,
-        accountNumber: team.accountNumber!,
-        salary: team.salary!,
-        image: team.image!,
-        adharCardBack: team.adharCardBack!,
-        adharCardFront: team.adharCardFront!,
-        panCard: team.panCard!,
-        qualification: team.qualification!,
-        bankProof: team.bankProof!,
-        experience: team.experience!,
-        profileImage: team.profileImage,
-        other: team.other!,
-        isActive: team.isActive,
-        joiningDate: dayjs(team.joiningDate).format(DAYJS_DISPLAY_FORMAT),
-        updatedBy: team.updatedBy!,
-        createdBy: team.createdBy!,
-        createdOn: dayjs(team.createdOn).format(DAYJS_DISPLAY_FORMAT),
-        updatedOn: dayjs(team.updatedOn).format(DAYJS_DISPLAY_FORMAT),
-        forceUpdate: forcedRenderCount,
-        partnerCode: team.partnerCode,
-      })) ?? []
-    );
-  }, [teams, forcedRenderCount, UserData.role]);
-  const createFormData = (data: ITeamForm) => {
-    const formData = new FormData();
-    for (const key in data) {
-      if (data.hasOwnProperty(key)) {
-        const value = data[key as keyof ITeamForm];
-        if (
-          typeof value === "string" ||
-          typeof value === "number" ||
-          typeof value === "boolean"
-        ) {
-          formData.append(key, value.toString());
-        } else if (value instanceof File) {
-          formData.append(key, value);
-        }
-      }
-    }
-    return formData;
-  };
+
+    return filteredTeams;
+  }, [teams, UserData.role]);
+
   const updateLoading = useCallback(async () => {
     setIsLoading(false);
   }, []);
   useEffect(() => {
     updateLoading();
   }, [updateLoading]);
-  const callUpdateTeamAPI = async (team: ITeamsVM) => {
-    var convertTeamVMToTeamForm: ITeamForm = convertITeamVMToITeamForm(team);
-    const teamData: ITeamForm = {
-      ...convertTeamVMToTeamForm,
-      isActive: !convertTeamVMToTeamForm.isActive,
-    };
-    const formData = createFormData(teamData);
+  const callUpdateTeamAPI = async (team: IAppUser) => {
+    const formData = generateFormData(team);
 
-    editTeamService({ team: formData, teamId: team.id })
+    editTeamService({ team: formData, teamId: team._id })
       .then((updatedTeam) => {
         GetTeams();
       })
@@ -193,12 +141,20 @@ const Teams = () => {
         updateLoading();
       });
   };
-  const handleClickDeActiveTeam = (team: ITeamsVM) => {
-    callUpdateTeamAPI(team);
+  const handleClickDeActiveTeam = (team: IAppUser) => {
+    const formData = generateFormData({ isActive: !team.isActive });
+    editTeamService({ team: formData, teamId: team._id })
+      .then((updatedTeam) => {
+        GetTeams();
+      })
+      .catch((response) => {})
+      .finally(() => {
+        updateLoading();
+      });
   };
-  const handleClickEditTeam = (team: ITeamsVM) => {
+  const handleClickEditTeam = (team: IAppUser) => {
     savePaginationState(pagination, TEAM_STORAGE_KEY);
-    navigate(teamEditPath(team.id!));
+    navigate(teamEditPath(team._id!));
   };
   const downloadFile = (url: string, fileName: string) => {
     const urlFileName = url.substring(url.lastIndexOf("/") + 1);
@@ -225,7 +181,7 @@ const Teams = () => {
       console.error("Unsupported file type:", fileExtension);
     }
   };
-  const handleClickDownloadDocument = (team: ITeamsVM) => {
+  const handleClickDownloadDocument = (team: IAppUser) => {
     if (team.profileImage) {
       downloadFile(`${imagePath}/${team?.profileImage!}`, "profileImage");
     }
@@ -320,7 +276,7 @@ const Teams = () => {
                     aria-label={"Download Documents"}
                     component="span"
                     onClick={() => {
-                      handleClickDownloadDocument(row.original as ITeamsVM);
+                      handleClickDownloadDocument(row.original as IAppUser);
                     }}
                   >
                     <svg
@@ -345,7 +301,7 @@ const Teams = () => {
                     aria-label={"Edit Team"}
                     component="span"
                     onClick={() => {
-                      handleClickEditTeam(row.original as ITeamsVM);
+                      handleClickEditTeam(row.original as IAppUser);
                     }}
                   >
                     <svg
@@ -370,7 +326,7 @@ const Teams = () => {
                     aria-label={"Change Status"}
                     component="span"
                     onClick={() =>
-                      handleClickDeActiveTeam(row.original as ITeamsVM)
+                      handleClickDeActiveTeam(row.original as IAppUser)
                     }
                   >
                     <svg

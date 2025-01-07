@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { FormControl, Autocomplete } from "@mui/material";
 import addTeamService from "../../../../api/Team/AddTeam/addTeamService";
-import { ITeamForm, ITeams } from "../ITeam";
+import { IAppUser, ITeamForm } from "../ITeam";
 import { Form, Field } from "react-final-form";
 import { setIn } from "final-form";
 import * as yup from "yup";
@@ -40,8 +40,9 @@ import validateEmailService from "../../../../api/Team/ValidateEmail/validateEma
 import { userDocumentList } from "../../../Policy/IPolicyData";
 import toast, { Toaster } from "react-hot-toast";
 import dayjs from "dayjs";
+import generateFormData from "../../../../utils/generateFromData";
 export interface addPolicyTypeFormProps {
-  initialValues: ITeamForm;
+  initialValues?: IAppUser;
 }
 const AddTeamForm = (props: addPolicyTypeFormProps) => {
   const [documents, setDocuments] = useState<Document[]>([
@@ -51,6 +52,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
     [{ docName: "", file: "" }]
   );
   const { initialValues } = props;
+
   let [branches] = useGetBranches({ header: header });
   let [roles] = useGetRoles({ header: header });
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
@@ -62,8 +64,8 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
   const [selectedRMName, setSelectedRMName] = useState("");
   const [emailErrorMessage, setEmailErrorMessage] = useState("");
   const [selectedRMId, setSelectedRMId] = useState("");
-  const [filteredHeadRM, setFilteredHeadRM] = useState<ITeams[]>([]);
-  const [selectedRole, setSelectedRole] = useState<any>();
+  const [filteredHeadRM, setFilteredHeadRM] = useState<IAppUser[]>([]);
+  const [selectedRole, setSelectedRole] = useState<string>();
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
   const location = useLocation() as any;
@@ -75,49 +77,49 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
   useEffect(() => {
     if (!isAdd) {
       const updatedDocuments: Document[] = [];
-      if (initialValues.image) {
+      if (initialValues?.image) {
         updatedDocuments.push({
           docName: "image",
           file: initialValues.image,
         });
       }
-      if (initialValues.adharCardBack) {
+      if (initialValues?.adharCardBack) {
         updatedDocuments.push({
           docName: "adharCardBack",
           file: initialValues.adharCardBack,
         });
       }
-      if (initialValues.panCard) {
+      if (initialValues?.panCard) {
         updatedDocuments.push({
           docName: "panCard",
           file: initialValues.panCard,
         });
       }
-      if (initialValues.adharCardFront) {
+      if (initialValues?.adharCardFront) {
         updatedDocuments.push({
           docName: "adharCardFront",
           file: initialValues.adharCardFront,
         });
       }
-      if (initialValues.qualification) {
+      if (initialValues?.qualification) {
         updatedDocuments.push({
           docName: "qualification",
           file: initialValues.qualification,
         });
       }
-      if (initialValues.bankProof) {
+      if (initialValues?.bankProof) {
         updatedDocuments.push({
           docName: "bankProof",
           file: initialValues.bankProof,
         });
       }
-      if (initialValues.experience) {
+      if (initialValues?.experience) {
         updatedDocuments.push({
           docName: "experience",
           file: initialValues.experience,
         });
       }
-      if (initialValues.other) {
+      if (initialValues?.other) {
         updatedDocuments.push({
           docName: "other",
           file: initialValues.other,
@@ -127,12 +129,33 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
     }
   }, [isAdd, initialValues]);
 
+  const generateInitialValue = () => {
+    let result: Record<string, any> = {};
+
+    if (initialValues) {
+      const { branchName, branchId, headRM, headRMId, role, roleId, ...rest } =
+        initialValues;
+      result = { ...rest, password: initialValues.originalPassword };
+
+      if (branchName !== undefined && branchId !== undefined) {
+        result["branch"] = { branchName, _id: branchId };
+      }
+      if (headRM !== undefined && headRMId !== undefined) {
+        result["headRM"] = { name: headRM, _id: headRMId };
+      }
+      if (role !== undefined && roleId !== undefined) {
+        result["role"] = { roleName: role, _id: roleId };
+      }
+    }
+
+    return result;
+  };
   useEffect(() => {
     if (!isAdd) {
-      setSelectedRole(initialValues.role!);
+      setSelectedRole(initialValues?.role!);
       setFilteredHeadRM(headRMs);
-      setSelectedRMId(initialValues.headRMId!);
-      setSelectedRMName(initialValues.headRM!);
+      setSelectedRMId(initialValues?.headRMId!);
+      setSelectedRMName(initialValues?.headRM!);
     } else {
       setFilteredHeadRM([]);
     }
@@ -148,10 +171,9 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
     }
   };
 
-  const handleChangeRole = async (e: any) => {
-    const role = e.target.value;
-    setSelectedRole(role);
-    if (role === "Relationship Manager") {
+  const handleChangeRole = async (roleName: string) => {
+    setSelectedRole(roleName);
+    if (roleName === "Relationship Manager") {
       setFilteredHeadRM([]);
     } else {
       setFilteredHeadRM(headRMs);
@@ -174,8 +196,10 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
     }
     setErrors(newErrors);
   };
+
   const onSubmit = async (teamForm: ITeamForm) => {
     const isJoiningDate = dayjs(teamForm.joiningDate).isValid();
+    const { branch } = teamForm;
     const isDateOfBirth = dayjs(teamForm.dateOfBirth).isValid();
     if (!isJoiningDate) {
       toast.error("Invalid Joining Date ,its MM/DD/YYYY from");
@@ -197,26 +221,19 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
         teamForm.headRM = selectedRMName;
         teamForm.planId = UserData.planId;
         teamForm.planName = UserData.planName;
-        const formData = new FormData();
-        const addedKeys = new Map<string, string>();
-        Object.keys(teamForm).forEach((key) => {
-          const value = teamForm[key as keyof ITeamForm];
-          if (value !== undefined) {
-            addedKeys.set(key, value);
-          }
-        });
         documents.forEach((doc: Document) => {
-          if (doc.file) {
-            addedKeys.set(doc.docName, doc.file);
+          if (doc.file && doc.docName) {
+            teamForm[doc.docName as keyof typeof teamForm] = doc.file;
           }
         });
-        addedKeys.forEach((file, key) => {
-          formData.append(key, file);
-        });
+
+        const formData = generateFormData(teamForm);
+        formData.append("branchName", branch.branchName);
+        formData.append("branchId", branch._id);
         if (isAdd) {
           callAddTeamAPI(formData);
         } else {
-          callEditTeamAPI(formData, teamForm.id!);
+          callEditTeamAPI(formData, initialValues?._id!!);
         }
       }
     } else {
@@ -225,31 +242,24 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       } else if (formValid) {
         setRMErrorMessage("");
         teamForm.role = selectedRole;
-        teamForm.roleId = findRoleIdByName(selectedRole);
+        teamForm.roleId = findRoleIdByName(selectedRole || "");
         teamForm.headRMId = selectedRMId === undefined ? "" : selectedRMId;
         teamForm.headRM = selectedRMName;
         teamForm.planId = UserData.planId;
         teamForm.planName = UserData.planName;
-        const formData = new FormData();
-        const addedKeys = new Map<string, string>();
-        Object.keys(teamForm).forEach((key) => {
-          const value = teamForm[key as keyof ITeamForm];
-          if (value !== undefined) {
-            addedKeys.set(key, value);
-          }
-        });
         documents.forEach((doc: Document) => {
-          if (doc.file) {
-            addedKeys.set(doc.docName, doc.file);
+          if (doc.file && doc.docName) {
+            teamForm[doc.docName as keyof typeof teamForm] = doc.file;
           }
         });
-        addedKeys.forEach((file, key) => {
-          formData.append(key, file);
-        });
+
+        const formData = generateFormData(teamForm);
+        formData.append("branchName", branch.branchName);
+        formData.append("branchId", branch._id);
         if (isAdd) {
           callAddTeamAPI(formData);
         } else {
-          callEditTeamAPI(formData, teamForm.id!);
+          callEditTeamAPI(formData, initialValues?._id!);
         }
       }
     }
@@ -332,7 +342,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
   const handleSelectRMChange = async (e: any) => {
     if (e) {
       setSelectedRMId(e._id!);
-      setSelectedRMName(e.fullName!);
+      setSelectedRMName(e.name!);
     }
   };
   const openFileInNewTab = (url: string, fileName: string) => {
@@ -385,7 +395,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
         header,
         email,
       });
-      if (emailCheck.status === "success" && emailCheck.data.length>0) {
+      if (emailCheck.status === "success" && emailCheck.data.length > 0) {
         setEmailErrorMessage("Email already exist");
         return true;
       } else {
@@ -399,7 +409,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
   }, 300); // 300ms debounce delay
 
   const validationSchema = yup.object().shape({
-    fullName: yup
+    name: yup
       .string()
       .required("Full Name is required")
       .min(1, "Name must be at least 1 character")
@@ -432,98 +442,103 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       .required("Pincode is required")
       .min(1, "Pincode must be at least 1 character")
       .max(6, "Pincode must be exactly 6 digits"),
-    bankName: yup
-      .string()
-      .required("Bank Name is required")
-      .min(1, "bankName must be at least 1 character"),
-    IFSC: yup
-      .string()
-      .required("IFSC is required")
-      .min(1, "IFSC must be at least 1 character"),
-    accountHolderName: yup
-      .string()
-      .required("Account Holder Name is required")
-      .min(1, "Account Holder Name must be at least 1 character"),
-    accountNumber: yup
-      .string()
-      .required("Account number is required")
-      .matches(/^\d+$/, "Account number must contain only digits")
-      .min(6, "Account number must be at least 6 digits")
-      .max(16, "Account number must be at most 12 digits"),
     salary: yup
       .string()
       .required("salary is required")
       .min(1, "salary must be at least 1 character"),
-    branchName: yup.string().required("Branch Name is required").nullable(),
+    branch: yup.object().required("Branch Name is required").nullable(),
   });
+
   const validate = validateFormValues(validationSchema);
   return (
     <>
       <Form
         onSubmit={onSubmit}
-        initialValues={initialValues}
+        initialValues={generateInitialValue()}
         validate={validate}
         render={({ handleSubmit, submitting, errors }) => (
           <form onSubmit={handleSubmit} noValidate>
             <Grid container spacing={2}>
               <Grid item lg={4} md={4} sm={6} xs={12}>
-                <Field name="branchName">
+                <Field name="branch">
                   {({ input, meta }) => (
-                    <FormControl
-                      fullWidth
-                      variant="outlined"
-                      size="small"
-                      error={meta.touched && Boolean(meta.error)}
-                    >
-                      <InputLabel>Select Branch Name</InputLabel>
-                      <Select
-                        id="branchName"
-                        {...input}
-                        input={<OutlinedInput label="Select Branch Name" />}
-                      >
-                        {branches.map((option) => (
-                          <MenuItem key={option._id} value={option.branchName}>
-                            {option.branchName}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                      {meta.touched && meta.error && (
-                        <FormHelperText>{meta.error}</FormHelperText>
-                      )}
-                    </FormControl>
+                    <div>
+                      <FormControl fullWidth size="small">
+                        <Autocomplete
+                          {...input}
+                          id="branch"
+                          value={
+                            input.value !== undefined
+                              ? input.value
+                              : initialValues?.branchName || null
+                          }
+                          getOptionLabel={(option) =>
+                            typeof option === "string"
+                              ? option
+                              : `${option.branchName}` || ""
+                          }
+                          options={branches}
+                          onChange={(event, newValue) => {
+                            input.onChange(newValue);
+                          }}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              className="rounded-sm w-full"
+                              size="small"
+                              label="Select Branch"
+                              variant="outlined"
+                              error={meta.touched && !!meta.error}
+                              helperText={meta.touched && meta.error}
+                            />
+                          )}
+                        />
+                      </FormControl>
+                    </div>
                   )}
                 </Field>
               </Grid>
               <Grid item lg={4} md={4} sm={6} xs={12}>
                 <Field name="role">
                   {({ input, meta }) => (
-                    <FormControl
-                      fullWidth
-                      variant="outlined"
-                      size="small"
-                      error={meta.touched && Boolean(meta.error)}
-                    >
-                      <InputLabel>Select Role</InputLabel>
-                      <Select
-                        id="role"
-                        {...input}
-                        value={selectedRole ? selectedRole : initialValues.role}
-                        onChange={handleChangeRole}
-                        input={<OutlinedInput label="Select a role" />}
-                      >
-                        {roles.map((option) => (
-                          <MenuItem key={option._id} value={option.roleName}>
-                            {option.roleName}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                      {meta.touched && meta.error && (
-                        <FormHelperText>{meta.error}</FormHelperText>
-                      )}
-                    </FormControl>
+                    <div>
+                      <FormControl fullWidth size="small">
+                        <Autocomplete
+                          {...input}
+                          id="role"
+                          value={
+                            input.value !== undefined
+                              ? input.value
+                              : initialValues?.role || null
+                          }
+                          getOptionLabel={(option) =>
+                            typeof option === "string"
+                              ? option
+                              : `${option.roleName}` || ""
+                          }
+                          options={roles}
+                          onChange={(event, newValue) => {
+                            input.onChange(newValue);
+                            handleChangeRole(newValue.roleName);
+                          }}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              className="rounded-sm w-full"
+                              size="small"
+                              label="Select Role"
+                              variant="outlined"
+                              error={meta.touched && !!meta.error}
+                              helperText={meta.touched && meta.error}
+                            />
+                          )}
+                        />
+                      </FormControl>
+                    </div>
                   )}
                 </Field>
               </Grid>
+
               {selectedRole !== "Relationship Manager" && (
                 <Grid item lg={4} md={4} sm={6} xs={12}>
                   <Field name="headRM">
@@ -536,36 +551,30 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                             value={
                               input.value !== undefined
                                 ? input.value
-                                : initialValues.headRM || null
+                                : initialValues?.headRM || null
                             }
                             getOptionLabel={(option) =>
-                              option && typeof option === "object"
-                                ? option.fullName || ""
-                                : ""
+                              typeof option === "string"
+                                ? option
+                                : `${option.name}` || ""
                             }
-                            options={filteredHeadRM || []}
-                            isOptionEqualToValue={(option, value) =>
-                              option?._id === value?._id
-                            }
+                            options={filteredHeadRM}
                             onChange={(event, newValue) => {
-                              input.onChange(newValue || null);
-                              handleSelectRMChange(newValue || null);
+                              input.onChange(newValue);
+                              handleSelectRMChange(newValue);
                             }}
                             renderInput={(params) => (
                               <TextField
                                 {...params}
-                                label="Select Head RM"
                                 className="rounded-sm w-full"
                                 size="small"
+                                label="Select Head RM"
                                 variant="outlined"
                                 error={meta.touched && !!meta.error}
                                 helperText={meta.touched && meta.error}
                               />
                             )}
                           />
-                          {rmErrorMessage && (
-                            <div style={{ color: "red" }}>{rmErrorMessage}</div>
-                          )}
                         </FormControl>
                       </div>
                     )}
@@ -573,7 +582,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                 </Grid>
               )}
               <Grid item lg={4} md={4} sm={6} xs={12}>
-                <Field name="fullName">
+                <Field name="name">
                   {({ input, meta }) => (
                     <TextField
                       type="text"
@@ -734,10 +743,10 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                         value={
                           input.value !== undefined
                             ? input.value
-                            : initialValues.dateOfBirth || null
+                            : initialValues?.dateOfBirth || null
                         }
                         onChange={(date) => input.onChange(date)}
-                          inputFormat="DD/MM/YYYY"
+                        inputFormat="DD/MM/YYYY"
                         renderInput={(params: any) => (
                           <TextField
                             variant="outlined"
@@ -753,51 +762,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                   )}
                 </Field>
               </Grid>
-              <Grid item lg={4} md={4} sm={6} xs={12}>
-                <Field name="bankName">
-                  {({ input, meta }) => (
-                    <TextField
-                      {...input}
-                      label="Enter Bank Name"
-                      variant="outlined"
-                      size="small"
-                      className="rounded-sm w-full"
-                      error={meta.touched && Boolean(meta.error)}
-                      helperText={meta.touched && meta.error}
-                    />
-                  )}
-                </Field>
-              </Grid>
-              <Grid item lg={4} md={4} sm={6} xs={12}>
-                <Field name="IFSC">
-                  {({ input, meta }) => (
-                    <TextField
-                      {...input}
-                      label="Enter IFSC"
-                      variant="outlined"
-                      size="small"
-                      className="rounded-sm w-full"
-                      error={meta.touched && Boolean(meta.error)}
-                      helperText={meta.touched && meta.error}
-                    />
-                  )}
-                </Field>
-              </Grid>
-              <Grid item lg={4} md={4} sm={6} xs={12}>
-                <Field name="accountHolderName">
-                  {({ input, meta }) => (
-                    <TextField
-                      {...input}
-                      label="Enter Account Holder Name"
-                      variant="outlined"
-                      size="small"
-                      className="rounded-sm w-full"
-                      error={meta.touched && Boolean(meta.error)}
-                      helperText={meta.touched && meta.error}
-                    />
-                  )}
-                </Field>
-              </Grid>
+
               <Grid item lg={4} md={4} sm={6} xs={12}>
                 <Field name="joiningDate">
                   {({ input, meta }) => (
@@ -808,10 +773,10 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                         value={
                           input.value !== undefined
                             ? input.value
-                            : initialValues.joiningDate || null
+                            : initialValues?.joiningDate || null
                         }
                         onChange={(date) => input.onChange(date)}
-                            inputFormat="DD/MM/YYYY"
+                        inputFormat="DD/MM/YYYY"
                         renderInput={(params: any) => (
                           <TextField
                             variant="outlined"
@@ -827,22 +792,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                   )}
                 </Field>
               </Grid>
-              <Grid item lg={4} md={4} sm={6} xs={12}>
-                <Field name="accountNumber">
-                  {({ input, meta }) => (
-                    <TextField
-                      {...input}
-                      label="Enter Account Number"
-                      variant="outlined"
-                      size="small"
-                      type="number"
-                      className="rounded-sm w-full"
-                      error={meta.touched && Boolean(meta.error)}
-                      helperText={meta.touched && meta.error}
-                    />
-                  )}
-                </Field>
-              </Grid>
+
               <Grid item md={12} mt={2}>
                 <Button variant="outlined" onClick={handleClickAddDocument}>
                   Add More Document

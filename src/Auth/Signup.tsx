@@ -99,12 +99,17 @@ const Signup = () => {
         body: generateFormData(payload),
       };
       const responseData = await fetchInterceptor<any>(url, options);
+      if (responseData.user.role.toLowerCase().trim() === "partner") {
+        navigate("/");
+        return;
+      }
       if (responseData.status === "success") {
         const data = {
           name: responseData.user.name,
-          _id: responseData.user.partnerId,
+          _id: responseData.user._id,
           phone: responseData.user.phoneNumber,
           email: responseData.user.email,
+          role: responseData.user.role,
         };
         storeInSessionStorage(SESSION_USER, data);
         navigate("/update-plan");
@@ -313,12 +318,7 @@ const Signup = () => {
                                   error={meta.touched && Boolean(meta.error)}
                                 >
                                   <InputLabel>Select Gender</InputLabel>
-                                  <Select
-                                    {...input}
-                                    input={
-                                      <OutlinedInput />
-                                    }
-                                  >
+                                  <Select {...input} input={<OutlinedInput />}>
                                     {["Male", "Female", "Other"].map(
                                       (option) => (
                                         <MenuItem
@@ -395,7 +395,7 @@ const Signup = () => {
                             </div>
                           </Grid>
                           <Grid item lg={6} md={6} xs={12}>
-                            <FormLabel     className="mb-1 block text-base font-satoshi font-medium text-[#07074D]" >
+                            <FormLabel className="mb-1 block text-base font-satoshi font-medium text-[#07074D]">
                               Profile Image
                             </FormLabel>
                             <Field name="profileImage">
@@ -430,7 +430,7 @@ const Signup = () => {
                             </Field>
                           </Grid>
                           <Grid item lg={6} md={6} xs={12}>
-                            <FormLabel className="mb-1 block text-base font-satoshi font-medium text-[#07074D]" >
+                            <FormLabel className="mb-1 block text-base font-satoshi font-medium text-[#07074D]">
                               Company Logo
                             </FormLabel>
                             <Field name="companyLogo">

@@ -32,7 +32,7 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
   const open = Boolean(anchorEl);
   const [notificationData, setNotificationData] = useState<INotification[]>([]);
   const accessNotification = useMemo(() => {
-    const role = UserData.role.toLowerCase();
+    const role = UserData?.role.toLowerCase();
     switch (role) {
       case "booking":
         return ["operation"];
@@ -43,7 +43,7 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
       default:
         return ["booking"];
     }
-  }, [UserData.role]);
+  }, [UserData?.role]);
   
   const debounce = <T extends (...args: any[]) => void>(
     func: T,

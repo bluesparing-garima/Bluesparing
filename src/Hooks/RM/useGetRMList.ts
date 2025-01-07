@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { GetRMListProps } from "../../api/Team/getTeamsTypes";
-import { ITeams } from "../../components/Admin/Team/ITeam";
+import { IAppUser } from "../../components/Admin/Team/ITeam";
 import getRMListService from "../../api/Team/GetRMList/getRMListServcie";
 
-export const defaultRMList: ITeams[] = [];
+export const defaultRMList: IAppUser[] = [];
 
 const useGetRMList = ({ header, role }: GetRMListProps) => {
-  const [rmList, setRMList] = useState<ITeams[]>(defaultRMList);
+  const [rmList, setRMList] = useState<IAppUser[]>(defaultRMList);
   const isLoading = useRef(true);
   useEffect(() => {
     if (isLoading.current) {

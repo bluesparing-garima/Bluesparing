@@ -1,13 +1,13 @@
 import getTeamDetailsAPI from "./getTeamDetailsAPI";
 import { GetTeamDetailsProps } from "../getTeamsTypes";
-import convertITeamToITeamVM from "../convertITeamToITeamVM";
-import { ITeams, ITeamsVM } from "../../../components/Admin/Team/ITeam";
+
+import { ITeams } from "../../../components/Admin/Team/ITeam";
 import { IResponse } from "../../IResponse";
 
 const getTeamDetailsService = async ({
   header,
   teamId,
-}: GetTeamDetailsProps):Promise<ITeamsVM> => {
+}: GetTeamDetailsProps):Promise<any> => {
 
   try {
     const resData = await  getTeamDetailsAPI({
@@ -15,7 +15,7 @@ const getTeamDetailsService = async ({
       teamId: teamId,
     })as IResponse<ITeams>
  
-    return convertITeamToITeamVM(resData.data);
+    return resData.data;
   } catch (error) {
     throw error;
   }
