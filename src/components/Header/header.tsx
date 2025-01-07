@@ -32,7 +32,7 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
   const open = Boolean(anchorEl);
   const [notificationData, setNotificationData] = useState<INotification[]>([]);
   const accessNotification = useMemo(() => {
-    const role = UserData?.role.toLowerCase();
+    const role = UserData?.role?.toLowerCase();
     switch (role) {
       case "booking":
         return ["operation"];
@@ -61,9 +61,9 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
   };
   const isViewNotification = useCallback(() => {
     return ["booking", "operation", "partner"].includes(
-      UserData.role.toLowerCase()
+      UserData?.role?.toLowerCase()
     );
-  }, [UserData.role]);
+  }, [UserData?.role]);
   // eslint-disable-next-line
   const fetchNotification = useCallback(
     debounce(async () => {
@@ -76,10 +76,10 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
         });
         if (res.status === "success") {
           const filterData = res.data.filter(
-            (ele: INotification) => ele.notificationFor === UserData.profileId
+            (ele: INotification) => ele.notificationFor === UserData?.profileId
           );
           setNotificationData(filterData);
-          const storeNotification = getNotifications(UserData.profileId);
+          const storeNotification = getNotifications(UserData?.profileId);
           if (
             storeNotification.length > 0 &&
             filterData.length > storeNotification.length
@@ -90,7 +90,7 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
             const extraElements = filterData.filter(
               (ele: INotification) => !filterDataIds.has(ele._id)
             );
-            storeNotifications(UserData.profileId, filterData);
+            storeNotifications(UserData?.profileId, filterData);
             extraElements.forEach((ele: INotification) => {
               handlePlay(ele.title || "");
             });
@@ -100,7 +100,7 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
         toast.error(error.message);
       }
     }, 300),
-    [UserData.profileId, accessNotification]
+    [UserData?.profileId, accessNotification]
   );
   const fetchNotificationData = useCallback(() => {
     if (isViewNotification()) {
@@ -129,9 +129,9 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
     }
   };
   const canMarkAttendance = useMemo(() => {
-    const role = UserData.role.toLowerCase();
+    const role = UserData?.role.toLowerCase();
     return role !== "admin" && role !== "partner";
-  }, [UserData.role]);
+  }, [UserData?.role]);
   useEffect(() => {
     if (userData) {
       fetchData();

@@ -250,7 +250,16 @@ const routes = [
     children: [
       {
         path: "",
-        element: <UnAuthorizedPage />,
+        element: <UnAuthorizedPage title="You are unauthorized." />,
+      },
+    ],
+  },
+  {
+    path: "plan-exhausted",
+    children: [
+      {
+        path: "",
+        element: <UnAuthorizedPage title="Policy limit exceeded for your plan" />,
       },
     ],
   },

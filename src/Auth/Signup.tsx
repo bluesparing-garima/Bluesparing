@@ -10,7 +10,6 @@ import {
   FormHelperText,
   FormLabel,
   Grid,
-  InputLabel,
   MenuItem,
   OutlinedInput,
   Select,
@@ -22,6 +21,7 @@ import useSubscription from "../Hooks/Subscription/useSubscription";
 import useGetRoles from "../Hooks/Role/useGetRoles";
 import toast, { Toaster } from "react-hot-toast";
 import { storeInSessionStorage } from "../utils/HandleStore";
+import generateFormData from "../utils/generateFromData";
 const Signup = () => {
   const navigate = useNavigate();
   const [subsData] = useSubscription();
@@ -51,32 +51,15 @@ const Signup = () => {
     if (!values.password) {
       errors.password = "Password is required";
     }
-    if (values.password !== values.confirmPassword) {
-      errors.confirmPassword = "Passwords do not match";
-    }
+
     return errors;
   };
-  const generateFormData = (obj: any) => {
-    const formData = new FormData();
-    Object.keys(obj).forEach((key) => {
-      const value = obj[key];
-      if (value === undefined || value === null) {
-        return;
-      }
-      if (value instanceof File || value instanceof Blob) {
-        formData.append(key, value);
-      } else {
-        formData.append(key, value.toString());
-      }
-    });
-    return formData;
-  };
   const onSubmit = async (signUpData: FormProps) => {
-    const { role, plans, companyLogo, profileImage, gender } = signUpData;
+    const {  plans, companyLogo, profileImage, gender } = signUpData;
     let payload: ISignUp = {
       name: signUpData.name,
       email: signUpData.email,
-      role: role,
+      role: "admin",
       password: signUpData.password,
       phoneNumber: signUpData.phoneNumber,
       confirmPassword: signUpData.confirmPassword,
@@ -86,12 +69,11 @@ const Signup = () => {
       planName: plans.planName,
       planId: plans._id,
       joiningDate: Date.now().toString(),
-      roleId: findRoleIdByName(role),
+      roleId: findRoleIdByName("admin"),
       companyLogo,
       profileImage,
       gender: gender.toLowerCase(),
     };
-    payload.role = role.toLowerCase();
     try {
       const url = "/api/user/register";
       const options: FetchOptions = {
@@ -139,10 +121,10 @@ const Signup = () => {
             <div>
               <img src={logo} className="w-56 mx-auto" alt="" />
             </div>
-            <div className="mt-2 flex flex-col items-center">
+            <div className="mt-1 flex flex-col items-center">
               <h1 className="text-2xl xl:text-3xl font-extrabold">Sign up</h1>
               <div className="w-full flex-1">
-                <div className="my-2 border-b text-center">
+                <div className="my-1 border-b text-center">
                   <div className="leading-none px-2 inline-block text-sm text-gray-600 tracking-wide font-medium bg-white transform translate-y-1/2"></div>
                 </div>
                 <div className="mx-auto max-w-full px-20">
@@ -151,40 +133,10 @@ const Signup = () => {
                     validate={validate}
                     render={({ handleSubmit, submitError }) => (
                       <form onSubmit={handleSubmit}>
-                        <Grid container spacing={2}>
-                          <Grid item lg={6} md={6} sm={12} xs={12}>
-                            <div className="mb-1">
-                              <label
-                                htmlFor="role"
-                                className="mb-1 block text-base font-medium text-[#07074D]"
-                              >
-                                Register As
-                              </label>
-                              <Field name="role" initialValue="Admin">
-                                {({ input }) => (
-                                  <Autocomplete
-                                    {...input}
-                                    options={["Admin", "Partner"]}
-                                    defaultValue="Admin"
-                                    onChange={(event, value) =>
-                                      input.onChange(value)
-                                    }
-                                    renderInput={(params) => (
-                                      <TextField
-                                        {...params}
-                                        placeholder="Select role"
-                                        variant="outlined"
-                                        size="small"
-                                      />
-                                    )}
-                                  />
-                                )}
-                              </Field>
-                            </div>
-                          </Grid>
+                        <Grid container spacing={1}>
                           <Grid item lg={6} md={6} sm={12} xs={12}>
                             <label
-                              htmlFor="role"
+                              htmlFor="Plan"
                               className="mb-1 block text-base font-medium text-[#07074D]"
                             >
                               Select Plans
@@ -317,7 +269,6 @@ const Signup = () => {
                                   size="small"
                                   error={meta.touched && Boolean(meta.error)}
                                 >
-                                  <InputLabel>Select Gender</InputLabel>
                                   <Select {...input} input={<OutlinedInput />}>
                                     {["Male", "Female", "Other"].map(
                                       (option) => (
@@ -367,33 +318,7 @@ const Signup = () => {
                               </Field>
                             </div>
                           </Grid>
-                          <Grid item lg={6} md={6} sm={6} xs={12}>
-                            <div className="mb-1">
-                              <label
-                                htmlFor="confirmPassword"
-                                className="mb-1 block text-base font-satoshi font-medium text-[#07074D]"
-                              >
-                                Confirm Password
-                              </label>
-                              <Field name="confirmPassword">
-                                {({ input, meta }) => (
-                                  <div>
-                                    <input
-                                      {...input}
-                                      type="password"
-                                      placeholder="Confirm Password"
-                                      className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-2 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                                    />
-                                    {meta.error && meta.touched && (
-                                      <span className="text-safekaroDarkOrange">
-                                        {meta.error}
-                                      </span>
-                                    )}
-                                  </div>
-                                )}
-                              </Field>
-                            </div>
-                          </Grid>
+
                           <Grid item lg={6} md={6} xs={12}>
                             <FormLabel className="mb-1 block text-base font-satoshi font-medium text-[#07074D]">
                               Profile Image

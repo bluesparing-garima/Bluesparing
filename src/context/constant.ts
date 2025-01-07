@@ -41,6 +41,7 @@ export const headerForm: any = {
   "Id-Token": "",
   "Refresh-Token": "",
 };
+
 export type SafeKaroUser = {
   isLoggedIn: boolean;
   name: string;
@@ -57,9 +58,9 @@ export type SafeKaroUser = {
   planName?:string;
   planId?:string;
   roleId?:string;
+  policyCount?:number;
   transactionStatus?:boolean;
   profileImage?: string;
-  
 };
 export type Header = {
   "Content-Type": string;

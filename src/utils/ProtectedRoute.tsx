@@ -64,7 +64,7 @@ const isAuthorized = ()=>{
         children
       ) : (
         <>
-          <UnAuthorizedPage />
+          <UnAuthorizedPage title="You are unauthorized." />
         </>
       )}
     </>

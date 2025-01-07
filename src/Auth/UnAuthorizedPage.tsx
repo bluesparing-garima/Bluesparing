@@ -1,7 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import {  Typography, Box, Card, CardContent } from "@mui/material";
-const UnAuthorizedPage: React.FC = () => {
+
+
+interface UnAuthorizedProps{
+title:string;
+}
+const UnAuthorizedPage: React.FC<UnAuthorizedProps> = ({title}) => {
   return (
     <Box className="  bg-blue-200 h-[88vh] flex justify-center items-center  p-3">
       <Card className="max-w-lg w-full shadow-lg bg-[#F5F0CD]">
@@ -32,7 +37,7 @@ const UnAuthorizedPage: React.FC = () => {
               variant="body1"
               className="uppercase text-gray-600 font-satoshi font-bold mb-4 text-center"
             >
-              Yor are unauthorized.
+              {title}
             </Typography>
 
             <Box className="flex items-center gap-2">

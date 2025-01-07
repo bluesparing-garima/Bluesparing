@@ -20,7 +20,7 @@ const Signin = () => {
     }
     return errors;
   };
-  
+
   const roleDashboardMapping: { [key: string]: string } = {
     admin: "/dashboard",
     operation: "/operationdashboard",
@@ -52,7 +52,13 @@ const Signin = () => {
         if (loginData.accessToken && loginData.refreshToken) {
           setTokens(loginData.accessToken!, loginData.refreshToken!);
         }
+
         localStorage.setItem("user", JSON.stringify(loginData));
+        
+        if (loginData.policyCount! <= 0) {
+          navigate("/plan-exhausted");
+          return;
+        }
         let role = responseData.role.toLowerCase();
         if (role === "relationship manager") {
           role = "rm";
