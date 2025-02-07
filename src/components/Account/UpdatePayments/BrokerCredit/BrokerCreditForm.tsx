@@ -7,7 +7,6 @@ import {
   CircularProgress,
   FormControl,
   Grid,
-  Paper,
   TextField,
   Typography,
 } from "@mui/material";
@@ -16,7 +15,6 @@ import { Field, Form } from "react-final-form";
 import { DAY_FORMAT, header } from "../../../../context/constant";
 import { setIn } from "final-form";
 import * as yup from "yup";
-import useGetAccounts from "../../../../Hooks/Account/useGetAccounts";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -27,17 +25,18 @@ import BrokerPaymentPoliciesData from "./BrokerPaymentPoliciesData";
 import useGetBrokers from "../../../../Hooks/Broker/useGetBrokers";
 import getFilterPoliciesForBrokerService from "../../../../api/UpdatePayment/getFilterPoliciesForBroker/getFilterPoliciesForBrokerService";
 import toast, { Toaster } from "react-hot-toast";
+import useGetAccountByRole from "../../../../Hooks/Account/useGetAccountByRole";
 export interface addCreditDebitFormProps {
   initialValues: ICreditDebitForm;
 }
 const BrokerCreditForm = (props: addCreditDebitFormProps) => {
   let { initialValues } = props;
   let [brokers] = useGetBrokers({ header: header });
-  const [totalDistributedAmount, settotalDistributedAmount] = useState(0);
-  let [accounts] = useGetAccounts({ header: header });
+  const [totalDistributedAmount, setTotalDistributedAmount] = useState(0);
+  let [accounts] = useGetAccountByRole({ header: header, role: "Admin" });
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
-  const [distributedDate, setdistributedDate] = useState("");
+  const [distributedDate, setDistributedDate] = useState("");
   const [selectedBrokerId, setSelectedBrokerId] = useState(
     initialValues.brokerId
   );
@@ -49,18 +48,18 @@ const BrokerCreditForm = (props: addCreditDebitFormProps) => {
   const [motorPolicies, setMotorPolicies] = useState<IViewPolicy[]>([]);
   const [amountInAccount, setAmountInAccount] = useState(0);
   const [brokerBalance, setBrokerBalance] = useState(0);
-  const [brokerName, setbrokerName] = useState<string>("");
+  const [brokerName, setBrokerName] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const onSubmit = async (creditdebitForm: ICreditDebitForm, form: any) => {
+  const onSubmit = async (creditDebitForm: ICreditDebitForm, form: any) => {
     setIsLoading(true);
-    const newStartDate = dayjs(creditdebitForm.startDate).format(DAY_FORMAT);
-    const newEndDate = dayjs(creditdebitForm.endDate).format(DAY_FORMAT);
-    const distributedDate = dayjs(creditdebitForm.distributedDate).format(
+    const newStartDate = dayjs(creditDebitForm.startDate).format(DAY_FORMAT);
+    const newEndDate = dayjs(creditDebitForm.endDate).format(DAY_FORMAT);
+    const distributedDate = dayjs(creditDebitForm.distributedDate).format(
       DAY_FORMAT
     );
-    setdistributedDate(distributedDate);
-    setRemarks(creditdebitForm.remarks || "");
-    creditdebitForm.amount = Number(creditdebitForm.amount!);
+    setDistributedDate(distributedDate);
+    setRemarks(creditDebitForm.remarks || "");
+    creditDebitForm.amount = Number(creditDebitForm.amount!);
     setStartTime(newStartDate);
     setEndTime(newEndDate);
     try {
@@ -71,7 +70,7 @@ const BrokerCreditForm = (props: addCreditDebitFormProps) => {
         brokerId: selectedBrokerId,
       });
       setMotorPolicies(policies.data.payments);
-      settotalDistributedAmount(policies.data.totalAmount);
+      setTotalDistributedAmount(policies.data.totalAmount);
       setBrokerBalance(policies.data.brokerBalance);
     } catch (error: any) {
       const err = await error;
@@ -101,6 +100,11 @@ const BrokerCreditForm = (props: addCreditDebitFormProps) => {
       .required("Distributed Date is required")
       .nullable(),
     amount: yup.number().nullable().required("Amount is required"),
+    remarks: yup
+      .string()
+      .nullable()
+      .required("Remarks is required")
+      .max(200, "Remarks should not exceed 200 characters"),
   });
   const addValidate = validateFormValues(validationSchema);
   const calculateAmountInAccount = (id: string) => {
@@ -160,10 +164,10 @@ const BrokerCreditForm = (props: addCreditDebitFormProps) => {
                                 }
                                 onChange={(event, newValue) => {
                                   if (newValue) {
-                                    setbrokerName(newValue.brokerName!);
+                                    setBrokerName(newValue.brokerName!);
                                     setSelectedBrokerId(newValue._id);
                                   } else {
-                                    setbrokerName("");
+                                    setBrokerName("");
                                     setSelectedBrokerId("");
                                   }
                                 }}
@@ -183,7 +187,7 @@ const BrokerCreditForm = (props: addCreditDebitFormProps) => {
                         )}
                       </Field>
                     </Grid>
-                   
+                    {}
                     <Grid item lg={4} md={4} sm={6} xs={12}>
                       <Field name="accountCode">
                         {({ input, meta }) => (
@@ -230,8 +234,8 @@ const BrokerCreditForm = (props: addCreditDebitFormProps) => {
                         )}
                       </Field>
                     </Grid>
-                   
-                   
+                    {}
+                    {}
                     <Grid item lg={4} md={4} sm={6} xs={12}>
                       <Field name="startDate">
                         {({ input, meta }) => (
@@ -239,6 +243,7 @@ const BrokerCreditForm = (props: addCreditDebitFormProps) => {
                             <DatePicker
                               disableFuture
                               label="Start Date"
+                              inputFormat="DD/MM/YYYY"
                               value={input.value || null}
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
@@ -256,7 +261,7 @@ const BrokerCreditForm = (props: addCreditDebitFormProps) => {
                         )}
                       </Field>
                     </Grid>
-                   
+                    {}
                     <Grid item lg={4} md={4} sm={6} xs={12}>
                       <Field name="endDate">
                         {({ input, meta }) => (
@@ -264,6 +269,7 @@ const BrokerCreditForm = (props: addCreditDebitFormProps) => {
                             <DatePicker
                               disableFuture
                               label="End Date"
+                              inputFormat="DD/MM/YYYY"
                               value={input.value || null}
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
@@ -288,6 +294,7 @@ const BrokerCreditForm = (props: addCreditDebitFormProps) => {
                             <DatePicker
                               disableFuture
                               label="Distributed Date"
+                              inputFormat="DD/MM/YYYY"
                               value={input.value || null}
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
@@ -305,7 +312,7 @@ const BrokerCreditForm = (props: addCreditDebitFormProps) => {
                         )}
                       </Field>
                     </Grid>
-                   
+                    {}
                     <Grid item lg={12} md={12} sm={12} xs={12}>
                       <Field name="remarks">
                         {({ input, meta }) => (
@@ -325,7 +332,7 @@ const BrokerCreditForm = (props: addCreditDebitFormProps) => {
                       </Field>
                     </Grid>
                   </Grid>
-                 
+                  {}
                   <Grid container spacing={2} mt={2}>
                     <Grid item lg={12} md={12} sm={12} xs={12}>
                       {submitError && (
@@ -333,8 +340,12 @@ const BrokerCreditForm = (props: addCreditDebitFormProps) => {
                           {submitError}
                         </div>
                       )}
-                      <Button variant="contained" type="submit">
-                        Submit
+                      <Button
+                        variant="contained"
+                        type="submit"
+                        disabled={isLoading}
+                      >
+                        {isLoading ? "Submitting..." : "Submit"}
                       </Button>
                     </Grid>
                   </Grid>
@@ -346,39 +357,26 @@ const BrokerCreditForm = (props: addCreditDebitFormProps) => {
             <Box sx={{ display: "flex" }}>
               <CircularProgress />
             </Box>
-          ) : motorPolicies?.length > 0 ? (
-            <BrokerPaymentPoliciesData
-              key={Date.now()}
-              policies={motorPolicies!}
-              totalPaidAmount={totalDistributedAmount}
-              brokerBalance={brokerBalance}
-              startDate={startTime}
-              endDate={endTime}
-              brokerId={selectedBrokerId!}
-              accountId={selectedAccountId!}
-              accountCode={accountCode}
-              distributedDate={distributedDate}
-              brokerName={brokerName}
-              remarks={remarks}
-              balanceInAccount={amountInAccount}
-            />
           ) : (
             startTime &&
             endTime &&
             selectedBrokerId &&
             selectedAccountId && (
-              <Paper elevation={3} style={{ padding: 30 }}>
-                <Grid item lg={12} md={12} sm={12} xs={12} mt={2} ml={3}>
-                  <Typography
-                    variant="subtitle1"
-                    gutterBottom
-                    display="inline"
-                    align="center"
-                  >
-                    No Data found
-                  </Typography>
-                </Grid>
-              </Paper>
+              <BrokerPaymentPoliciesData
+                key={Date.now()}
+                policies={motorPolicies!}
+                totalPaidAmount={totalDistributedAmount}
+                brokerBalance={brokerBalance}
+                startDate={startTime}
+                endDate={endTime}
+                brokerId={selectedBrokerId!}
+                accountId={selectedAccountId!}
+                accountCode={accountCode}
+                distributedDate={distributedDate}
+                brokerName={brokerName}
+                remarks={remarks}
+                balanceInAccount={amountInAccount}
+              />
             )
           )}
         </Card>

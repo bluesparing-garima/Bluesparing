@@ -1,4 +1,5 @@
 import {
+  Autocomplete,
   Button,
   Checkbox,
   CircularProgress,
@@ -10,6 +11,7 @@ import {
   MenuItem,
   Paper,
   Select,
+  TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -28,6 +30,10 @@ import { AddEditCreditDebitProps } from "../../../../api/CreditDebit/getCreditDe
 import addAccountManageService from "../../../../api/CreditDebit/AddAccountManage/AddAccountManageService";
 import { CSVLink } from "react-csv";
 import PartnerDebitColumns from "./PartnerDebitColumns";
+import useGetAccountByRole from "../../../../Hooks/Account/useGetAccountByRole";
+import { IAccounts } from "../../IAccounts";
+import AddAccountFrom from "./AddAcountFrom";
+
 interface PoliciesDetailsProps {
   policies: IViewPolicy[];
   totalPaidAmount: number;
@@ -64,12 +70,23 @@ function PartnerPaymentPoliciesData({
 }: PoliciesDetailsProps) {
   const navigate = useNavigate();
   const [isClicked, setIsClicked] = useState(false);
+
+  let [accounts] = useGetAccountByRole({
+    header: header,
+    partnerId,
+    role: "Partner",
+  });
+  const [accountsData, setAccountData] = useState<IAccounts[]>([]);
   const [updatePolicies, setUpdatePolicies] = useState<IViewPolicy[]>(
     policies.map((a: IViewPolicy) => ({ ...a }))
   );
   const [partialPaidList, setPartialPaidList] = useState<PartialPaidProps[]>(
     []
   );
+  const [selectedPartnerAccount, setSelectedPartnerAccount] =
+    useState<null | IAccounts>(null);
+  const [isAddAccount, setIsAddAccount] = useState(false);
+
   const [paymentTextboxVisibility, setPaymentTextboxVisibility] =
     useState<boolean>(false);
   const [selectAllPaid, setSelectAllPaid] = useState<boolean>(false);
@@ -80,6 +97,7 @@ function PartnerPaymentPoliciesData({
   const [CurrLeftDisAmount, setCurrLeftDisAmount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const policiesData = deepCopyIViewPolicyArray(policies);
+  const [tdsPercentage, setTdsPercentage] = useState(0);
   useEffect(() => {
     let totalPaidAmount = 0;
     let leftAmount = Math.abs(Number(partnerBalance)) + Number(partnerAmount);
@@ -129,7 +147,7 @@ function PartnerPaymentPoliciesData({
     });
     setCurrLeftDisAmount(leftAmount);
     setCurrPaidAmount(totalPaidAmount);
-     // eslint-disable-next-line
+    // eslint-disable-next-line
   }, [updatePolicies, partnerAmount]);
   useEffect(() => {
     const partialData = policiesData.filter((p) => {
@@ -145,11 +163,20 @@ function PartnerPaymentPoliciesData({
       data.push(dataObj);
     });
     setPartialPaidList([...data]);
-     // eslint-disable-next-line
+    // eslint-disable-next-line
   }, []);
   function deepCopyIViewPolicyArray(policies: IViewPolicy[]): IViewPolicy[] {
     return policies.map((policy) => deepCopyIViewPolicy(policy));
   }
+  const handleTdsPercentage = (value: number) => {
+    const val = Number(value);
+    setTdsPercentage(val);
+    const checkPartnerAmount =
+      Number(partnerAmount) + Math.abs(partnerBalance) > 0;
+    if (selectedPartnerAccount && checkPartnerAmount) {
+      setPaymentTextboxVisibility(true);
+    }
+  };
   function deepCopyIViewPolicy(policy: IViewPolicy): IViewPolicy {
     const copy: IViewPolicy = { ...policy };
     if (policy.rcFront) copy.rcFront = policy.rcFront;
@@ -175,6 +202,7 @@ function PartnerPaymentPoliciesData({
       copy.paymentUpdatedBy = deepCopyValue(policy.paymentUpdatedBy);
     return copy;
   }
+
   function deepCopyValue<T>(value: T): T {
     if (Array.isArray(value)) {
       return value.map(deepCopyValue) as any;
@@ -184,6 +212,11 @@ function PartnerPaymentPoliciesData({
       return value;
     }
   }
+  const calculateTdsAmount = (amount: number) => {
+    const tdsVal = (amount * tdsPercentage) / 100;
+    const tdsAmount = Math.round(tdsVal);
+    return tdsAmount;
+  };
   const payloadForDebit = (b: Number): AddEditCreditDebitProps => {
     return {
       header: header,
@@ -193,7 +226,7 @@ function PartnerPaymentPoliciesData({
         accountType: "PayOut",
         type: "debit",
         accountCode: accountCode,
-        debit: Number(partnerAmount),
+        debit: Number(partnerAmount) - calculateTdsAmount(partnerAmount),
         remarks: remarks,
         brokerName: "",
         brokerId: "",
@@ -209,7 +242,53 @@ function PartnerPaymentPoliciesData({
         createdOn: null,
         createdBy: "",
         updatedBy: "",
-        partnerBalance: Number(-b),
+        partnerBalance: Number(
+          -Math.abs(Number(b) - calculateTdsAmount(partnerAmount))
+        ),
+        tdsPercentage,
+        tdsAmount: calculateTdsAmount(partnerAmount),
+        totalAmountWithTds: partnerAmount,
+        receiverAccountCode: selectedPartnerAccount?.accountCode,
+        receiverAccountId: selectedPartnerAccount?._id,
+      },
+      creditDebitId: "",
+    };
+  };
+  const tdsPayloadForDebitCredit = (
+    type: string,
+    amount: number,
+    partnerBalance: number
+  ): AddEditCreditDebitProps => {
+    return {
+      header: header,
+      creditDebit: {
+        accountId: accountId,
+        partnerId: partnerId,
+        accountType: "Tds",
+        type,
+        accountCode: accountCode,
+        [type]: calculateTdsAmount(amount),
+        remarks: remarks,
+        brokerName: "",
+        brokerId: "",
+        partnerName: partnerName,
+        startDate: startDate,
+        endDate: endDate,
+        policyNumber: "",
+        employeeName: "",
+        employeeId: "",
+        distributedDate: distributedDate,
+        isActive: false,
+        updatedOn: null,
+        createdOn: null,
+        createdBy: "",
+        updatedBy: "",
+        tdsPercentage,
+        partnerBalance: Number(-partnerBalance),
+        tdsAmount: calculateTdsAmount(amount),
+        totalAmountWithTds: amount,
+        receiverAccountCode: selectedPartnerAccount?.accountCode,
+        receiverAccountId: selectedPartnerAccount?._id,
       },
       creditDebitId: "",
     };
@@ -240,10 +319,19 @@ function PartnerPaymentPoliciesData({
         createdOn: null,
         createdBy: "",
         updatedBy: "",
+        tdsPercentage,
         partnerBalance: Number(-balance),
+        tdsAmount: calculateTdsAmount(partnerAmount),
+        totalAmountWithTds: partnerAmount,
+        receiverAccountCode: selectedPartnerAccount?.accountCode,
+        receiverAccountId: selectedPartnerAccount?._id,
       },
       creditDebitId: "",
     };
+  };
+
+  const handleAddAccountFlag = (flag: boolean) => {
+    setIsAddAccount(flag);
   };
   const payLoadForAccountManage = (tCode: string): AddEditCreditDebitProps => {
     const payloadData: AddEditCreditDebitProps = {
@@ -254,7 +342,7 @@ function PartnerPaymentPoliciesData({
         accountType: "PayOut",
         type: "debit",
         accountCode: accountCode,
-        amount: Number(partnerAmount),
+        amount: Number(partnerAmount) - calculateTdsAmount(partnerAmount),
         remarks: remarks,
         brokerName: "",
         brokerId: "",
@@ -272,11 +360,16 @@ function PartnerPaymentPoliciesData({
         createdBy: "",
         updatedBy: "",
         transactionCode: tCode,
+        tdsPercentage,
+        tdsAmount: calculateTdsAmount(partnerAmount),
+        receiverAccountCode: selectedPartnerAccount?.accountCode,
+        receiverAccountId: selectedPartnerAccount?._id,
       },
       creditDebitId: "",
     };
     return payloadData;
   };
+
   const updateAllPolicies = (
     status: string,
     payoutAmount: number,
@@ -309,7 +402,6 @@ function PartnerPaymentPoliciesData({
         p.policyNumber!
       );
     });
-    
   }, [partialPaidList]);
   const splitDataIntoChunks = (data: any) => {
     const chunks = [];
@@ -345,6 +437,7 @@ function PartnerPaymentPoliciesData({
       }
       return p.payOutPaymentStatus !== "UnPaid";
     });
+
     policyData = addKeyValueToObjects(
       policyData,
       "distributedDate",
@@ -356,24 +449,39 @@ function PartnerPaymentPoliciesData({
       CurrLeftDisAmount
     );
     const allBalance = Math.abs(Number(partnerBalance)) + Number(partnerAmount);
+
     try {
       if (partnerAmount > 0) {
         const resData = await toast.promise(
           AddCreditDebitService(payloadForDebit(allBalance)),
           {
-            loading: "Reducing amount from partner account...",
-            success: "Balance credited from partner account!",
-            error: "Error while crediting amount from partner account.",
+            loading: "Adding amount to partner account...",
+            success: "Balance credited to partner account!",
+            error: "Error while credited amount in partner account.",
           }
         );
         if (resData.status === "success") {
           const tCode = resData.data.transactionCode;
           addAccountManageService(payLoadForAccountManage(tCode));
         }
+        // await new Promise((resolve) => setTimeout(resolve, 1000));
+        if (Number(tdsPercentage) > 0) {
+          await toast.promise(
+            AddCreditDebitService(
+              tdsPayloadForDebitCredit("debit", partnerAmount, allBalance)
+            ),
+            {
+              loading: "Reducing Tds  amount from partner account...",
+              success: "Tds Amount  debited from  partner account!",
+              error: "Error while credited amount in partner account.",
+            }
+          );
+        }
       }
       if (policyData.length > 0) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
         const postData = createCreditDebitForm(CurrLeftDisAmount);
+
         const res = await toast.promise(AddCreditDebitService(postData), {
           loading: "Adding to partner account...",
           success: "Balance updated in partner account!",
@@ -385,6 +493,19 @@ function PartnerPaymentPoliciesData({
             "transactionCode",
             res.data.transactionCode
           );
+          policyData = addKeyValueToObjects(
+            policyData,
+            "distributedDate",
+            distributedDate
+          );
+
+          policyData = addKeyValueToObjects(
+            policyData,
+            "partnerBalance",
+            CurrLeftDisAmount
+          );
+          policyData = addKeyValueToObjects(policyData, "remarks", remarks);
+
           const chunks = splitDataIntoChunks(policyData);
           const promises = chunks.map((ele) => {
             let policyData = ele;
@@ -538,6 +659,13 @@ function PartnerPaymentPoliciesData({
   const handleClickPolicyEditCommission = async (policy: IViewPolicy) => {
     navigate(motorPolicyEditCommissionPath(policy?.policyId!));
   };
+  useEffect(() => {
+    setAccountData(accounts);
+  }, [accounts?.length, accounts]);
+
+  const handleAccountUpdate = (updateData: IAccounts) => {
+    setAccountData([...accounts, updateData]);
+  };
   const handleEnterAmount = (e: any) => {
     let enterValue = e.target.value;
     if (enterValue > balanceInAccount) {
@@ -547,7 +675,9 @@ function PartnerPaymentPoliciesData({
     setSelectAllPaid(false);
     setUpdatePolicies(policiesData.map((a: IViewPolicy) => ({ ...a })));
     setPartnerAmount(enterValue > 0 ? enterValue : 0);
-    setPaymentTextboxVisibility(true);
+    if (selectedPartnerAccount) {
+      setPaymentTextboxVisibility(true);
+    }
   };
   const handleSelectAllPaidChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -622,39 +752,13 @@ function PartnerPaymentPoliciesData({
   if (isLoading) {
     return <CircularProgress />;
   }
+
   return (
     <div className="bg-blue-200 p-7 mt-4">
-      <Paper elevation={3} style={{ padding: 30 }}>
+      <Paper elevation={2} style={{ padding: 30, marginBottom: 3 }}>
         <Typography className="text-safekaroDarkOrange" variant="h5">
-          Filter Motor Policies
+          Fill Payout Details
         </Typography>
-        <Grid container>
-          <Grid item lg={12} md={12} sm={12} xs={12} mt={2}>
-            <Typography
-              variant="subtitle1"
-              gutterBottom
-              display="inline"
-              align="center"
-            >
-              Total Polices Amount:{" "}
-              <span className="text-safekaroDarkOrange">{totalPaidAmount}</span>
-            </Typography>
-          </Grid>
-          <Grid item lg={12}>
-            <Typography variant="subtitle1">
-              Total Distributed Amount:{" "}
-              <span className="text-safekaroDarkOrange">{CurrPaidAmount}</span>
-            </Typography>
-          </Grid>
-          <Grid item lg={12}>
-            <Typography variant="subtitle1">
-              Left Distributed Amount:{" "}
-              <span className="text-safekaroDarkOrange">
-                {CurrLeftDisAmount}
-              </span>
-            </Typography>
-          </Grid>
-        </Grid>
         <Grid container mt={2} mb={2}>
           <Grid item lg={6}>
             <FormControl fullWidth size="small">
@@ -667,10 +771,6 @@ function PartnerPaymentPoliciesData({
                 }
                 label="Select All Paid"
               />
-              {Number(partnerAmount) + Math.abs(partnerBalance) === 0 &&
-                totalPaidAmount !== 0 && (
-                  <p style={{ color: "red" }}>{"Insufficient Balance"}</p>
-                )}
             </FormControl>
           </Grid>
           <Grid item lg={6}>
@@ -679,18 +779,21 @@ function PartnerPaymentPoliciesData({
                 type="button"
                 variant="contained"
                 onClick={handleClickSubmit}
-                disabled={isClicked}
+                disabled={isClicked || isLoading}
               >
-                Update Payment
+                {isLoading ? "Updating..." : "Update Payment"}
               </Button>
             )}
           </Grid>
         </Grid>
-        <Grid container spacing={3} mt={2}>
+        <Grid container spacing={3} mt={1} alignItems="start">
           <Grid item lg={4} md={4} sm={6} xs={12}>
+            <label htmlFor="tds-input" className="block text-sm font-medium ">
+              Enter Amount
+            </label>
             <DebounceInput
               type="number"
-              className="outline-none border rounded border-black p-1 my-3"
+              className="outline-[#3b82f680] border border-gray-400 rounded  p-1 my-1"
               placeholder="Enter Amount"
               minLength={1}
               min={1}
@@ -698,115 +801,246 @@ function PartnerPaymentPoliciesData({
               debounceTimeout={500}
               onChange={(e) => handleEnterAmount(e)}
             />
+            <div>
+              {Number(partnerAmount) + Math.abs(partnerBalance) === 0 &&
+                totalPaidAmount !== 0 && (
+                  <p style={{ color: "red", margin: "8px 0 0" }}>
+                    Please Enter Amount
+                  </p>
+                )}
+            </div>
+          </Grid>
+          <Grid item lg={4} md={4} sm={6} xs={12}>
+            <label htmlFor="tds-input" className="block text-sm font-medium ">
+              Enter TDS Percentage
+            </label>
+            <DebounceInput
+              type="number"
+              className="outline-[#3b82f680] border border-gray-400 rounded  p-1 my-1"
+              placeholder="Enter Tds "
+              minLength={1}
+              value={tdsPercentage}
+              debounceTimeout={300}
+              onChange={(e) => {
+                const value = parseInt(e.target.value, 10);
+                if (value <= 100 || isNaN(value)) {
+                  handleTdsPercentage(value);
+                }
+              }}
+            />
+          </Grid>
+          <Grid item lg={4} md={4} sm={6} xs={12}>
+            <label htmlFor="tds-input" className="block text-sm font-medium ">
+              Amount Without Tds
+            </label>
+            <TextField
+              size="small"
+              value={calculateTdsAmount(partnerAmount)}
+              fullWidth
+              variant="outlined"
+              read-only
+            />
+          </Grid>
+          <Grid item lg={4} md={4} sm={6} xs={12}>
+            <label htmlFor="tds-input" className="block text-sm font-medium ">
+              Select Account
+            </label>
+            <FormControl fullWidth size="small">
+              <Autocomplete
+                id="accountCode"
+                value={selectedPartnerAccount}
+                options={accountsData || []}
+                getOptionLabel={(option) =>
+                  typeof option === "string" ? option : option.accountCode || ""
+                }
+                isOptionEqualToValue={(option, value) =>
+                  option.accountCode === value.accountCode
+                }
+                onChange={(event, newValue) => {
+                  setSelectedPartnerAccount(newValue);
+                  const checkPartnerAmount =
+                    Number(partnerAmount) + Math.abs(partnerBalance) > 0;
+                  if (checkPartnerAmount) {
+                    setPaymentTextboxVisibility(true);
+                  }
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    className="rounded-sm w-full"
+                    size="small"
+                  />
+                )}
+              />
+            </FormControl>
+          </Grid>
+          <Grid item lg={4} md={4} sm={6} xs={12}>
+            <Button
+              type="button"
+              variant="contained"
+              onClick={() => handleAddAccountFlag(true)}
+            >
+              Add Account
+            </Button>
           </Grid>
         </Grid>
-        <Grid container mt={2} mb={2}>
-          <Tooltip title={"Download Excel"}>
-            <Button
-              aria-label={"Download"}
-              className="size-5 text-white bg-safekaroDarkOrange mr-2 p-4"
-            >
-              <CSVLink
-                data={policies}
-                style={{ height: "20px", width: "100%", paddingBottom: "20px" }}
-              >
-                CSV
-              </CSVLink>
-            </Button>
-          </Tooltip>
-        </Grid>
-        <MaterialReactTable
-          columns={columns}
-          data={updatePolicies}
-          enableRowActions
-          renderRowActions={({ row }) => (
-            <div>
-             
-              {row.original.errorMessage && (
-                <Grid container mb={2}>
-                  <Grid item lg={12}>
-                    <span
-                      style={{ color: "red", marginLeft: 10, width: "100%" }}
-                    >
-                      {row.original.errorMessage}
-                    </span>
-                  </Grid>
-                </Grid>
-              )}
-             
-              {row.original.payOutCommission === 0 && (
-                <Tooltip title={"Edit Commission"}>
-                  <IconButton
-                    color="primary"
-                    aria-label={"Edit Commission"}
-                    component="span"
-                    onClick={() => {
-                      handleClickPolicyEditCommission(
-                        row.original as IViewPolicy
-                      );
-                    }}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="size-6 text-commission"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM9 7.5A.75.75 0 0 0 9 9h1.5c.98 0 1.813.626 2.122 1.5H9A.75.75 0 0 0 9 12h3.622a2.251 2.251 0 0 1-2.122 1.5H9a.75.75 0 0 0-.53 1.28l3 3a.75.75 0 1 0 1.06-1.06L10.8 14.988A3.752 3.752 0 0 0 14.175 12H15a.75.75 0 0 0 0-1.5h-.825A3.733 3.733 0 0 0 13.5 9H15a.75.75 0 0 0 0-1.5H9Z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </IconButton>
-                </Tooltip>
-              )}
-             
-              {row.original.payOutCommission !== 0 && (
-                <Grid container mt={2}>
-                  <Grid item lg={12}>
-                    <FormControl
-                      fullWidth
-                      size="small"
-                      style={{ marginLeft: 10 }}
-                    >
-                      <InputLabel>Status</InputLabel>
-                      <Select
-                        value={row.original.payOutPaymentStatus}
-                        onChange={(e) => {
-                          const newStatus = e.target.value;
-                          handleStatusChange(row.original, newStatus);
-                        }}
-                      >
-                        <MenuItem value="Paid">Paid</MenuItem>
-                        <MenuItem value="UnPaid">UnPaid</MenuItem>
-                        <MenuItem value="Partial">Partial</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                </Grid>
-              )}
-             
-              {row.original.payOutPaymentStatus === "Partial" && (
-                <Grid container mt={2}>
-                  <Grid item lg={12}>
-                    <DebounceInput
-                      type="number"
-                      className="outline-none border rounded border-black p-1"
-                      placeholder="Enter Amount"
-                      minLength={1}
-                      debounceTimeout={2000}
-                      onChange={(event) =>
-                        handleAmountChange(row.original, event)
-                      }
-                    />
-                  </Grid>
-                </Grid>
-              )}
-            </div>
-          )}
-        />
+        {isAddAccount && (
+          <AddAccountFrom
+            partnerId={partnerId}
+            handleAddAccountFlag={handleAddAccountFlag}
+            handleAccountUpdate={handleAccountUpdate}
+          />
+        )}
       </Paper>
+      {policies.length > 0 && (
+        <Paper elevation={3} style={{ padding: 30 }}>
+          <Typography className="text-safekaroDarkOrange" variant="h5">
+            Filter Motor Policies
+          </Typography>
+          <Grid container>
+            <Grid item lg={12} md={12} sm={12} xs={12} mt={2}>
+              <Typography
+                variant="subtitle1"
+                gutterBottom
+                display="inline"
+                align="center"
+              >
+                Total Polices Amount:{" "}
+                <span className="text-safekaroDarkOrange">
+                  {totalPaidAmount}
+                </span>
+              </Typography>
+            </Grid>
+            <Grid item lg={12}>
+              <Typography variant="subtitle1">
+                Total Distributed Amount:{" "}
+                <span className="text-safekaroDarkOrange">
+                  {CurrPaidAmount}
+                </span>
+              </Typography>
+            </Grid>
+            <Grid item lg={12}>
+              <Typography variant="subtitle1">
+                Left Distributed Amount:{" "}
+                <span className="text-safekaroDarkOrange">
+                  {CurrLeftDisAmount}
+                </span>
+              </Typography>
+            </Grid>
+          </Grid>
+
+          <Grid container mt={2} mb={2}>
+            <Tooltip title={"Download Excel"}>
+              <Button
+                aria-label={"Download"}
+                className="size-5 text-white bg-safekaroDarkOrange mr-2 p-4"
+              >
+                <CSVLink
+                  data={policies}
+                  style={{
+                    height: "20px",
+                    width: "100%",
+                    paddingBottom: "20px",
+                  }}
+                >
+                  CSV
+                </CSVLink>
+              </Button>
+            </Tooltip>
+          </Grid>
+          <MaterialReactTable
+            columns={columns}
+            data={updatePolicies}
+            enableRowActions
+            renderRowActions={({ row }) => (
+              <div>
+                {}
+                {row.original.errorMessage && (
+                  <Grid container mb={2}>
+                    <Grid item lg={12}>
+                      <span
+                        style={{ color: "red", marginLeft: 10, width: "100%" }}
+                      >
+                        {row.original.errorMessage}
+                      </span>
+                    </Grid>
+                  </Grid>
+                )}
+                {}
+                {row.original.payOutCommission === 0 && (
+                  <Tooltip title={"Edit Commission"}>
+                    <IconButton
+                      color="primary"
+                      aria-label={"Edit Commission"}
+                      component="span"
+                      onClick={() => {
+                        handleClickPolicyEditCommission(
+                          row.original as IViewPolicy
+                        );
+                      }}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        className="size-6 text-commission"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM9 7.5A.75.75 0 0 0 9 9h1.5c.98 0 1.813.626 2.122 1.5H9A.75.75 0 0 0 9 12h3.622a2.251 2.251 0 0 1-2.122 1.5H9a.75.75 0 0 0-.53 1.28l3 3a.75.75 0 1 0 1.06-1.06L10.8 14.988A3.752 3.752 0 0 0 14.175 12H15a.75.75 0 0 0 0-1.5h-.825A3.733 3.733 0 0 0 13.5 9H15a.75.75 0 0 0 0-1.5H9Z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </IconButton>
+                  </Tooltip>
+                )}
+                {}
+                {row.original.payOutCommission !== 0 && (
+                  <Grid container mt={2}>
+                    <Grid item lg={12}>
+                      <FormControl
+                        fullWidth
+                        size="small"
+                        style={{ marginLeft: 10 }}
+                      >
+                        <InputLabel>Status</InputLabel>
+                        <Select
+                          value={row.original.payOutPaymentStatus}
+                          onChange={(e) => {
+                            const newStatus = e.target.value;
+                            handleStatusChange(row.original, newStatus);
+                          }}
+                        >
+                          <MenuItem value="Paid">Paid</MenuItem>
+                          <MenuItem value="UnPaid">UnPaid</MenuItem>
+                          <MenuItem value="Partial">Partial</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                  </Grid>
+                )}
+                {row.original.payOutPaymentStatus === "Partial" && (
+                  <Grid container mt={2}>
+                    <Grid item lg={12}>
+                      <DebounceInput
+                        type="number"
+                        className="outline-none border rounded border-black p-1"
+                        placeholder="Enter Amount"
+                        minLength={1}
+                        debounceTimeout={2000}
+                        onChange={(event) =>
+                          handleAmountChange(row.original, event)
+                        }
+                      />
+                    </Grid>
+                  </Grid>
+                )}
+              </div>
+            )}
+          />
+        </Paper>
+      )}
+
       <Toaster position="bottom-center" reverseOrder={false} />
     </div>
   );

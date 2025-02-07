@@ -25,8 +25,12 @@ export interface ICreditDebitForm {
   createdOn?: any;
   createdBy?: any;
   updatedBy?: any;
-  transactionCode?:string
-
+  transactionCode?:string;
+  tdsPercentage?:number;
+  tdsAmount?:number;
+  receiverAccountId?:string;
+  receiverAccountCode?:string;
+  totalAmountWithTds?:number;
 }
 
 export interface ICreditDebits {
@@ -53,6 +57,8 @@ export interface ICreditDebits {
   partnerBalance?: number;
   brokerBalance?: number;
   distributedDate?: string;
+  tdsAmount?:number;
+  tdsPercentage?:number;
   updatedOn?: any;
   createdOn?: any;
   createdBy?: any;
@@ -81,6 +87,8 @@ export interface ICreditDebitsVM {
   employeeId?: string;
   partnerBalance?: number;
   distributedDate?: string;
+  tdsAmount?:number;
+  tdsPercentage?:number;
   isActive?: boolean;
   updatedOn?: any;
   createdOn?: any;

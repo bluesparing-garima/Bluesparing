@@ -1,3 +1,5 @@
+import { IAccounts } from "../IAccounts";
+
 export interface IUpdatePaymentPolicy {
   startDate?: string;
   endDate?: string;
@@ -9,4 +11,10 @@ export interface IUpdatePartnerPaymentPolicy {
   distributedDate?: string;
   partnerId?: string;
   remarks?: string;
+}
+
+export interface AddAccountProps{
+  partnerId:string;
+  handleAddAccountFlag: (flag: boolean) => void;
+  handleAccountUpdate: (updateData: IAccounts) => void
 }

@@ -59,20 +59,23 @@ const Accounts = () => {
   );
   const parsedData = useMemo(() => {
     if (!accounts || accounts.length === 0) {
-      return []; 
+      return [];
     }
-    return accounts.map((account: IAccounts) => ({
-      id: account._id,
-      bankName: account.bankName,
-      accountCode: account.accountCode,
-      accountNumber: account.accountNumber,
-      accountHolderName: account.accountHolderName,
-      amount: account.amount,
-      IFSCCode: account.IFSCCode,
-      isActive: account.isActive,
-      createdOn: dayjs(account.createdOn).format(DAYJS_DISPLAY_FORMAT),
-      updatedOn: dayjs(account.updatedOn).format(DAYJS_DISPLAY_FORMAT),
-    } as IAccountsVM));
+    return accounts.map(
+      (account: IAccounts) =>
+        ({
+          id: account._id,
+          bankName: account.bankName,
+          accountCode: account.accountCode,
+          accountNumber: account.accountNumber,
+          accountHolderName: account.accountHolderName,
+          amount: account.amount,
+          IFSCCode: account.IFSCCode,
+          isActive: account.isActive,
+          createdOn: dayjs(account.createdOn).format(DAYJS_DISPLAY_FORMAT),
+          updatedOn: dayjs(account.updatedOn).format(DAYJS_DISPLAY_FORMAT),
+        } as IAccountsVM)
+    );
   }, [accounts]);
 
   const handleClickViewCreditDebit = (account: IAccountsVM) => {

@@ -10,6 +10,7 @@ import {
   MenuItem,
   Paper,
   Select,
+  TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -78,6 +79,7 @@ function BrokerPaymentPoliciesData({
   const [CurrLeftDisAmount, setCurrLeftDisAmount] = useState(0);
   const [isClick, setIsClick] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [tdsPercentage, setTdsPercentage] = useState(0);
   const policiesData = deepCopyIViewPolicyArray(policies);
   useEffect(() => {
     let totalPaidAmount = 0;
@@ -129,7 +131,7 @@ function BrokerPaymentPoliciesData({
     });
     setCurrLeftDisAmount(leftAmount);
     setCurrPaidAmount(totalPaidAmount);
-     // eslint-disable-next-line
+    // eslint-disable-next-line
   }, [updatePolicies, brokerEnterAmount]);
   useEffect(() => {
     const partialData = policiesData.filter((p) => {
@@ -145,7 +147,7 @@ function BrokerPaymentPoliciesData({
       data.push(dataObj);
     });
     setPartialPaidList([...data]);
-     // eslint-disable-next-line
+    // eslint-disable-next-line
   }, []);
   function deepCopyIViewPolicyArray(policies: IViewPolicy[]): IViewPolicy[] {
     return policies.map((policy) => deepCopyIViewPolicy(policy));
@@ -191,9 +193,10 @@ function BrokerPaymentPoliciesData({
         accountId: accountId,
         brokerId: brokerId,
         accountType: "PayIn",
-        type: "debit",
+        type: "credit",
         accountCode: accountCode,
-        debit: Number(brokerEnterAmount),
+        credit:
+          Number(brokerEnterAmount) - calculateTdsAmount(brokerEnterAmount),
         remarks: remarks,
         partnerName: "",
         partnerId: "",
@@ -209,8 +212,13 @@ function BrokerPaymentPoliciesData({
         createdOn: null,
         createdBy: "",
         updatedBy: "",
+        tdsPercentage,
+        tdsAmount: calculateTdsAmount(brokerEnterAmount),
+        totalAmountWithTds: brokerEnterAmount,
         brokerBalance:
-          Math.abs(Number(brokerBalance)) + Number(brokerEnterAmount),
+          Math.abs(Number(brokerBalance)) +
+          Number(brokerEnterAmount) -
+          calculateTdsAmount(brokerEnterAmount),
       },
       creditDebitId: "",
     };
@@ -223,9 +231,9 @@ function BrokerPaymentPoliciesData({
         accountId: accountId,
         brokerId: brokerId,
         accountType: "PayIn",
-        type: "credit",
+        type: "debit",
         accountCode: accountCode,
-        credit: Number(paidPolicyAmount),
+        debit: Number(paidPolicyAmount),
         remarks: remarks,
         partnerName: "",
         partnerId: "",
@@ -255,7 +263,8 @@ function BrokerPaymentPoliciesData({
         accountType: "PayIn",
         type: "credit",
         accountCode: accountCode,
-        amount: Number(brokerEnterAmount),
+        amount:
+          Number(brokerEnterAmount) - calculateTdsAmount(brokerEnterAmount),
         remarks: remarks,
         partnerName: "",
         partnerId: "",
@@ -271,6 +280,8 @@ function BrokerPaymentPoliciesData({
         updatedOn: null,
         createdOn: null,
         createdBy: "",
+        tdsPercentage,
+        tdsAmount: calculateTdsAmount(brokerEnterAmount),
         transactionCode: tCode,
         updatedBy: "",
       },
@@ -310,7 +321,7 @@ function BrokerPaymentPoliciesData({
         p.policyNumber!
       );
     });
-    // eslint-disable-next-line 
+    // eslint-disable-next-line
   }, [partialPaidList]);
   function addKeyValueToObjects<T extends Record<string, any>>(
     policyData: T[],
@@ -323,6 +334,50 @@ function BrokerPaymentPoliciesData({
       [key]: value,
     }));
   }
+  const calculateTdsAmount = (amount: number) => {
+    const tdsVal = (amount * tdsPercentage) / 100;
+    const tdsAmount = Math.round(tdsVal);
+    return tdsAmount;
+  };
+  const tdsPayloadForDebitCredit = (
+    type: string,
+    amount: number,
+    brokerBal: number
+  ): AddEditCreditDebitProps => {
+    return {
+      header: header,
+      creditDebit: {
+        accountId: accountId,
+        partnerId: "",
+        accountType: "Tds",
+        type,
+        accountCode: accountCode,
+        [type]: calculateTdsAmount(amount),
+        remarks: remarks,
+        brokerName: brokerName,
+        brokerId: brokerId,
+        partnerName: "",
+        startDate: startDate,
+        endDate: endDate,
+        policyNumber: "",
+        employeeName: "",
+        employeeId: "",
+        distributedDate: distributedDate,
+        isActive: false,
+        updatedOn: null,
+        createdOn: null,
+        createdBy: "",
+        updatedBy: "",
+        tdsPercentage,
+        brokerBalance: brokerBal,
+        tdsAmount: calculateTdsAmount(amount),
+        totalAmountWithTds: amount,
+        receiverAccountCode: "",
+        receiverAccountId: "",
+      },
+      creditDebitId: "",
+    };
+  };
   const splitDataIntoChunks = (data: any) => {
     const chunks = [];
     if (data.length > 0) {
@@ -360,6 +415,23 @@ function BrokerPaymentPoliciesData({
           const tCode = resData.data.transactionCode;
           await addAccountManageService(payLoadForAccountManage(tCode));
         }
+        const newBrokerBal = Number(brokerEnterAmount) + Number(brokerBalance);
+        if (Number(tdsPercentage) > 0) {
+          await toast.promise(
+            AddCreditDebitService(
+              tdsPayloadForDebitCredit(
+                "credit",
+                brokerEnterAmount,
+                newBrokerBal
+              )
+            ),
+            {
+              loading: "loading...",
+              success: "Tds updated successfully",
+              error: "Error while credited amount in partner account.",
+            }
+          );
+        }
       }
       if (policyData.length > 0) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -385,6 +457,7 @@ function BrokerPaymentPoliciesData({
             "brokerBalance",
             CurrLeftDisAmount
           );
+          policyData = addKeyValueToObjects(policyData, "remarks", remarks);
           const chunks = splitDataIntoChunks(policyData);
           const promises = chunks.map((ele) => {
             let policyData = ele;
@@ -540,6 +613,13 @@ function BrokerPaymentPoliciesData({
     setBrokerEnterAmount(enterValue);
     setPaymentTextboxVisibility(true);
   };
+  const handleTdsPercentage = (value: number) => {
+    const val = Number(value);
+    setTdsPercentage(val);
+    if (brokerEnterAmount > 0) {
+      setPaymentTextboxVisibility(true);
+    }
+  };
   const handleSelectAllPaidChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -615,37 +695,10 @@ function BrokerPaymentPoliciesData({
   }
   return (
     <div className="bg-blue-200 p-7 mt-4">
-      <Paper elevation={3} style={{ padding: 30 }}>
+      <Paper elevation={3} style={{ padding: 30, marginBottom: 3 }}>
         <Typography className="text-safekaroDarkOrange" variant="h5">
-          Filter Motor Policies
+          Fill Payin Details
         </Typography>
-        <Grid container>
-          <Grid item lg={12} md={12} sm={12} xs={12} mt={2}>
-            <Typography
-              variant="subtitle1"
-              gutterBottom
-              display="inline"
-              align="center"
-            >
-              Total Polices Amount:{" "}
-              <span className="text-safekaroDarkOrange">{totalPaidAmount}</span>
-            </Typography>
-          </Grid>
-          <Grid item lg={12}>
-            <Typography variant="subtitle1">
-              Total Distributed Amount:{" "}
-              <span className="text-safekaroDarkOrange">{CurrPaidAmount}</span>
-            </Typography>
-          </Grid>
-          <Grid item lg={12}>
-            <Typography variant="subtitle1">
-              Left Distributed Amount:{" "}
-              <span className="text-safekaroDarkOrange">
-                {CurrLeftDisAmount}
-              </span>
-            </Typography>
-          </Grid>
-        </Grid>
         <Grid container mt={2} mb={2}>
           <Grid item lg={6}>
             <FormControl fullWidth size="small">
@@ -670,15 +723,18 @@ function BrokerPaymentPoliciesData({
                 type="button"
                 variant="contained"
                 onClick={handleClickSubmit}
-                disabled={isClick}
+                disabled={isClick || isLoading}
               >
-                Update Payment
+                {isLoading ? "Updating..." : "Update Payment"}
               </Button>
             )}
           </Grid>
         </Grid>
         <Grid container spacing={3} mt={2}>
           <Grid item lg={4} md={4} sm={6} xs={12}>
+            <label htmlFor="amount-input" className="block text-sm font-medium">
+              Enter Amount
+            </label>
             <DebounceInput
               type="number"
               className="outline-none border rounded border-black p-1 my-3"
@@ -689,99 +745,167 @@ function BrokerPaymentPoliciesData({
               onChange={(e) => handleEnterAmount(e)}
             />
           </Grid>
+          <Grid item lg={4} md={4} sm={6} xs={12}>
+            <label htmlFor="tds-input" className="block text-sm font-medium ">
+              Enter TDS Percentage
+            </label>
+            <DebounceInput
+              type="number"
+              className="outline-none border rounded border-black p-1 my-3"
+              placeholder="Enter Tds "
+              minLength={1}
+              value={tdsPercentage}
+              debounceTimeout={300}
+              onChange={(e) => {
+                const value = parseInt(e.target.value, 10);
+                if (value <= 100 || isNaN(value)) {
+                  handleTdsPercentage(value);
+                }
+              }}
+            />
+          </Grid>
+          <Grid item lg={4} md={4} sm={6} xs={12}>
+            <label htmlFor="tds-input" className="block text-sm font-medium ">
+              Amount Without Tds
+            </label>
+            <TextField
+              size="small"
+              value={calculateTdsAmount(brokerEnterAmount)}
+              fullWidth
+              variant="outlined"
+              read-only
+            />
+          </Grid>
         </Grid>
-        <MaterialReactTable
-          columns={columns}
-          data={updatePolicies}
-          enableRowActions
-          renderRowActions={({ row }) => (
-            <div>
-             
-              {row.original.errorMessage && (
-                <Grid container mb={2}>
-                  <Grid item lg={12}>
-                    <span
-                      style={{ color: "red", marginLeft: 10, width: "100%" }}
-                    >
-                      {row.original.errorMessage}
-                    </span>
-                  </Grid>
-                </Grid>
-              )}
-             
-              {row.original.payInCommission === 0 && (
-                <Tooltip title={"Edit Commission"}>
-                  <IconButton
-                    color="primary"
-                    aria-label={"Edit Commission"}
-                    component="span"
-                    onClick={() => {
-                      handleClickPolicyEditCommission(
-                        row.original as IViewPolicy
-                      );
-                    }}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="size-6 text-commission"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM9 7.5A.75.75 0 0 0 9 9h1.5c.98 0 1.813.626 2.122 1.5H9A.75.75 0 0 0 9 12h3.622a2.251 2.251 0 0 1-2.122 1.5H9a.75.75 0 0 0-.53 1.28l3 3a.75.75 0 1 0 1.06-1.06L10.8 14.988A3.752 3.752 0 0 0 14.175 12H15a.75.75 0 0 0 0-1.5h-.825A3.733 3.733 0 0 0 13.5 9H15a.75.75 0 0 0 0-1.5H9Z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </IconButton>
-                </Tooltip>
-              )}
-             
-              {row.original.payInCommission !== 0 && (
-                <Grid container mt={2}>
-                  <Grid item lg={12}>
-                    <FormControl
-                      fullWidth
-                      size="small"
-                      style={{ marginLeft: 10 }}
-                    >
-                      <InputLabel>Status</InputLabel>
-                      <Select
-                        value={row.original.payInPaymentStatus}
-                        onChange={(e) => {
-                          const newStatus = e.target.value;
-                          handleStatusChange(row.original, newStatus);
-                        }}
-                      >
-                        <MenuItem value="Paid">Paid</MenuItem>
-                        <MenuItem value="UnPaid">UnPaid</MenuItem>
-                        <MenuItem value="Partial">Partial</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                </Grid>
-              )}
-             
-              {row.original.payInPaymentStatus === "Partial" && (
-                <Grid container mt={2}>
-                  <Grid item lg={12}>
-                    <DebounceInput
-                      type="number"
-                      className="outline-none border rounded border-black p-1"
-                      placeholder="Enter Amount"
-                      minLength={1}
-                      debounceTimeout={2000}
-                      onChange={(event) =>
-                        handleAmountChange(row.original, event)
-                      }
-                    />
-                  </Grid>
-                </Grid>
-              )}
-            </div>
-          )}
-        />
       </Paper>
+      {policies.length > 0 && (
+        <Paper elevation={3} style={{ padding: 30 }}>
+          <Typography className="text-safekaroDarkOrange" variant="h5">
+            Filter Motor Policies
+          </Typography>
+          <Grid container>
+            <Grid item lg={12} md={12} sm={12} xs={12} mt={2}>
+              <Typography
+                variant="subtitle1"
+                gutterBottom
+                display="inline"
+                align="center"
+              >
+                Total Polices Amount:{" "}
+                <span className="text-safekaroDarkOrange">
+                  {totalPaidAmount}
+                </span>
+              </Typography>
+            </Grid>
+            <Grid item lg={12}>
+              <Typography variant="subtitle1">
+                Total Distributed Amount:{" "}
+                <span className="text-safekaroDarkOrange">
+                  {CurrPaidAmount}
+                </span>
+              </Typography>
+            </Grid>
+            <Grid item lg={12}>
+              <Typography variant="subtitle1">
+                Left Distributed Amount:{" "}
+                <span className="text-safekaroDarkOrange">
+                  {CurrLeftDisAmount}
+                </span>
+              </Typography>
+            </Grid>
+          </Grid>
+
+          <MaterialReactTable
+            columns={columns}
+            data={updatePolicies}
+            enableRowActions
+            renderRowActions={({ row }) => (
+              <div>
+                {row.original.errorMessage && (
+                  <Grid container mb={2}>
+                    <Grid item lg={12}>
+                      <span
+                        style={{ color: "red", marginLeft: 10, width: "100%" }}
+                      >
+                        {row.original.errorMessage}
+                      </span>
+                    </Grid>
+                  </Grid>
+                )}
+                {row.original.payInCommission === 0 && (
+                  <Tooltip title={"Edit Commission"}>
+                    <IconButton
+                      color="primary"
+                      aria-label={"Edit Commission"}
+                      component="span"
+                      onClick={() => {
+                        handleClickPolicyEditCommission(
+                          row.original as IViewPolicy
+                        );
+                      }}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        className="size-6 text-commission"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM9 7.5A.75.75 0 0 0 9 9h1.5c.98 0 1.813.626 2.122 1.5H9A.75.75 0 0 0 9 12h3.622a2.251 2.251 0 0 1-2.122 1.5H9a.75.75 0 0 0-.53 1.28l3 3a.75.75 0 1 0 1.06-1.06L10.8 14.988A3.752 3.752 0 0 0 14.175 12H15a.75.75 0 0 0 0-1.5h-.825A3.733 3.733 0 0 0 13.5 9H15a.75.75 0 0 0 0-1.5H9Z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </IconButton>
+                  </Tooltip>
+                )}
+                {}
+                {row.original.payInCommission !== 0 && (
+                  <Grid container mt={2}>
+                    <Grid item lg={12}>
+                      <FormControl
+                        fullWidth
+                        size="small"
+                        style={{ marginLeft: 10 }}
+                      >
+                        <InputLabel>Status</InputLabel>
+                        <Select
+                          value={row.original.payInPaymentStatus}
+                          onChange={(e) => {
+                            const newStatus = e.target.value;
+                            handleStatusChange(row.original, newStatus);
+                          }}
+                        >
+                          <MenuItem value="Paid">Paid</MenuItem>
+                          <MenuItem value="UnPaid">UnPaid</MenuItem>
+                          <MenuItem value="Partial">Partial</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                  </Grid>
+                )}
+                {}
+                {row.original.payInPaymentStatus === "Partial" && (
+                  <Grid container mt={2}>
+                    <Grid item lg={12}>
+                      <DebounceInput
+                        type="number"
+                        className="outline-none border rounded border-black p-1"
+                        placeholder="Enter Amount"
+                        minLength={1}
+                        debounceTimeout={2000}
+                        onChange={(event) =>
+                          handleAmountChange(row.original, event)
+                        }
+                      />
+                    </Grid>
+                  </Grid>
+                )}
+              </div>
+            )}
+          />
+        </Paper>
+      )}
       <Toaster position="bottom-center" reverseOrder={false} />
     </div>
   );

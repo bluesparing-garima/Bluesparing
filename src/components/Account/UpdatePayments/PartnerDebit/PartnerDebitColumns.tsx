@@ -2,6 +2,7 @@ import { MRT_ColumnDef } from "material-react-table";
 import { IViewPolicy } from "../../../Policy/IPolicy";
 import dayjs from "dayjs";
 import { DAYJS_DISPLAY_FORMAT } from "../../../../context/constant";
+
 const PartnerDebitColumns: MRT_ColumnDef<IViewPolicy>[] = [
   {
     accessorKey: "payOutCommission",
@@ -61,12 +62,13 @@ const PartnerDebitColumns: MRT_ColumnDef<IViewPolicy>[] = [
       return <span>{tp}%</span>;
     },
   },
+
   {
     header: "Created On",
     accessorKey: "createdOn",
     size: 50,
     Cell: ({ cell }) => {
-      const dateValue = cell.getValue() as string | number | Date | null;
+      const dateValue = cell.getValue() as string | number | Date | null; // Explicitly cast to a valid type
       return dayjs(dateValue).format(DAYJS_DISPLAY_FORMAT);
     },
   },

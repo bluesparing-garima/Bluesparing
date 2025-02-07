@@ -1,7 +1,9 @@
+import React from "react"; // Ensure React is imported
 import { MRT_ColumnDef } from "material-react-table";
 import { IViewPolicy } from "../../../Policy/IPolicy";
-import dayjs from "dayjs";
+import dayjs from "dayjs"; // Import dayjs for date formatting
 import { DAYJS_DISPLAY_FORMAT } from "../../../../context/constant";
+
 const BrokerCreditColumns: MRT_ColumnDef<IViewPolicy>[] = [
   {
     accessorKey: "payInCommission",
@@ -48,8 +50,8 @@ const BrokerCreditColumns: MRT_ColumnDef<IViewPolicy>[] = [
     header: "PayOut OD%",
     size: 100,
     Cell: ({ cell }) => {
-      const od = cell.getValue<number>();
-      return <span>{od}%</span>;
+      const od = cell.getValue<number>(); // Explicitly declare type
+      return <span>{od}%</span>; // Display with percentage
     },
   },
   {
@@ -57,8 +59,8 @@ const BrokerCreditColumns: MRT_ColumnDef<IViewPolicy>[] = [
     header: "PayOut TP%",
     size: 100,
     Cell: ({ cell }) => {
-      const tp = cell.getValue<number>();
-      return <span>{tp}%</span>;
+      const tp = cell.getValue<number>(); // Explicitly declare type
+      return <span>{tp}%</span>; // Display with percentage
     },
   },
   {
@@ -66,9 +68,10 @@ const BrokerCreditColumns: MRT_ColumnDef<IViewPolicy>[] = [
     accessorKey: "createdOn",
     size: 50,
     Cell: ({ cell }) => {
-      const dateValue = cell.getValue<string | number | Date | null>();
+      const dateValue = cell.getValue<string | number | Date | null>(); // Explicitly cast to a valid type
       return dayjs(dateValue).format(DAYJS_DISPLAY_FORMAT);
     },
   },
 ];
+
 export default BrokerCreditColumns;

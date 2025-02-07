@@ -17,7 +17,6 @@ import { DAY_FORMAT, header } from "../../../../context/constant";
 import { setIn } from "final-form";
 import * as yup from "yup";
 import useGetPartners from "../../../../Hooks/Partner/useGetPartners";
-import useGetAccounts from "../../../../Hooks/Account/useGetAccounts";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -27,6 +26,7 @@ import PartnerPaymentPoliciesData from "./PartnerPaymentPoliciesData";
 import getFilterUnpaidPartialServices from "../../../../api/UpdatePayment/getFilterUnpaidPartial/getFilterUnpaidPartialServices";
 import { ICreditDebitForm } from "../../CreditDebit/ICreditDebits";
 import toast, { Toaster } from "react-hot-toast";
+import useGetAccountByRole from "../../../../Hooks/Account/useGetAccountByRole";
 export interface addCreditDebitFormProps {
   initialValues: ICreditDebitForm;
 }
@@ -34,7 +34,7 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
   let { initialValues } = props;
   let [partners] = useGetPartners({ header: header, role: "partner" });
   const [totalDistributedAmount, settotalDistributedAmount] = useState(0);
-  let [accounts] = useGetAccounts({ header: header });
+  let [accounts] = useGetAccountByRole({ header: header, role: "Admin" });
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [distributedDate, setdistributedDate] = useState("");
@@ -45,14 +45,14 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
   const [selectedAccountId, setSelectedAccountId] = useState(
     initialValues.accountId
   );
-  const [remarks,setRemarks] = useState('')
+  const [remarks, setRemarks] = useState("");
   const [motorPolicies, setMotorPolicies] = useState<IViewPolicy[]>([]);
   const [amountInput, setAmount] = useState(0);
   const [amountInAccount, setAmountInAccount] = useState(0);
   const [partnerBalance, setpartnerBalance] = useState(0);
   const [partnerName, setPartnerName] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [flag,setFlag ] = useState(false)
+  const [flag, setFlag] = useState(false);
   const onSubmit = async (creditdebitForm: ICreditDebitForm, form: any) => {
     setIsLoading(true);
     const newStartDate = dayjs(creditdebitForm.startDate).format(DAY_FORMAT);
@@ -61,7 +61,7 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
       DAY_FORMAT
     );
     setdistributedDate(distributedDate);
-    setRemarks(creditdebitForm.remarks ||"")
+    setRemarks(creditdebitForm.remarks || "");
     creditdebitForm.amount = Number(creditdebitForm.amount!);
     setAmount(creditdebitForm.amount!);
     if (amountInAccount <= 0) {
@@ -71,6 +71,7 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
     setStartTime(newStartDate);
     setEndTime(newEndDate);
     try {
+      setIsLoading(true)
       const policies = await getFilterUnpaidPartialServices({
         header,
         startDate: newStartDate,
@@ -81,8 +82,8 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
       settotalDistributedAmount(policies.data.totalAmount);
       setpartnerBalance(policies.data.partnerBalance);
     } catch (error: any) {
-      const err = await error
-     toast.error(err.message)
+      const err = await error;
+      toast.error(err.message);
     } finally {
       setIsLoading(false);
     }
@@ -108,14 +109,19 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
       .required("Distributed Date is required")
       .nullable(),
     amount: yup.number().nullable().required("Amount is required"),
+    remarks: yup
+      .string()
+      .required("Remarks is required")
+      .nullable()
+      .max(200, "Remarks should not exceed 200 characters"),
   });
   const addValidate = validateFormValues(validationSchema);
   const calculateAmountInAccount = (id: string) => {
-    setFlag(false)
+    setFlag(false);
     const result = accounts.find((obj) => obj.accountCode === id);
     if (result?.amount === undefined || result.amount <= 0) {
       setAmountInAccount(0);
-      setFlag(true)
+      setFlag(true);
     } else {
       setAmountInAccount(result.amount);
     }
@@ -139,18 +145,21 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
               </Typography>
             </Grid>
           )}
-          {
-            flag &&   <Grid item lg={12} md={12} sm={12} xs={12} mt={2} ml={3}>
-            <Typography
-              variant="subtitle1"
-              gutterBottom
-              display="inline"
-              align="center"
-            >
-              <span className="text-red-500">   you have low balance in account</span>
-            </Typography>
-          </Grid>
-          }
+          {flag && (
+            <Grid item lg={12} md={12} sm={12} xs={12} mt={2} ml={3}>
+              <Typography
+                variant="subtitle1"
+                gutterBottom
+                display="inline"
+                align="center"
+              >
+                <span className="text-red-500">
+                  {" "}
+                  you have low balance in account
+                </span>
+              </Typography>
+            </Grid>
+          )}
           <CardContent>
             <Form
               mt={3}
@@ -207,7 +216,7 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
                         )}
                       </Field>
                     </Grid>
-                   
+                    {}
                     <Grid item lg={4} md={4} sm={6} xs={12}>
                       <Field name="accountCode">
                         {({ input, meta }) => (
@@ -254,8 +263,8 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
                         )}
                       </Field>
                     </Grid>
-                   
-                   
+                    {}
+                    {}
                     <Grid item lg={4} md={4} sm={6} xs={12}>
                       <Field name="startDate">
                         {({ input, meta }) => (
@@ -263,6 +272,7 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
                             <DatePicker
                               disableFuture
                               label="Start Date"
+                              inputFormat="DD/MM/YYYY"
                               value={input.value || null}
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
@@ -280,7 +290,7 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
                         )}
                       </Field>
                     </Grid>
-                   
+                    {}
                     <Grid item lg={4} md={4} sm={6} xs={12}>
                       <Field name="endDate">
                         {({ input, meta }) => (
@@ -288,6 +298,7 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
                             <DatePicker
                               disableFuture
                               label="End Date"
+                              inputFormat="DD/MM/YYYY"
                               value={input.value || null}
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
@@ -312,6 +323,7 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
                             <DatePicker
                               disableFuture
                               label="Distributed Date"
+                              inputFormat="DD/MM/YYYY"
                               value={input.value || null}
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
@@ -329,7 +341,7 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
                         )}
                       </Field>
                     </Grid>
-                   
+                    {}
                     <Grid item lg={12} md={12} sm={12} xs={12}>
                       <Field name="remarks">
                         {({ input, meta }) => (
@@ -349,7 +361,7 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
                       </Field>
                     </Grid>
                   </Grid>
-                 
+                  {}
                   <Grid container spacing={2} mt={2}>
                     <Grid item lg={12} md={12} sm={12} xs={12}>
                       {submitError && (
@@ -357,8 +369,8 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
                           {submitError}
                         </div>
                       )}
-                      <Button variant="contained" type="submit">
-                        Submit
+                      <Button variant="contained" type="submit" disabled={isLoading}>
+                     {isLoading?"Submitting...":"Submit"}   
                       </Button>
                     </Grid>
                   </Grid>
@@ -370,39 +382,26 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
             <Box sx={{ display: "flex" }}>
               <CircularProgress />
             </Box>
-          ) : motorPolicies.length > 0 ? (
-            <PartnerPaymentPoliciesData
-              key={Date.now()}
-              policies={motorPolicies!}
-              totalPaidAmount={totalDistributedAmount}
-              partnerBalance={partnerBalance}
-              startDate={startTime}
-              endDate={endTime}
-              partnerId={selectedPartnerId!}
-              accountId={selectedAccountId!}
-              accountCode={accountCode}
-              distributedDate={distributedDate}
-              partnerName={partnerName}
-              remarks={remarks}
-              balanceInAccount ={amountInAccount}
-            />
           ) : (
-            startTime &&
+          (  startTime &&
             endTime &&
             selectedPartnerId &&
-            selectedAccountId && (
-              <Paper elevation={3} style={{ padding: 30 }}>
-                <Grid item lg={12} md={12} sm={12} xs={12} mt={2} ml={3}>
-                  <Typography
-                    variant="subtitle1"
-                    gutterBottom
-                    display="inline"
-                    align="center"
-                  >
-                    No Data found
-                  </Typography>
-                </Grid>
-              </Paper>
+            selectedAccountId) && (
+              <PartnerPaymentPoliciesData
+                key={Date.now()}
+                policies={motorPolicies!}
+                totalPaidAmount={totalDistributedAmount}
+                partnerBalance={partnerBalance}
+                startDate={startTime}
+                endDate={endTime}
+                partnerId={selectedPartnerId!}
+                accountId={selectedAccountId!}
+                accountCode={accountCode}
+                distributedDate={distributedDate}
+                partnerName={partnerName}
+                remarks={remarks}
+                balanceInAccount={amountInAccount}
+              />
             )
           )}
         </Card>

@@ -1,4 +1,4 @@
-import  { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Typography, Paper } from "@mui/material";
 import AddAccountsForm from "./AddAccountsForm";
 import { Link, useLocation, useParams } from "react-router-dom";
@@ -7,6 +7,7 @@ import { IAccountForm } from "../IAccounts";
 import getAccountByIdService from "../../../api/Account/GetAccountById/getAccountByIdService";
 import { convertIAccountVMToIAccountForm } from "../../../api/Account/convertIAccountVMToIAccountForm";
 import toast, { Toaster } from "react-hot-toast";
+
 const AddAccounts = () => {
   const title = "Add Account Details";
   const { accountId } = useParams();
@@ -16,6 +17,7 @@ const AddAccounts = () => {
   const [accountDetails, setAccountDetails] = useState<
     IAccountForm | undefined
   >(undefined);
+
   useEffect(() => {
     if (!isAdd && accountId) {
       getAccountByIdService({ header, accountId })
@@ -24,13 +26,13 @@ const AddAccounts = () => {
             convertIAccountVMToIAccountForm(accountDetails);
           setAccountDetails(accountVMToAccountForm);
         })
-        .catch(async(error) => {
-          const err = await error
-          toast.error(err.message)
-          console.error("Failed to fetch team details", error);
+        .catch(async (error) => {
+          const err = await error;
+          toast.error(err.message);
         });
     }
   }, [isAdd, accountId]);
+
   return (
     <>
       <div className="bg-blue-200 md:p-7 p-2">
@@ -51,12 +53,13 @@ const AddAccounts = () => {
               Accounts /
             </Link>
             <span className="text-grey-600 text-sm">{title}</span>
-           
+            {/* Add a full-width grey line here */}
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
             />
           </Typography>
+
           <AddAccountsForm
             initialValues={{
               id: isAdd ? "" : accountDetails?.id || "",
@@ -78,4 +81,5 @@ const AddAccounts = () => {
     </>
   );
 };
+
 export default AddAccounts;

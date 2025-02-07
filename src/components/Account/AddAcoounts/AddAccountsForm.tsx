@@ -1,5 +1,13 @@
-import { Button, Card, CardContent, Grid, TextField } from "@mui/material";
-import React from "react";
+import {
+  Autocomplete,
+  Button,
+  Card,
+  CardContent,
+  FormControl,
+  Grid,
+  TextField,
+} from "@mui/material";
+import React, {  useState } from "react";
 import { Field, Form } from "react-final-form";
 import { ADD, SafeKaroUser, header } from "../../../context/constant";
 import { accountsPath } from "../../../sitemap";
@@ -10,9 +18,13 @@ import * as yup from "yup";
 import addAccountService from "../../../api/Account/AddAccount/addAccountService";
 import editAccountService from "../../../api/Account/EditAccount/editAccountService";
 import toast, { Toaster } from "react-hot-toast";
+import useGetPartners from "../../../Hooks/Partner/useGetPartners";
+import DynamicTextField from "../../../utils/ui/DynamicTextField";
+
 export interface addAccountFormProps {
   initialValues: IAccountForm;
 }
+
 const AddAccountsForm = (props: addAccountFormProps) => {
   let { initialValues } = props;
   const navigate = useNavigate();
@@ -22,20 +34,37 @@ const AddAccountsForm = (props: addAccountFormProps) => {
   const isAdd = isAddEdit === ADD;
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let userData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
+  // const [roles] = useGetRoles({ header });
+  let [partners] = useGetPartners({ header: header, role: "partner" });
+  const [loading,setIsLoading] = useState(false);
+  // const [selectRoleData, setSelectRoleData] = useState();
   const onSubmit = (accountForm: IAccountForm, form: any) => {
     let accountHolderName = accountForm.accountHolderName!.toUpperCase();
     let bankName = accountForm.bankName!.substring(0, 3);
     let accountNumber = accountForm.accountNumber!.slice(-3);
     accountForm.accountCode = bankName + accountHolderName + accountNumber;
     accountForm.createdBy = userData.name;
-    if (isAdd) {
-      callAddAccountAPI(accountForm);
+    const partner = accountForm.partner;
+    if (partner) {
+      accountForm["roleName"] = "Partner";
+      accountForm.partnerId = partner._id || "";
     } else {
-      callEditAccountAPI(accountForm, accountForm.id!);
+      accountForm["roleName"] = "Admin";
+    }
+
+    const payload: IAccountForm = { ...accountForm };
+    if (payload.partner !== undefined) {
+      delete payload.partner;
+    }
+    if (isAdd) {
+      callAddAccountAPI(payload);
+    } else {
+      callEditAccountAPI(payload, payload.id!);
     }
   };
   const callAddAccountAPI = async (account: any) => {
     try {
+      setIsLoading(true)
       const accountResponse = await addAccountService({
         header,
         account,
@@ -45,14 +74,17 @@ const AddAccountsForm = (props: addAccountFormProps) => {
       } else {
         return { [FORM_ERROR]: `error` };
       }
-    } catch (error:any) {
-      const err = await error
-      toast.error(err.message)
+    } catch (error: any) {
+      const err = await error;
+      toast.error(err.message);
       return { [FORM_ERROR]: `error` };
+    }finally{
+      setIsLoading(false)
     }
   };
   const callEditAccountAPI = async (account: any, accountId: string) => {
     try {
+      setIsLoading(true)
       const accountResponse = await editAccountService({
         header,
         account,
@@ -63,10 +95,12 @@ const AddAccountsForm = (props: addAccountFormProps) => {
       } else {
         return { [FORM_ERROR]: `error` };
       }
-    } catch (error:any) {
-      const err = await error
-       toast.error(err.message)
+    } catch (error: any) {
+      const err = await error;
+      toast.error(err.message);
       return { [FORM_ERROR]: `error` };
+    }finally{
+      setIsLoading(false)
     }
   };
   const validateFormValues = (schema: any) => async (values: any) => {
@@ -82,6 +116,7 @@ const AddAccountsForm = (props: addAccountFormProps) => {
       return errors;
     }
   };
+
   const validationSchema = yup.object().shape({
     accountNumber: yup
       .string()
@@ -92,6 +127,7 @@ const AddAccountsForm = (props: addAccountFormProps) => {
       .nullable()
       .min(3, "Account Holder Name must be at least 3 character")
       .required("Account Holder Name is required"),
+    pan: yup.string().nullable().required("pan number is required"),
     bankName: yup
       .string()
       .min(3, "Bank Name must be at least 3 character")
@@ -101,6 +137,21 @@ const AddAccountsForm = (props: addAccountFormProps) => {
     IFSCCode: yup.string().required("IFSC Code is required").nullable(),
   });
   const addValidate = validateFormValues(validationSchema);
+
+  // const handleSelectRole = (val: any) => {
+  //   setSelectedRole(val);
+  // };
+
+  // useEffect(() => {
+  //   if (selectedRole) {
+  //     const role = selectedRole.roleName?.toLowerCase().trim();
+  //     getPartnersService({ header, role })
+  //       .then((res) => {
+  //         setSelectRoleData(res.data);
+  //       })
+  //       .catch((err) => {});
+  //   }
+  // }, [selectedRole]);
   return (
     <>
       <React.Fragment>
@@ -114,6 +165,47 @@ const AddAccountsForm = (props: addAccountFormProps) => {
               render={({ handleSubmit, submitError, submitting }) => (
                 <form onSubmit={handleSubmit} noValidate>
                   <Grid container spacing={2}>
+                
+                    <Grid item lg={4} md={4} sm={6} xs={12}>
+                      <Field name="partner">
+                        {({ input, meta }) => (
+                          <div>
+                            <FormControl fullWidth size="small">
+                              <Autocomplete
+                                {...input}
+                                id="partner"
+                                value={
+                                  input.value !== undefined
+                                    ? input.value
+                                    : initialValues.roleName || null
+                                }
+                                getOptionLabel={(option) =>
+                                  typeof option === "string"
+                                    ? option
+                                    : ` ${option.fullName}-${option.partnerId} ` ||
+                                      ""
+                                }
+                                options={partners || []}
+                                onChange={(event, newValue) => {
+                                  input.onChange(newValue);
+                                }}
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    label=" Select Partner"
+                                    className="rounded-sm w-full"
+                                    size="small"
+                                    variant="outlined"
+                                    error={meta.touched && !!meta.error}
+                                    helperText={meta.touched && meta.error}
+                                  />
+                                )}
+                              />
+                            </FormControl>
+                          </div>
+                        )}
+                      </Field>
+                    </Grid>
                     <Grid item lg={4} md={4} sm={6} xs={12}>
                       <Field name="accountNumber">
                         {({ input, meta }) => (
@@ -138,7 +230,7 @@ const AddAccountsForm = (props: addAccountFormProps) => {
                             id="accountHolderName"
                             size="small"
                             fullWidth
-                            label="Enter AccountHolder Name"
+                            label="Enter Account Holder Name"
                             variant="outlined"
                             error={meta.touched && Boolean(meta.error)}
                             helperText={meta.touched && meta.error}
@@ -146,6 +238,11 @@ const AddAccountsForm = (props: addAccountFormProps) => {
                         )}
                       </Field>
                     </Grid>
+                    <DynamicTextField
+                      name="pan"
+                      label="Enter Pan Number"
+                      gridProps={{ lg: 4, md: 4, sm: 4, xs: 12 }}
+                    />
                     <Grid item lg={4} md={4} sm={6} xs={12}>
                       <Field name="bankName">
                         {({ input, meta }) => (
@@ -203,8 +300,8 @@ const AddAccountsForm = (props: addAccountFormProps) => {
                           {submitError}
                         </div>
                       )}
-                      <Button variant="contained" type="submit">
-                        submit
+                      <Button variant="contained" type="submit" disabled={loading}>
+                       {loading?"Submitting":"Submit"} 
                       </Button>
                     </Grid>
                   </Grid>

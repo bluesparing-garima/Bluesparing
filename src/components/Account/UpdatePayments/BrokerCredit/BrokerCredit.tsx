@@ -32,11 +32,13 @@ const BrokerCredit = () => {
                 Distribution Change
               </Button>
             </div>
+            {/* Divider */}
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
             />
           </Typography>
+
           <BrokerCreditForm
             initialValues={{
               id: "",
@@ -63,4 +65,5 @@ const BrokerCredit = () => {
     </>
   );
 };
+
 export default BrokerCredit;
