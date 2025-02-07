@@ -7,6 +7,7 @@ import {
 import {
   DAYJS_DISPLAY_FORMAT,
   DAY_FORMAT,
+  MOTOR_POLICY_STORAGE_KEY,
   SafeKaroUser,
   header,
   imagePath,
@@ -17,11 +18,13 @@ import {
   ClickAwayListener,
   Grid,
   Grow,
+  IconButton,
   MenuItem,
   MenuList,
   Paper,
   Popper,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import toast, { Toaster } from "react-hot-toast";
@@ -59,10 +62,15 @@ import { IPartners } from "../../Partner/IPartner";
 import editPolicyService from "../../../api/Policies/EditPolicy/editPolicyService";
 import useGetBrokers from "../../../Hooks/Broker/useGetBrokers";
 import { IBroker } from "../../Admin/Broker/IBroker";
-//import { mkConfig, generateCsv, download } from "export-to-csv"; //or use your library of choice here
+import EditPublishStatusService from "../../../api/Policies/EditPublishStatus/EditPublishStatusService";
+import AddRemarksModal from "./AddRemarksModal";
+import {
+  getPaginationState,
+  savePaginationState,
+} from "../../../utils/PaginationHandler";
 interface MenuIconButtonProps {
   row: { original: IViewPolicy };
-  isAdmin?: boolean; // Determine if the user is an admin
+  isAdmin?: boolean;
   isAdminAction?: boolean;
   onEdit?: () => void;
   onDownload?: () => void;
@@ -73,10 +81,11 @@ interface MenuIconButtonProps {
   onViewCommission?: () => void;
   onPayIn?: () => void;
   onPayOut?: () => void;
+  onPublish?: () => void;
+  addRemark?: () => void;
 }
 interface IViewPolicy {
-  // Define properties of IViewPolicy
-  [key: string]: any; // Adjust based on actual type requirements
+  [key: string]: any;
 }
 const GetMotorPolicies = () => {
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
@@ -87,32 +96,47 @@ const GetMotorPolicies = () => {
   const [motorPolicies, setMotorPolicies] = useState<IViewPolicy[]>([]);
   const [DialogTitle, setDialogTitle] = useState("Title");
   const [calculationData, setCalculationData] = useState<IPolicyPayment>();
-  const [globalFilter, setGlobalFilter] = useState("");
   const [stDate, setStDate] = useState(startTime || "");
   const [eDate, setEdate] = useState(endTime || "");
-
+  const [globalFilter, setGlobalFilter] = useState("");
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const [selectedPolicyId, setSelectedPolicyId] = useState("");
   const handleClickAddMotorPolicy = () => {
+    savePaginationState(pagination, MOTOR_POLICY_STORAGE_KEY);
     navigate(motorPolicyAddPath());
   };
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 10,
+  });
   let [partners] = useGetPartners({ header: header, role: "partner" });
   let [brokers] = useGetBrokers({ header: header });
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
   useEffect(() => {
     if (stDate) {
       sessionStorage.setItem("startDate", stDate);
     }
   }, [stDate]);
-
   useEffect(() => {
     if (eDate) {
       sessionStorage.setItem("endDate", eDate);
     }
   }, [eDate]);
-
+  useEffect(() => {
+    const p = getPaginationState(MOTOR_POLICY_STORAGE_KEY);
+    setPagination(p);
+  }, []);
   const onSubmit = async (filterForm: any) => {
-    const newStartDate = stDate;
-    const newEndDate = eDate;
-
+    const newStartDate = dayjs(stDate).format(DAY_FORMAT);
+    const newEndDate = dayjs(eDate).format(DAY_FORMAT);
+    try {
+    } catch (error) {}
     if (
       userData.role.toLowerCase() === "admin" ||
       userData.role.toLowerCase() === "account"
@@ -124,29 +148,44 @@ const GetMotorPolicies = () => {
       GetPoliciesById(newStartDate, newEndDate);
     }
   };
-
-  const GetPolicies = useCallback(
-    (startDate, endDate) =>
-      getMotorPolicyService({
-        header,
-        startDate,
-        endDate,
+  const GetPolicies = useCallback((startDate, endDate) => {
+    setIsLoading(true);
+    getMotorPolicyService({ header, startDate, endDate })
+      .then((motorPolicy) => {
+        const res = motorPolicy.data
+        setMotorPolicies([...res]);
       })
-        .then((motorPolicy) => {
-          setMotorPolicies(motorPolicy.data);
-        })
-        .catch(async (error: any) => {
-          const err = await error;
-          toast.error(err.message);
-        }),
-    []
-  );
-
+      .catch(async (error: any) => {
+        const err = await error;
+        toast.error(err.message);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, []);
+  const handlePublishPolicy = async (row: IViewPolicy) => {
+    const payload = {
+      policyNumber: row.policyNumber,
+      isPublished: true,
+      header,
+    };
+    const res = await EditPublishStatusService(payload);
+    if (res.message) {
+      toast.success(res.message);
+    } else {
+      toast.error("error publish policy");
+    }
+  };
+  const handleAddRemarks = async (row: IViewPolicy) => {
+    setSelectedPolicyId(row.id);
+    handleOpen();
+  };
   const GetPoliciesById = useCallback(
-    (startDate, endDate) =>
+    (startDate, endDate) => {
+      setIsLoading(true);
       getPolicyByPartnerIdService({
         header,
-        partnerId: userData.profileId,
+        partnerId: userData.partnerId,
         startDate,
         endDate,
       })
@@ -156,15 +195,19 @@ const GetMotorPolicies = () => {
         .catch(async (error) => {
           const err = await error;
           toast.error(err.message);
-        }),
-    [userData.profileId]
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    },
+    [userData.partnerId]
   );
-
   const GetPoliciesByPolicyCompletedById = useCallback(
-    (startDate, endDate) =>
+    (startDate, endDate) => {
+      setIsLoading(true);
       getPolicyCompletedByIdService({
         header,
-        policyCompletedById: userData.profileId,
+        policyCompletedById: userData.id,
         startDate,
         endDate,
       })
@@ -174,17 +217,19 @@ const GetMotorPolicies = () => {
         .catch(async (error) => {
           const err = await error;
           toast.error(err.message);
-        }),
-    [userData.profileId]
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    },
+    [userData.id]
   );
-
   useEffect(() => {
     const currentDate = new Date();
     const firstDayOfMonth = startOfMonth(currentDate);
     const lastDayOfMonth = endOfMonth(currentDate);
     let formattedFirstDay = format(firstDayOfMonth, "yyyy-MM-dd");
     let formattedLastDay = format(lastDayOfMonth, "yyyy-MM-dd");
-
     if (stDate) {
       formattedFirstDay = stDate;
     }
@@ -208,9 +253,8 @@ const GetMotorPolicies = () => {
     GetPolicies,
     GetPoliciesById,
     GetPoliciesByPolicyCompletedById,
+    open,
   ]);
-
-  // Function to create a CSV file and trigger download
   const downloadCsv = (filename: string, csv: string) => {
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const link = document.createElement("a");
@@ -224,7 +268,6 @@ const GetMotorPolicies = () => {
       document.body.removeChild(link);
     }
   };
-
   const handleExportRows = (rows: any[]) => {
     const exclusiveCol = [
       "policyId",
@@ -251,7 +294,6 @@ const GetMotorPolicies = () => {
       exclusiveCol.forEach((col) => {
         delete modifiedRow[col];
       });
-
       return modifiedRow;
     });
     const csv = Papa.unparse(rowData, { header: true });
@@ -294,7 +336,6 @@ const GetMotorPolicies = () => {
       policyNumber,
       policyId: id,
     };
-
     return policyPayment;
   };
   const handleSaveCell = async (
@@ -302,10 +343,8 @@ const GetMotorPolicies = () => {
     value: IPartners | IBroker | any
   ) => {
     const key = cell.column.id as keyof IPolicyPayment;
-
     if (cell.column.id === "partnerName") {
       const policyId = cell.row.original.id;
-
       const payloadData = {
         partnerCode: value.partnerId,
         partnerId: value._id,
@@ -329,13 +368,11 @@ const GetMotorPolicies = () => {
       motorPolicies[cell.row.index]["partnerName"] = value.fullName;
     } else if (cell.column.id === "broker") {
       const policyId = cell.row.original.id;
-
       const payloadData = {
         brokerCode: value.brokerCode,
         brokerId: value._id,
         brokerName: value.brokerName,
       };
-
       const policy = new FormData();
       policy.append("brokerCode", payloadData.brokerCode);
       policy.append("brokerId", payloadData.brokerId);
@@ -364,7 +401,6 @@ const GetMotorPolicies = () => {
         (ODAmount * payInODPercentage) / 100;
       let calculatedPayInTPPercentage: number =
         (TPAmount * payInTPPercentage) / 100;
-
       calculatedPayInODPercentage = Math.round(calculatedPayInODPercentage);
       calculatedPayInTPPercentage = Math.round(calculatedPayInTPPercentage);
       policyForm.payInODAmount = calculatedPayInODPercentage;
@@ -378,14 +414,12 @@ const GetMotorPolicies = () => {
       payInCommission = Math.round(payInCommission);
       policyForm.payInCommission = payInCommission;
       motorPolicies[cell.row.index]["payInCommission"] = payInCommission;
-      // ---------payOut------------
       const payOutODPercentage = policyForm.payOutODPercentage;
       const payOutTPPercentage = policyForm.payOutTPPercentage;
       let calculatedPayOutODPercentage: number =
         (ODAmount * payOutODPercentage) / 100;
       let calculatedPayOutTPPercentage: number =
         (TPAmount * payOutTPPercentage) / 100;
-
       calculatedPayOutODPercentage = Math.round(calculatedPayOutODPercentage);
       calculatedPayOutTPPercentage = Math.round(calculatedPayOutTPPercentage);
       policyForm.payOutODAmount = calculatedPayOutODPercentage;
@@ -414,110 +448,103 @@ const GetMotorPolicies = () => {
         toast.error(err.message);
       }
     }
-
     setMotorPolicies([...motorPolicies]);
   };
-
-  //should be memoized or stable
   const columns = useMemo<MRT_ColumnDef<IViewPolicy>[]>(
     () =>
       [
-        // {
-        //   header: "Booking Time",
-        //   accessorKey: "bookingTimer",
-        //   visible: userData.role.toLowerCase() === "admin", //Conditional visibility
-        //   Cell: ({ row }: { row: { original: IViewPolicy } }) => (
-        //     <Timer timer={row.original.bookingTimer!} />
-        //   ),
-        //   size: 200,
-        // },
-        // {
-        //   accessorKey: "leadTimer", //normal accessorKey
-        //   header: "Lead Time",
-        //   size: 100,
-        //   visible: userData.role === "admin", // Conditional visibility
-        //   Cell: ({ row }: { row: { original: IViewPolicy } }) => (
-        //     <Timer timer={row.original.bookingTimer!} />
-        //   ),
-        // },
         {
-          accessorKey: "category", //normal accessorKey
-          header: "Category",
+          accessorKey: "isPublished",
+          header: "Publish",
           size: 100,
-          visible: userData.role === "admin", // Conditional visibility
+          visible:
+            userData.role.toLowerCase() === "admin" ||
+            userData.role.toLowerCase() === "account" ||
+            userData.role.toLowerCase() === "booking",
+          Cell: ({ cell }: any) => {
+            const publish = cell.getValue();
+            return <span>{publish ? "Yes" : "NO"}</span>;
+          },
         },
         {
-          accessorKey: "vehicleNumber", //normal accessorKey
+          accessorKey: "category",
+          header: "Category",
+          size: 100,
+          visible: userData.role === "admin",
+        },
+        {
+          accessorKey: "vehicleNumber",
           header: "Vehicle Number",
           size: 100,
         },
         {
-          accessorKey: "policyNumber", //normal accessorKey
+          accessorKey: "policyNumber",
           header: "Policy Number",
           size: 100,
         },
         {
-          accessorKey: "policyType", //normal accessorKey
+          accessorKey: "policyType",
           header: "Policy Type",
           size: 100,
         },
         {
-          accessorKey: "fullName", //normal accessorKey
+          accessorKey: "fullName",
           header: "Full Name",
           size: 100,
         },
         {
-          accessorKey: "emailId", //normal accessorKey
+          accessorKey: "emailId",
           header: "Email",
           size: 100,
         },
         {
-          accessorKey: "phoneNumber", //normal accessorKey
+          accessorKey: "phoneNumber",
           header: "Phone Number",
           size: 100,
         },
         {
-          accessorKey: "caseType", //normal accessorKey
+          accessorKey: "caseType",
           header: "Case Type",
           size: 100,
         },
         {
-          accessorKey: "productType", //normal accessorKey
+          accessorKey: "productType",
           header: "Product",
           size: 100,
         },
         {
-          accessorKey: "subCategory", //normal accessorKey
+          accessorKey: "subCategory",
           header: "Sub Category",
           size: 100,
         },
         {
-          accessorKey: "companyName", //normal accessorKey
+          accessorKey: "companyName",
           header: "Company Name",
           size: 100,
         },
         {
-          accessorKey: "vehicleAge", //normal accessorKey
+          accessorKey: "vehicleAge",
           header: "Vehicle Age",
           size: 100,
         },
         {
-          accessorKey: "mfgYear", //normal accessorKey
+          accessorKey: "mfgYear",
           header: "MFG Year",
           size: 100,
         },
         {
-          accessorKey: "tenure", //normal accessorKey
+          accessorKey: "tenure",
           header: "Tenure",
           size: 100,
         },
         {
-          accessorKey: "broker", //normal accessorKey
+          accessorKey: "broker",
           header: "Broker",
           size: 100,
           visible:
             userData.role.toLowerCase() === "admin" ||
-            userData.role.toLowerCase() === "account",
+            userData.role.toLowerCase() === "account" ||
+            userData.role.toLowerCase() === "booking",
           Cell: ({ row }: { row: { original: IViewPolicy } }) => {
             const { broker, brokerCode } = row.original;
             return (
@@ -527,14 +554,14 @@ const GetMotorPolicies = () => {
             );
           },
         },
-
         {
           accessorKey: "partnerName",
           header: "Partner",
           size: 100,
           visible:
             userData.role.toLowerCase() === "admin" ||
-            userData.role.toLowerCase() === "account",
+            userData.role.toLowerCase() === "account" ||
+            userData.role.toLowerCase() === "booking",
           Cell: ({ row }: { row: { original: IViewPolicy } }) => {
             const { partnerName, partnerCode } = row.original;
             return (
@@ -544,69 +571,72 @@ const GetMotorPolicies = () => {
             );
           },
         },
-
         {
-          accessorKey: "make", //normal accessorKey
+          accessorKey: "make",
           header: "Make",
           size: 100,
         },
         {
-          accessorKey: "model", //normal accessorKey
+          accessorKey: "model",
           header: "Model",
           size: 100,
         },
         {
-          accessorKey: "fuelType", //normal accessorKey
+          accessorKey: "fuelType",
           header: "Fuel Type",
           size: 100,
         },
         {
-          accessorKey: "rto", //normal accessorKey
+          accessorKey: "rto",
           header: "RTO",
           size: 100,
         },
         {
-          accessorKey: "cc", //normal accessorKey
+          accessorKey: "cc",
           header: "CC",
           size: 100,
         },
         {
-          accessorKey: "seatingCapacity", //normal accessorKey
+          accessorKey: "seatingCapacity",
           header: "Seating Capacity",
           size: 100,
         },
         {
-          accessorKey: "ncb", //normal accessorKey
+          accessorKey: "ncb",
           header: "NCB",
           size: 100,
         },
         {
-          accessorKey: "od", //normal accessorKey
+          accessorKey: "od",
           header: "OD",
           size: 100,
         },
         {
-          accessorKey: "tp", //normal accessorKey
+          accessorKey: "tp",
           header: "TP",
           size: 100,
         },
         {
-          accessorKey: "netPremium", //normal accessorKey
+          accessorKey: "netPremium",
           header: "Net Premium",
           size: 100,
         },
         {
-          accessorKey: "finalPremium", //normal accessorKey
+          accessorKey: "finalPremium",
           header: "Final Premium",
           size: 100,
         },
         {
-          accessorKey: "payInODPercentage", //normal accessorKey
+          accessorKey: "payInODPercentage",
           header: "PayIn OD %",
           size: 100,
           visible:
             userData.role.toLowerCase() === "admin" ||
             userData.role.toLowerCase() === "account",
+          Cell: ({ cell }: any) => {
+            const od = cell.getValue();
+            return <span>{od}%</span>;
+          },
         },
         {
           accessorKey: "payInTPPercentage",
@@ -615,6 +645,10 @@ const GetMotorPolicies = () => {
           visible:
             userData.role.toLowerCase() === "admin" ||
             userData.role.toLowerCase() === "account",
+          Cell: ({ cell }: any) => {
+            const tp = cell.getValue();
+            return <span>{tp}%</span>;
+          },
         },
         {
           accessorKey: "payInCommission",
@@ -644,6 +678,10 @@ const GetMotorPolicies = () => {
           accessorKey: "payOutODPercentage",
           header: "PayOut OD %",
           size: 100,
+          visible:
+            userData.role.toLowerCase() === "admin" ||
+            userData.role.toLowerCase() === "account" ||
+            userData.role.toLowerCase() === "partner",
           Cell: ({ cell }: any) => {
             const od = cell.getValue();
             return <span>{od}%</span>;
@@ -653,75 +691,90 @@ const GetMotorPolicies = () => {
           accessorKey: "payOutTPPercentage",
           header: "PayOut TP %",
           size: 100,
+          visible:
+            userData.role.toLowerCase() === "admin" ||
+            userData.role.toLowerCase() === "account" ||
+            userData.role.toLowerCase() === "partner",
           Cell: ({ cell }: any) => {
             const tp = cell.getValue();
             return <span>{tp}%</span>;
           },
         },
         {
-          accessorKey: "payOutCommission", //normal accessorKey
+          accessorKey: "payOutCommission",
           header: "PayOut Amount",
           size: 100,
+          visible:
+            userData.role.toLowerCase() === "admin" ||
+            userData.role.toLowerCase() === "account" ||
+            userData.role.toLowerCase() === "partner",
         },
         {
-          accessorKey: "payOutAmount", //normal accessorKey
+          accessorKey: "payOutAmount",
           header: "PayOut Paid Amount",
           size: 100,
+          visible:
+            userData.role.toLowerCase() === "admin" ||
+            userData.role.toLowerCase() === "account" ||
+            userData.role.toLowerCase() === "partner",
         },
         {
-          accessorKey: "payOutBalance", //normal accessorKey
+          accessorKey: "payOutBalance",
           header: "PayOut Balance",
           size: 100,
+          visible:
+            userData.role.toLowerCase() === "admin" ||
+            userData.role.toLowerCase() === "account" ||
+            userData.role.toLowerCase() === "partner",
         },
-
         {
           header: "Revenue OD %",
           accessorKey: "revenue",
           visible:
             userData.role.toLowerCase() === "admin" ||
-            userData.role.toLowerCase() === "account", // Conditional visibility
+            userData.role.toLowerCase() === "account",
           Cell: ({ row }: { row: { original: IViewPolicy } }) => {
-            // Assuming `payInCommission` and `payOutCommission` are available in `row.original`
             const { payInODPercentage, payOutODPercentage } = row.original;
             const revenue =
               (payInODPercentage ?? 0) - (payOutODPercentage ?? 0);
-            return <span>{Math.round(revenue * 100) / 100}</span>; // Rounded to 2 decimal places
+            return <span>{Math.round(revenue * 100) / 100}%</span>;
           },
-          size: 150, // Adjust size as needed
+          size: 150,
         },
         {
           header: "Revenue TP %",
           accessorKey: "revenue",
           visible:
             userData.role.toLowerCase() === "admin" ||
-            userData.role.toLowerCase() === "account", // Conditional visibility
+            userData.role.toLowerCase() === "account",
           Cell: ({ row }: { row: { original: IViewPolicy } }) => {
-            // Assuming `payInCommission` and `payOutCommission` are available in `row.original`
             const { payInTPPercentage, payOutTPPercentage } = row.original;
             const revenue =
               (payInTPPercentage ?? 0) - (payOutTPPercentage ?? 0);
-            return <span>{Math.round(revenue * 100) / 100}</span>; // Rounded to 2 decimal places
+            return <span>{Math.round(revenue * 100) / 100}%</span>;
           },
-          size: 150, // Adjust size as needed
+          size: 150,
         },
         {
           header: "Revenue Amount",
           accessorKey: "revenue",
           visible:
             userData.role.toLowerCase() === "admin" ||
-            userData.role.toLowerCase() === "account", // Conditional visibility
-          // Assuming `payInCommission` and `payOutCommission` are available in `row.original`
+            userData.role.toLowerCase() === "account",
           Cell: ({ row }: { row: { original: IViewPolicy } }) => {
             const { payInCommission, payOutCommission } = row.original;
             const revenue = (payInCommission ?? 0) - (payOutCommission ?? 0);
-            return <span>{Math.round(revenue * 100) / 100}</span>; // Rounded to 2 decimal places
+            return <span>{Math.round(revenue * 100) / 100}</span>;
           },
-          size: 150, // Adjust size as needed
+          size: 150,
         },
-
         {
-          accessorKey: "policyCompletedByName", //normal accessorKey
+          accessorKey: "policyCompletedByName",
           header: "Booking Person Name",
+          visible:
+            userData.role.toLowerCase() === "admin" ||
+            userData.role.toLowerCase() === "account" ||
+            userData.role.toLowerCase() === "operation",
           size: 100,
           Cell: ({ row }: { row: { original: IViewPolicy } }) => {
             const { policyCompletedByName, policyCompletedByCode } =
@@ -733,9 +786,8 @@ const GetMotorPolicies = () => {
             );
           },
         },
-
         {
-          accessorKey: "issueDate", //normal accessorKey
+          accessorKey: "issueDate",
           header: "Issue Date",
           size: 100,
         },
@@ -744,23 +796,22 @@ const GetMotorPolicies = () => {
           accessorKey: "createdOn",
           size: 50,
         },
+        {
+          header: "Remarks",
+          accessorKey: "policyRemarks",
+          size: 50,
+        },
       ].filter((column) => column.visible !== false),
     [userData.role]
   );
-
   const parsedData = useMemo(
     () =>
       motorPolicies?.map(
         (motorPolicy: IViewPolicy) =>
           ({
-            // uuid: motorPolicy.uuid,
             id: motorPolicy._id,
             policyId: motorPolicy.policyId,
             fullName: motorPolicy.fullName,
-            //  bookingDate: motorPolicy.bookingDate,
-            // bookingTimer: motorPolicy.bookingTimer,
-            //leadDate: motorPolicy.leadDate,
-            //  leadTimer: motorPolicy.leadTimer,
             productType: motorPolicy.productType,
             emailId: motorPolicy.emailId,
             weight: motorPolicy.weight,
@@ -835,23 +886,20 @@ const GetMotorPolicies = () => {
             payOutAmount: motorPolicy.payOutAmount,
             payOutPaymentStatus: motorPolicy.payOutPaymentStatus,
             other: motorPolicy.other,
-            // documents: motorPolicy.documents,
-            // forceUpdate: forcedRenderCount,
+            isPublished: motorPolicy.isPublished || false,
+            policyRemarks: motorPolicy.policyRemarks || "",
+            isDispute: motorPolicy.isDispute,
           } as unknown as IViewPolicy)
       ) ?? [],
     [motorPolicies]
   );
-
   const updateLoading = useCallback(async () => {
-    // setIsLoading(true) when motorPolicies.length is 0, and setIsLoading(false) when motorPolicies.length is > 0
     setIsLoading(motorPolicies.length >= 0 ? false : true);
   }, [motorPolicies]);
-
   useEffect(() => {
     updateLoading();
   }, [updateLoading]);
   const [dataToPass, setdataToPass] = useState<any>();
-
   const handleClickCalculatePayIn = async (policy: IViewPolicy) => {
     setDialogOpen(true);
     setDialogTitle("PayIn Calculation");
@@ -867,28 +915,20 @@ const GetMotorPolicies = () => {
         weight: policy.weight === undefined ? null : policy.weight!,
         ncb: policy.ncb!,
         rto: policy.rto!,
-        // insuredType: "School Bus",
         vehicleAge: policy.vehicleAge!,
         caseType: policy.caseType!,
         make: policy.make!,
         model: policy.model!,
       });
-
       const ODAmount = policy?.od!;
       const TPAmount = policy?.tp!;
-      ///---------------------------Pay In----------------------///
-      //value from Form
       const payInODPercentage = newPolicy.data.od;
       const payInTPPercentage = newPolicy.data.tp;
-
-      //PayINCalcuation
       const calculatedPayInODAmount: number =
         (ODAmount * payInODPercentage) / 100;
       const calculatedPayInTPAmount: number =
         (TPAmount * payInTPPercentage) / 100;
-
       const payInCommission = calculatedPayInODAmount + calculatedPayInTPAmount;
-
       const data = `
        OD Percentage: ${newPolicy.data.od} %
        TP Percentage: ${newPolicy.data.tp} %
@@ -915,7 +955,7 @@ const GetMotorPolicies = () => {
         payOutTPPercentage: 0,
         payOutODAmount: 0,
         payOutTPAmount: 0,
-        payOutCommission: 0, //payOutTPAmount+payOutODAmount
+        payOutCommission: 0,
       };
       setCalculationData(calcuation);
     } catch (error: any) {
@@ -923,7 +963,6 @@ const GetMotorPolicies = () => {
       toast.error(err.message);
     }
   };
-
   const handleClickCalculatePayOut = async (policy: IViewPolicy) => {
     setDialogOpen(true);
     setDialogTitle("PayOut Calculation");
@@ -939,28 +978,21 @@ const GetMotorPolicies = () => {
         weight: policy.weight === undefined ? null : policy.weight!,
         ncb: policy.ncb!,
         rto: policy.rto!,
-        // insuredType: "School Bus",
         vehicleAge: policy.vehicleAge!,
         caseType: policy.caseType!,
         make: policy.make!,
         model: policy.model!,
       });
-
       const ODAmount = policy?.od!;
       const TPAmount = policy?.tp!;
-      ///---------------------------Pay Out----------------------///
-      //value from Form
       const payOutODPercentage = newPolicy.data.od;
       const payOutTPPercentage = newPolicy.data.tp;
-
       const calculatedPayOutODAmount: number =
         (ODAmount * payOutODPercentage) / 100;
       const calculatedPayOutTPAmount: number =
         (TPAmount * payOutTPPercentage) / 100;
-
       const payOutCommission =
         calculatedPayOutODAmount + calculatedPayOutTPAmount;
-
       const data = `
        OD Percentage: ${newPolicy.data.od} %
        TP Percentage: ${newPolicy.data.tp} %
@@ -987,10 +1019,11 @@ const GetMotorPolicies = () => {
         payInTPPercentage: 0,
         payInODAmount: 0,
         payInTPAmount: 0,
-        payInCommission: 0, //payOutTPAmount+payOutODAmount
+        payInCommission: 0,
       };
       setCalculationData(calcuation);
       if (newPolicy.status === "success") {
+        savePaginationState(pagination, MOTOR_POLICY_STORAGE_KEY);
         navigate("");
       }
     } catch (error: any) {
@@ -998,25 +1031,23 @@ const GetMotorPolicies = () => {
       toast.error(err.message);
     }
   };
-
   const handleClickViewAdminPolicy = async (policy: IViewPolicy) => {
+    savePaginationState(pagination, MOTOR_POLICY_STORAGE_KEY);
     navigate(motorPolicyViewPath(policy?.id!));
   };
   const handleClickViewPolicy = async (policy: IViewPolicy) => {
+    savePaginationState(pagination, MOTOR_POLICY_STORAGE_KEY);
     navigate(motorPolicyViewDetailsPath(policy?.id!));
   };
   const handleClickPolicyEditCommission = async (policy: IViewPolicy) => {
+    savePaginationState(pagination, MOTOR_POLICY_STORAGE_KEY);
     navigate(motorPolicyEditCommissionPath(policy?.id!));
   };
-  //const handleClickDownloadPDF = async () => {};
-
   const [dialogOpen, setDialogOpen] = useState(false);
-
   const handleCloseDialog = () => {
     setDialogOpen(false);
     setDialogTitle("");
   };
-
   const handleDialogAction = async () => {
     try {
       const newPayment = await editMotorPolicyPaymentService({
@@ -1024,6 +1055,7 @@ const GetMotorPolicies = () => {
         policyPayment: calculationData!,
       });
       if (newPayment.status === "success") {
+        savePaginationState(pagination, MOTOR_POLICY_STORAGE_KEY);
         navigate(motorPolicyPath());
       }
     } catch (error: any) {
@@ -1031,14 +1063,9 @@ const GetMotorPolicies = () => {
       toast.error(err.message);
     }
   };
-
-  // Function to handle file download
   const downloadFile = (url: string, fileName: string) => {
-    // Extract file extension from the original URL
     const urlFileName = url.substring(url.lastIndexOf("/") + 1);
     const fileExtension = urlFileName.split(".").pop()?.toLowerCase();
-
-    // Validate file extension
     if (
       fileExtension === "pdf" ||
       fileExtension === "png" ||
@@ -1059,10 +1086,8 @@ const GetMotorPolicies = () => {
         .catch((error) => console.error("Error downloading file:", error));
     } else {
       console.error("Unsupported file type:", fileExtension);
-      //alert("Unsupported file type. Only PDF and PNG files are supported.");
     }
   };
-
   const handleStartDateChange = (date: any, input: any) => {
     const newDate = dayjs(date).format(DAY_FORMAT);
     setStDate(newDate);
@@ -1070,20 +1095,16 @@ const GetMotorPolicies = () => {
       input.onChange(date);
     }
   };
-
   const handleEndDateChange = (date: any, input: any) => {
     const newDate = dayjs(date).format(DAY_FORMAT);
     input.onChange(date);
     setEdate(newDate);
   };
-  // Function to handle click events
   const handleClickViewPaymentDetails = async (policy: IViewPolicy) => {
     setDialogOpen(true);
     setDialogTitle("Payment Details");
-
     getPolicyWithPaymentService({ header, policyId: policy.id! })
       .then((policyDetails) => {
-        // setPolicyDetails(policyDetails.data);
         const data = `
         OD Amount: ${policyDetails.data.od}
         TP TPAmount: ${policyDetails.data.tp}
@@ -1106,6 +1127,7 @@ const GetMotorPolicies = () => {
       });
   };
   const handleClickEditPolicy = async (policy: IViewPolicy) => {
+    savePaginationState(pagination, MOTOR_POLICY_STORAGE_KEY);
     navigate(motorPolicyEditPath(policy.id!));
   };
   const handleClickDeletePolicy = async (policy: IViewPolicy) => {
@@ -1123,9 +1145,7 @@ const GetMotorPolicies = () => {
         toast.error(err.message);
       });
   };
-
   const handleClickDownloadDocuments = async (policy: IViewPolicy) => {
-    // Example usage
     if (policy.rcBack) {
       downloadFile(`${imagePath}${policy?.rcBack!}`, "rcBack");
     }
@@ -1134,7 +1154,6 @@ const GetMotorPolicies = () => {
     }
     if (policy.puc) {
       downloadFile(`${imagePath}${policy?.puc!}`, "puc");
-      // openFileInNewTab(`${imagePath}${policy?.puc!}`, "puc");
     }
     if (policy.currentPolicy) {
       downloadFile(`${imagePath}${policy?.currentPolicy!}`, "currentPolicy");
@@ -1154,7 +1173,6 @@ const GetMotorPolicies = () => {
     if (policy.other) {
       downloadFile(`${imagePath}${policy?.other!}`, "other");
     }
-    // downloadFile('https://api.safekaro.com/uploads/Manish_668919929794ffa14999dc82.png', 'Manish_668919929794ffa14999dc82.png');
   };
   const MenuIconButton: React.FC<MenuIconButtonProps> = ({
     row,
@@ -1164,6 +1182,8 @@ const GetMotorPolicies = () => {
     onDownload,
     onView,
     onDelete,
+    onPublish,
+    addRemark,
     onAdminView,
     onEditCommission,
     onViewCommission,
@@ -1172,15 +1192,12 @@ const GetMotorPolicies = () => {
   }) => {
     const [open, setOpen] = useState(false);
     const anchorRef = useRef<HTMLButtonElement>(null);
-
     const handleToggle = () => {
       setOpen((prevOpen) => !prevOpen);
     };
-
     const handleClose = () => {
       setOpen(false);
     };
-
     return (
       <>
         <Button
@@ -1216,6 +1233,26 @@ const GetMotorPolicies = () => {
                     aria-labelledby="composition-button"
                     sx={{}}
                   >
+                    {onPublish && (
+                      <MenuItem
+                        onClick={() => {
+                          onPublish();
+                          handleClose();
+                        }}
+                      >
+                        Publish Policy
+                      </MenuItem>
+                    )}
+                    {addRemark && (
+                      <MenuItem
+                        onClick={() => {
+                          addRemark();
+                          handleClose();
+                        }}
+                      >
+                        Add Remarks
+                      </MenuItem>
+                    )}
                     {isAdmin ? (
                       <>
                         {isAdminAction ? (
@@ -1244,7 +1281,6 @@ const GetMotorPolicies = () => {
                         ) : (
                           ""
                         )}
-
                         {onDownload && (
                           <MenuItem
                             onClick={() => {
@@ -1352,13 +1388,12 @@ const GetMotorPolicies = () => {
       return errors;
     }
   };
+
   const validationSchema = yup.object().shape({
     startDate: yup.string().nullable().required("Start Date is required"),
     endDate: yup.string().nullable().required("End Date is required"),
   });
-
   const validate = validateFormValues(validationSchema);
-
   return (
     <>
       <div className="bg-blue-200 md:p-7 p-2">
@@ -1395,32 +1430,35 @@ const GetMotorPolicies = () => {
                 ""
               )}
             </div>
-            {/* Add a full-width grey line here */}
+            {}
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
             />
           </Typography>
-
           <React.Fragment>
             <Form
               validate={validate}
               onSubmit={onSubmit}
-              // initialValues={initialValues}
-
               render={({ handleSubmit, submitting, errors, values }) => (
                 <form onSubmit={handleSubmit} noValidate>
                   <Grid container spacing={2}>
-                    {/* Account Code Selection */}
+                    {}
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Field name="startDate">
                         {({ input, meta }) => {
                           return (
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                               <DatePicker
-                                disableFuture
                                 label="Start Date"
+                                inputFormat="DD/MM/YYYY"
                                 value={dayjs(stDate)}
+                                minDate={
+                                  userData.role.toLowerCase().trim() ===
+                                  "partner"
+                                    ? new Date(2025, 0, 1)
+                                    : undefined
+                                }
                                 onChange={(date) => {
                                   handleStartDateChange(date, input);
                                 }}
@@ -1447,9 +1485,15 @@ const GetMotorPolicies = () => {
                           return (
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                               <DatePicker
-                                disableFuture
                                 label="End Date"
+                                inputFormat="DD/MM/YYYY"
                                 value={dayjs(eDate)}
+                                minDate={
+                                  userData.role.toLowerCase().trim() ===
+                                  "partner"
+                                    ? new Date(2025, 0, 1)
+                                    : undefined
+                                }
                                 onChange={(date) =>
                                   handleEndDateChange(date, input)
                                 }
@@ -1469,16 +1513,15 @@ const GetMotorPolicies = () => {
                         }}
                       </Field>
                     </Grid>
-
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Button
                         type="submit"
-                        disabled={submitting}
+                        disabled={isLoading}
                         variant="contained"
                         color="primary"
                         className=" w-26 h-10 bg-addButton text-white p-3 md:text-xs text-[10px] rounded-sm"
                       >
-                        {"Get Records"}
+                        {isLoading ? "Getting..." : "Get Records"}
                       </Button>
                     </Grid>
                   </Grid>
@@ -1486,20 +1529,26 @@ const GetMotorPolicies = () => {
               )}
             />
           </React.Fragment>
-
           <MaterialReactTable
             state={{
               isLoading,
-              globalFilter: globalFilter.trim(), // Combine both states here
+              globalFilter: globalFilter.trim(),
+              pagination,
             }}
+            onPaginationChange={setPagination}
             columns={columns}
             data={parsedData}
+            autoResetPageIndex={false}
+            paginateExpandedRows={false}
             enableRowActions
             editingMode="cell"
             enableGlobalFilter
-            globalFilterFn="fuzzy" // Use default fuzzy filtering
+            globalFilterFn="fuzzy"
             onGlobalFilterChange={(value) => setGlobalFilter(value || "")}
-            enableEditing={userData.role?.toLowerCase() === "admin"}
+            enableEditing={
+              userData.role?.toLowerCase().trim() === "admin" ||
+              userData.role?.toLowerCase().trim() === "account"
+            }
             muiTableBodyCellEditTextFieldProps={({ cell }) => {
               const editableColumns = [
                 "partnerName",
@@ -1509,7 +1558,6 @@ const GetMotorPolicies = () => {
                 "payOutODPercentage",
                 "brokerName",
               ];
-
               const isEditable = editableColumns.includes(cell.column.id);
               if (cell.column.id === "partnerName") {
                 return {
@@ -1526,6 +1574,7 @@ const GetMotorPolicies = () => {
                           {...params}
                           label="Select Partner"
                           variant="outlined"
+                          size="small"
                         />
                       )}
                       onChange={(event, newValue) => {
@@ -1556,6 +1605,7 @@ const GetMotorPolicies = () => {
                           {...params}
                           label="Select Broker"
                           variant="outlined"
+                          size="small"
                         />
                       )}
                       onChange={(event, newValue) => {
@@ -1571,7 +1621,6 @@ const GetMotorPolicies = () => {
                   ),
                 };
               }
-
               return isEditable
                 ? {
                     onBlur: (event) => {
@@ -1598,12 +1647,66 @@ const GetMotorPolicies = () => {
             )}
             renderRowActions={({ row }) => {
               return (
-                <>
+                <div className="flex justify-center items-center">
+                  {(userData.role.toLowerCase() === "admin" ||
+                    userData.role.toLowerCase() === "account" ||
+                    userData.role.toLowerCase() === "partner") && (
+                    <Tooltip title={"Policy Dispute"}>
+                      <IconButton
+                        color="primary"
+                        aria-label={"Dispute"}
+                        component="span"
+                        onClick={() => {
+                          savePaginationState(
+                            pagination,
+                            MOTOR_POLICY_STORAGE_KEY
+                          );
+                          navigate(`/policy/policy-dispute`, {
+                            state: row.original,
+                          });
+                        }}
+                      >
+                        {row.original.isDispute && (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="size-6"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.501 48.172 48.172 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
+                            />
+                          </svg>
+                        )}
+                        {row.original.isDispute === false && (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="size-6"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
+                            />
+                          </svg>
+                        )}
+                      </IconButton>
+                    </Tooltip>
+                  )}
                   <MenuIconButton
                     row={row}
                     isAdmin={
                       userData.role.toLowerCase() === "admin" ||
-                      userData.role.toLowerCase() === "account"
+                      userData.role.toLowerCase() === "account" ||
+                      userData.role.toLowerCase().trim() === "booking"
                         ? true
                         : false
                     }
@@ -1613,27 +1716,62 @@ const GetMotorPolicies = () => {
                         ? true
                         : false
                     }
+                    onPublish={
+                      (userData.role.toLowerCase() === "admin" ||
+                        userData?.role?.toLowerCase().trim() === "booking" ||
+                        userData?.role?.toLowerCase().trim() === "account") &&
+                      row.original.isPublished === false
+                        ? () => handlePublishPolicy(row.original)
+                        : undefined
+                    }
+                    addRemark={
+                      userData?.role.toLowerCase() === "admin" ||
+                      userData?.role?.toLowerCase().trim() === "account" ||
+                      userData?.role.toLowerCase() === "partner"
+                        ? () => handleAddRemarks(row.original)
+                        : undefined
+                    }
                     onEdit={() => handleClickEditPolicy(row.original)}
                     onDelete={() => handleClickDeletePolicy(row.original)}
                     onDownload={() =>
                       handleClickDownloadDocuments(row.original)
                     }
-                    onAdminView={() => handleClickViewAdminPolicy(row.original)}
+                    onAdminView={
+                      userData.role.toLowerCase() === "admin" ||
+                      userData?.role?.toLowerCase().trim() === "account"
+                        ? () => handleClickViewAdminPolicy(row.original)
+                        : undefined
+                    }
                     onView={() => handleClickViewPolicy(row.original)}
-                    onEditCommission={() =>
-                      handleClickPolicyEditCommission(row.original)
+                    onEditCommission={
+                      userData.role.toLowerCase() === "admin" ||
+                      userData?.role?.toLowerCase().trim() === "account"
+                        ? () => handleClickPolicyEditCommission(row.original)
+                        : undefined
                     }
-                    onViewCommission={() =>
-                      handleClickViewPaymentDetails(row.original)
+                    onViewCommission={
+                      userData.role.toLowerCase() === "admin" ||
+                      userData?.role?.toLowerCase().trim() === "account"
+                        ? () => handleClickViewPaymentDetails(row.original)
+                        : undefined
                     }
-                    onPayIn={() => handleClickCalculatePayIn(row.original)}
-                    onPayOut={() => handleClickCalculatePayOut(row.original)}
+                    onPayIn={
+                      userData.role.toLowerCase() === "admin" ||
+                      userData?.role?.toLowerCase().trim() === "account"
+                        ? () => handleClickCalculatePayIn(row.original)
+                        : undefined
+                    }
+                    onPayOut={
+                      userData.role.toLowerCase() === "admin" ||
+                      userData?.role?.toLowerCase().trim() === "account"
+                        ? () => handleClickCalculatePayOut(row.original)
+                        : undefined
+                    }
                   />
-                </>
+                </div>
               );
             }}
           />
-
           <ConfirmationDialogBox
             open={dialogOpen}
             onClose={handleCloseDialog}
@@ -1645,8 +1783,13 @@ const GetMotorPolicies = () => {
         </Paper>
       </div>
       <Toaster position="bottom-center" reverseOrder={false} />
+      <AddRemarksModal
+        handleClose={handleClose}
+        handleOpen={handleOpen}
+        open={open}
+        policyId={selectedPolicyId}
+      />
     </>
   );
 };
-
 export default GetMotorPolicies;

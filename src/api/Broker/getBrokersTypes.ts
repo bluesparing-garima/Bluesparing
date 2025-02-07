@@ -20,3 +20,10 @@ export interface DeleteBrokerProps {
   brokerId?: string;
   brokers: IBrokers[];
 }
+
+
+export interface GetBrokerTransactionHistoryProps {
+  header?: Header;
+  brokerId?: string;
+  transactionCode?:string;
+}

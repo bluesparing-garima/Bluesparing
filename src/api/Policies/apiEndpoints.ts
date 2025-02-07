@@ -69,3 +69,28 @@ export const getRenewedPolicyEp = (startDate: string, endDate: string, partnerId
     return `/api/policy/motor/filter/renewed-date-range?startDate=${startDate}&endDate=${endDate}`
   }
 }
+
+export const addRemarkPolicyEndpoint = () =>
+  (`/api/policy/motor/update-policy-remarks`);
+
+export const addDisputeMsgEp =()=>{
+  return `/api/policy-dispute`
+}
+
+
+export const updatePublishedEp = ()=>{
+  return '/api/policy/motor/update-is-published'
+}
+export const publishPolicyEp = ()=>{
+  return '/api/policy/motor/update-partner-and-published'
+}
+
+export const getDisputeMsgEp =(policyId:string)=>{
+return `/api/policy-dispute/policyId/${policyId}`
+}
+export const toggleDisputeEp = ()=>{
+return '/api/policy/motor/update-is-dispute'
+}
+export const getAllDisputedEp = ()=>{
+return '/api/policy/motor/all-is-dispute'
+}

@@ -17,17 +17,20 @@ export interface EditPolicyProps {
   policy: any;
   policyId: string;
 }
+export interface AddPolicyRemarks {
+  policyRemarks: string;
+  policyId: string;
+}
+export interface EditPolicyPublishStatus {
+  header: Header;
+  policyNumber: string;
+  isPublished: boolean;
+}
 export interface GetMotorPoliciesProps {
   header?: Header;
   startDate?: string;
   endDate?: string;
   rmId?: string;
-}
-export interface GetRenewedMotorPoliciesProps {
-  header?: Header;
-  startDate: string;
-  endDate: string;
-  partnerId?: string;
 }
 export interface GetPolicyByNumberProps {
   header?: Header;
@@ -57,4 +60,20 @@ export interface GetPolicyByPartnerIdProps {
 export interface GetMotorPolicyExcelProps {
   header?: Header;
   excel: any;
+}
+export interface GetRenewedMotorPoliciesProps {
+  header?: Header;
+  startDate: string;
+  endDate: string;
+  partnerId?: string;
+}
+export interface EditPublishPartnerProps {
+  isPublished: boolean;
+  partnerId: string;
+  partnerName: string;
+  policyNumber: string;
+}
+export interface UpdateDisputeProps{
+  policyNumber:string;
+  isDispute:boolean;
 }

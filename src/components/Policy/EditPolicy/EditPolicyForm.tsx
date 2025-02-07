@@ -22,6 +22,7 @@ import {
   Document,
   header,
   ALLOWED_FILE_TYPES,
+  DAY_FORMAT,
 } from "../../../context/constant";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -50,7 +51,7 @@ import { IProductSubTypes } from "../../Admin/ProductSubType/IProductSubTypes";
 import { IModels } from "../../Admin/Model/IModel";
 import { IMakes } from "../../Admin/Make/IMake";
 import getPolicyByNumberService from "../../../api/Policies/GetPolicyByNumber/getPolicyByNumberService";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import editBookingRequestService from "../../../api/BookingRequest/EditBookingRequest/editBookingRequestService";
 import editLeadService from "../../../api/Leads/EditLead/editLeadService";
 import toast, { Toaster } from "react-hot-toast";
@@ -75,6 +76,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
     header: header,
     role: "Relationship Manager",
   });
+  const [isLoading, setIsLoading] = useState(false);
   let [partners] = useGetPartners({ header: header, role: "partner" });
   let [caseTypes] = useGetCaseTypes({ header: header });
   let [makes] = useGetMakes({ header: header });
@@ -82,9 +84,9 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
   let [fuelTypes] = useGetFuelTypes({ header: header });
   let [brokers] = useGetBrokers({ header: header });
   let [companies] = useGetCompanies({ header: header });
-  let [products] = useGetProducts({ header: header,category:"motor" });
+  let [products] = useGetProducts({ header: header, category: "motor" });
   let [productSubTypes] = useGetProductSubTypes({ header: header });
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisibile, setIsVisibile] = useState(false);
   const [selectedBrokerId, setSelectedBrokerId] = useState("");
   const [selectedPartnerName, setSelectedPartnerName] = useState("");
   const [selectedPartnerId, setSelectedPartnerId] = useState("");
@@ -181,9 +183,9 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
     if (selectedProduct) {
       const ProductId = selectedProduct._id;
       if (selectedProduct.productName === "Goods carrying vehicle") {
-        setIsVisible(true);
+        setIsVisibile(true);
       } else {
-        setIsVisible(false);
+        setIsVisibile(false);
       }
       setFilteredSubcategories(
         productSubTypes.filter((sub) => sub.productId === ProductId)
@@ -192,6 +194,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
       setFilteredSubcategories(productSubTypes);
     }
   }, [selectedProduct, productSubTypes]);
+
   const handleFileInputChange = (event: any, index: any) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
@@ -222,15 +225,18 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
       }
     }
   };
+
   const calculateYearDifference = (
-    startDate: Dayjs,
-    endDate: Dayjs
+    startDate: string,
+    endDate: string
   ): number => {
-    let yearsDifference = endDate.year() - startDate.year();
-    const monthDifference = endDate.month() - startDate.month();
+    const endTime = dayjs(endDate);
+    const startTime = dayjs(startDate);
+    let yearsDifference = endTime.year() - startTime.year();
+    const monthDifference = endTime.month() - startTime.month();
     if (
       monthDifference < 0 ||
-      (monthDifference === 0 && endDate.date() < startDate.date())
+      (monthDifference === 0 && endTime.date() < startTime.date())
     ) {
       yearsDifference--;
     }
@@ -254,6 +260,15 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
     setErrors(newErrors);
   };
   const bindValues = async (policyForm: any) => {
+    if (policyType.toLowerCase().trim() === "third party only/ tp") {
+      policyForm["idv"] = 0;
+    }
+    policyForm.issueDate = dayjs(policyForm.issueDate).format(DAY_FORMAT);
+    policyForm.registrationDate = dayjs(policyForm.registrationDate).format(
+      DAY_FORMAT
+    );
+    policyForm.endDate = dayjs(policyForm.endDate).format(DAY_FORMAT);
+
     const yearDifference = calculateYearDifference(
       policyForm.registrationDate,
       policyForm.issueDate
@@ -285,7 +300,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
       userData.role.toLowerCase() === "admin"
         ? selectedPartnerId
         : policyForm.policyCreatedBy === "Direct"
-        ? userData.profileId
+        ? userData.partnerId
         : selectedPartnerId;
     policyForm.partnerName =
       userData.role.toLowerCase() === "admin"
@@ -296,7 +311,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
     policyForm.createdBy = userData.name;
     policyForm.vehicleNumber = policyForm.vehicleNumber.toUpperCase();
     policyForm.rto = policyForm.vehicleNumber.substring(0, 4);
-    policyForm.policyCompletedBy = userData.profileId;
+    policyForm.policyCompletedBy = userData.id;
     policyForm.netPremium = netPremium;
     policyForm.brokerId = selectedBrokerId;
     policyForm.bookingRMId = userData.headRMId;
@@ -318,7 +333,58 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
     });
     callAddPolicyAPI(formData);
   };
+
+  const validateDateWithMfg = (mgfYear: string, valueStr: string) => {
+    const yearValue = dayjs(valueStr).year();
+    if (Number(mgfYear) > Number(yearValue)) {
+      return true;
+    }
+    return false;
+  };
   const onSubmit = async (policyForm: any) => {
+    const isIssueDateValid = dayjs(policyForm.issueDate).isValid();
+    const isRegDateValid = dayjs(policyForm.registrationDate).isValid();
+    const isEndDateValid = dayjs(policyForm.endDate).isValid();
+    const startDate = dayjs(policyForm.issueDate);
+    const endDate = dayjs(policyForm.endDate);
+    if (!isIssueDateValid) {
+      toast.error("Invalid issue Date");
+      return;
+    }
+    if (!isEndDateValid) {
+      toast.error("Invalid end Date");
+      return;
+    }
+    if (!isRegDateValid) {
+      toast.error("Invalid Registration  Date");
+      return;
+    }
+    if (endDate.isBefore(startDate)) {
+      toast.error("End Date cannot be earlier than the Issue Date");
+      return;
+    }
+
+    if (
+      validateDateWithMfg(
+        policyForm.mfgYear as string,
+        policyForm.registrationDate as string
+      )
+    ) {
+      toast.error(
+        "Registration date cannot be earlier than the manufacturing year"
+      );
+      return;
+    }
+
+    if (
+      validateDateWithMfg(
+        policyForm.mfgYear as string,
+        policyForm.issueDate as string
+      )
+    ) {
+      toast.error("Issue date cannot be earlier than the manufacturing year");
+      return;
+    }
     const formValid = documents.every((doc, index) =>
       validateDocument(doc, index)
     );
@@ -327,24 +393,34 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
     const now = dayjs();
     const diff = now.diff(createdOn);
     bookingForm.append("timer", diff.toString());
-    callEditBookingApi(bookingForm, initialValues.bookingId!);
-    if (policyForm.policyCreatedBy.toLowerCase() === "admin") {
-      if (!selectedRMId) {
-        setRMErrorMessage("Select Partner or RM");
-      } else if (formValid) {
-        bindValues(policyForm);
+    bookingForm.append("bookingStatus", "Booked");
+
+    try {
+      setIsLoading(true);
+      await callEditBookingApi(bookingForm, initialValues.bookingId!);
+      if (policyForm.policyCreatedBy.toLowerCase() === "admin") {
+        if (!selectedRMId) {
+          setRMErrorMessage("Select Partner or RM");
+        } else if (formValid) {
+          await bindValues(policyForm);
+        }
+      } else if (policyForm.policyCreatedBy !== "Direct") {
+        setPolicyErrorMessage("");
+        if (!selectedRMId) {
+          setRMErrorMessage("Select Partner or RM");
+        } else if (formValid) {
+          await bindValues(policyForm);
+        }
+      } else {
+        if (formValid) {
+          await bindValues(policyForm);
+        }
       }
-    } else if (policyForm.policyCreatedBy !== "Direct") {
-      setPolicyErrorMessage("");
-      if (!selectedRMId) {
-        setRMErrorMessage("Select Partner or RM");
-      } else if (formValid) {
-        bindValues(policyForm);
-      }
-    } else {
-      if (formValid) {
-        bindValues(policyForm);
-      }
+    } catch (error: any) {
+      const err = await error;
+      toast.error(err.message || "Error occurred ");
+    } finally {
+      setIsLoading(false);
     }
   };
   const callEditLeadAPI = async (leadForm: any, leadId: string) => {
@@ -361,6 +437,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
       toast.error(err.message);
     }
   };
+
   const callEditBookingApi = async (bookingForm: any, bookingId: string) => {
     try {
       const newLead = await editBookingRequestService({
@@ -368,7 +445,8 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
         bookingRequest: bookingForm,
         bookingId,
       });
-      if (newLead.status === "success") {
+      const leadId = initialValues?.leadId;
+      if (newLead.status === "success" && leadId) {
         const leadForm = new FormData();
         leadForm.append("status", "Booked");
         callEditLeadAPI(leadForm, initialValues.leadId!);
@@ -378,6 +456,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
       toast.error(err.message);
     }
   };
+
   const callAddPolicyAPI = async (policy: any) => {
     try {
       const newPolicy = await addPolicyService({ header, policy });
@@ -422,17 +501,42 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
   const addValidationSchema = yup.object({
     policyNumber: yup
       .string()
-      .trim()
-      .nullable()
       .required("Policy Number is required")
       .min(1, "Policy Number must be at least 1 character")
-      .max(100, "Policy Number cannot exceed 100 characters"),
+      .max(100, "Policy Number cannot exceed 100 characters")
+      .test(
+        "no-invalid-characters",
+        "Policy Number contains invalid characters.",
+        (value) => {
+          if (!value) return false;
+          return !/[^a-zA-Z0-9\/\-\s]/.test(value);
+        }
+      )
+      .test(
+        "no-whitespace-between-numbers",
+        "Whitespace is not allowed between numbers.",
+        (value) => {
+          if (!value) return false; // Required validation will handle this
+          // Disallow spaces between numbers
+          return !/\d\s+\d/.test(value);
+        }
+      )
+      .transform((value) =>
+        value ? value.replace(/\s+/g, " ").trim() : value
+      ),
     mfgYear: yup.number().required("MFG Year is required").nullable(),
     tenure: yup.number().required("Tenure is required").nullable(),
     cc: yup.string().required("CC is required").nullable(),
     tp: yup.number().required("TP is required").nullable(),
     od: yup.number().required("OD is required").nullable(),
-    idv: yup.number().required("IDV is required").nullable(),
+    idv: yup
+      .number()
+      .nullable()
+      .when([], {
+        is: () => policyType.toLowerCase().trim() === "third party only/ tp",
+        then: yup.number().nullable(),
+        otherwise: yup.number().required("IDV is required").nullable(),
+      }),
     netPremium: yup.number().required("Net Premium is required").nullable(),
     finalPremium: yup.number().required("Final Premium is required").nullable(),
     fullName: yup
@@ -513,7 +617,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
         setPolicyErrorMessage("");
       }
     } catch {
-      console.error("error");
+      console.error("eror");
     }
   };
   return (
@@ -938,6 +1042,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                             <DatePicker
                               disableFuture
                               label="Registration Date"
+                              inputFormat="DD/MM/YYYY"
                               value={input.value || null}
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
@@ -962,6 +1067,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                             <DatePicker
                               label="Issue Date"
                               value={input.value || null}
+                              inputFormat="DD/MM/YYYY"
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
                                 <TextField
@@ -985,6 +1091,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                             <DatePicker
                               disablePast
                               label="End Date"
+                              inputFormat="DD/MM/YYYY"
                               value={input.value || null}
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
@@ -1003,9 +1110,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                       </Field>
                     </Grid>
                     <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field
-                        name="vehicleNumber"
-                      >
+                      <Field name="vehicleNumber">
                         {({ input, meta }) => (
                           <TextField
                             {...input}
@@ -1096,7 +1201,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                         )}
                       </Field>
                     </Grid>
-                    {isVisible ? (
+                    {isVisibile ? (
                       <Grid item lg={4} md={4} sm={6} xs={12}>
                         <Field name="weight">
                           {({ input, meta }) => (
@@ -1596,8 +1701,12 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                   </Grid>
                   <Grid container spacing={2} mt={2}>
                     <Grid item lg={12} md={12} sm={12} xs={12}>
-                      <Button variant="contained" type="submit">
-                        submit
+                      <Button
+                        variant="contained"
+                        type="submit"
+                        disabled={isLoading}
+                      >
+                        {isLoading ? "Submitting..." : "Submit"}
                       </Button>
                     </Grid>
                   </Grid>

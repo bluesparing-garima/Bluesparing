@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { ADD, header } from "../../../context/constant";
 import { IAddEditPolicyForm } from "../IPolicy";
 import getPolicyByIdService from "../../../api/Policies/GetPolicyById/getPolicyByIdService";
+
 const AddPolicyFormCard = () => {
   const { policyId } = useParams();
   const location = useLocation();
@@ -15,13 +16,16 @@ const AddPolicyFormCard = () => {
     if (!isAdd && policyId) {
       getPolicyByIdService({ header, policyId })
         .then((policyDetails) => {
+          // const leadVMToLeadForm = convertILeadVMToILeadForm(policyDetails.data);
           setEditPolicyDetails(policyDetails.data);
+        
         })
         .catch((error) => {
           console.error("Failed to fetch Lead details", error);
         });
     }
   }, [isAdd, policyId]);
+
   return (
     <>
       <AddPolicyForm
@@ -60,6 +64,7 @@ const AddPolicyFormCard = () => {
           finalPremium: isAdd ? 0 : editPolicyDetails?.finalPremium!,
           paymentMode: isAdd ? "" : editPolicyDetails?.paymentMode!,
           policyCreatedBy: isAdd ? "" : editPolicyDetails?.policyCreatedBy!,
+          //documents: [],
           paymentDetails: isAdd ? "" : editPolicyDetails?.paymentDetails!,
           partnerId: isAdd ? "" : editPolicyDetails?.partnerId!,
           partnerName: isAdd ? "" : editPolicyDetails?.partnerName!,
@@ -86,4 +91,5 @@ const AddPolicyFormCard = () => {
     </>
   );
 };
+
 export default AddPolicyFormCard;

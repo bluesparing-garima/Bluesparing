@@ -277,7 +277,7 @@ const EditLeadForm = (props: addLeadRequestFormProps) => {
                               </Grid>
 
                               <Grid item lg={4} md={4} sm={4} xs={12}>
-                                <FileView fileName={formatFilename(doc.file)}>
+                                <FileView fileName={formatFilename(doc.file)} index={index}>
                                   <input
                                     id={`file ${index}`}
                                     type="file"

@@ -32,9 +32,10 @@ export interface addCreditDebitFormProps {
 }
 const PartnerDebitForm = (props: addCreditDebitFormProps) => {
   let { initialValues } = props;
-  let [partners] = useGetPartners({ header: header, role: "partner" });
+
   const [totalDistributedAmount, settotalDistributedAmount] = useState(0);
   let [accounts] = useGetAccountByRole({ header: header, role: "Admin" });
+  let [partners] = useGetPartners({ header: header, role: "partner" });
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [distributedDate, setdistributedDate] = useState("");
@@ -185,18 +186,18 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
                                 getOptionLabel={(option) =>
                                   typeof option === "string"
                                     ? option
-                                    : `${option.fullName} - ${option.partnerId}` ||
+                                    : `${option.name} - ${option.userCode}` ||
                                       ""
                                 }
                                 options={partners}
                                 onChange={(event, newValue) => {
                                   if (newValue) {
-                                    input.onChange(newValue.fullName);
                                     setPartnerName(newValue.fullName);
                                     setSelectedPartnerId(newValue._id);
+                                    input.onChange(newValue.fullName);
                                   } else {
-                                    input.onChange(null);
                                     setSelectedPartnerId("");
+                                    input.onChange(null);
                                   }
                                 }}
                                 renderInput={(params) => (

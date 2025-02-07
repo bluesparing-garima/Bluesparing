@@ -53,3 +53,11 @@ export const getDebitDetailsEndpoint = (
  (
     `/api/statement/date-range?partnerId=${partnerId}&startDate=${startDate}&endDate=${endDate}`
   );
+  export const getCreditDebitsByBrokerDateRangeEndpoint = (
+    brokerId: string,
+    startDate: string,
+    endDate: string
+  ) =>
+  (
+    `/api/credit-debit/broker-id?brokerId=${brokerId}&startDate=${startDate}&endDate=${endDate}`
+  );

@@ -56,10 +56,9 @@ import { IMakes } from "../../Admin/Make/IMake";
 import getPolicyByNumberService from "../../../api/Policies/GetPolicyByNumber/getPolicyByNumberService";
 import dayjs from "dayjs";
 import editPolicyService from "../../../api/Policies/EditPolicy/editPolicyService";
-
+import getVechicleNumberService from "../../../api/Policies/GetVehicleNumber/getVechicleNumberService";
 import FileView from "../../../utils/FileView";
 import { formatFilename } from "../../../utils/convertLocaleStringToNumber";
-import getVehicleNumberService from "../../../api/Policies/GetVehicleNumber/getVehicleNumberService";
 export interface AddPolicyFormProps {
   initialValues: IAddEditPolicyForm;
 }
@@ -126,7 +125,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   const [cc, setCC] = useState<number>();
   const [idv, setIdv] = useState<number>();
   const [tenure, setTenure] = useState(1);
-  const [endTime, setEndTime] = useState<dayjs.Dayjs>();
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     if (!isAdd) {
       setOd(initialValues.od ?? 0);
@@ -143,10 +142,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       setCC(initialValues.cc ?? 0);
       setIdv(initialValues.idv ?? 0);
       setTenure(initialValues.tenure ?? 1);
-      setEndTime(
-        dayjs(initialValues.endDate) ??
-          dayjs(initialValues.issueDate).add(1, "year").subtract(1, "day")
-      );
+
       const updatedDocuments: Document[] = [];
       if (initialValues.rcBack) {
         updatedDocuments.push({
@@ -243,7 +239,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   };
 
   useEffect(() => {
-    if (policyType === "Third Party Only/ TP") {
+    if (policyType.toLowerCase().trim() === "third party only/ tp") {
       setTp(initialValues.tp ?? 0);
       setOd(0);
       setIdv(undefined);
@@ -292,11 +288,14 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   };
 
   const bindValues = async (policyForm: any) => {
+    if (policyType.toLowerCase().trim() === "third party only/ tp") {
+      policyForm["idv"] = 0;
+    }
     policyForm.issueDate = dayjs(policyForm.issueDate).format(DAY_FORMAT);
     policyForm.registrationDate = dayjs(policyForm.registrationDate).format(
       DAY_FORMAT
     );
-    policyForm.endDate = dayjs(endTime).format(DAY_FORMAT);
+    policyForm.endDate = dayjs(policyForm.endDate).format(DAY_FORMAT);
     const yearDifference = calculateYearDifference(
       policyForm.registrationDate,
       policyForm.issueDate
@@ -376,7 +375,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   const onSubmit = async (policyForm: any, form: any) => {
     const isIssueDateValid = dayjs(policyForm.issueDate).isValid();
     const isRegDateValid = dayjs(policyForm.registrationDate).isValid();
-    const isEndDateValid = dayjs(endTime).isValid();
+    const isEndDateValid = dayjs(policyForm.endDate).isValid();
     const isGcv = proType === "Goods Carrying Vehicle";
     const startDate = dayjs(policyForm.issueDate);
     const endDate = dayjs(policyForm.endDate);
@@ -428,23 +427,31 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
     const formValid = documents.every((doc, index) =>
       validateDocument(doc, index)
     );
-    if (policyForm.policyCreatedBy.toLowerCase() === "admin") {
-      if (!selectedRMId) {
-        setRMErrorMessage("Select Partner or RM");
-      } else if (formValid) {
-        bindValues(policyForm);
+    try {
+      setIsLoading(true);
+      if (policyForm.policyCreatedBy.toLowerCase() === "admin") {
+        if (!selectedRMId) {
+          setRMErrorMessage("Select Partner or RM");
+        } else if (formValid) {
+          await bindValues(policyForm);
+        }
+      } else if (policyForm.policyCreatedBy !== "Direct") {
+        setPolicyErrorMessage("");
+        if (!selectedRMId) {
+          setRMErrorMessage("Select Partner or RM");
+        } else if (formValid) {
+          await bindValues(policyForm);
+        }
+      } else {
+        if (formValid) {
+          await bindValues(policyForm);
+        }
       }
-    } else if (policyForm.policyCreatedBy !== "Direct") {
-      setPolicyErrorMessage("");
-      if (!selectedRMId) {
-        setRMErrorMessage("Select Partner or RM");
-      } else if (formValid) {
-        bindValues(policyForm);
-      }
-    } else {
-      if (formValid) {
-        bindValues(policyForm);
-      }
+    } catch (error: any) {
+      const err = await error;
+      toast.error(err.message || "Error occurred in adding new policy");
+    } finally {
+      setIsLoading(false);
     }
   };
   const callAddPolicyAPI = async (policy: any) => {
@@ -533,17 +540,43 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   const addValidationSchema = yup.object({
     policyNumber: yup
       .string()
-      .trim()
-      .nullable()
       .required("Policy Number is required")
       .min(1, "Policy Number must be at least 1 character")
-      .max(100, "Policy Number cannot exceed 100 characters"),
+      .max(100, "Policy Number cannot exceed 100 characters")
+      .test(
+        "no-invalid-characters",
+        "Policy Number contains invalid characters.",
+        (value) => {
+          if (!value) return false;
+          return !/[^a-zA-Z0-9\/\-\s]/.test(value);
+        }
+      )
+      .test(
+        "no-whitespace-between-numbers",
+        "Whitespace is not allowed between numbers.",
+        (value) => {
+          if (!value) return false; // Required validation will handle this
+          // Disallow spaces between numbers
+          return !/\d\s+\d/.test(value);
+        }
+      )
+      .transform((value) =>
+        value ? value.replace(/\s+/g, " ").trim() : value
+      ),
     mfgYear: yup.number().required("MFG Year is required").nullable(),
     tenure: yup.number().required("Tenure is required").nullable(),
     cc: yup.string().required("CC is required").nullable(),
     tp: yup.number().required("TP is required").nullable(),
     od: yup.number().required("OD is required").nullable(),
-    idv: yup.number().required("IDV is required").nullable(),
+    idv: yup
+      .number()
+      .nullable()
+      .when([], {
+        is: () => policyType.toLowerCase().trim() === "third party only/ tp",
+        then: yup.number().nullable(),
+        otherwise: yup.number().required("IDV is required").nullable(),
+      }),
+
     netPremium: yup.number().required("Net Premium is required").nullable(),
     finalPremium: yup.number().required("Final Premium is required").nullable(),
     fullName: yup
@@ -630,9 +663,8 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   };
   const validateVehicleNumber = async (e: any) => {
     const vehicleNumber = e.target.value;
-    console.log(vehicleNumber);
     try {
-      const res = await getVehicleNumberService({
+      const res = await getVechicleNumberService({
         header,
         vehicleNumber,
       });
@@ -1122,29 +1154,13 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                       </Field>
                     </Grid>
                     <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field name="mfgYear">
-                        {({ input, meta }) => (
-                          <TextField
-                            {...input}
-                            fullWidth
-                            size="small"
-                            type="number"
-                            label="Enter MFG Year"
-                            className="rounded-sm w-full"
-                            variant="outlined"
-                            error={meta.touched && Boolean(meta.error)}
-                            helperText={meta.touched && meta.error}
-                          />
-                        )}
-                      </Field>
-                    </Grid>
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
                       <Field name="registrationDate">
                         {({ input, meta }) => (
                           <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
                               disableFuture
                               label="Registration Date"
+                              inputFormat="DD/MM/YYYY"
                               value={input.value || null}
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
@@ -1173,12 +1189,6 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                               value={input.value || null}
                               onChange={(date) => {
                                 input.onChange(date);
-                                if (date) {
-                                  const endDate = dayjs(date)
-                                    .add(tenure, "year")
-                                    .subtract(1, "day");
-                                  setEndTime(endDate);
-                                }
                               }}
                               renderInput={(params: any) => (
                                 <TextField
@@ -1202,7 +1212,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                             <DatePicker
                               disablePast
                               label="End Date"
-                              value={input.value || endTime}
+                              value={input.value}
                               inputFormat="DD/MM/YYYY"
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
@@ -1239,7 +1249,23 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                         <div className="text-[red] text-sm">{vehicleErr}</div>
                       )}
                     </Grid>
-                    
+                    <Grid item lg={4} md={4} sm={6} xs={12}>
+                      <Field name="mfgYear">
+                        {({ input, meta }) => (
+                          <TextField
+                            {...input}
+                            fullWidth
+                            size="small"
+                            type="number"
+                            label="Enter MFG Year"
+                            className="rounded-sm w-full"
+                            variant="outlined"
+                            error={meta.touched && Boolean(meta.error)}
+                            helperText={meta.touched && meta.error}
+                          />
+                        )}
+                      </Field>
+                    </Grid>
 
                     <Grid item lg={4} md={4} sm={6} xs={12}>
                       <Field name="ncb">
@@ -1626,7 +1652,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                                       getOptionLabel={(option) =>
                                         typeof option === "string"
                                           ? option
-                                          : `${option.fullName} - ${option.partnerId}` ||
+                                          : `${option.name} - ${option.userCode}` ||
                                             ""
                                       }
                                       options={partners}
@@ -1753,7 +1779,10 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                                 )}
                               </Grid>
                               <Grid item lg={4} md={4} sm={4} xs={12}>
-                                <FileView fileName={formatFilename(doc.file)}>
+                                <FileView
+                                  fileName={formatFilename(doc.file)}
+                                  index={index}
+                                >
                                   <input
                                     id={`file-${index}`}
                                     type="file"
@@ -1854,8 +1883,12 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                   </Grid>
                   <Grid container spacing={2} mt={2}>
                     <Grid item lg={12} md={12} sm={12} xs={12}>
-                      <Button variant="contained" type="submit">
-                        submit
+                      <Button
+                        variant="contained"
+                        type="submit"
+                        disabled={isLoading}
+                      >
+                        {isLoading ? "Submitting..." : "Submit"}
                       </Button>
                     </Grid>
                   </Grid>

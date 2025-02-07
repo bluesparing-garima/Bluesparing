@@ -4,9 +4,11 @@ import { Link, useParams } from "react-router-dom";
 import { header } from "../../../context/constant";
 import { IViewPolicy } from "../IPolicy";
 import getPolicyWithPaymentService from "../../../api/Policies/GetPolicyWithPayment/getPolicyWithPaymentService";
-import EditCommissionForm from "./editCommisonForm";
 
-const EditCommission = () => {
+// Make sure to import the correct component
+import EditCommisonForm from "./editCommisonForm";
+
+const EditCommison = () => {
   const title = "Edit Policy Commission";
   const { policyId } = useParams();
   const [policyDetails, setPolicyDetails] = useState<IViewPolicy | undefined>(
@@ -25,6 +27,18 @@ const EditCommission = () => {
     }
   }, [policyId]);
 
+  const checkPolicyType = (type: string) => {
+    const givenType = type.toLowerCase().trim();
+    //tp-0,op-1 complete-2
+    switch (givenType) {
+      case "third party only/ tp":
+        return 0;
+      case "own damage only/ od":
+        return 1;
+      default:
+        return 2;
+    }
+  };
   return (
     <>
       <div className="bg-blue-200 md:p-7 p-2">
@@ -42,7 +56,7 @@ const EditCommission = () => {
               Dashboard {" / "}
             </Link>
             <Link
-              to="/policy/motor-policies"
+              to="/policy/motorpolicies"
               className="text-addButton font-bold text-sm"
             >
               Policies /
@@ -54,7 +68,7 @@ const EditCommission = () => {
             />
           </Typography>
 
-          <EditCommissionForm
+          <EditCommisonForm
             initialValues={{
               od: policyDetails?.od || 0,
               tp: policyDetails?.tp || 0,
@@ -80,6 +94,7 @@ const EditCommission = () => {
               payOutPaymentStatus: policyDetails?.payOutPaymentStatus || "",
               payInBalance: policyDetails?.payInBalance || 0,
               payOutBalance: policyDetails?.payOutBalance || 0,
+              policyType: checkPolicyType(policyDetails?.policyType || ""),
             }}
           />
         </Paper>
@@ -88,4 +103,4 @@ const EditCommission = () => {
   );
 };
 
-export default EditCommission;
+export default EditCommison;

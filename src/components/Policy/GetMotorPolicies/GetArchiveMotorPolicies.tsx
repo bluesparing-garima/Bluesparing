@@ -404,7 +404,7 @@ const GetArchiveMotorPolicies = () => {
                 ""
               )}
             </div>
-            
+            {}
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
@@ -417,15 +417,15 @@ const GetArchiveMotorPolicies = () => {
               render={({ handleSubmit, submitting, errors, values }) => (
                 <form onSubmit={handleSubmit} noValidate>
                   <Grid container spacing={2}>
-                    
+                    {}
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Field name="startDate">
                         {({ input, meta }) => (
                           <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
-                              disableFuture
                               label="Start Date"
-                              value={input.value || null}
+                              inputFormat="DD/MM/YYYY"
+                              value={input.value || null} 
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
                                 <TextField
@@ -447,8 +447,8 @@ const GetArchiveMotorPolicies = () => {
                         {({ input, meta }) => (
                           <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
-                              disableFuture
                               label="End Date"
+                              inputFormat="DD/MM/YYYY"
                               value={input.value || null}
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
@@ -469,12 +469,12 @@ const GetArchiveMotorPolicies = () => {
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Button
                         type="submit"
-                        disabled={submitting}
+                        disabled={isLoading}
                         variant="contained"
                         color="primary"
                         className=" w-26 h-10 bg-addButton text-white p-3 md:text-xs text-[10px]  rounded-sm"
                       >
-                        {"Get Records"}
+                        {isLoading?"Getting...":"Get Records"}
                       </Button>
                     </Grid>
                   </Grid>
@@ -523,7 +523,7 @@ const GetArchiveMotorPolicies = () => {
                     >
                       <path
                         strokeLinecap="round"
-                        strokeLinejoin="round"
+                         strokeLinejoin="round"
                         d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
                       />
                     </svg>

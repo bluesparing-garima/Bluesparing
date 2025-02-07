@@ -473,4 +473,5 @@ export interface IViewPolicy {
   leadTimer?: string;
   bookingDate?: string;
   leadDate?: string;
+  brokerCode?:string;
 }
