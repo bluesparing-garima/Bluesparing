@@ -21,7 +21,8 @@ const Accounts = () => {
   const GetAccounts = useCallback(() => {
     getAccountService({ header })
       .then((accountsDetails) => {
-        setAccounts(accountsDetails.data || []);
+        const adminAccount = accountsDetails.data.filter((ele:any)=>ele.roleName?.toLowerCase()==='admin')
+        setAccounts(adminAccount || []);
       })
       .catch(async (error) => {
         const err = await error;
