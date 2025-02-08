@@ -202,6 +202,7 @@ const Dashboard: React.FC = () => {
                               <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <DatePicker
                                   disableFuture
+                                  inputFormat="DD/MM/YYY"
                                   value={input.value || null}
                                   onChange={(date) => {
                                     input.onChange(date);
@@ -227,6 +228,7 @@ const Dashboard: React.FC = () => {
                               <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <DatePicker
                                   disableFuture
+                                  inputFormat="DD/MM/YYY"
                                   value={input.value || null}
                                   onChange={(date) => {
                                     input.onChange(date);

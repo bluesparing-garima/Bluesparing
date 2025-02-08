@@ -303,6 +303,7 @@ const AddNewsForm = (props: addPolicyTypeFormProps) => {
                       <DatePicker
                         disableFuture
                         label="Publish Date"
+                        inputFormat="DD/MM/YYY"
                         value={input.value || null}
                         onChange={(date) => input.onChange(date)}
                         renderInput={(params: any) => (

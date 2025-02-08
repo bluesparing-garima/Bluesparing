@@ -100,6 +100,7 @@ const AddHolidayForm: React.FC<AddHolidayFormProps> = ({ initialValues }) => {
                     <DatePicker
                       {...input}
                       label="Select Holiday Date"
+                      inputFormat="DD/MM/YYY"
                       renderInput={(params) => (
                         <TextField
                           {...params}

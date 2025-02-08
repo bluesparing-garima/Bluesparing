@@ -1417,6 +1417,7 @@ const GetRenewals = () => {
                               <DatePicker
                                 disableFuture
                                 label="Start Date"
+                                inputFormat="DD/MM/YYY"
                                 value={dayjs(stDate)}
                                 onChange={(date) => {
                                   handleStartDateChange(date, input);
@@ -1446,6 +1447,7 @@ const GetRenewals = () => {
                               <DatePicker
                                 disableFuture
                                 label="End Date"
+                                inputFormat="DD/MM/YYY"
                                 value={dayjs(eDate)}
                                 onChange={(date) =>
                                   handleEndDateChange(date, input)

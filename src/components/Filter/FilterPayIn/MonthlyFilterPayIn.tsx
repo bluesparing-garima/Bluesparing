@@ -122,6 +122,7 @@ const MonthlyFilterPayIn = () => {
                           <DatePicker
                             disableFuture
                             label="Start Date"
+                            inputFormat="DD/MM/YYY"
                             value={input.value || null}
                             onChange={(date) => input.onChange(date)}
                             renderInput={(params: any) => (
@@ -146,6 +147,7 @@ const MonthlyFilterPayIn = () => {
                           <DatePicker
                             disableFuture
                             label="End Date"
+                            inputFormat="DD/MM/YYY"
                             value={input.value || null}
                             onChange={(date) => input.onChange(date)}
                             renderInput={(params: any) => (

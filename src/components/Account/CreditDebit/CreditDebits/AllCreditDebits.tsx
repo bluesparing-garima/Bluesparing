@@ -72,24 +72,55 @@ const AllCreditDebits = () => {
         accessorKey: "distributedDate",
         size: 50,
       },
+      {
+        header: "Payment Remarks",
+        accessorKey: "remarks",
+        size: 50,
+      },
     ],
     []
   );
+
+  function getCombinedName(creditDebit: ICreditDebits) {
+    let combinedName = "";
+
+    switch (creditDebit.accountType?.toLowerCase()) {
+      case "payin":
+        if (creditDebit.brokerName) {
+          combinedName = creditDebit.brokerName;
+        }
+        break;
+
+      case "payout":
+        if (creditDebit.partnerName) {
+          combinedName = creditDebit.partnerName;
+        }
+        break;
+
+      case "tds":
+        if (creditDebit.partnerName) {
+          combinedName = creditDebit.partnerName;
+        } else {
+          combinedName = creditDebit.brokerName || "";
+        }
+
+        break;
+
+      default:
+        if (creditDebit.employeeName) {
+          combinedName = creditDebit.employeeName;
+        } else {
+          combinedName = "other";
+        }
+        break;
+    }
+
+    return combinedName;
+  }
   const parsedData = useMemo<ICreditDebitsVM[]>(() => {
     return creditDebits.map((creditDebit: ICreditDebits) => {
-      let combinedName = "";
-      if (creditDebit.accountType === "PayIn" && creditDebit.brokerName) {
-        combinedName = creditDebit.brokerName;
-      } else if (
-        creditDebit.accountType === "PayOut" &&
-        creditDebit.partnerName
-      ) {
-        combinedName = creditDebit.partnerName;
-      } else if (creditDebit.employeeName) {
-        combinedName = creditDebit.employeeName;
-      } else {
-        combinedName = "other";
-      }
+      let combinedName = getCombinedName(creditDebit);
+
       return {
         id: creditDebit._id,
         accountType: creditDebit.accountType,
@@ -100,20 +131,21 @@ const AllCreditDebits = () => {
         accountBalance: creditDebit.accountBalance,
         combinedName,
         partnerBalance: creditDebit.partnerBalance!,
-        amount: creditDebit.amount,
+        amount: creditDebit.amount || creditDebit.tdsAmount,
         startDate: dayjs(creditDebit.startDate).format(DAYJS_DISPLAY_FORMAT),
         endDate: dayjs(creditDebit.endDate).format(DAYJS_DISPLAY_FORMAT),
         distributedDate: dayjs(creditDebit.distributedDate).format(
           DAYJS_DISPLAY_FORMAT
         ),
         isActive: creditDebit.isActive,
+        remarks: creditDebit.remarks,
         createdOn: dayjs(creditDebit.createdOn).format(DAYJS_DISPLAY_FORMAT),
         updatedOn: dayjs(creditDebit.updatedOn).format(DAYJS_DISPLAY_FORMAT),
       };
     });
   }, [creditDebits]);
   return (
-    <div className="my-2">
+    <div className="bg-blue-200 p-7 mt-3">
       <MaterialReactTable
         state={{ isLoading }}
         columns={columns}

@@ -160,6 +160,14 @@ import GetRenewals from "./components/Policy/Renewals/GetRenewals";
 import UpdatePlan from "./components/UpdatePlan/UpdatePlan";
 import UnAuthorizedPage from "./Auth/UnAuthorizedPage";
 import Subscription from "./components/Subscrition/Subscription";
+import BrokerWallet from "./components/Broker/BrokerWallet";
+import BrokerPoliciesTransaction from "./components/Broker/BrokerPoliciesTransaction";
+import PartnerPolicyTransactions from "./components/Partner/Wallet/PartnerPolicyTransactions";
+import PartnerWallet from "./components/Partner/Wallet/PartnerWallet";
+import TdsPayInManage from "./components/Account/TDS/PayInTDS/TdsPayInManage";
+import TdsPayOutManage from "./components/Account/TDS/PayOutTDS/TdsPayOutManage";
+import DisputedPolicyPage from "./components/Policy/PolicyDispute/DisputedPolicyPage";
+import PolicyDispute from "./components/Policy/PolicyDispute/PolicyDispute";
 
 const routes = [
   {
@@ -235,7 +243,7 @@ const routes = [
       },
     ],
   },
- 
+
   {
     path: "/update-plan",
     children: [
@@ -259,7 +267,9 @@ const routes = [
     children: [
       {
         path: "",
-        element: <UnAuthorizedPage title="Policy limit exceeded for your plan" />,
+        element: (
+          <UnAuthorizedPage title="Policy limit exceeded for your plan" />
+        ),
       },
     ],
   },
@@ -669,6 +679,14 @@ const routes = [
         element: <AddCreditDebits />,
       },
       {
+        path: "tds-payin",
+        element: <TdsPayInManage />,
+      },
+      {
+        path: "tds-payout",
+        element: <TdsPayOutManage />,
+      },
+      {
         path: "add",
         element: <AddAccounts />,
       },
@@ -748,6 +766,10 @@ const routes = [
         element: <GetRenewals />,
       },
       {
+        path: "disputed-policies",
+        element: <DisputedPolicyPage />,
+      },
+      {
         path: "/policy/motor/upload",
         element: <PolicyPDF />,
       },
@@ -758,6 +780,10 @@ const routes = [
       {
         path: "/policy/motor/add",
         element: <AddMotorPolicy />,
+      },
+      {
+        path: "/policy/policy-dispute",
+        element: <PolicyDispute />,
       },
       {
         path: "/policy/motor/:bookingRequestId",
@@ -1045,6 +1071,28 @@ const routes = [
     element: <ManageCards />,
   },
   {
+    path: "wallet",
+    children: [
+      {
+        path: "broker",
+        element: <BrokerWallet />,
+      },
+      {
+        path: "payin-transaction",
+        element: <BrokerPoliciesTransaction />,
+      },
+      {
+        path: "payout-transaction",
+        element: <PartnerPolicyTransactions />,
+      },
+      {
+        path: "partner",
+        element: <PartnerWallet />,
+      },
+    ],
+  },
+
+  {
     path: "partnerdashboard",
     children: [
       {
@@ -1055,7 +1103,7 @@ const routes = [
         path: "/partnerdashboard/card",
         element: <ViewCardHistory />,
       },
-     
+
       {
         path: "/partnerdashboard/:transactionCode/:partnerId/:startDate/:endDate/card-history",
         element: <ViewCardHistory />,

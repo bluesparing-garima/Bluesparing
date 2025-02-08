@@ -21,6 +21,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { format } from "date-fns";
 import toast, { Toaster } from "react-hot-toast";
 const ViewCreditDebitByBrokerCard = () => {
+  const [loading, setIsLoading] = useState(false);
   const title = "Get Credits Details";
   let [brokers] = useGetBrokers({ header: header });
   const [isVisible, setIsVisible] = useState(false);
@@ -45,32 +46,34 @@ const ViewCreditDebitByBrokerCard = () => {
     brokerName: yup.string().required("Broker is required").nullable(),
   });
   const validate = validateFormValues(validationSchema);
-  const onSubmit = async (creditdebitForm: any) => {
-    const utcStartDate = new Date(creditdebitForm.startDate!);
+  const onSubmit = async (creditDebitForm: any) => {
+    const utcStartDate = new Date(creditDebitForm.startDate!);
     const formattedStartDate = format(utcStartDate, "yyyy-MM-dd'T'HH:mm:ss");
-    creditdebitForm.startDate = formattedStartDate;
-    const utcEndDate = new Date(creditdebitForm.endDate!);
+    creditDebitForm.startDate = formattedStartDate;
+    const utcEndDate = new Date(creditDebitForm.endDate!);
     const formattedEndDate = format(utcEndDate, "yyyy-MM-dd'T'HH:mm:ss");
-    creditdebitForm.endDate = formattedEndDate;
-    GetCreditDebitByBrokerService({
-      header,
-      brokerId: selectedBrokerId!,
-      startDate: creditdebitForm.startDate,
-      endDate: creditdebitForm.endDate,
-    })
-      .then((creditDebitsDetails) => {
-        setIsVisible(true);
-        setCreditDebits(creditDebitsDetails.data);
-      })
-      .catch(async (error) => {
-        const err = await error;
-        toast.error(err.message);
+    creditDebitForm.endDate = formattedEndDate;
+    try {
+      setIsLoading(true);
+      const res = await GetCreditDebitByBrokerService({
+        header,
+        brokerId: selectedBrokerId!,
+        startDate: creditDebitForm.startDate,
+        endDate: creditDebitForm.endDate,
       });
+      setIsVisible(true);
+      setCreditDebits(res.data);
+    } catch (error: any) {
+      const err = await error;
+      toast.error(err.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
   return (
     <>
-      <div className="my-2">
-        <div >
+      <div className="bg-blue-200 p-7 mt-3">
+        <Paper elevation={3} style={{ padding: 20 }}>
           <Typography
             variant="h5"
             className="text-safekaroDarkOrange"
@@ -86,7 +89,7 @@ const ViewCreditDebitByBrokerCard = () => {
               render={({ handleSubmit, submitting, errors, values }) => (
                 <form onSubmit={handleSubmit} noValidate>
                   <Grid container spacing={2} mt={2} mb={2}>
-                   
+                    {}
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Field name="startDate">
                         {({ input, meta }) => (
@@ -94,6 +97,7 @@ const ViewCreditDebitByBrokerCard = () => {
                             <DatePicker
                               disableFuture
                               label="Start Date"
+                              inputFormat="DD/MM/YYYY"
                               value={input.value || null}
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
@@ -118,6 +122,7 @@ const ViewCreditDebitByBrokerCard = () => {
                             <DatePicker
                               disableFuture
                               label="End Date"
+                              inputFormat="DD/MM/YYYY"
                               value={input.value || null}
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
@@ -177,12 +182,12 @@ const ViewCreditDebitByBrokerCard = () => {
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Button
                         type="submit"
-                        disabled={submitting}
+                        disabled={loading}
                         variant="contained"
                         color="primary"
                         className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                       >
-                        {"Get Records"}
+                        {loading ? "Submitting..." : "Get Record"}
                       </Button>
                     </Grid>
                   </Grid>
@@ -191,7 +196,7 @@ const ViewCreditDebitByBrokerCard = () => {
             />
           </React.Fragment>
           {isVisible && <ViewCreditDebitByBroker creditDebits={creditDebits} />}
-        </div>
+        </Paper>
       </div>
       <Toaster position="bottom-center" reverseOrder={false} />
     </>

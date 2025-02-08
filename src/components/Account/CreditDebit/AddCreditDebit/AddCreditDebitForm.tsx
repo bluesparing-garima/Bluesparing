@@ -165,7 +165,6 @@ const AddCreditDebitForm = (props: addCreditDebitFormProps) => {
               render={({ handleSubmit, submitError, submitting }) => (
                 <form onSubmit={handleSubmit} noValidate>
                   <Grid container spacing={2}>
-                   
                     <Grid item lg={4} md={4} sm={6} xs={12}>
                       <Field name="accountType">
                         {({ input, meta }) => (
@@ -217,7 +216,7 @@ const AddCreditDebitForm = (props: addCreditDebitFormProps) => {
                         )}
                       </Field>
                     </Grid>
-                   
+
                     <Grid item lg={4} md={4} sm={6} xs={12}>
                       <Field name="type">
                         {({ input, meta }) => (
@@ -270,7 +269,7 @@ const AddCreditDebitForm = (props: addCreditDebitFormProps) => {
                         )}
                       </Field>
                     </Grid>
-                   
+
                     {accountType === "PayIn" && (
                       <Grid item lg={4} md={4} sm={6} xs={12}>
                         <Field name="brokerName">
@@ -314,7 +313,7 @@ const AddCreditDebitForm = (props: addCreditDebitFormProps) => {
                         </Field>
                       </Grid>
                     )}
-                   
+
                     {accountType === "Salary" && (
                       <Grid item lg={4} md={4} sm={6} xs={12}>
                         <Field name="employeeName">
@@ -358,7 +357,7 @@ const AddCreditDebitForm = (props: addCreditDebitFormProps) => {
                         </Field>
                       </Grid>
                     )}
-                   
+
                     {accountType === "CutPay" && (
                       <>
                         <Grid item lg={4} md={4} sm={6} xs={12}>
@@ -427,7 +426,7 @@ const AddCreditDebitForm = (props: addCreditDebitFormProps) => {
                         </Grid>
                       </>
                     )}
-                   
+
                     <Grid item lg={4} md={4} sm={6} xs={12}>
                       <Field name="accountCode">
                         {({ input, meta }) => (
@@ -468,7 +467,7 @@ const AddCreditDebitForm = (props: addCreditDebitFormProps) => {
                         )}
                       </Field>
                     </Grid>
-                   
+
                     <Grid item lg={4} md={4} sm={6} xs={12}>
                       <Field name="amount">
                         {({ input, meta }) => (
@@ -486,7 +485,7 @@ const AddCreditDebitForm = (props: addCreditDebitFormProps) => {
                         )}
                       </Field>
                     </Grid>
-                   
+
                     <Grid item lg={4} md={4} sm={6} xs={12}>
                       <Field name="startDate">
                         {({ input, meta }) => (
@@ -494,6 +493,7 @@ const AddCreditDebitForm = (props: addCreditDebitFormProps) => {
                             <DatePicker
                               disableFuture
                               label="Start Date"
+                              inputFormat="DD/MM/YYY"
                               value={input.value || null}
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
@@ -511,7 +511,7 @@ const AddCreditDebitForm = (props: addCreditDebitFormProps) => {
                         )}
                       </Field>
                     </Grid>
-                   
+
                     <Grid item lg={4} md={4} sm={6} xs={12}>
                       <Field name="endDate">
                         {({ input, meta }) => (
@@ -519,6 +519,7 @@ const AddCreditDebitForm = (props: addCreditDebitFormProps) => {
                             <DatePicker
                               disableFuture
                               label="End Date"
+                              inputFormat="DD/MM/YYY"
                               value={input.value || null}
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
@@ -543,6 +544,7 @@ const AddCreditDebitForm = (props: addCreditDebitFormProps) => {
                             <DatePicker
                               disableFuture
                               label="Distributed Date"
+                              inputFormat="DD/MM/YYY"
                               value={input.value || null}
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
@@ -560,7 +562,7 @@ const AddCreditDebitForm = (props: addCreditDebitFormProps) => {
                         )}
                       </Field>
                     </Grid>
-                   
+
                     <Grid item lg={12} md={12} sm={12} xs={12}>
                       <Field name="remarks">
                         {({ input, meta }) => (
@@ -580,7 +582,7 @@ const AddCreditDebitForm = (props: addCreditDebitFormProps) => {
                       </Field>
                     </Grid>
                   </Grid>
-                 
+
                   <Grid container spacing={2} mt={2}>
                     <Grid item lg={12} md={12} sm={12} xs={12}>
                       {submitError && (

@@ -635,7 +635,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   const handleSelectPartnerChange = async (e: any) => {
     if (e._id) {
       setSelectedPartnerId(e._id!);
-      setSelectedPartnerName(e.fullName!);
+      setSelectedPartnerName(e.name!);
       setSelectedRMId(e.headRMId!);
       setSelectedRMName(e.headRM!);
       setRMErrorMessage("");

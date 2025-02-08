@@ -103,24 +103,52 @@ const ViewAccountCreditDebitsDetails = () => {
         accessorKey: "distributedDate",
         size: 50,
       },
+      {
+        header: "Payment Remarks",
+        accessorKey: "remarks",
+        size: 50,
+      },
     ],
     []
   );
+  function getCombinedName(creditDebit: ICreditDebits) {
+    let combinedName = "other";
+
+    switch (creditDebit.accountType?.toLowerCase()) {
+      case "payin":
+        if (creditDebit.brokerName) {
+          combinedName = creditDebit.brokerName;
+        }
+        break;
+
+      case "payout":
+        if (creditDebit.partnerName) {
+          combinedName = creditDebit.partnerName;
+        }
+        break;
+
+      case "tds":
+        if (creditDebit.partnerName) {
+          combinedName = creditDebit.partnerName;
+        } else {
+          combinedName = creditDebit.brokerName || "";
+        }
+        break;
+
+      default:
+        if (creditDebit.employeeName) {
+          combinedName = creditDebit.employeeName;
+        } else {
+          combinedName = "other";
+        }
+        break;
+    }
+
+    return combinedName;
+  }
   const parsedData = useMemo<ICreditDebitsVM[]>(() => {
     return filteredCreditDebits.map((creditDebit: ICreditDebits) => {
-      let combinedName = "";
-      if (creditDebit.accountType === "PayIn" && creditDebit.brokerName) {
-        combinedName = creditDebit.brokerName;
-      } else if (
-        creditDebit.accountType === "PayOut" &&
-        creditDebit.partnerName
-      ) {
-        combinedName = creditDebit.partnerName;
-      } else if (creditDebit.employeeName) {
-        combinedName = creditDebit.employeeName;
-      } else {
-        combinedName = "Other";
-      }
+      let combinedName = getCombinedName(creditDebit);
       return {
         id: creditDebit._id,
         accountType: creditDebit.accountType,
@@ -130,13 +158,14 @@ const ViewAccountCreditDebitsDetails = () => {
         transactionCode: creditDebit.transactionCode,
         combinedName,
         accountBalance: creditDebit.accountBalance || 0,
-        amount: creditDebit.amount,
+        amount: creditDebit.amount || creditDebit.tdsAmount,
         startDate: dayjs(creditDebit.startDate).format(DAYJS_DISPLAY_FORMAT),
         endDate: dayjs(creditDebit.endDate).format(DAYJS_DISPLAY_FORMAT),
         distributedDate: dayjs(creditDebit.distributedDate).format(
           DAYJS_DISPLAY_FORMAT
         ),
         isActive: creditDebit.isActive,
+        remarks: creditDebit.remarks,
         createdOn: dayjs(creditDebit.createdOn).format(DAYJS_DISPLAY_FORMAT),
         updatedOn: dayjs(creditDebit.updatedOn).format(DAYJS_DISPLAY_FORMAT),
       };
@@ -163,11 +192,11 @@ const ViewAccountCreditDebitsDetails = () => {
   return (
     <div className="bg-blue-200 md:p-7 p-2">
       <Paper elevation={3} style={{ padding: 30 }}>
-       
+        {}
         <Typography className="text-safekaroDarkOrange" variant="h5">
           Account Credit Debit Table of {creditDebits[0]?.accountCode}
         </Typography>
-       
+        {}
         <Typography variant="h5" mb={2}>
           <div style={{ display: "flex", alignItems: "center" }}>
             <div style={{ flex: 1 }}>
@@ -187,13 +216,13 @@ const ViewAccountCreditDebitsDetails = () => {
               Add Transaction
             </Button>
           </div>
-         
+          {}
           <hr
             className="mt-4"
             style={{ width: "100%", borderColor: "grey-800" }}
           />
         </Typography>
-       
+        {}
         <Grid container>
           <Button
             type="button"
@@ -217,7 +246,7 @@ const ViewAccountCreditDebitsDetails = () => {
             Debit
           </Button>
         </Grid>
-       
+        {}
         <MaterialReactTable
           state={{ isLoading }}
           columns={columns}

@@ -120,6 +120,7 @@ if(UserData.role.toLowerCase()==="hr"){
                                 >
                                   <DatePicker
                                     disableFuture
+                                    inputFormat="DD/MM/YYY"
                                     value={input.value || null}
                                     onChange={(date) => {
                                       input.onChange(date);
@@ -145,6 +146,7 @@ if(UserData.role.toLowerCase()==="hr"){
                                 >
                                   <DatePicker
                                     disableFuture
+                                    inputFormat="DD/MM/YYY"
                                     value={input.value || null}
                                     onChange={(date) => {
                                       input.onChange(date);

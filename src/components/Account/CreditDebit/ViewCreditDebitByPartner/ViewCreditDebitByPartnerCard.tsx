@@ -21,6 +21,7 @@ import { ICreditDebits } from "../ICreditDebits";
 import GetAccountManageByPartnerByDateRangeService from "../../../../api/CreditDebit/GetAccountManageByPartnerByDateRange/GetAccountManageByPartnerByDateRangeService";
 import toast, { Toaster } from "react-hot-toast";
 const ViewCreditDebitByPartnerCard = () => {
+  const [loading, setIsLoading] = useState(false);
   const title = "Get Debits Details";
   let [partners] = useGetPartners({ header: header, role: "partner" });
   const [isVisible, setIsVisible] = useState(false);
@@ -45,32 +46,34 @@ const ViewCreditDebitByPartnerCard = () => {
     partnerName: yup.string().required("Partner is required").nullable(),
   });
   const validate = validateFormValues(validationSchema);
-  const onSubmit = async (creditdebitForm: any) => {
-    const utcStartDate = new Date(creditdebitForm.startDate!);
+  const onSubmit = async (creditDebitForm: any) => {
+    const utcStartDate = new Date(creditDebitForm.startDate!);
     const formattedStartDate = format(utcStartDate, "yyyy-MM-dd'T'HH:mm:ss");
-    creditdebitForm.startDate = formattedStartDate;
-    const utcEndDate = new Date(creditdebitForm.endDate!);
+    creditDebitForm.startDate = formattedStartDate;
+    const utcEndDate = new Date(creditDebitForm.endDate!);
     const formattedEndDate = format(utcEndDate, "yyyy-MM-dd'T'HH:mm:ss");
-    creditdebitForm.endDate = formattedEndDate;
-    GetAccountManageByPartnerByDateRangeService({
-      header,
-      partnerId: selectedPartnerId!,
-      startDate: creditdebitForm.startDate,
-      endDate: creditdebitForm.endDate,
-    })
-      .then((creditDebitsDetails) => {
-        setIsVisible(true);
-        setCreditDebits(creditDebitsDetails.data);
-      })
-      .catch(async (error) => {
-        const err = await error;
-        toast.error(err.message);
+    creditDebitForm.endDate = formattedEndDate;
+    try {
+      setIsLoading(true);
+      const res = await GetAccountManageByPartnerByDateRangeService({
+        header,
+        partnerId: selectedPartnerId!,
+        startDate: creditDebitForm.startDate,
+        endDate: creditDebitForm.endDate,
       });
+      setIsVisible(true);
+      setCreditDebits(res.data);
+    } catch (error: any) {
+      const err = await error;
+      toast.error(err.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
   return (
     <>
-      <div className="my-2">
-        <div>
+      <div className="bg-blue-200 p-7 mt-3">
+        <Paper elevation={3} style={{ padding: 20 }}>
           <Typography
             variant="h5"
             className="text-safekaroDarkOrange"
@@ -86,6 +89,7 @@ const ViewCreditDebitByPartnerCard = () => {
               render={({ handleSubmit, submitting, errors, values }) => (
                 <form onSubmit={handleSubmit} noValidate>
                   <Grid container spacing={2} mt={2} mb={2}>
+                    {}
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Field name="startDate">
                         {({ input, meta }) => (
@@ -93,6 +97,7 @@ const ViewCreditDebitByPartnerCard = () => {
                             <DatePicker
                               disableFuture
                               label="Start Date"
+                              inputFormat="DD/MM/YYYY"
                               value={input.value || null}
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
@@ -117,6 +122,7 @@ const ViewCreditDebitByPartnerCard = () => {
                             <DatePicker
                               disableFuture
                               label="End Date"
+                              inputFormat="DD/MM/YYYY"
                               value={input.value || null}
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
@@ -176,12 +182,12 @@ const ViewCreditDebitByPartnerCard = () => {
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Button
                         type="submit"
-                        disabled={submitting}
+                        disabled={loading}
                         variant="contained"
                         color="primary"
                         className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                       >
-                        {"Get Records"}
+                        {loading ? "Submitting..." : "Get Records"}
                       </Button>
                     </Grid>
                   </Grid>
@@ -192,7 +198,7 @@ const ViewCreditDebitByPartnerCard = () => {
           {isVisible && (
             <ViewCreditDebitByPartner creditDebits={creditDebits} />
           )}
-        </div>
+        </Paper>
       </div>
       <Toaster position="bottom-center" reverseOrder={false} />
     </>

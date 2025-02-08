@@ -31,7 +31,7 @@ const DynamicDateField: React.FC<DynamicDateFieldProps> = ({
             <DatePicker
               disableFuture={disableFuture}
               label={label}
-              value={input.value || null} // Ensure the value is not undefined
+              value={input.value || null} 
               onChange={(date) => input.onChange(date)}
               inputFormat="DD/MM/YYYY"
               renderInput={(params: any) => (
