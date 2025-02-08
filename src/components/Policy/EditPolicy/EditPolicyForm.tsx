@@ -395,8 +395,6 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
     bookingForm.append("timer", diff.toString());
     bookingForm.append("bookingStatus", "Booked");
 
-    try {
-      setIsLoading(true);
       await callEditBookingApi(bookingForm, initialValues.bookingId!);
       if (policyForm.policyCreatedBy.toLowerCase() === "admin") {
         if (!selectedRMId) {
@@ -416,15 +414,11 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
           await bindValues(policyForm);
         }
       }
-    } catch (error: any) {
-      const err = await error;
-      toast.error(err.message || "Error occurred ");
-    } finally {
-      setIsLoading(false);
-    }
+  
   };
   const callEditLeadAPI = async (leadForm: any, leadId: string) => {
     try {
+      setIsLoading(true)
       const newLead = await editLeadService({
         header,
         lead: leadForm,
@@ -435,11 +429,14 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
     } catch (error: any) {
       const err = await error;
       toast.error(err.message);
+    }finally{
+      setIsLoading(false)
     }
   };
 
   const callEditBookingApi = async (bookingForm: any, bookingId: string) => {
     try {
+      setIsLoading(true)
       const newLead = await editBookingRequestService({
         header,
         bookingRequest: bookingForm,
@@ -454,11 +451,14 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
     } catch (error: any) {
       const err = await error;
       toast.error(err.message);
+    }finally{
+      setIsLoading(false)
     }
   };
 
   const callAddPolicyAPI = async (policy: any) => {
     try {
+      setIsLoading(true)
       const newPolicy = await addPolicyService({ header, policy });
       if (newPolicy.status === "success") {
         navigate(motorPolicyPath());
@@ -469,6 +469,8 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
       const err = await error;
       toast.error(err.message);
       return { [FORM_ERROR]: `${"message"}` };
+    }finally{
+      setIsLoading(false)
     }
   };
   const handleChangeDocumentName = (newValue: any, index: any) => {

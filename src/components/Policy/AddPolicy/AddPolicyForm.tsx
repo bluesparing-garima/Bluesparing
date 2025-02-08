@@ -427,38 +427,33 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
     const formValid = documents.every((doc, index) =>
       validateDocument(doc, index)
     );
-    try {
-      setIsLoading(true);
-      if (policyForm.policyCreatedBy.toLowerCase() === "admin") {
-        if (!selectedRMId) {
-          setRMErrorMessage("Select Partner or RM");
-        } else if (formValid) {
-          await bindValues(policyForm);
-        }
-      } else if (policyForm.policyCreatedBy !== "Direct") {
-        setPolicyErrorMessage("");
-        if (!selectedRMId) {
-          setRMErrorMessage("Select Partner or RM");
-        } else if (formValid) {
-          await bindValues(policyForm);
-        }
-      } else {
-        if (formValid) {
-          await bindValues(policyForm);
-        }
+
+    if (policyForm.policyCreatedBy.toLowerCase() === "admin") {
+      if (!selectedRMId) {
+        setRMErrorMessage("Select Partner or RM");
+      } else if (formValid) {
+        await bindValues(policyForm);
       }
-    } catch (error: any) {
-      const err = await error;
-      toast.error(err.message || "Error occurred in adding new policy");
-    } finally {
-      setIsLoading(false);
+    } else if (policyForm.policyCreatedBy !== "Direct") {
+      setPolicyErrorMessage("");
+      if (!selectedRMId) {
+        setRMErrorMessage("Select Partner or RM");
+      } else if (formValid) {
+        await bindValues(policyForm);
+      }
+    } else {
+      if (formValid) {
+        await bindValues(policyForm);
+      }
     }
   };
   const callAddPolicyAPI = async (policy: any) => {
     try {
+      setIsLoading(true);
       const newPolicy = await addPolicyService({ header, policy });
       if (newPolicy.status === "success") {
         navigate(motorPolicyPath());
+        return;
       } else {
         return { [FORM_ERROR]: `${newPolicy.message}` };
       }
@@ -466,10 +461,13 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       let errData = await err;
       toast.error(errData.message);
       return { [FORM_ERROR]: `${"message"}` };
+    } finally {
+      setIsLoading(false);
     }
   };
   const callEditPolicyAPI = async (policy: any, policyId: string) => {
     try {
+      setIsLoading(true);
       const newPolicy = await editPolicyService({ header, policy, policyId });
       if (newPolicy.status === "success") {
         navigate(motorPolicyPath());
@@ -480,6 +478,8 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       const errorData = await err;
       toast.error(errorData.message);
       return { [FORM_ERROR]: `${"message"}` };
+    } finally {
+      setIsLoading(false);
     }
   };
   const handleChangeDocumentName = (newValue: any, index: any) => {

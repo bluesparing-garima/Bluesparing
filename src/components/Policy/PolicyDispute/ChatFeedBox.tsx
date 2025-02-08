@@ -30,7 +30,7 @@ const ChatFeedBox: FC<ChatFeedBoxProps> = (p) => {
         policyNumber: p.policyNumber,
         comments: msg,
         image: "",
-        senderId: userData.id,
+        senderId: userData.profileId,
         status: "active",
         senderName: userData.name,
         createdBy: userData.name || "",

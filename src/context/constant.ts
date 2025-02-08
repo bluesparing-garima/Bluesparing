@@ -7,7 +7,7 @@ export const DAY_FORMAT = "YYYY-MM-DD";
 export const DAYS_DB_DISPLAY_FORMAT_DATE_TYPE = "YYYY-MM-DDTHH:mm:ss.SSS[Z]";
 export const DAYJS_DISPLAY_FORMAT_TABLES = "MMM DD, YYYY";
 export const DAYJS_DISPLAY_FORMAT = "MMM DD YYYY";
-export const MAX_FILE_SIZE = 2 * 1024 * 1024;
+export const MAX_FILE_SIZE = 4 * 1024 * 1024;
 
 export const ALLOWED_FILE_TYPES = [
   "image/jpeg",
