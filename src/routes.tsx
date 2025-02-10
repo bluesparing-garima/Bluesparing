@@ -1,173 +1,529 @@
-import SignUp from "./Auth/Signup";
-import Dashboard from "./components/Dashboard/dashboard";
-import PartnerDashboard from "./components/Dashboard/partnerDashboard";
-import BookingDashboard from "./components/Dashboard/bookingDashboard";
-import Roles from "./components/Admin/Role/Roles/Roles";
-import AddRole from "./components/Admin/Role/AddRole/addRole";
-import Products from "./components/Admin/Product/Products/Products";
-import AddProduct from "./components/Admin/Product/AddProduct/addProduct";
-import AddPolicyType from "./components/Admin/PolicyType/AddPolicyType/AddPolicyType";
-import PolicyTypes from "./components/Admin/PolicyType/PolicyTypes/PolicyTypes";
-import CaseTypes from "./components/Admin/CaseType/CaseTypes/CaseTypes";
-import AddCaseType from "./components/Admin/CaseType/AddCaseType/addCaseType";
-import AddMotorPolicy from "./components/Policy/AddPolicy/AddPolicy";
-import EditMotorPolicy from "./components/Policy/EditPolicy/EditPolicy";
+import { lazy } from "react";
+
 import Signin from "./Auth/Signin";
-import GetMotorPolicies from "./components/Policy/GetMotorPolicies/GetMotorPolicies";
-import PayInUploadByExcel from "./components/Admin/Percentage/PayInUploadByExcel/PayInUploadByExcel";
-import PayOutUploadByExcel from "./components/Admin/Percentage/PayOutUploadByExcel/payOutUploadByExcel";
-import AddProductSubType from "./components/Admin/ProductSubType/AddProductSubType/AddProductSubType";
-import ProductSubTypes from "./components/Admin/ProductSubType/ProductSubTypes/ProductSubTypes";
-import AddCompany from "./components/Admin/Company/AddCompany/addCompany";
-import Companies from "./components/Admin/Company/Companies/Companies";
-import Brokers from "./components/Admin/Broker/Brokers/Brokers";
-import AddBroker from "./components/Admin/Broker/AddBroker/addBroker";
-import AddBranch from "./components/Admin/Branch/AddBranch/addBranch";
-import Branches from "./components/Admin/Branch/Branches/Branches";
-import Categories from "./components/Admin/Category/Categories/Categories";
-import AddCategory from "./components/Admin/Category/AddCategory/AddCategory";
-import AddFuelType from "./components/Admin/FuelType/AddFuelType/addFuelType";
-import FuelTypes from "./components/Admin/FuelType/FuelTypes/FuelTypes";
-import AddMake from "./components/Admin/Make/AddMake/addMake";
-import Makes from "./components/Admin/Make/Makes/Makes";
-import Models from "./components/Admin/Model/Models/Models";
-import AddModel from "./components/Admin/Model/AddModel/addModel";
-import ViewPolicy from "./components/Policy/ViewPolicy/ViewPolicy";
-import Teams from "./components/Admin/Team/Teams/Teams";
-import AddTeam from "./components/Admin/Team/AddTeam/AddTeam";
-import Page403 from "./Auth/Page403";
-import AddBookingRequest from "./components/Booking/AddBookingRequest/AddBookingRequest";
-import BookingRequests from "./components/Booking/BookingRequests/BookingRequests";
-import AddLead from "./components/Partner/AddLead/AddLead";
-import Leads from "./components/Partner/Leads/leads";
-import NewLeads from "./components/Partner/Leads/Newleads";
-import EditLead from "./components/Partner/EditLead/editLead";
-import AddQuotation from "./components/Partner/Quotation/AddQuotation/AddQuotation";
-import ViewQuotation from "./components/Partner/Quotation/ViewQuotation/ViewQuotation";
-import NewBookingRequests from "./components/Booking/BookingRequests/NewBookingRequests";
-import EditCommission from "./components/Policy/EditCommsion/editCommison";
-import AddAccounts from "./components/Account/AddAcoounts/AddAccounts";
-import Accounts from "./components/Account/Accounts/Accounts";
-import CompareBrokerPayment from "./components/Account/CompareBrokerPayment/compareBrokerPayment";
-import CreditDebits from "./components/Account/CreditDebit/CreditDebits/CreditDebits";
-import AddCreditDebits from "./components/Account/CreditDebit/AddCreditDebit/AddCreditDebit";
-import AccountDashboard from "./components/Dashboard/accountDashboard";
-import UpdatePayment from "./components/Account/UpdatePayments/ManageBrokerPayment/ManageBrokerPayment";
-import ManagePartnerPayment from "./components/Account/UpdatePayments/ManagePartnerPayment/ManagePartnerPayment";
-import ComparePartnerPayment from "./components/Account/ComparePartnerPayment/comparePartnerPayment";
-import ViewAccountCreditDebitsDetails from "./components/Account/Accounts/ViewAccountDetails/ViewAccountCreditDebitsDetails";
-import ViewCreditDebitByBrokerCard from "./components/Account/CreditDebit/ViewCreditDebitByBroker/ViewCreditDebitByBrokerCard";
-import ViewCreditDebitByPartnerCard from "./components/Account/CreditDebit/ViewCreditDebitByPartner/ViewCreditDebitByPartnerCard";
-import Percentage from "./components/Admin/Percentage/Percentage/Percentage";
-import ManageCards from "./components/Partner/ManageCard/manageCards";
-import ViewCardHistory from "./components/Partner/ManageCard/ViewCardHistory";
-import PartnerDebit from "./components/Account/UpdatePayments/PartnerDebit/PartnerDebit";
-import ViewPolicyDetails from "./components/Policy/ViewPolicy/ViewPolicyDetails";
-import OperationDashboard from "./components/Dashboard/operationDashboard";
-import BrokerCredit from "./components/Account/UpdatePayments/BrokerCredit/BrokerCredit";
-import GetArchiveMotorPolicies from "./components/Policy/GetMotorPolicies/GetArchiveMotorPolicies";
-import RejectionPolicies from "./components/Booking/BookingRequests/RejectionPolicies";
-import Partners from "./components/Admin/Team/Teams/Partners";
-import Operations from "./components/Admin/Team/Teams/Operations";
-import RM from "./components/Admin/Team/Teams/RM";
-import Bookings from "./components/Admin/Team/Teams/Bookings";
-import TeamAccounts from "./components/Admin/Team/Teams/Accounts";
-import Filter from "./components/Filter/FilterPolicy/Filter";
-import Notification from "./components/Notification/Notification";
-import PolicyPDF from "./components/Policy/PolicyPDF/PolicyPDF";
-import ProfilePage from "./components/Profile/ProfilePage";
-import AcceptedBooking from "./components/Booking/AcceptedBooking/AcceptedBooking";
-import UploadPolicy from "./components/Policy/UploadPolicy/UploadPolicy";
-import FilterPayOut from "./components/Filter/FilterPayOut/FilterPayOut";
-import FilterPayIn from "./components/Filter/FilterPayIn/FilterPayIn";
-import MonthlyFilterPayOut from "./components/Filter/FilterPayOut/MonthlyFilterPayOut";
-import MonthlyFilterPayIn from "./components/Filter/FilterPayIn/MonthlyFilterPayIn";
-import MonthlyCompanyFilterPayOut from "./components/Filter/FilterPayOut/MonthlyCompanyFilterPayOut";
-import MonthlyCompanyFilterPayIn from "./components/Filter/FilterPayIn/MonthlyCompanyFilterPayIn";
-import CompanyFilterPayIn from "./components/Filter/FilterPayIn/CompanyFilterPayIn";
-import CompanyFilterPayOut from "./components/Filter/FilterPayOut/CompanyFilterPayOut";
-import ExcelPayIn from "./components/Account/ExcelPayIn&Payout/ExcelPayIn";
-import ExcelPayout from "./components/Account/ExcelPayIn&Payout/ExcelPayout";
-import RMDashboard from "./components/Dashboard/RMDashboard";
-import RMGetMotorPolicies from "./components/Policy/GetMotorPolicies/RMGetMotorPolicies";
-import RmTeams from "./components/Admin/Team/Teams/RmTeam";
-import RmLead from "./components/Rm/RmLead";
-import RmRequestedBooking from "./components/Booking/BookingRequests/RmRequestedBooking";
-import MonthlyPayout from "./components/TreeView/PayOut/MonthlyPayout";
-import FilterReceivedPayInAmount from "./components/Filter/FilterRecievedPayInAmount/FilterRecievedPayInAmount";
-import CompanyFilterReceivedPayIn from "./components/Filter/FilterRecievedPayInAmount/CompanyFilterRecievedPayIn";
-import MonthlyFilterReceivedPayIn from "./components/Filter/FilterRecievedPayInAmount/MonthlyFilterRecievedPayIn";
-import MonthlyCompanyFilterReceivedPayIn from "./components/Filter/FilterRecievedPayInAmount/MonthlyCompanyFilterRecievedPayIn";
-import FilterPayInBalance from "./components/Filter/FilterPayInBalance/FilterPayInBalance";
-import CompanyFilterPayInBalance from "./components/Filter/FilterPayInBalance/CompanyFilterPayInBalance";
-import MonthlyCompanyFilterPayInBalance from "./components/Filter/FilterPayInBalance/MonthlyCompanyFilterPayInBalance";
-import MonthlyFilterPayInBalance from "./components/Filter/FilterPayInBalance/MonthlyFilterPayInBalance";
-import FilterPayInLeftDistributed from "./components/Filter/FilterPayInLeftDistributed/FilterPayInLeftDistributed";
-import CompanyFilterPayInLeftDistributed from "./components/Filter/FilterPayInLeftDistributed/CompanyFilterPayInLeftDistributed";
-import MonthlyCompanyFilterPayInLeftDistributed from "./components/Filter/FilterPayInLeftDistributed/MonthlyCompanyFilterPayInLeftDistributed";
-import MonthlyFilterPayInLeftDistributed from "./components/Filter/FilterPayInLeftDistributed/MonthlyFilterPayInLeftDistributed";
-import MonthlyPaidFilterPayOut from "./components/Filter/FilterPaidPayOut/MonthlyPaidFilterPayOut";
-import MonthlyCompanyPaidFilterPayOut from "./components/Filter/FilterPaidPayOut/MonthlyCompanyPaidFilterPayOut";
-import MonthlyFilterPayOutBalance from "./components/Filter/FilterPayOutBalance/MonthlyFilterPayOutBalance";
-import MonthlyCompanyFilterPayOutBalance from "./components/Filter/FilterPayOutBalance/MonthlyCompanyFilterPayOutBalance";
-import MonthlyFilterPayOutLeftDistributed from "./components/Filter/FilterPayOutLeftDistributed/MonthlyFilterPayOutLeftDistributed";
-import MonthlyCompanyFilterPayOutLeftDistributed from "./components/Filter/FilterPayOutLeftDistributed/MonthlyCompanyFilterPayOutLeftDistributed";
-import YearlyPayout from "./components/TreeView/PayOut/YearlyPayOut";
-import YearlyPayIn from "./components/TreeView/PayIn/YearlyPayIn";
-import MonthlyPayIn from "./components/TreeView/PayIn/MonthlyPayIn";
-import FilterPaidPayOut from "./components/Filter/FilterPaidPayOut/FilterPaidPayOut";
-import FilterPayOutBalance from "./components/Filter/FilterPayOutBalance/FilterPayOutBalance";
-import CompanyFilterPayOutBalance from "./components/Filter/FilterPayOutBalance/CompanyFilterPayOutBalance";
-import FilterPayOutLeftDistributed from "./components/Filter/FilterPayOutLeftDistributed/FilterPayOutLeftDistributed";
-import CompanyFilterPayOutLeftDistributed from "./components/Filter/FilterPayOutLeftDistributed/CompanyFilterPayOutLeftDistributed";
-import CompanyFilterPayOutPaid from "./components/Filter/FilterPaidPayOut/CompanyFilterPayOutPaid";
-import FilterPartnerMonthlyNetPremium from "./components/Filter/FilterNetPerminum/FilterPartnerMonthlyNetPremium";
-import MonthlyFinalPremium from "./components/Filter/FilterFinalPreminum/MonthlyFinalPremium";
-import FilterMonthlyBrokerFinalPremium from "./components/Filter/FilterFinalPreminum/FilterMonthlyBrokerFinalPremium";
-import FilterPartnerMonthlyFinalPremium from "./components/Filter/FilterFinalPreminum/FilterPartnerMonthlyFinalPremium";
-import FilterMonthlyBrokerNetPremium from "./components/Filter/FilterNetPerminum/FilterMonthlyBrokerNetPerimum";
-import NetPremium from "./components/Filter/FilterNetPerminum/NetPerimum";
-import FilterBrokerNetPremium from "./components/Filter/FilterNetPerminum/FilterBrokerNetPerimum";
-import FilterPartnerNetPremium from "./components/Filter/FilterNetPerminum/FilterPartnerNetPremium";
-import FilterPartnerFinalPremium from "./components/Filter/FilterFinalPreminum/FilterPartnerFinalPremium";
-import FinalPremium from "./components/Filter/FilterFinalPreminum/FinalPerimum";
-import FilterBrokerFinalPremium from "./components/Filter/FilterFinalPreminum/FilterBrokerFinalPerimum";
-import YearlyNetPremium from "./components/TreeView/NetPremium/YearlyNetPremium";
-import YearlyFinalNetPremium from "./components/TreeView/FinalNetPremium/YearlyFinalNetPremium";
-import MonthlyNetPremium from "./components/TreeView/NetPremium/MonthlyNetPremium";
-import MonthlyFinalNetPremium from "./components/TreeView/FinalNetPremium/MonthlyFinalPremium";
-import MonthlyAllNetPremium from "./components/Filter/FilterNetPerminum/MonthlyAllNetPerimum";
-import Ranks from "./components/Admin/Rank/Ranks/Ranks";
-import AddRank from "./components/Admin/Rank/AddRank/addRank";
-import BlogCategories from "./components/Website/BlogCategory/BlogCategories/Categories";
-import AddBlogCategory from "./components/Website/BlogCategory/AddBlogCategory/AddBlogCategory";
-import Blogs from "./components/Website/Blog/Blogs/Blogs";
-import AddBlog from "./components/Website/Blog/AddBlog/AddBlog";
-import News from "./components/Website/News/News/News";
-import AddNews from "./components/Website/News/AddNews/AddNews";
-import AddNewsCategory from "./components/Website/NewsCategory/AddNewsCategory/AddNewsCategory";
-import NewsCategories from "./components/Website/NewsCategory/NewsCategories/NewsCategories";
-import HrDashBoard from "./components/Dashboard/HrDashBoard";
-import HolidayList from "./components/HR/Holidays/HolidayList";
-import AddHoliday from "./components/HR/Holidays/AddHoliday";
-import Attendance from "./components/HR/Attendance/AttendanceRecord/Attendance";
-import EmployeeAttendance from "./components/HR/Attendance/AttendanceRecord/EmployeeAttendance";
-import AddAttendance from "./components/HR/Attendance/AddAttendance/AddAttendance";
-import MarkAttendance from "./components/HR/Attendance/MarkAttendance/MarkAttendance";
-import ITDashboard from "./components/Dashboard/ITDashboard";
-import UploadLogo from "./components/UploadLogo/UploadLogo";
-import GetRenewals from "./components/Policy/Renewals/GetRenewals";
-import UpdatePlan from "./components/UpdatePlan/UpdatePlan";
-import UnAuthorizedPage from "./Auth/UnAuthorizedPage";
-import Subscription from "./components/Subscrition/Subscription";
-import BrokerWallet from "./components/Broker/BrokerWallet";
-import BrokerPoliciesTransaction from "./components/Broker/BrokerPoliciesTransaction";
-import PartnerPolicyTransactions from "./components/Partner/Wallet/PartnerPolicyTransactions";
-import PartnerWallet from "./components/Partner/Wallet/PartnerWallet";
-import TdsPayInManage from "./components/Account/TDS/PayInTDS/TdsPayInManage";
-import TdsPayOutManage from "./components/Account/TDS/PayOutTDS/TdsPayOutManage";
-import DisputedPolicyPage from "./components/Policy/PolicyDispute/DisputedPolicyPage";
-import PolicyDispute from "./components/Policy/PolicyDispute/PolicyDispute";
+import SuspenseWrapper from "./utils/ui/SpanceWrapper";
+
+const Dashboard = lazy(() => import("./components/Dashboard/dashboard"));
+const PartnerDashboard = lazy(
+  () => import("./components/Dashboard/partnerDashboard")
+);
+const BookingDashboard = lazy(
+  () => import("./components/Dashboard/bookingDashboard")
+);
+const Roles = lazy(() => import("./components/Admin/Role/Roles/Roles"));
+const AddRole = lazy(() => import("./components/Admin/Role/AddRole/addRole"));
+const Products = lazy(
+  () => import("./components/Admin/Product/Products/Products")
+);
+const AddProduct = lazy(
+  () => import("./components/Admin/Product/AddProduct/addProduct")
+);
+const AddPolicyType = lazy(
+  () => import("./components/Admin/PolicyType/AddPolicyType/AddPolicyType")
+);
+const PolicyTypes = lazy(
+  () => import("./components/Admin/PolicyType/PolicyTypes/PolicyTypes")
+);
+const CaseTypes = lazy(
+  () => import("./components/Admin/CaseType/CaseTypes/CaseTypes")
+);
+const AddCaseType = lazy(
+  () => import("./components/Admin/CaseType/AddCaseType/addCaseType")
+);
+const AddMotorPolicy = lazy(
+  () => import("./components/Policy/AddPolicy/AddPolicy")
+);
+const EditMotorPolicy = lazy(
+  () => import("./components/Policy/EditPolicy/EditPolicy")
+);
+const GetMotorPolicies = lazy(
+  () => import("./components/Policy/GetMotorPolicies/GetMotorPolicies")
+);
+const PayInUploadByExcel = lazy(
+  () =>
+    import(
+      "./components/Admin/Percentage/PayInUploadByExcel/PayInUploadByExcel"
+    )
+);
+const PayOutUploadByExcel = lazy(
+  () =>
+    import(
+      "./components/Admin/Percentage/PayOutUploadByExcel/payOutUploadByExcel"
+    )
+);
+const AddProductSubType = lazy(
+  () =>
+    import(
+      "./components/Admin/ProductSubType/AddProductSubType/AddProductSubType"
+    )
+);
+const ProductSubTypes = lazy(
+  () =>
+    import("./components/Admin/ProductSubType/ProductSubTypes/ProductSubTypes")
+);
+const AddCompany = lazy(
+  () => import("./components/Admin/Company/AddCompany/addCompany")
+);
+const Companies = lazy(
+  () => import("./components/Admin/Company/Companies/Companies")
+);
+const Brokers = lazy(() => import("./components/Admin/Broker/Brokers/Brokers"));
+const AddBroker = lazy(
+  () => import("./components/Admin/Broker/AddBroker/addBroker")
+);
+const AddBranch = lazy(
+  () => import("./components/Admin/Branch/AddBranch/addBranch")
+);
+const Branches = lazy(
+  () => import("./components/Admin/Branch/Branches/Branches")
+);
+const Categories = lazy(
+  () => import("./components/Admin/Category/Categories/Categories")
+);
+const AddCategory = lazy(
+  () => import("./components/Admin/Category/AddCategory/AddCategory")
+);
+const AddFuelType = lazy(
+  () => import("./components/Admin/FuelType/AddFuelType/addFuelType")
+);
+const FuelTypes = lazy(
+  () => import("./components/Admin/FuelType/FuelTypes/FuelTypes")
+);
+const AddMake = lazy(() => import("./components/Admin/Make/AddMake/addMake"));
+const Makes = lazy(() => import("./components/Admin/Make/Makes/Makes"));
+const Models = lazy(() => import("./components/Admin/Model/Models/Models"));
+const AddModel = lazy(
+  () => import("./components/Admin/Model/AddModel/addModel")
+);
+const ViewPolicy = lazy(
+  () => import("./components/Policy/ViewPolicy/ViewPolicy")
+);
+const Teams = lazy(() => import("./components/Admin/Team/Teams/Teams"));
+const AddTeam = lazy(() => import("./components/Admin/Team/AddTeam/AddTeam"));
+const Page403 = lazy(() => import("./Auth/Page403"));
+const AddBookingRequest = lazy(
+  () => import("./components/Booking/AddBookingRequest/AddBookingRequest")
+);
+const BookingRequests = lazy(
+  () => import("./components/Booking/BookingRequests/BookingRequests")
+);
+const AddLead = lazy(() => import("./components/Partner/AddLead/AddLead"));
+const Leads = lazy(() => import("./components/Partner/Leads/leads"));
+const NewLeads = lazy(() => import("./components/Partner/Leads/Newleads"));
+const EditLead = lazy(() => import("./components/Partner/EditLead/editLead"));
+const AddQuotation = lazy(
+  () => import("./components/Partner/Quotation/AddQuotation/AddQuotation")
+);
+const ViewQuotation = lazy(
+  () => import("./components/Partner/Quotation/ViewQuotation/ViewQuotation")
+);
+const NewBookingRequests = lazy(
+  () => import("./components/Booking/BookingRequests/NewBookingRequests")
+);
+const EditCommission = lazy(
+  () => import("./components/Policy/EditCommsion/editCommison")
+);
+const AddAccounts = lazy(
+  () => import("./components/Account/AddAcoounts/AddAccounts")
+);
+const Accounts = lazy(() => import("./components/Account/Accounts/Accounts"));
+const CompareBrokerPayment = lazy(
+  () => import("./components/Account/CompareBrokerPayment/compareBrokerPayment")
+);
+const CreditDebits = lazy(
+  () => import("./components/Account/CreditDebit/CreditDebits/CreditDebits")
+);
+const AddCreditDebits = lazy(
+  () => import("./components/Account/CreditDebit/AddCreditDebit/AddCreditDebit")
+);
+const AccountDashboard = lazy(
+  () => import("./components/Dashboard/accountDashboard")
+);
+const UpdatePayment = lazy(
+  () =>
+    import(
+      "./components/Account/UpdatePayments/ManageBrokerPayment/ManageBrokerPayment"
+    )
+);
+const ManagePartnerPayment = lazy(
+  () =>
+    import(
+      "./components/Account/UpdatePayments/ManagePartnerPayment/ManagePartnerPayment"
+    )
+);
+const ComparePartnerPayment = lazy(
+  () =>
+    import("./components/Account/ComparePartnerPayment/comparePartnerPayment")
+);
+const ViewAccountCreditDebitsDetails = lazy(
+  () =>
+    import(
+      "./components/Account/Accounts/ViewAccountDetails/ViewAccountCreditDebitsDetails"
+    )
+);
+const ViewCreditDebitByBrokerCard = lazy(
+  () =>
+    import(
+      "./components/Account/CreditDebit/ViewCreditDebitByBroker/ViewCreditDebitByBrokerCard"
+    )
+);
+const ViewCreditDebitByPartnerCard = lazy(
+  () =>
+    import(
+      "./components/Account/CreditDebit/ViewCreditDebitByPartner/ViewCreditDebitByPartnerCard"
+    )
+);
+const Percentage = lazy(
+  () => import("./components/Admin/Percentage/Percentage/Percentage")
+);
+const ManageCards = lazy(
+  () => import("./components/Partner/ManageCard/manageCards")
+);
+const ViewCardHistory = lazy(
+  () => import("./components/Partner/ManageCard/ViewCardHistory")
+);
+const PartnerDebit = lazy(
+  () => import("./components/Account/UpdatePayments/PartnerDebit/PartnerDebit")
+);
+const ViewPolicyDetails = lazy(
+  () => import("./components/Policy/ViewPolicy/ViewPolicyDetails")
+);
+const OperationDashboard = lazy(
+  () => import("./components/Dashboard/operationDashboard")
+);
+const BrokerCredit = lazy(
+  () => import("./components/Account/UpdatePayments/BrokerCredit/BrokerCredit")
+);
+const GetArchiveMotorPolicies = lazy(
+  () => import("./components/Policy/GetMotorPolicies/GetArchiveMotorPolicies")
+);
+const RejectionPolicies = lazy(
+  () => import("./components/Booking/BookingRequests/RejectionPolicies")
+);
+const Partners = lazy(() => import("./components/Admin/Team/Teams/Partners"));
+const Operations = lazy(
+  () => import("./components/Admin/Team/Teams/Operations")
+);
+const RM = lazy(() => import("./components/Admin/Team/Teams/RM"));
+const Bookings = lazy(() => import("./components/Admin/Team/Teams/Bookings"));
+const TeamAccounts = lazy(
+  () => import("./components/Admin/Team/Teams/Accounts")
+);
+const Filter = lazy(() => import("./components/Filter/FilterPolicy/Filter"));
+const Notification = lazy(
+  () => import("./components/Notification/Notification")
+);
+const PolicyPDF = lazy(() => import("./components/Policy/PolicyPDF/PolicyPDF"));
+const ProfilePage = lazy(() => import("./components/Profile/ProfilePage"));
+const AcceptedBooking = lazy(
+  () => import("./components/Booking/AcceptedBooking/AcceptedBooking")
+);
+const UploadPolicy = lazy(
+  () => import("./components/Policy/UploadPolicy/UploadPolicy")
+);
+const FilterPayOut = lazy(
+  () => import("./components/Filter/FilterPayOut/FilterPayOut")
+);
+const FilterPayIn = lazy(
+  () => import("./components/Filter/FilterPayIn/FilterPayIn")
+);
+const MonthlyFilterPayOut = lazy(
+  () => import("./components/Filter/FilterPayOut/MonthlyFilterPayOut")
+);
+const MonthlyFilterPayIn = lazy(
+  () => import("./components/Filter/FilterPayIn/MonthlyFilterPayIn")
+);
+const MonthlyCompanyFilterPayOut = lazy(
+  () => import("./components/Filter/FilterPayOut/MonthlyCompanyFilterPayOut")
+);
+const MonthlyCompanyFilterPayIn = lazy(
+  () => import("./components/Filter/FilterPayIn/MonthlyCompanyFilterPayIn")
+);
+const CompanyFilterPayIn = lazy(
+  () => import("./components/Filter/FilterPayIn/CompanyFilterPayIn")
+);
+const CompanyFilterPayOut = lazy(
+  () => import("./components/Filter/FilterPayOut/CompanyFilterPayOut")
+);
+const ExcelPayIn = lazy(
+  () => import("./components/Account/ExcelPayIn&Payout/ExcelPayIn")
+);
+const ExcelPayout = lazy(
+  () => import("./components/Account/ExcelPayIn&Payout/ExcelPayout")
+);
+const RMDashboard = lazy(() => import("./components/Dashboard/RMDashboard"));
+const RMGetMotorPolicies = lazy(
+  () => import("./components/Policy/GetMotorPolicies/RMGetMotorPolicies")
+);
+const RmTeams = lazy(() => import("./components/Admin/Team/Teams/RmTeam"));
+const RmLead = lazy(() => import("./components/Rm/RmLead"));
+const RmRequestedBooking = lazy(
+  () => import("./components/Booking/BookingRequests/RmRequestedBooking")
+);
+const MonthlyPayout = lazy(
+  () => import("./components/TreeView/PayOut/MonthlyPayout")
+);
+const FilterReceivedPayInAmount = lazy(
+  () =>
+    import(
+      "./components/Filter/FilterRecievedPayInAmount/FilterRecievedPayInAmount"
+    )
+);
+const CompanyFilterReceivedPayIn = lazy(
+  () =>
+    import(
+      "./components/Filter/FilterRecievedPayInAmount/CompanyFilterRecievedPayIn"
+    )
+);
+const MonthlyFilterReceivedPayIn = lazy(
+  () =>
+    import(
+      "./components/Filter/FilterRecievedPayInAmount/MonthlyFilterRecievedPayIn"
+    )
+);
+const MonthlyCompanyFilterReceivedPayIn = lazy(
+  () =>
+    import(
+      "./components/Filter/FilterRecievedPayInAmount/MonthlyCompanyFilterRecievedPayIn"
+    )
+);
+const FilterPayInBalance = lazy(
+  () => import("./components/Filter/FilterPayInBalance/FilterPayInBalance")
+);
+const CompanyFilterPayInBalance = lazy(
+  () =>
+    import("./components/Filter/FilterPayInBalance/CompanyFilterPayInBalance")
+);
+const MonthlyCompanyFilterPayInBalance = lazy(
+  () =>
+    import(
+      "./components/Filter/FilterPayInBalance/MonthlyCompanyFilterPayInBalance"
+    )
+);
+const MonthlyFilterPayInBalance = lazy(
+  () =>
+    import("./components/Filter/FilterPayInBalance/MonthlyFilterPayInBalance")
+);
+const FilterPayInLeftDistributed = lazy(
+  () =>
+    import(
+      "./components/Filter/FilterPayInLeftDistributed/FilterPayInLeftDistributed"
+    )
+);
+const CompanyFilterPayInLeftDistributed = lazy(
+  () =>
+    import(
+      "./components/Filter/FilterPayInLeftDistributed/CompanyFilterPayInLeftDistributed"
+    )
+);
+const MonthlyCompanyFilterPayInLeftDistributed = lazy(
+  () =>
+    import(
+      "./components/Filter/FilterPayInLeftDistributed/MonthlyCompanyFilterPayInLeftDistributed"
+    )
+);
+const MonthlyFilterPayInLeftDistributed = lazy(
+  () =>
+    import(
+      "./components/Filter/FilterPayInLeftDistributed/MonthlyFilterPayInLeftDistributed"
+    )
+);
+const MonthlyPaidFilterPayOut = lazy(
+  () => import("./components/Filter/FilterPaidPayOut/MonthlyPaidFilterPayOut")
+);
+const MonthlyCompanyPaidFilterPayOut = lazy(
+  () =>
+    import(
+      "./components/Filter/FilterPaidPayOut/MonthlyCompanyPaidFilterPayOut"
+    )
+);
+const MonthlyFilterPayOutBalance = lazy(
+  () =>
+    import("./components/Filter/FilterPayOutBalance/MonthlyFilterPayOutBalance")
+);
+const MonthlyCompanyFilterPayOutBalance = lazy(
+  () =>
+    import(
+      "./components/Filter/FilterPayOutBalance/MonthlyCompanyFilterPayOutBalance"
+    )
+);
+const MonthlyFilterPayOutLeftDistributed = lazy(
+  () =>
+    import(
+      "./components/Filter/FilterPayOutLeftDistributed/MonthlyFilterPayOutLeftDistributed"
+    )
+);
+const MonthlyCompanyFilterPayOutLeftDistributed = lazy(
+  () =>
+    import(
+      "./components/Filter/FilterPayOutLeftDistributed/MonthlyCompanyFilterPayOutLeftDistributed"
+    )
+);
+const YearlyPayout = lazy(
+  () => import("./components/TreeView/PayOut/YearlyPayOut")
+);
+const YearlyPayIn = lazy(
+  () => import("./components/TreeView/PayIn/YearlyPayIn")
+);
+const MonthlyPayIn = lazy(
+  () => import("./components/TreeView/PayIn/MonthlyPayIn")
+);
+const FilterPaidPayOut = lazy(
+  () => import("./components/Filter/FilterPaidPayOut/FilterPaidPayOut")
+);
+const FilterPayOutBalance = lazy(
+  () => import("./components/Filter/FilterPayOutBalance/FilterPayOutBalance")
+);
+const CompanyFilterPayOutBalance = lazy(
+  () =>
+    import("./components/Filter/FilterPayOutBalance/CompanyFilterPayOutBalance")
+);
+const FilterPayOutLeftDistributed = lazy(
+  () =>
+    import(
+      "./components/Filter/FilterPayOutLeftDistributed/FilterPayOutLeftDistributed"
+    )
+);
+const CompanyFilterPayOutLeftDistributed = lazy(
+  () =>
+    import(
+      "./components/Filter/FilterPayOutLeftDistributed/CompanyFilterPayOutLeftDistributed"
+    )
+);
+const CompanyFilterPayOutPaid = lazy(
+  () => import("./components/Filter/FilterPaidPayOut/CompanyFilterPayOutPaid")
+);
+const FilterPartnerMonthlyNetPremium = lazy(
+  () =>
+    import(
+      "./components/Filter/FilterNetPerminum/FilterPartnerMonthlyNetPremium"
+    )
+);
+const MonthlyFinalPremium = lazy(
+  () => import("./components/Filter/FilterFinalPreminum/MonthlyFinalPremium")
+);
+const FilterMonthlyBrokerFinalPremium = lazy(
+  () =>
+    import(
+      "./components/Filter/FilterFinalPreminum/FilterMonthlyBrokerFinalPremium"
+    )
+);
+const FilterPartnerMonthlyFinalPremium = lazy(
+  () =>
+    import(
+      "./components/Filter/FilterFinalPreminum/FilterPartnerMonthlyFinalPremium"
+    )
+);
+const FilterMonthlyBrokerNetPremium = lazy(
+  () =>
+    import(
+      "./components/Filter/FilterNetPerminum/FilterMonthlyBrokerNetPerimum"
+    )
+);
+const NetPremium = lazy(
+  () => import("./components/Filter/FilterNetPerminum/NetPerimum")
+);
+const FilterBrokerNetPremium = lazy(
+  () => import("./components/Filter/FilterNetPerminum/FilterBrokerNetPerimum")
+);
+const FilterPartnerNetPremium = lazy(
+  () => import("./components/Filter/FilterNetPerminum/FilterPartnerNetPremium")
+);
+const FilterPartnerFinalPremium = lazy(
+  () =>
+    import("./components/Filter/FilterFinalPreminum/FilterPartnerFinalPremium")
+);
+const FinalPremium = lazy(
+  () => import("./components/Filter/FilterFinalPreminum/FinalPerimum")
+);
+const FilterBrokerFinalPremium = lazy(
+  () =>
+    import("./components/Filter/FilterFinalPreminum/FilterBrokerFinalPerimum")
+);
+const YearlyNetPremium = lazy(
+  () => import("./components/TreeView/NetPremium/YearlyNetPremium")
+);
+const YearlyFinalNetPremium = lazy(
+  () => import("./components/TreeView/FinalNetPremium/YearlyFinalNetPremium")
+);
+const MonthlyNetPremium = lazy(
+  () => import("./components/TreeView/NetPremium/MonthlyNetPremium")
+);
+const MonthlyFinalNetPremium = lazy(
+  () => import("./components/TreeView/FinalNetPremium/MonthlyFinalPremium")
+);
+const MonthlyAllNetPremium = lazy(
+  () => import("./components/Filter/FilterNetPerminum/MonthlyAllNetPerimum")
+);
+const Ranks = lazy(() => import("./components/Admin/Rank/Ranks/Ranks"));
+const AddRank = lazy(() => import("./components/Admin/Rank/AddRank/addRank"));
+const BlogCategories = lazy(
+  () => import("./components/Website/BlogCategory/BlogCategories/Categories")
+);
+const AddBlogCategory = lazy(
+  () =>
+    import("./components/Website/BlogCategory/AddBlogCategory/AddBlogCategory")
+);
+const Blogs = lazy(() => import("./components/Website/Blog/Blogs/Blogs"));
+const AddBlog = lazy(() => import("./components/Website/Blog/AddBlog/AddBlog"));
+const News = lazy(() => import("./components/Website/News/News/News"));
+const AddNews = lazy(() => import("./components/Website/News/AddNews/AddNews"));
+const AddNewsCategory = lazy(
+  () =>
+    import("./components/Website/NewsCategory/AddNewsCategory/AddNewsCategory")
+);
+const NewsCategories = lazy(
+  () =>
+    import("./components/Website/NewsCategory/NewsCategories/NewsCategories")
+);
+const HrDashBoard = lazy(() => import("./components/Dashboard/HrDashBoard"));
+const HolidayList = lazy(() => import("./components/HR/Holidays/HolidayList"));
+const AddHoliday = lazy(() => import("./components/HR/Holidays/AddHoliday"));
+const Attendance = lazy(
+  () => import("./components/HR/Attendance/AttendanceRecord/Attendance")
+);
+const EmployeeAttendance = lazy(
+  () => import("./components/HR/Attendance/AttendanceRecord/EmployeeAttendance")
+);
+const AddAttendance = lazy(
+  () => import("./components/HR/Attendance/AddAttendance/AddAttendance")
+);
+const MarkAttendance = lazy(
+  () => import("./components/HR/Attendance/MarkAttendance/MarkAttendance")
+);
+const ITDashboard = lazy(() => import("./components/Dashboard/ITDashboard"));
+const UploadLogo = lazy(() => import("./components/UploadLogo/UploadLogo"));
+const GetRenewals = lazy(
+  () => import("./components/Policy/Renewals/GetRenewals")
+);
+const UpdatePlan = lazy(() => import("./components/UpdatePlan/UpdatePlan"));
+const UnAuthorizedPage = lazy(() => import("./Auth/UnAuthorizedPage"));
+const Subscription = lazy(
+  () => import("./components/Subscrition/Subscription")
+);
+const BrokerWallet = lazy(() => import("./components/Broker/BrokerWallet"));
+const BrokerPoliciesTransaction = lazy(
+  () => import("./components/Broker/BrokerPoliciesTransaction")
+);
+const PartnerPolicyTransactions = lazy(
+  () => import("./components/Partner/Wallet/PartnerPolicyTransactions")
+);
+const PartnerWallet = lazy(
+  () => import("./components/Partner/Wallet/PartnerWallet")
+);
+const TdsPayInManage = lazy(
+  () => import("./components/Account/TDS/PayInTDS/TdsPayInManage")
+);
+const TdsPayOutManage = lazy(
+  () => import("./components/Account/TDS/PayOutTDS/TdsPayOutManage")
+);
+const DisputedPolicyPage = lazy(
+  () => import("./components/Policy/PolicyDispute/DisputedPolicyPage")
+);
+const PolicyDispute = lazy(
+  () => import("./components/Policy/PolicyDispute/PolicyDispute")
+);
+const SignUp = lazy(() => import("./Auth/Signup"));
 
 const routes = [
   {
@@ -185,7 +541,11 @@ const routes = [
     children: [
       {
         path: "",
-        element: <SignUp />,
+        element: (
+          <SuspenseWrapper>
+            <SignUp />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -194,7 +554,11 @@ const routes = [
     children: [
       {
         path: "",
-        element: <RM />,
+        element: (
+          <SuspenseWrapper>
+            <RM />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -203,7 +567,11 @@ const routes = [
     children: [
       {
         path: "",
-        element: <Bookings />,
+        element: (
+          <SuspenseWrapper>
+            <Bookings />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -212,7 +580,11 @@ const routes = [
     children: [
       {
         path: "",
-        element: <TeamAccounts />,
+        element: (
+          <SuspenseWrapper>
+            <TeamAccounts />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -221,7 +593,11 @@ const routes = [
     children: [
       {
         path: "",
-        element: <Partners />,
+        element: (
+          <SuspenseWrapper>
+            <Partners />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -230,7 +606,11 @@ const routes = [
     children: [
       {
         path: "",
-        element: <Operations />,
+        element: (
+          <SuspenseWrapper>
+            <Operations />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -239,7 +619,11 @@ const routes = [
     children: [
       {
         path: "",
-        element: <Dashboard />,
+        element: (
+          <SuspenseWrapper>
+            <Dashboard />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -249,7 +633,11 @@ const routes = [
     children: [
       {
         path: "",
-        element: <UpdatePlan />,
+        element: (
+          <SuspenseWrapper>
+            <UpdatePlan />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -258,7 +646,11 @@ const routes = [
     children: [
       {
         path: "",
-        element: <UnAuthorizedPage title="You are unauthorized." />,
+        element: (
+          <SuspenseWrapper>
+            <UnAuthorizedPage title="You are unauthorized." />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -268,7 +660,9 @@ const routes = [
       {
         path: "",
         element: (
-          <UnAuthorizedPage title="Policy limit exceeded for your plan" />
+          <SuspenseWrapper>
+            <UnAuthorizedPage title="Policy limit exceeded for your plan" />
+          </SuspenseWrapper>
         ),
       },
     ],
@@ -278,27 +672,51 @@ const routes = [
     children: [
       {
         path: "",
-        element: <Leads />,
+        element: (
+          <SuspenseWrapper>
+            <Leads />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "new",
-        element: <NewLeads />,
+        element: (
+          <SuspenseWrapper>
+            <NewLeads />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "add",
-        element: <AddLead />,
+        element: (
+          <SuspenseWrapper>
+            <AddLead />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/lead/:leadId/edit",
-        element: <EditLead />,
+        element: (
+          <SuspenseWrapper>
+            <EditLead />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/lead/:leadId/quotation",
-        element: <AddQuotation />,
+        element: (
+          <SuspenseWrapper>
+            <AddQuotation />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/lead/:leadId/quotation/view",
-        element: <ViewQuotation />,
+        element: (
+          <SuspenseWrapper>
+            <ViewQuotation />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -307,15 +725,27 @@ const routes = [
     children: [
       {
         path: "",
-        element: <Roles />,
+        element: (
+          <SuspenseWrapper>
+            <Roles />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "add",
-        element: <AddRole />,
+        element: (
+          <SuspenseWrapper>
+            <AddRole />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/role/:roleId/edit",
-        element: <AddRole />,
+        element: (
+          <SuspenseWrapper>
+            <AddRole />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -324,51 +754,99 @@ const routes = [
     children: [
       {
         path: "newscategory/add",
-        element: <AddNewsCategory />,
+        element: (
+          <SuspenseWrapper>
+            <AddNewsCategory />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "newscategory/:categoryId/edit",
-        element: <AddNewsCategory />,
+        element: (
+          <SuspenseWrapper>
+            <AddNewsCategory />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "newscategories",
-        element: <NewsCategories />,
+        element: (
+          <SuspenseWrapper>
+            <NewsCategories />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "news",
-        element: <News />,
+        element: (
+          <SuspenseWrapper>
+            <News />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "news/add",
-        element: <AddNews />,
+        element: (
+          <SuspenseWrapper>
+            <AddNews />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "news/:blogId/edit",
-        element: <AddNews />,
+        element: (
+          <SuspenseWrapper>
+            <AddNews />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "blogcategory/add",
-        element: <AddBlogCategory />,
+        element: (
+          <SuspenseWrapper>
+            <AddBlogCategory />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "blogcategory/:categoryId/edit",
-        element: <AddBlogCategory />,
+        element: (
+          <SuspenseWrapper>
+            <AddBlogCategory />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "blogcategories",
-        element: <BlogCategories />,
+        element: (
+          <SuspenseWrapper>
+            <BlogCategories />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "blogs",
-        element: <Blogs />,
+        element: (
+          <SuspenseWrapper>
+            <Blogs />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "blogs/add",
-        element: <AddBlog />,
+        element: (
+          <SuspenseWrapper>
+            <AddBlog />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "blogs/:blogId/edit",
-        element: <AddBlog />,
+        element: (
+          <SuspenseWrapper>
+            <AddBlog />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -377,7 +855,11 @@ const routes = [
     children: [
       {
         path: "",
-        element: <ProfilePage />,
+        element: (
+          <SuspenseWrapper>
+            <ProfilePage />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -386,7 +868,11 @@ const routes = [
     children: [
       {
         path: "",
-        element: <UploadLogo />,
+        element: (
+          <SuspenseWrapper>
+            <UploadLogo />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -395,7 +881,11 @@ const routes = [
     children: [
       {
         path: "",
-        element: <Subscription />,
+        element: (
+          <SuspenseWrapper>
+            <Subscription />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -404,27 +894,51 @@ const routes = [
     children: [
       {
         path: "",
-        element: <FinalPremium />,
+        element: (
+          <SuspenseWrapper>
+            <FinalPremium />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/finalpremium/broker/company/:brokerId",
-        element: <FilterBrokerFinalPremium />,
+        element: (
+          <SuspenseWrapper>
+            <FilterBrokerFinalPremium />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/finalpremium/partner/company/:partnerId",
-        element: <FilterPartnerFinalPremium />,
+        element: (
+          <SuspenseWrapper>
+            <FilterPartnerFinalPremium />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "monthly",
-        element: <MonthlyFinalPremium />,
+        element: (
+          <SuspenseWrapper>
+            <MonthlyFinalPremium />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/finalpremium/monthly/broker/company/:startDate/:endDate/:brokerId",
-        element: <FilterMonthlyBrokerFinalPremium />,
+        element: (
+          <SuspenseWrapper>
+            <FilterMonthlyBrokerFinalPremium />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/finalpremium/monthly/partner/company/:startDate/:endDate/:partnerId",
-        element: <FilterPartnerMonthlyFinalPremium />,
+        element: (
+          <SuspenseWrapper>
+            <FilterPartnerMonthlyFinalPremium />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -433,31 +947,59 @@ const routes = [
     children: [
       {
         path: "",
-        element: <NetPremium />,
+        element: (
+          <SuspenseWrapper>
+            <NetPremium />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/netpremium/broker/company/:brokerId",
-        element: <FilterBrokerNetPremium />,
+        element: (
+          <SuspenseWrapper>
+            <FilterBrokerNetPremium />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/netpremium/partner/company/:partnerId",
-        element: <FilterPartnerNetPremium />,
+        element: (
+          <SuspenseWrapper>
+            <FilterPartnerNetPremium />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "monthly_preminum",
-        element: <MonthlyAllNetPremium />,
+        element: (
+          <SuspenseWrapper>
+            <MonthlyAllNetPremium />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "monthly",
-        element: <MonthlyNetPremium />,
+        element: (
+          <SuspenseWrapper>
+            <MonthlyNetPremium />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/netpremium/monthly/broker/company/:startDate/:endDate/:brokerId",
-        element: <FilterMonthlyBrokerNetPremium />,
+        element: (
+          <SuspenseWrapper>
+            <FilterMonthlyBrokerNetPremium />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/netpremium/monthly/partner/company/:startDate/:endDate/:partnerId",
-        element: <FilterPartnerMonthlyNetPremium />,
+        element: (
+          <SuspenseWrapper>
+            <FilterPartnerMonthlyNetPremium />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -466,67 +1008,131 @@ const routes = [
     children: [
       {
         path: "",
-        element: <FilterPayIn />,
+        element: (
+          <SuspenseWrapper>
+            <FilterPayIn />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/payins/company/:brokerId",
-        element: <CompanyFilterPayIn />,
+        element: (
+          <SuspenseWrapper>
+            <CompanyFilterPayIn />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "monthly",
-        element: <MonthlyFilterPayIn />,
+        element: (
+          <SuspenseWrapper>
+            <MonthlyFilterPayIn />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/payins/monthly/company/:startDate/:endDate/:brokerId",
-        element: <MonthlyCompanyFilterPayIn />,
+        element: (
+          <SuspenseWrapper>
+            <MonthlyCompanyFilterPayIn />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "recieved",
-        element: <FilterReceivedPayInAmount />,
+        element: (
+          <SuspenseWrapper>
+            <FilterReceivedPayInAmount />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/payins/recieved/company/:brokerId",
-        element: <CompanyFilterReceivedPayIn />,
+        element: (
+          <SuspenseWrapper>
+            <CompanyFilterReceivedPayIn />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "recieved/monthly",
-        element: <MonthlyFilterReceivedPayIn />,
+        element: (
+          <SuspenseWrapper>
+            <MonthlyFilterReceivedPayIn />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/payins/monthly/recieved/company/:startDate/:endDate/:brokerId",
-        element: <MonthlyCompanyFilterReceivedPayIn />,
+        element: (
+          <SuspenseWrapper>
+            <MonthlyCompanyFilterReceivedPayIn />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "balance",
-        element: <FilterPayInBalance />,
+        element: (
+          <SuspenseWrapper>
+            <FilterPayInBalance />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/payins/balance/company/:brokerId",
-        element: <CompanyFilterPayInBalance />,
+        element: (
+          <SuspenseWrapper>
+            <CompanyFilterPayInBalance />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/payins/balance/monthly/company/:startDate/:endDate/:brokerId",
-        element: <MonthlyCompanyFilterPayInBalance />,
+        element: (
+          <SuspenseWrapper>
+            <MonthlyCompanyFilterPayInBalance />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "balance/monthly",
-        element: <MonthlyFilterPayInBalance />,
+        element: (
+          <SuspenseWrapper>
+            <MonthlyFilterPayInBalance />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "leftDistributed",
-        element: <FilterPayInLeftDistributed />,
+        element: (
+          <SuspenseWrapper>
+            <FilterPayInLeftDistributed />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/payins/leftDistributed/company/:brokerId",
-        element: <CompanyFilterPayInLeftDistributed />,
+        element: (
+          <SuspenseWrapper>
+            <CompanyFilterPayInLeftDistributed />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "leftDistributed/monthly",
-        element: <MonthlyFilterPayInLeftDistributed />,
+        element: (
+          <SuspenseWrapper>
+            <MonthlyFilterPayInLeftDistributed />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/payins/leftDistributed/monthly/company/:startDate/:endDate/:brokerId",
-        element: <MonthlyCompanyFilterPayInLeftDistributed />,
+        element: (
+          <SuspenseWrapper>
+            <MonthlyCompanyFilterPayInLeftDistributed />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -535,99 +1141,195 @@ const routes = [
     children: [
       {
         path: "",
-        element: <FilterPayOut />,
+        element: (
+          <SuspenseWrapper>
+            <FilterPayOut />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "paid",
-        element: <FilterPaidPayOut />,
+        element: (
+          <SuspenseWrapper>
+            <FilterPaidPayOut />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/payouts/paid/company/:partnerId",
-        element: <CompanyFilterPayOutPaid />,
+        element: (
+          <SuspenseWrapper>
+            <CompanyFilterPayOutPaid />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "balance",
-        element: <FilterPayOutBalance />,
+        element: (
+          <SuspenseWrapper>
+            <FilterPayOutBalance />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/payouts/balance/company/:partnerId",
-        element: <CompanyFilterPayOutBalance />,
+        element: (
+          <SuspenseWrapper>
+            <CompanyFilterPayOutBalance />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "leftDistributed",
-        element: <FilterPayOutLeftDistributed />,
+        element: (
+          <SuspenseWrapper>
+            <FilterPayOutLeftDistributed />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/payouts/leftDistributed/company/:partnerId",
-        element: <CompanyFilterPayOutLeftDistributed />,
+        element: (
+          <SuspenseWrapper>
+            <CompanyFilterPayOutLeftDistributed />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "monthly/paid",
-        element: <MonthlyPaidFilterPayOut />,
+        element: (
+          <SuspenseWrapper>
+            <MonthlyPaidFilterPayOut />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/payouts/monthly/paid/company/:startDate/:endDate/:partnerId",
-        element: <MonthlyCompanyPaidFilterPayOut />,
+        element: (
+          <SuspenseWrapper>
+            <MonthlyCompanyPaidFilterPayOut />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "monthly/balance",
-        element: <MonthlyFilterPayOutBalance />,
+        element: (
+          <SuspenseWrapper>
+            <MonthlyFilterPayOutBalance />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/payouts/monthly/balance/company/:startDate/:endDate/:partnerId",
-        element: <MonthlyCompanyFilterPayOutBalance />,
+        element: (
+          <SuspenseWrapper>
+            <MonthlyCompanyFilterPayOutBalance />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "monthly/leftDistributed",
-        element: <MonthlyFilterPayOutLeftDistributed />,
+        element: (
+          <SuspenseWrapper>
+            <MonthlyFilterPayOutLeftDistributed />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/payouts/monthly/leftDistributed/company/:startDate/:endDate/:partnerId",
-        element: <MonthlyCompanyFilterPayOutLeftDistributed />,
+        element: (
+          <SuspenseWrapper>
+            <MonthlyCompanyFilterPayOutLeftDistributed />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "monthly",
-        element: <MonthlyFilterPayOut />,
+        element: (
+          <SuspenseWrapper>
+            <MonthlyFilterPayOut />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "month_payout",
-        element: <MonthlyPayout />,
+        element: (
+          <SuspenseWrapper>
+            <MonthlyPayout />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "year_payout",
-        element: <YearlyPayout />,
+        element: (
+          <SuspenseWrapper>
+            <YearlyPayout />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "month_payin",
-        element: <MonthlyPayIn />,
+        element: (
+          <SuspenseWrapper>
+            <MonthlyPayIn />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "year_payin",
-        element: <YearlyPayIn />,
+        element: (
+          <SuspenseWrapper>
+            <YearlyPayIn />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/payouts/company/:partnerId",
-        element: <CompanyFilterPayOut />,
+        element: (
+          <SuspenseWrapper>
+            <CompanyFilterPayOut />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/payouts/monthly/company/:startDate/:endDate/:partnerId",
-        element: <MonthlyCompanyFilterPayOut />,
+        element: (
+          <SuspenseWrapper>
+            <MonthlyCompanyFilterPayOut />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "year_netPremium",
-        element: <YearlyNetPremium />,
+        element: (
+          <SuspenseWrapper>
+            <YearlyNetPremium />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "year_final_netPremium",
-        element: <YearlyFinalNetPremium />,
+        element: (
+          <SuspenseWrapper>
+            <YearlyFinalNetPremium />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "month_netPremium",
-        element: <MonthlyNetPremium />,
+        element: (
+          <SuspenseWrapper>
+            <MonthlyNetPremium />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "month_final_premium",
-        element: <MonthlyFinalNetPremium />,
+        element: (
+          <SuspenseWrapper>
+            <MonthlyFinalNetPremium />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -636,108 +1338,208 @@ const routes = [
     children: [
       {
         path: "",
-        element: <Accounts />,
+        element: (
+          <SuspenseWrapper>
+            <Accounts />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/account/partner-debit",
-        element: <PartnerDebit />,
+        element: (
+          <SuspenseWrapper>
+            <PartnerDebit />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/account/broker-credit",
-        element: <BrokerCredit />,
+        element: (
+          <SuspenseWrapper>
+            <BrokerCredit />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/account/broker-payment-compare",
-        element: <CompareBrokerPayment />,
+        element: (
+          <SuspenseWrapper>
+            <CompareBrokerPayment />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/account/partner-payment-compare",
-        element: <ComparePartnerPayment />,
+        element: (
+          <SuspenseWrapper>
+            <ComparePartnerPayment />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "creditdebit",
-        element: <CreditDebits />,
+        element: (
+          <SuspenseWrapper>
+            <CreditDebits />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/account/creditdebit/broker-payment/view",
-        element: <ViewCreditDebitByBrokerCard />,
+        element: (
+          <SuspenseWrapper>
+            <ViewCreditDebitByBrokerCard />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/account/creditdebit/partner-payment/view",
-        element: <ViewCreditDebitByPartnerCard />,
+        element: (
+          <SuspenseWrapper>
+            <ViewCreditDebitByPartnerCard />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/account/creditdebit/:accountId/view",
-        element: <ViewAccountCreditDebitsDetails />,
+        element: (
+          <SuspenseWrapper>
+            <ViewAccountCreditDebitsDetails />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/account/creditdebit/add",
-        element: <AddCreditDebits />,
+        element: (
+          <SuspenseWrapper>
+            <AddCreditDebits />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/account/creditdebit/:creditDebitId/edit",
-        element: <AddCreditDebits />,
+        element: (
+          <SuspenseWrapper>
+            <AddCreditDebits />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "tds-payin",
-        element: <TdsPayInManage />,
+        element: (
+          <SuspenseWrapper>
+            <TdsPayInManage />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "tds-payout",
-        element: <TdsPayOutManage />,
+        element: (
+          <SuspenseWrapper>
+            <TdsPayOutManage />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "add",
-        element: <AddAccounts />,
+        element: (
+          <SuspenseWrapper>
+            <AddAccounts />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/account/:accountId/edit",
-        element: <AddAccounts />,
+        element: (
+          <SuspenseWrapper>
+            <AddAccounts />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/account/broker/update-payment",
-        element: <UpdatePayment />,
+        element: (
+          <SuspenseWrapper>
+            <UpdatePayment />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/account/partner/update-payment",
-        element: <ManagePartnerPayment />,
+        element: (
+          <SuspenseWrapper>
+            <ManagePartnerPayment />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/account/excel-payIn",
-        element: <ExcelPayIn />,
+        element: (
+          <SuspenseWrapper>
+            <ExcelPayIn />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/account/excel-payOut",
-        element: <ExcelPayout />,
+        element: (
+          <SuspenseWrapper>
+            <ExcelPayout />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
   {
     path: "reject",
-    element: <RejectionPolicies />,
+    element: (
+      <SuspenseWrapper>
+        <RejectionPolicies />
+      </SuspenseWrapper>
+    ),
   },
   {
     path: "booking",
     children: [
       {
         path: "",
-        element: <BookingRequests />,
+        element: (
+          <SuspenseWrapper>
+            <BookingRequests />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "new",
-        element: <NewBookingRequests />,
+        element: (
+          <SuspenseWrapper>
+            <NewBookingRequests />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "add",
-        element: <AddBookingRequest />,
+        element: (
+          <SuspenseWrapper>
+            <AddBookingRequest />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "accepted",
-        element: <AcceptedBooking />,
+        element: (
+          <SuspenseWrapper>
+            <AcceptedBooking />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/booking/:leadId/new",
-        element: <AddBookingRequest />,
+        element: (
+          <SuspenseWrapper>
+            <AddBookingRequest />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -746,15 +1548,27 @@ const routes = [
     children: [
       {
         path: "",
-        element: <PolicyTypes />,
+        element: (
+          <SuspenseWrapper>
+            <PolicyTypes />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "add",
-        element: <AddPolicyType />,
+        element: (
+          <SuspenseWrapper>
+            <AddPolicyType />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/policytype/:policyTypeId/edit",
-        element: <AddPolicyType />,
+        element: (
+          <SuspenseWrapper>
+            <AddPolicyType />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -763,55 +1577,107 @@ const routes = [
     children: [
       {
         path: "/policy/renewals",
-        element: <GetRenewals />,
+        element: (
+          <SuspenseWrapper>
+            <GetRenewals />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "disputed-policies",
-        element: <DisputedPolicyPage />,
+        element: (
+          <SuspenseWrapper>
+            <DisputedPolicyPage />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/policy/motor/upload",
-        element: <PolicyPDF />,
+        element: (
+          <SuspenseWrapper>
+            <PolicyPDF />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/policy/motor/excel/upload",
-        element: <UploadPolicy />,
+        element: (
+          <SuspenseWrapper>
+            <UploadPolicy />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/policy/motor/add",
-        element: <AddMotorPolicy />,
+        element: (
+          <SuspenseWrapper>
+            <AddMotorPolicy />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/policy/policy-dispute",
-        element: <PolicyDispute />,
+        element: (
+          <SuspenseWrapper>
+            <PolicyDispute />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/policy/motor/:bookingRequestId",
-        element: <EditMotorPolicy />,
+        element: (
+          <SuspenseWrapper>
+            <EditMotorPolicy />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/policy/:policyId/view",
-        element: <ViewPolicy />,
+        element: (
+          <SuspenseWrapper>
+            <ViewPolicy />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/policy/:policyId",
-        element: <ViewPolicyDetails />,
+        element: (
+          <SuspenseWrapper>
+            <ViewPolicyDetails />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/policy/:policyId/edit",
-        element: <AddMotorPolicy />,
+        element: (
+          <SuspenseWrapper>
+            <AddMotorPolicy />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/policy/:policyId/commission",
-        element: <EditCommission />,
+        element: (
+          <SuspenseWrapper>
+            <EditCommission />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "motor-policies",
-        element: <GetMotorPolicies />,
+        element: (
+          <SuspenseWrapper>
+            <GetMotorPolicies />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "archive",
-        element: <GetArchiveMotorPolicies />,
+        element: (
+          <SuspenseWrapper>
+            <GetArchiveMotorPolicies />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -820,15 +1686,27 @@ const routes = [
     children: [
       {
         path: "",
-        element: <Ranks />,
+        element: (
+          <SuspenseWrapper>
+            <Ranks />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "add",
-        element: <AddRank />,
+        element: (
+          <SuspenseWrapper>
+            <AddRank />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/ranks/:rankId/edit",
-        element: <AddRank />,
+        element: (
+          <SuspenseWrapper>
+            <AddRank />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -837,15 +1715,27 @@ const routes = [
     children: [
       {
         path: "",
-        element: <Teams />,
+        element: (
+          <SuspenseWrapper>
+            <Teams />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "add",
-        element: <AddTeam />,
+        element: (
+          <SuspenseWrapper>
+            <AddTeam />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/team/:teamId/edit",
-        element: <AddTeam />,
+        element: (
+          <SuspenseWrapper>
+            <AddTeam />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -854,19 +1744,35 @@ const routes = [
     children: [
       {
         path: "",
-        element: <ProductSubTypes />,
+        element: (
+          <SuspenseWrapper>
+            <ProductSubTypes />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "add",
-        element: <AddProductSubType />,
+        element: (
+          <SuspenseWrapper>
+            <AddProductSubType />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/subproducts/:productSubTypeId/edit",
-        element: <AddProductSubType />,
+        element: (
+          <SuspenseWrapper>
+            <AddProductSubType />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/subproducts/add/:productId",
-        element: <AddProductSubType />,
+        element: (
+          <SuspenseWrapper>
+            <AddProductSubType />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -875,15 +1781,27 @@ const routes = [
     children: [
       {
         path: "",
-        element: <CaseTypes />,
+        element: (
+          <SuspenseWrapper>
+            <CaseTypes />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "add",
-        element: <AddCaseType />,
+        element: (
+          <SuspenseWrapper>
+            <AddCaseType />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/casetype/:caseTypeId/edit",
-        element: <AddCaseType />,
+        element: (
+          <SuspenseWrapper>
+            <AddCaseType />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -892,15 +1810,27 @@ const routes = [
     children: [
       {
         path: "",
-        element: <FuelTypes />,
+        element: (
+          <SuspenseWrapper>
+            <FuelTypes />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "add",
-        element: <AddFuelType />,
+        element: (
+          <SuspenseWrapper>
+            <AddFuelType />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/fueltype/:fuelTypeId/edit",
-        element: <AddFuelType />,
+        element: (
+          <SuspenseWrapper>
+            <AddFuelType />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -909,15 +1839,27 @@ const routes = [
     children: [
       {
         path: "payout",
-        element: <PayOutUploadByExcel />,
+        element: (
+          <SuspenseWrapper>
+            <PayOutUploadByExcel />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "payin",
-        element: <PayInUploadByExcel />,
+        element: (
+          <SuspenseWrapper>
+            <PayInUploadByExcel />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "percentage",
-        element: <Percentage />,
+        element: (
+          <SuspenseWrapper>
+            <Percentage />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -930,15 +1872,27 @@ const routes = [
     children: [
       {
         path: "",
-        element: <Products />,
+        element: (
+          <SuspenseWrapper>
+            <Products />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "add",
-        element: <AddProduct />,
+        element: (
+          <SuspenseWrapper>
+            <AddProduct />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/products/:productId/edit",
-        element: <AddProduct />,
+        element: (
+          <SuspenseWrapper>
+            <AddProduct />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -947,15 +1901,27 @@ const routes = [
     children: [
       {
         path: "",
-        element: <Companies />,
+        element: (
+          <SuspenseWrapper>
+            <Companies />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "add",
-        element: <AddCompany />,
+        element: (
+          <SuspenseWrapper>
+            <AddCompany />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/companies/:companyId/edit",
-        element: <AddCompany />,
+        element: (
+          <SuspenseWrapper>
+            <AddCompany />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -964,15 +1930,27 @@ const routes = [
     children: [
       {
         path: "",
-        element: <Brokers />,
+        element: (
+          <SuspenseWrapper>
+            <Brokers />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "add",
-        element: <AddBroker />,
+        element: (
+          <SuspenseWrapper>
+            <AddBroker />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/brokers/:brokerId/edit",
-        element: <AddBroker />,
+        element: (
+          <SuspenseWrapper>
+            <AddBroker />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -981,15 +1959,27 @@ const routes = [
     children: [
       {
         path: "",
-        element: <Branches />,
+        element: (
+          <SuspenseWrapper>
+            <Branches />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "add",
-        element: <AddBranch />,
+        element: (
+          <SuspenseWrapper>
+            <AddBranch />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/branch/:branchId/edit",
-        element: <AddBranch />,
+        element: (
+          <SuspenseWrapper>
+            <AddBranch />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -998,15 +1988,27 @@ const routes = [
     children: [
       {
         path: "",
-        element: <Categories />,
+        element: (
+          <SuspenseWrapper>
+            <Categories />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "add",
-        element: <AddCategory />,
+        element: (
+          <SuspenseWrapper>
+            <AddCategory />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/categories/:categoryId/edit",
-        element: <AddCategory />,
+        element: (
+          <SuspenseWrapper>
+            <AddCategory />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -1015,15 +2017,27 @@ const routes = [
     children: [
       {
         path: "",
-        element: <Models />,
+        element: (
+          <SuspenseWrapper>
+            <Models />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "add",
-        element: <AddModel />,
+        element: (
+          <SuspenseWrapper>
+            <AddModel />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/models/:modelId/edit",
-        element: <AddModel />,
+        element: (
+          <SuspenseWrapper>
+            <AddModel />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -1032,15 +2046,27 @@ const routes = [
     children: [
       {
         path: "",
-        element: <Makes />,
+        element: (
+          <SuspenseWrapper>
+            <Makes />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "add",
-        element: <AddMake />,
+        element: (
+          <SuspenseWrapper>
+            <AddMake />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/makes/:makeId/edit",
-        element: <AddMake />,
+        element: (
+          <SuspenseWrapper>
+            <AddMake />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -1049,7 +2075,11 @@ const routes = [
     children: [
       {
         path: "",
-        element: <AccountDashboard />,
+        element: (
+          <SuspenseWrapper>
+            <AccountDashboard />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -1058,36 +2088,64 @@ const routes = [
     children: [
       {
         path: "",
-        element: <OperationDashboard />,
+        element: (
+          <SuspenseWrapper>
+            <OperationDashboard />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
   {
     path: "/withdrawal",
-    element: <ManageCards />,
+    element: (
+      <SuspenseWrapper>
+        <ManageCards />
+      </SuspenseWrapper>
+    ),
   },
   {
     path: "/withdrawal/:partnerId",
-    element: <ManageCards />,
+    element: (
+      <SuspenseWrapper>
+        <ManageCards />
+      </SuspenseWrapper>
+    ),
   },
   {
     path: "wallet",
     children: [
       {
         path: "broker",
-        element: <BrokerWallet />,
+        element: (
+          <SuspenseWrapper>
+            <BrokerWallet />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "payin-transaction",
-        element: <BrokerPoliciesTransaction />,
+        element: (
+          <SuspenseWrapper>
+            <BrokerPoliciesTransaction />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "payout-transaction",
-        element: <PartnerPolicyTransactions />,
+        element: (
+          <SuspenseWrapper>
+            <PartnerPolicyTransactions />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "partner",
-        element: <PartnerWallet />,
+        element: (
+          <SuspenseWrapper>
+            <PartnerWallet />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -1097,16 +2155,28 @@ const routes = [
     children: [
       {
         path: "",
-        element: <PartnerDashboard />,
+        element: (
+          <SuspenseWrapper>
+            <PartnerDashboard />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "/partnerdashboard/card",
-        element: <ViewCardHistory />,
+        element: (
+          <SuspenseWrapper>
+            <ViewCardHistory />
+          </SuspenseWrapper>
+        ),
       },
 
       {
         path: "/partnerdashboard/:transactionCode/:partnerId/:startDate/:endDate/card-history",
-        element: <ViewCardHistory />,
+        element: (
+          <SuspenseWrapper>
+            <ViewCardHistory />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -1115,23 +2185,43 @@ const routes = [
     children: [
       {
         path: "dashboard",
-        element: <RMDashboard />,
+        element: (
+          <SuspenseWrapper>
+            <RMDashboard />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "rm_polices",
-        element: <RMGetMotorPolicies />,
+        element: (
+          <SuspenseWrapper>
+            <RMGetMotorPolicies />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "rm_team",
-        element: <RmTeams />,
+        element: (
+          <SuspenseWrapper>
+            <RmTeams />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "lead",
-        element: <RmLead />,
+        element: (
+          <SuspenseWrapper>
+            <RmLead />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "requested",
-        element: <RmRequestedBooking />,
+        element: (
+          <SuspenseWrapper>
+            <RmRequestedBooking />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -1140,7 +2230,11 @@ const routes = [
     children: [
       {
         path: "",
-        element: <BookingDashboard />,
+        element: (
+          <SuspenseWrapper>
+            <BookingDashboard />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -1149,7 +2243,11 @@ const routes = [
     children: [
       {
         path: "",
-        element: <Page403 />,
+        element: (
+          <SuspenseWrapper>
+            <Page403 />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -1158,7 +2256,11 @@ const routes = [
     children: [
       {
         path: "",
-        element: <Filter />,
+        element: (
+          <SuspenseWrapper>
+            <Filter />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -1167,7 +2269,11 @@ const routes = [
     children: [
       {
         path: "",
-        element: <Notification />,
+        element: (
+          <SuspenseWrapper>
+            <Notification />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -1176,45 +2282,85 @@ const routes = [
     children: [
       {
         path: "dashboard",
-        element: <HrDashBoard />,
+        element: (
+          <SuspenseWrapper>
+            <HrDashBoard />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "holidays",
-        element: <HolidayList />,
+        element: (
+          <SuspenseWrapper>
+            <HolidayList />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "add-holiday",
-        element: <AddHoliday />,
+        element: (
+          <SuspenseWrapper>
+            <AddHoliday />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: `edit-holiday/:holidayId`,
-        element: <AddHoliday />,
+        element: (
+          <SuspenseWrapper>
+            <AddHoliday />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: `attendance`,
-        element: <Attendance />,
+        element: (
+          <SuspenseWrapper>
+            <Attendance />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: `attendance/:employeeId`,
-        element: <EmployeeAttendance />,
+        element: (
+          <SuspenseWrapper>
+            <EmployeeAttendance />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "add-attendance",
-        element: <AddAttendance />,
+        element: (
+          <SuspenseWrapper>
+            <AddAttendance />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: `/hr/edit-attendance/:id`,
-        element: <AddAttendance />,
+        element: (
+          <SuspenseWrapper>
+            <AddAttendance />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
   {
     path: "mark-attendance",
-    element: <MarkAttendance />,
+    element: (
+      <SuspenseWrapper>
+        <MarkAttendance />
+      </SuspenseWrapper>
+    ),
   },
   {
     path: "it/dashboard",
-    element: <ITDashboard />,
+    element: (
+      <SuspenseWrapper>
+        <ITDashboard />
+      </SuspenseWrapper>
+    ),
   },
 ];
 export default routes;

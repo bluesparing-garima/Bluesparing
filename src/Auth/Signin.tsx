@@ -171,7 +171,7 @@ const Signin = () => {
                           disabled={isLoading}
                         >
                           {isLoading ? (
-                            "Submitting"
+                            "Submitting..."
                           ) : (
                             <>
                               <svg
