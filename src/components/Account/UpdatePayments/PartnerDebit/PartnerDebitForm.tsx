@@ -72,7 +72,7 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
     setStartTime(newStartDate);
     setEndTime(newEndDate);
     try {
-      setIsLoading(true)
+      setIsLoading(true);
       const policies = await getFilterUnpaidPartialServices({
         header,
         startDate: newStartDate,
@@ -176,12 +176,11 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
                           <div>
                             <FormControl fullWidth size="small">
                               <Autocomplete
-                                {...input}
                                 id="partnerName"
                                 value={
-                                  input.value !== undefined
-                                    ? input.value
-                                    : initialValues.partnerName || null
+                                  partners.find(
+                                    (p) => p._id === selectedPartnerId
+                                  ) || null
                                 }
                                 getOptionLabel={(option) =>
                                   typeof option === "string"
@@ -192,9 +191,9 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
                                 options={partners}
                                 onChange={(event, newValue) => {
                                   if (newValue) {
-                                    setPartnerName(newValue.fullName);
+                                    setPartnerName(newValue.name || "");
                                     setSelectedPartnerId(newValue._id);
-                                    input.onChange(newValue.fullName);
+                                    input.onChange(newValue.name);
                                   } else {
                                     setSelectedPartnerId("");
                                     input.onChange(null);
@@ -370,8 +369,12 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
                           {submitError}
                         </div>
                       )}
-                      <Button variant="contained" type="submit" disabled={isLoading}>
-                     {isLoading?"Submitting...":"Submit"}   
+                      <Button
+                        variant="contained"
+                        type="submit"
+                        disabled={isLoading}
+                      >
+                        {isLoading ? "Submitting..." : "Submit"}
                       </Button>
                     </Grid>
                   </Grid>
@@ -384,10 +387,10 @@ const PartnerDebitForm = (props: addCreditDebitFormProps) => {
               <CircularProgress />
             </Box>
           ) : (
-          (  startTime &&
+            startTime &&
             endTime &&
             selectedPartnerId &&
-            selectedAccountId) && (
+            selectedAccountId && (
               <PartnerPaymentPoliciesData
                 key={Date.now()}
                 policies={motorPolicies!}

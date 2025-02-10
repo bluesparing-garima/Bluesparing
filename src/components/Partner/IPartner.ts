@@ -144,10 +144,9 @@ export interface IPartnersVM {
 }
 export interface IPartners {
   _id?: string;
-  name?: string;
   isActive?: boolean;
-  fullName?:string;
-  partnerId?:string;
+  userCode?:string;
+  name?:string;
   createdBy?: string;
   createdOn?: string;
   updatedOn?: string;

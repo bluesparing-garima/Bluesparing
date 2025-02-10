@@ -1512,7 +1512,7 @@ const GetRenewals = () => {
                       sx={{ width: "200px", margin: "3px" }}
                       options={partners.sort()}
                       getOptionLabel={(option) =>
-                        `${option.fullName} - ${option.partnerId}`
+                        `${option.name} - ${option.userCode}`
                       }
                       renderInput={(params) => (
                         <TextField

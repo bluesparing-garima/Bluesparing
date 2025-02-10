@@ -2,6 +2,10 @@ import { lazy } from "react";
 
 import Signin from "./Auth/Signin";
 import SuspenseWrapper from "./utils/ui/SpanceWrapper";
+import PublishedPolicyPage from "./components/Policy/PublishedPolicy/PublishedPolicyPage";
+import BookedBooking from "./components/Booking/BookingRequests/BookedBooking";
+import AllBookingReq from "./components/Booking/BookingRequests/AllBooking";
+import TransferMoney from "./components/Account/TransferMoney/TransferMoney";
 
 const Dashboard = lazy(() => import("./components/Dashboard/dashboard"));
 const PartnerDashboard = lazy(
@@ -1337,6 +1341,10 @@ const routes = [
     path: "account",
     children: [
       {
+        path: "money-transfer",
+        element:<SuspenseWrapper> <TransferMoney/></SuspenseWrapper>,
+      },
+      {
         path: "",
         element: (
           <SuspenseWrapper>
@@ -1491,14 +1499,6 @@ const routes = [
     ],
   },
   {
-    path: "reject",
-    element: (
-      <SuspenseWrapper>
-        <RejectionPolicies />
-      </SuspenseWrapper>
-    ),
-  },
-  {
     path: "booking",
     children: [
       {
@@ -1540,6 +1540,24 @@ const routes = [
             <AddBookingRequest />
           </SuspenseWrapper>
         ),
+      },
+      {
+        path: "all",
+        element: <SuspenseWrapper><AllBookingReq/></SuspenseWrapper>,
+      },
+      {
+        path: "booked",
+        element: <SuspenseWrapper> <BookedBooking /></SuspenseWrapper> ,
+      },
+      {
+        path: "reject",
+        element: <RejectionPolicies />,
+      },
+      {
+        path: "publish",
+        element: <SuspenseWrapper>
+      <PublishedPolicyPage />
+      </SuspenseWrapper>,
       },
     ],
   },
@@ -2225,6 +2243,7 @@ const routes = [
       },
     ],
   },
+  
   {
     path: "bookingdashboard",
     children: [

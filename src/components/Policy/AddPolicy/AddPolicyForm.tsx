@@ -338,7 +338,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
     policyForm.createdBy = userData.name;
     policyForm.vehicleNumber = policyForm.vehicleNumber.toUpperCase();
     policyForm.rto = policyForm.vehicleNumber.substring(0, 4);
-    policyForm.policyCompletedBy = userData.id;
+    policyForm.policyCompletedBy = userData.profileId;
     policyForm.netPremium = netPremium;
     policyForm.brokerId = selectedBrokerId;
     const formData = new FormData();

@@ -37,8 +37,11 @@ export interface IBookingRequests {
   createdOn?: any;
   createdBy?: any;
   updatedBy?: any;
-  rejectionReason?:string
-  acceptedByName?:string
+  rejectionReason?:string;
+  motorPolicyId?:string;
+  isPublished?:string;
+  acceptedByName?:string;
+
 }
 
 export interface IBookingRequestsVM {
@@ -46,8 +49,8 @@ export interface IBookingRequestsVM {
   uuid?: string;
   leadId?: string;
   policyNumber: string;
-  category: string; //motor,non motor
-  policyType: string; //Package
+  category: string;
+  policyType: string;
   caseType: string; //new ,renewal
   productType: string; //two wheeler
   subCategory?: string; //
@@ -77,6 +80,8 @@ export interface IBookingRequestsVM {
   isRejected?:boolean;
   rejectionReason?:string;
   acceptedByName?:string;
+  motorPolicyId?:string;
+  isPublished?:string;
 }
 
 export interface IBookingRequestForm {
@@ -112,4 +117,6 @@ export interface IBookingRequestForm {
   createdOn?: any;
   createdBy?: any;
   updatedBy?: any;
+  motorPolicyId?:string;
+  isPublished?:string;
 }

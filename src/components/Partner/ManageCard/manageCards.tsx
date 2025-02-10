@@ -59,7 +59,7 @@ const ManageCards = () => {
           toast.error(err.message);
         });
     },
-     // eslint-disable-next-line 
+    // eslint-disable-next-line
     [userData.profileId]
   );
   useEffect(() => {
@@ -70,6 +70,26 @@ const ManageCards = () => {
     const formattedLastDay = format(lastDayOfMonth, "yyyy-MM-dd");
     GetPartnerCard(formattedFirstDay, formattedLastDay);
   }, [GetPartnerCard]);
+
+  const makeAccountType = (type: string, accountType: string, tds?: number) => {
+    const at = accountType.toLowerCase().trim();
+    const t = type.toLowerCase().trim();
+    if (at === "payin") {
+      if (t === "credit") {
+        return "Payin-Credit";
+      } else {
+        return "Payin-Distribution";
+      }
+    } else if (at === "payout") {
+      if (t === "credit") {
+        return "Payout-Credit";
+      } else {
+        return "Payout-Distribution";
+      }
+    } else {
+      return `${accountType}@${tds}%`;
+    }
+  };
   const columns = useMemo<MRT_ColumnDef<ICreditDebits>[]>(
     () => [
       {
@@ -80,7 +100,16 @@ const ManageCards = () => {
       {
         accessorKey: "accountType",
         header: "Particular",
-        size: 100,
+        size: 200,
+        Cell: ({ row }) => {
+          const { type, accountType, tdsPercentage } = row.original;
+          const modifiedType = makeAccountType(
+            type || "",
+            accountType || "",
+            tdsPercentage
+          );
+          return <span>{modifiedType}</span>;
+        },
       },
       {
         accessorKey: "credit",
@@ -106,14 +135,14 @@ const ManageCards = () => {
         accessorKey: "remarks",
         header: "Remarks",
         size: 200,
-        muiTableBodyCellProps:{
-          sx:{
+        muiTableBodyCellProps: {
+          sx: {
             height: "122px",
             overflow: "auto",
             width: "100px",
-            display: "flex"
-          }
-        }
+            display: "flex",
+          },
+        },
       },
     ],
     []
@@ -136,6 +165,8 @@ const ManageCards = () => {
         DAYJS_DISPLAY_FORMAT
       ),
       isActive: partnerCard.isActive,
+      tdsAmount: partnerCard.tdsAmount,
+      tdsPercentage: partnerCard.tdsPercentage,
     }));
   }, [partnerCard]);
   const handleClickViewCreditDebit = (partnerCard: ICreditDebitsVM) => {
@@ -184,11 +215,10 @@ const ManageCards = () => {
   return (
     <div className="bg-blue-200 md:p-7 p-2 ">
       <Paper elevation={3} style={{ padding: 30 }}>
-        
         <Typography className="text-safekaroDarkOrange" variant="h5">
           Wallet History Table
         </Typography>
-        
+
         <Typography variant="h5" mb={2}>
           <div style={{ display: "flex", alignItems: "center" }}>
             <div style={{ flex: 1 }}>
@@ -201,7 +231,7 @@ const ManageCards = () => {
               <span className="text-grey-600 text-sm">Withdrawals</span>
             </div>
           </div>
-          
+
           <hr
             className="mt-4"
             style={{ width: "100%", borderColor: "grey-800" }}
@@ -214,7 +244,6 @@ const ManageCards = () => {
             render={({ handleSubmit, submitting, errors, values }) => (
               <form onSubmit={handleSubmit} noValidate>
                 <Grid container spacing={2}>
-                  
                   <Grid item lg={3} md={3} sm={6} xs={12}>
                     <Field name="startDate">
                       {({ input, meta }) => (
@@ -281,7 +310,7 @@ const ManageCards = () => {
             )}
           />
         </React.Fragment>
-        
+
         <MaterialReactTable
           state={{ isLoading }}
           columns={columns}
@@ -290,7 +319,6 @@ const ManageCards = () => {
           positionActionsColumn="last"
           renderRowActions={({ row }) => (
             <div style={{ display: "flex", flexWrap: "nowrap" }}>
-              
               {row.original.credit ? (
                 <Tooltip title="View Wallet History">
                   <IconButton
