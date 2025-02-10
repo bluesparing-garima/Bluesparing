@@ -42,6 +42,7 @@ const AccountDashboard: React.FC = () => {
   const [secondCart, setSecondCart] = useState(false);
   const [thirdCart, setThirdCart] = useState(false);
   const [fourthCart, setFourthCart] = useState(false);
+  const[isLoading,setIsLoading] = useState(false);
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
   const [selectedCard, setSelectedcard] = useState("1");

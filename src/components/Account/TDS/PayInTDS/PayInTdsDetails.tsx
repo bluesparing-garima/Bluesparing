@@ -21,7 +21,7 @@ const PayInTdsDetails: FC<PolicyTdsPyInProps> = ({ policies, accountId,accountCo
   const [updatePolicies, setUpdatePolicies] = useState<ITdsType[]>(
     policies.map((policy) => ({ ...policy }))
   );
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
@@ -64,7 +64,7 @@ const PayInTdsDetails: FC<PolicyTdsPyInProps> = ({ policies, accountId,accountCo
     }
 
     try {
-      setLoading(true);
+      setIsLoading(true);
       setError(null);
       setSuccessMsg(null);
 
@@ -79,7 +79,7 @@ const PayInTdsDetails: FC<PolicyTdsPyInProps> = ({ policies, accountId,accountCo
       setError(err.message || "An error occurred while updating TDS.");
       toast.error(err.message || "An error occurred.");
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -173,15 +173,15 @@ const PayInTdsDetails: FC<PolicyTdsPyInProps> = ({ policies, accountId,accountCo
             type="button"
             variant="contained"
             onClick={handleClickSubmit}
-            disabled={loading}
+            disabled={isLoading}
           >
-            {loading ? "Updating..." : "Update TDS"}
+            {isLoading ? "Updating..." : "Update TDS"}
           </Button>
         </Grid>
       </Grid>
 
       <MaterialReactTable
-        state={{ isLoading: loading }}
+        state={{ isLoading: isLoading }}
         columns={PayInTdsColumns}
         data={updatePolicies || []}
         enableRowActions

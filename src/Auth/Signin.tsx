@@ -8,8 +8,10 @@ import { SafeKaroUser, header } from "../context/constant";
 import { setTokens } from "../Hooks/Tokens/useToken";
 import fetchInterceptor, { FetchOptions } from "../utils/fetchInterceptor ";
 import toast, { Toaster } from "react-hot-toast";
+import { useState } from "react";
 const Signin = () => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const validate = (values: ISignIn) => {
     const errors: Partial<ISignIn> = {};
     if (!values.email) {
@@ -33,6 +35,7 @@ const Signin = () => {
   };
   const onSubmit = async (signInData: ISignIn) => {
     try {
+      setIsLoading(true);
       const url = "/api/user/login";
       const options: FetchOptions = {
         headers: header,
@@ -54,7 +57,7 @@ const Signin = () => {
         }
 
         localStorage.setItem("user", JSON.stringify(loginData));
-        
+
         if (loginData.policyCount! <= 0) {
           navigate("/plan-exhausted");
           return;
@@ -77,6 +80,8 @@ const Signin = () => {
     } catch (error: any) {
       const err = await error;
       toast.error(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
@@ -163,20 +168,27 @@ const Signin = () => {
                         <Button
                           type="submit"
                           className="mt-5 ml-4 tracking-wide font-semibold bg-indigo-500 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
+                          disabled={isLoading}
                         >
-                          <svg
-                            className="w-6 h-6 -ml-2"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
-                            <circle cx="8.5" cy="7" r="4" />
-                            <path d="M20 8v6M23 11h-6" />
-                          </svg>
-                          <span className="ml-3">Sign In</span>
+                          {isLoading ? (
+                            "Submitting"
+                          ) : (
+                            <>
+                              <svg
+                                className="w-6 h-6 -ml-2"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              >
+                                <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                                <circle cx="8.5" cy="7" r="4" />
+                                <path d="M20 8v6M23 11h-6" />
+                              </svg>
+                              <span className="ml-3">Sign In</span>
+                            </>
+                          )}
                         </Button>
                       </Grid>
                     </form>

@@ -35,6 +35,7 @@ const FilterPartnerMonthlyNetPremium = () => {
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [selectedPartnerCode, setSelectedPartnerCode] = useState<string>();
   const [selectedPartnerName, setSelectedPartnerName] = useState<string>();
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedPartnerId, setSelectedPartnerId] = useState<string>();
   const [companyDetails, setCompanyDetails] = useState<INetPremiumCompany[]>(
     []
@@ -48,7 +49,7 @@ const FilterPartnerMonthlyNetPremium = () => {
     } catch (err: any) {
       const errors = err.inner.reduce((formError: any, innerError: any) => {
         return setIn(formError, innerError.path, innerError.message);
-      }, );
+      });
       return errors;
     }
   };
@@ -70,6 +71,7 @@ const FilterPartnerMonthlyNetPremium = () => {
     endDate: string,
     partnerId: string
   ) => {
+    setIsLoading(true);
     GetMonthlyPartnerCompanyNetPremiumService({
       header,
       partnerId: partnerId!,
@@ -86,6 +88,9 @@ const FilterPartnerMonthlyNetPremium = () => {
       .catch(async (error) => {
         const err = await error;
         toast.error(err.message);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
   const onSubmit = async (value: any) => {
@@ -129,7 +134,6 @@ const FilterPartnerMonthlyNetPremium = () => {
               render={({ handleSubmit, submitting, errors, values }) => (
                 <form onSubmit={handleSubmit} noValidate>
                   <Grid container spacing={2} mt={2} mb={2}>
-                    
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Field name="startDate">
                         {({ input, meta }) => (
@@ -222,12 +226,12 @@ const FilterPartnerMonthlyNetPremium = () => {
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Button
                         type="submit"
-                        disabled={submitting}
+                        disabled={isLoading}
                         variant="contained"
                         color="primary"
                         className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                       >
-                        {"Get Records"}
+                        {isLoading ? "Submitting..." : "Get Records"}
                       </Button>
                     </Grid>
                   </Grid>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { TextField, Button, Grid } from "@mui/material";
 import addRankService from "../../../../api/Rank/AddRank/addRankService";
 import editRankService from "../../../../api/Rank/EditRank/editRankService";
@@ -16,6 +16,7 @@ export interface addRankFormProps {
 const AddRankForm = (props: addRankFormProps) => {
   const { initialValues } = props;
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const location = useLocation() as any;
   const pathName = location.pathname.split("/");
   const isAddEdit = pathName[pathName.length - 1] as string;
@@ -29,7 +30,7 @@ const AddRankForm = (props: addRankFormProps) => {
     } catch (err: any) {
       const errors = err.inner.reduce((formError: any, innerError: any) => {
         return setIn(formError, innerError.path, innerError.message);
-      },);
+      });
       return errors;
     }
   };
@@ -59,20 +60,26 @@ const AddRankForm = (props: addRankFormProps) => {
   };
   const callAddRankAPI = async (rank: IRankForm) => {
     try {
+      setIsLoading(true);
       const newRank = await addRankService({ header, rank });
       navigateToRanks(`${newRank.message}`);
     } catch (err: any) {
       const errObj = await err;
       toast.error(errObj.message);
+    } finally {
+      setIsLoading(false);
     }
   };
   const callEditRankAPI = async (rank: IRankForm) => {
     try {
+      setIsLoading(true);
       const newRank = await editRankService({ header, rank });
       navigateToRanks(`${newRank.message}`);
     } catch (err: any) {
       const errObj = await err;
       toast.error(errObj.message);
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
@@ -117,12 +124,16 @@ const AddRankForm = (props: addRankFormProps) => {
               <Grid item xs={12}>
                 <Button
                   type="submit"
-                  disabled={submitting}
+                  disabled={isLoading}
                   variant="contained"
                   color="primary"
                   className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                 >
-                  {isAdd ? "Add Rank" : "Update Rank"}
+                  {isLoading
+                    ? "Submitting"
+                    : isAdd
+                    ? "Add Rank"
+                    : "Update Rank"}
                 </Button>
               </Grid>
             </Grid>

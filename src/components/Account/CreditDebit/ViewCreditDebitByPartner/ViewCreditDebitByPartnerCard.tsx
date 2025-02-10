@@ -21,7 +21,7 @@ import { ICreditDebits } from "../ICreditDebits";
 import GetAccountManageByPartnerByDateRangeService from "../../../../api/CreditDebit/GetAccountManageByPartnerByDateRange/GetAccountManageByPartnerByDateRangeService";
 import toast, { Toaster } from "react-hot-toast";
 const ViewCreditDebitByPartnerCard = () => {
-  const [loading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const title = "Get Debits Details";
   let [partners] = useGetPartners({ header: header, role: "partner" });
   const [isVisible, setIsVisible] = useState(false);
@@ -182,12 +182,12 @@ const ViewCreditDebitByPartnerCard = () => {
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Button
                         type="submit"
-                        disabled={loading}
+                        disabled={isLoading}
                         variant="contained"
                         color="primary"
                         className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                       >
-                        {loading ? "Submitting..." : "Get Records"}
+                        {isLoading ? "Submitting..." : "Get Records"}
                       </Button>
                     </Grid>
                   </Grid>

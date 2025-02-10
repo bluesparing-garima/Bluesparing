@@ -52,6 +52,7 @@ const AddNewsForm = (props: addPolicyTypeFormProps) => {
   const navigate = useNavigate();
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const location = useLocation() as any;
   const pathName = location.pathname.split("/");
   const isAddEdit = pathName[pathName.length - 1] as string;
@@ -137,20 +138,26 @@ const AddNewsForm = (props: addPolicyTypeFormProps) => {
   };
   const callAddNewsAPI = async (newsForm: any) => {
     try {
+      setIsLoading(true);
       const news = await addNewsServices({ header, news: newsForm });
       navigateToNews(`${news.message}`);
     } catch (error: any) {
       const err = await error;
       toast.error(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
   const callEditNewsAPI = async (newsForm: any) => {
     try {
+      setIsLoading(true);
       const news = await editNewsService({ header, news: newsForm, newsId });
       navigateToNews(`${news.message}`);
     } catch (error: any) {
       const err = await error;
       toast.error(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
   const handleFileInputChange = (
@@ -351,12 +358,16 @@ const AddNewsForm = (props: addPolicyTypeFormProps) => {
               <Grid item xs={12}>
                 <Button
                   type="submit"
-                  disabled={submitting}
+                  disabled={isLoading}
                   variant="contained"
                   color="primary"
                   className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                 >
-                  {isAdd ? "Add News" : "Update News"}
+                  {isLoading
+                    ? "Submitting..."
+                    : isAdd
+                    ? "Add News"
+                    : "Update News"}
                 </Button>
               </Grid>
             </Grid>

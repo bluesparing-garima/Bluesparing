@@ -30,10 +30,12 @@ interface FormValues {
 const ComparePartnerPayment: React.FC = () => {
   const title = "Upload Partner Payment Excel";
   const [excelUploaded, setExcelUploaded] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [comparePolicyResult, setComparePolicyResult] =
     useState<ComparePartnerResultProps | null>(null);
   let [partners] = useGetPartners({ header: header, role: "partner" });
   const [partnerCode, setPartnerCode] = useState("");
+
   const onSubmit = async (values: FormValues) => {
     const newStartDate = dayjs(values.startDate).format(DAY_FORMAT);
     const newEndDate = dayjs(values.endDate).format(DAY_FORMAT);
@@ -43,6 +45,7 @@ const ComparePartnerPayment: React.FC = () => {
   };
   const uploadFile = async (file: File, startDate: string, endDate: string) => {
     try {
+      setIsLoading(true);
       const formData = new FormData();
       formData.append("excel", file);
       formData.append("startDate", startDate);
@@ -65,6 +68,8 @@ const ComparePartnerPayment: React.FC = () => {
     } catch (error: any) {
       const errRes = await error;
       toast.error(errRes.message);
+    } finally {
+      setIsLoading(false);
     }
   };
   useEffect(() => {
@@ -271,12 +276,12 @@ const ComparePartnerPayment: React.FC = () => {
                     <Grid item lg={4} xs={12}>
                       <Button
                         type="submit"
-                        disabled={submitting}
+                        disabled={isLoading}
                         variant="contained"
                         color="primary"
                         className="w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                       >
-                        Upload Partner Payment
+                        {isLoading ? "Submitting" : "Upload Partner Payment"}
                       </Button>
                     </Grid>
                   </Grid>

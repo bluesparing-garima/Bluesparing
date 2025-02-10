@@ -29,13 +29,14 @@ const MonthlyFilterReceivedPayIn = () => {
   const [selectedStartDate, setSelectedStartDate] = useState();
   const [selectedEndDate, setSelectedEndDate] = useState();
   const [brokerTotalPayment, setBrokerTotalPayment] = useState<number>(0);
+  const[isLoading,setIsLoading] = useState(false);
   const [brokerPayment, setBrokerPayment] = useState<
     BrokerReceivedPayInProps[]
   >([]);
   const fetchBrokerPayments = async (
     formattedFirstDay: any,
     formattedLastDay: any
-  ) => {
+  ) => {setIsLoading(true)
     setSelectedStartDate(formattedFirstDay);
     setSelectedEndDate(formattedLastDay);
     GetMonthlyBrokerReceivedPaymentService({
@@ -51,7 +52,9 @@ const MonthlyFilterReceivedPayIn = () => {
       .catch(async (error) => {
         const err = await error;
         toast.error(err.message);
-      });
+      }).finally(()=>{
+        setIsLoading(false)
+      })
   };
   const handleDownloadExcel = () => {
     generateBrokerReceivedPayInExcel(brokerPayment);
@@ -168,12 +171,12 @@ const MonthlyFilterReceivedPayIn = () => {
                   <Grid item lg={3} md={3} sm={6} xs={12}>
                     <Button
                       type="submit"
-                      disabled={submitting}
+                      disabled={isLoading}
                       variant="contained"
                       color="primary"
                       className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                     >
-                      {"Get Records"}
+                      {isLoading?'Submitting...':"Get Records"}
                     </Button>
                   </Grid>
                 </Grid>

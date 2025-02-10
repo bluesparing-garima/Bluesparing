@@ -22,8 +22,10 @@ import useGetRoles from "../Hooks/Role/useGetRoles";
 import toast, { Toaster } from "react-hot-toast";
 import { storeInSessionStorage } from "../utils/HandleStore";
 import generateFormData from "../utils/generateFromData";
+import { useState } from "react";
 const Signup = () => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const [subsData] = useSubscription();
   const [roles] = useGetRoles({ header });
   const findRoleIdByName = (name: string) => {
@@ -55,7 +57,7 @@ const Signup = () => {
     return errors;
   };
   const onSubmit = async (signUpData: FormProps) => {
-    const {  plans, companyLogo, profileImage, gender } = signUpData;
+    const { plans, companyLogo, profileImage, gender } = signUpData;
     let payload: ISignUp = {
       name: signUpData.name,
       email: signUpData.email,
@@ -75,6 +77,7 @@ const Signup = () => {
       gender: gender.toLowerCase(),
     };
     try {
+      setIsLoading(true);
       const url = "/api/user/register";
       const options: FetchOptions = {
         method: "POST",
@@ -101,6 +104,8 @@ const Signup = () => {
     } catch (error: any) {
       const err = await error;
       toast.error(err.message);
+    } finally {
+      setIsLoading(false);
     }
     return { [FORM_ERROR]: "Sign up failed. Try again!" };
   };
@@ -399,20 +404,27 @@ const Signup = () => {
                           <Button
                             type="submit"
                             className="mt-1 ml-4 tracking-wide font-semibold bg-indigo-500 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
+                            disabled={isLoading}
                           >
-                            <svg
-                              className="w-6 h-6 -ml-2"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            >
-                              <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
-                              <circle cx="8.5" cy="7" r="4" />
-                              <path d="M20 8v6M23 11h-6" />
-                            </svg>
-                            <span className="ml-3">Sign Up</span>
+                            {isLoading ? (
+                              "Submitting"
+                            ) : (
+                              <>
+                                <svg
+                                  className="w-6 h-6 -ml-2"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                >
+                                  <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                                  <circle cx="8.5" cy="7" r="4" />
+                                  <path d="M20 8v6M23 11h-6" />
+                                </svg>
+                                <span className="ml-3">Sign Up</span>
+                              </>
+                            )}
                           </Button>
                         </Grid>
                       </form>

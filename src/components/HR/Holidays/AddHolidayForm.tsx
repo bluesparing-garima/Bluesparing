@@ -19,6 +19,7 @@ interface AddHolidayFormProps {
 
 const AddHolidayForm: React.FC<AddHolidayFormProps> = ({ initialValues }) => {
   const navigate = useNavigate();
+  const[isLoading,setIsLoading] = useState(false);
 
   const [selectedDay, setSelectedDay] = useState(
     initialValues ? initialValues.day : ""
@@ -50,6 +51,7 @@ const AddHolidayForm: React.FC<AddHolidayFormProps> = ({ initialValues }) => {
 
   const onSubmit = async (values: IHolidayForm) => {
     try {
+      setIsLoading(true)
       const hd = dayjs(values.date).format("MM/DD/YYYY");
       const holidayData: IAddHolidays = { name: values.name, date: hd };
       if (initialValues.id) {
@@ -62,6 +64,8 @@ const AddHolidayForm: React.FC<AddHolidayFormProps> = ({ initialValues }) => {
     } catch (error: any) {
       const err = await error;
       toast.error(err.message);
+    }finally{
+      setIsLoading(false)
     }
   };
   const handleChange = (input: any, date: any) => {
@@ -136,12 +140,12 @@ const AddHolidayForm: React.FC<AddHolidayFormProps> = ({ initialValues }) => {
               <Grid item xs={12}>
                 <Button
                   type="submit"
-                  disabled={submitting}
+                  disabled={isLoading}
                   variant="contained"
                   color="primary"
                   className="w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                 >
-                  {initialValues.id === "0" ? "Add Holiday" : "Update Holiday"}
+                  {isLoading ? 'Submitting...' :initialValues.id === "0" ? "Add Holiday" : "Update Holiday"}
                 </Button>
               </Grid>
             </Grid>

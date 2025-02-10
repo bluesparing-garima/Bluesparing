@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { TextField, Button, Grid } from "@mui/material";
 import { IBlogCategoryForm } from "../IBlogCategory";
 import { Form, Field } from "react-final-form";
@@ -18,6 +18,7 @@ const AddBlogCategoryForm = (props: addPolicyTypeFormProps) => {
   const navigate = useNavigate();
   const location = useLocation() as any;
   const pathName = location.pathname.split("/");
+  const [isLoading, setIsLoading] = useState(false);
   const isAddEdit = pathName[pathName.length - 1] as string;
   const isAdd = isAddEdit === ADD;
   const validateFormValues = (schema: any) => async (values: any) => {
@@ -55,21 +56,26 @@ const AddBlogCategoryForm = (props: addPolicyTypeFormProps) => {
   };
   const callAddCategoryAPI = async (category: IBlogCategoryForm) => {
     try {
+      setIsLoading(true);
       const newCategory = await addBlogCategoryServices({ header, category });
       navigateToCategories(`${newCategory.message}`);
     } catch (error: any) {
       const err = await error;
       toast.error(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
   const callEditCategoryAPI = async (category: IBlogCategoryForm) => {
     try {
+      setIsLoading(true);
       const newCategory = await editBlogCategoryService({ header, category });
       navigateToCategories(`${newCategory.message}`);
     } catch (error: any) {
       const err = await error;
       toast.error(err.message);
     }
+    setIsLoading(false);
   };
   return (
     <>
@@ -98,12 +104,16 @@ const AddBlogCategoryForm = (props: addPolicyTypeFormProps) => {
               <Grid item xs={12}>
                 <Button
                   type="submit"
-                  disabled={submitting}
+                  disabled={isLoading}
                   variant="contained"
                   color="primary"
                   className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                 >
-                  {isAdd ? "Add Category" : "Update Category"}
+                  {isLoading
+                    ? "Submitting..."
+                    : isAdd
+                    ? "Add Category"
+                    : "Update Category"}
                 </Button>
               </Grid>
             </Grid>

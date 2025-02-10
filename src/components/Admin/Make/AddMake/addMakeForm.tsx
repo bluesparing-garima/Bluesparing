@@ -17,6 +17,7 @@ export interface addMakeFormProps {
 const AddMakeForm = (props: addMakeFormProps) => {
   const { initialValues } = props;
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const location = useLocation() as any;
   const pathName = location.pathname.split("/");
   const isAddEdit = pathName[pathName.length - 1] as string;
@@ -43,6 +44,7 @@ const AddMakeForm = (props: addMakeFormProps) => {
       .max(100, "Make cannot exceed 100 characters"),
   });
   const validate = validateFormValues(validationSchema);
+
   const onSubmit = async (make: IMakeForm) => {
     if (!errorMessage) {
       if (isAdd) {
@@ -59,20 +61,26 @@ const AddMakeForm = (props: addMakeFormProps) => {
   };
   const callAddMakeAPI = async (make: IMakeForm) => {
     try {
+      setIsLoading(true);
       const newMake = await addMakeService({ header, make });
       navigateToMakes(`${newMake.message}`);
     } catch (error: any) {
       const err = await error;
       toast.error(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
   const callEditMakeAPI = async (make: IMakeForm) => {
     try {
+      setIsLoading(true);
       const newMake = await editMakeService({ header, make });
       navigateToMakes(`${newMake.message}`);
     } catch (error: any) {
       const err = await error;
       toast.error(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
   const ValidateMake = async (e: any) => {
@@ -124,12 +132,16 @@ const AddMakeForm = (props: addMakeFormProps) => {
               <Grid item xs={12}>
                 <Button
                   type="submit"
-                  disabled={submitting}
+                  disabled={isLoading}
                   variant="contained"
                   color="primary"
                   className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                 >
-                  {isAdd ? "Add Make" : "Update Make"}
+                  {isLoading
+                    ? "Submitting..."
+                    : isAdd
+                    ? "Add Make"
+                    : "Update Make"}
                 </Button>
               </Grid>
             </Grid>

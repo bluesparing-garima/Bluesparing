@@ -1,5 +1,12 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Button, CardContent, Grid, TextField, Tooltip } from "@mui/material";
+import {
+  Button,
+  CardContent,
+  CircularProgress,
+  Grid,
+  TextField,
+  Tooltip,
+} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import { SafeKaroUser, header } from "../../context/constant";
@@ -32,6 +39,7 @@ const RMDashboard: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [employee, setEmployee] = useState<IEmployee | null>();
   const [firstCart, setFirstCart] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [secondCart, setSecondCart] = useState(false);
   const [thirdCart, setThirdCart] = useState(false);
   const [selectedCard, setSelectedcard] = useState("1");
@@ -66,7 +74,10 @@ const RMDashboard: React.FC = () => {
   );
   const getAttendanceRecord = async () => {
     try {
-      const res = await GetAttendanceCountService({ header, eId: UserData.profileId });
+      const res = await GetAttendanceCountService({
+        header,
+        eId: UserData.profileId,
+      });
       setEmployee(res.data);
     } catch (error: any) {
       const err = await error;
@@ -80,8 +91,19 @@ const RMDashboard: React.FC = () => {
     const formattedFirstDay = format(firstDayOfMonth, "yyyy-MM-dd");
     const formattedLastDay = format(lastDayOfMonth, "yyyy-MM-dd");
     getAttendanceRecord();
-    const fetchData = () => {
-      GetDashboardCount(formattedFirstDay, formattedLastDay, UserData.profileId);
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        await GetDashboardCount(
+          formattedFirstDay,
+          formattedLastDay,
+          UserData.profileId
+        );
+      } catch (error) {
+        console.error("Error fetching HR Dashboard data:", error);
+      } finally {
+        setIsLoading(false);
+      }
     };
     fetchData();
     const intervalId = setInterval(fetchData, 30000);
@@ -254,8 +276,13 @@ const RMDashboard: React.FC = () => {
                       <button
                         className="md:w-10 md:h-10 h-4 w-4 bg-[#30A9FF] shadow-sm rounded flex justify-center items-center text-white"
                         type="submit"
+                        disabled={isLoading}
                       >
-                        <SearchIcon className="md:w-6 md:h-6 h-3 w-3" />
+                        {isLoading ? (
+                          <CircularProgress className="md:w-6 md:h-6 h-3 w-3" />
+                        ) : (
+                          <SearchIcon className="md:w-6 md:h-6 h-3 w-3" />
+                        )}
                       </button>
                     </div>
                   </form>
@@ -266,16 +293,26 @@ const RMDashboard: React.FC = () => {
                   <button
                     className="md:w-10 md:h-10 h-4 w-4 bg-[#0095FF] shadow-sm rounded flex justify-center items-center text-white"
                     onClick={handleDownloadPDF}
+                    disabled={isLoading}
                   >
-                    <PictureAsPdfSharpIcon className="md:w-6 md:h-6 h-3 w-3" />
+                    {isLoading ? (
+                      <CircularProgress className="md:w-6 md:h-6 h-3 w-3" />
+                    ) : (
+                      <PictureAsPdfSharpIcon className="md:w-6 md:h-6 h-3 w-3" />
+                    )}
                   </button>
                 </Tooltip>
                 <Tooltip title="Download Excel">
                   <button
                     className="md:w-10 md:h-10 h-4 w-4 bg-[#3BDB03] shadow-sm rounded flex justify-center items-center text-white"
                     onClick={handleDownloadExcel}
+                    disabled={isLoading}
                   >
-                    <FileDownloadOutlinedIcon className="md:w-6 md:h-6 h-3 w-3" />
+                    {isLoading ? (
+                      <CircularProgress className="md:w-6 md:h-6 h-3 w-3" />
+                    ) : (
+                      <FileDownloadOutlinedIcon className="md:w-6 md:h-6 h-3 w-3" />
+                    )}
                   </button>
                 </Tooltip>
               </div>
@@ -314,21 +351,27 @@ const RMDashboard: React.FC = () => {
                                                 category
                                               )
                                             }
+                                            disabled={isLoading}
                                           >
-                                            <Tooltip
-                                              title={`View ${category} Data`}
-                                            >
-                                              <h2
-                                                className={` font-satoshi font-semibold text-center ${
-                                                  catIndex ===
-                                                  selectedCategoryIndex
-                                                    ? "text-white"
-                                                    : "text-black"
-                                                }`}
+                                            {isLoading ? (
+                                              <CircularProgress />
+                                            ) : (
+                                              <Tooltip
+                                                title={`View ${category} Data`}
                                               >
-                                                {category || "Unnamed Category"}
-                                              </h2>
-                                            </Tooltip>
+                                                <h2
+                                                  className={` font-satoshi font-semibold text-center ${
+                                                    catIndex ===
+                                                    selectedCategoryIndex
+                                                      ? "text-white"
+                                                      : "text-black"
+                                                  }`}
+                                                >
+                                                  {category ||
+                                                    "Unnamed Category"}
+                                                </h2>
+                                              </Tooltip>
+                                            )}
                                           </Button>
                                         </Grid>
                                       )

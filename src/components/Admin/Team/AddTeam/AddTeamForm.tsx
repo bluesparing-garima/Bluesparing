@@ -68,6 +68,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
   const [selectedRole, setSelectedRole] = useState<string>();
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const location = useLocation() as any;
   const pathName = location.pathname.split("/");
   const isAddEdit = pathName[pathName.length - 1] as string;
@@ -271,20 +272,26 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
   };
   const callAddTeamAPI = async (team: any) => {
     try {
+      setIsLoading(true);
       const newTeam = await addTeamService({ header, team });
       navigateToTeams(`${newTeam.message}`);
     } catch (err: any) {
       const errObj = await err;
       toast.error(errObj.message);
+    } finally {
+      setIsLoading(false);
     }
   };
   const callEditTeamAPI = async (team: any, teamId: string) => {
     try {
+      setIsLoading(true);
       const newTeam = await editTeamService({ header, team, teamId });
       navigateToTeams(`${newTeam.message}`);
     } catch (err: any) {
       const errObj = await err;
       toast.error(errObj.message);
+    } finally {
+      setIsLoading(false);
     }
   };
   const handleFileInputChange = (event: any, index: any) => {
@@ -920,12 +927,16 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
               <Grid item xs={12}>
                 <Button
                   type="submit"
-                  disabled={submitting}
+                  disabled={isLoading}
                   variant="contained"
                   color="primary"
                   className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                 >
-                  {isAdd ? "Add Team" : "Update Team"}
+                  {isLoading
+                    ? "Submitting..."
+                    : isAdd
+                    ? "Add Team"
+                    : "Update Team"}
                 </Button>
               </Grid>
             </Grid>

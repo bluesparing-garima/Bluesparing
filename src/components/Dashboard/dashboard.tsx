@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import {
   Button,
   CardContent,
+  CircularProgress,
   FormControl,
   Grid,
   InputLabel,
@@ -52,6 +53,7 @@ const Dashboard: React.FC = () => {
   const [thirdCart, setThirdCart] = useState(false);
   const [fourCart, setFourCart] = useState(false);
   const [fifthCart, setFifthCart] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [categoryEntries, setCategoryEntries] = useState([]);
   const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState(0);
@@ -62,7 +64,7 @@ const Dashboard: React.FC = () => {
     getAdminDashboardService({
       header,
       startDate,
-      endDate
+      endDate,
     })
       .then((dashboardData) => {
         setIsVisible(true);
@@ -89,8 +91,15 @@ const Dashboard: React.FC = () => {
     const lastDayOfMonth = endOfMonth(currentDate);
     const formattedFirstDay = format(firstDayOfMonth, "yyyy-MM-dd");
     const formattedLastDay = format(lastDayOfMonth, "yyyy-MM-dd");
-    const fetchData = () => {
-      GetDashboardCount(formattedFirstDay, formattedLastDay);
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        await GetDashboardCount(formattedFirstDay, formattedLastDay);
+      } catch (error) {
+        console.error("Error fetching HR Dashboard data:", error);
+      } finally {
+        setIsLoading(false);
+      }
     };
     fetchData();
     const intervalId = setInterval(fetchData, 30000);
@@ -251,8 +260,13 @@ const Dashboard: React.FC = () => {
                         <button
                           className=" h-10 w-10 bg-[#30A9FF] shadow-sm rounded flex justify-center items-center text-white"
                           type="submit"
+                          disabled={isLoading}
                         >
-                          <SearchIcon className="w-6 h-6 " />
+                          {isLoading ? (
+                            <CircularProgress className="w-6 h-6 " />
+                          ) : (
+                            <SearchIcon className="w-6 h-6 " />
+                          )}
                         </button>
                       </div>
                     </form>
@@ -263,24 +277,23 @@ const Dashboard: React.FC = () => {
                 <Tooltip title="Download PDF">
                   <button
                     className="h-10 w-10 bg-[#0095FF] shadow-sm rounded flex justify-center items-center text-white"
-                    onClick={handleDownloadPDF}
+                    onClick={handleDownloadPDF} disabled={isLoading}
                   >
-                    <PictureAsPdfSharpIcon className=" h-6 w-6" />
+                    {isLoading?<CircularProgress className="w-6 h-6 "/>:<PictureAsPdfSharpIcon className=" h-6 w-6" />}
                   </button>
                 </Tooltip>
                 <Tooltip title="Download Excel">
                   <button
                     className="h-10 w-10 bg-[#3BDB03] shadow-sm rounded flex justify-center items-center text-white"
-                    onClick={handleDownloadExcel}
-                  >
-                    <FileDownloadOutlinedIcon className="w-6 h-6 " />
+                    onClick={handleDownloadExcel} disabled={isLoading}
+                  >{isLoading?<CircularProgress className="w-6 h-6 "/>:<FileDownloadOutlinedIcon className="w-6 h-6 " />}
                   </button>
                 </Tooltip>
-                <button className=" h-10 w-10 bg-[#E79E28] shadow-sm rounded flex justify-center items-center text-white">
-                  <DashboardMenu
+                <button className=" h-10 w-10 bg-[#E79E28] shadow-sm rounded flex justify-center items-center text-white" disabled={isLoading}>
+                {isLoading?<CircularProgress className="w-6 h-6 "/>:<DashboardMenu
                     selectedCategory={selectedCategory}
                     className="w-6 h-6 "
-                  />
+                  />}
                 </button>
               </div>
             </div>
@@ -320,7 +333,8 @@ const Dashboard: React.FC = () => {
                                                   category
                                                 )
                                               }
-                                            >
+                                              disabled={isLoading}
+                                            >{isLoading?<CircularProgress className="w-6 h-6 "/>:
                                               <Tooltip
                                                 title={`View ${category} Data`}
                                               >
@@ -335,7 +349,7 @@ const Dashboard: React.FC = () => {
                                                   {category ||
                                                     "Unnamed Category"}
                                                 </h2>
-                                              </Tooltip>
+                                              </Tooltip>}
                                             </Button>
                                           </Grid>
                                         )
@@ -687,10 +701,7 @@ const renderCountBox = (
         >
           {title}
         </Typography>
-        <Typography
-          variant="h5"
-          className="text-base font-bold text-[#202224]"
-        >
+        <Typography variant="h5" className="text-base font-bold text-[#202224]">
           {count}
         </Typography>
       </div>

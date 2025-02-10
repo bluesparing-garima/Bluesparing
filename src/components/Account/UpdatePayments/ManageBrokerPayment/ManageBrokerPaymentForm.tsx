@@ -32,6 +32,7 @@ const ManageBrokerPaymentForm = () => {
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [distributedDate, setdistributedDate] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [remarks, setRemarks] = useState("");
   let [brokers] = useGetBrokers({ header: header });
   const validateFormValues = (schema: any) => async (values: any) => {
@@ -52,6 +53,7 @@ const ManageBrokerPaymentForm = () => {
     endDate: yup.string().nullable().required("End Date is required"),
   });
   const validate = validateFormValues(validationSchema);
+  
   const onSubmit = async (updatePayment: IUpdatePartnerPaymentPolicy) => {
     const newStartDate = dayjs(updatePayment.startDate).format(DAY_FORMAT);
     const newEndDate = dayjs(updatePayment.endDate).format(DAY_FORMAT);
@@ -63,6 +65,7 @@ const ManageBrokerPaymentForm = () => {
     setdistributedDate(distributedDate);
     setRemarks(updatePayment.remarks!);
     try {
+      setIsLoading(true);
       const policies = await getFilterPaidForBrokerService({
         header,
         startDate: newStartDate,
@@ -76,6 +79,8 @@ const ManageBrokerPaymentForm = () => {
     } catch (error: any) {
       const err = await error;
       toast.error(err.message);
+    }finally{
+      setIsLoading(false);
     }
   };
   return (
@@ -221,12 +226,12 @@ const ManageBrokerPaymentForm = () => {
               <Grid item lg={4} md={4} sm={6} xs={12}>
                 <Button
                   type="submit"
-                  disabled={submitting}
+                  disabled={isLoading}
                   variant="contained"
                   color="primary"
                   className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                 >
-                  {"Get Motor Policies"}
+                  {isLoading ? "Submitting" : "Get Motor Policies"}
                 </Button>
               </Grid>
             </Grid>

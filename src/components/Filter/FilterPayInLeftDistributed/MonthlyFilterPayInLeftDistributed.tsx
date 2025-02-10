@@ -1,4 +1,11 @@
-import { Typography, Paper, Grid, Button, TextField, Tooltip } from "@mui/material";
+import {
+  Typography,
+  Paper,
+  Grid,
+  Button,
+  TextField,
+  Tooltip,
+} from "@mui/material";
 import toast, { Toaster } from "react-hot-toast";
 import { DAY_FORMAT, header } from "../../../context/constant";
 import { useEffect, useState } from "react";
@@ -20,15 +27,17 @@ const MonthlyFilterPayInLeftDistributed = () => {
   const location = useLocation();
   const selectedCategory = location.state as string;
   const [selectedStartDate, setSelectedStartDate] = useState();
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedEndDate, setSelectedEndDate] = useState();
   const [brokerTotalPayment, setBrokerTotalPayment] = useState<number>(0);
-  const [brokerPayment, setBrokerPayment] = useState<BrokerPayInLeftDistributedProps[]>(
-    []
-  );
+  const [brokerPayment, setBrokerPayment] = useState<
+    BrokerPayInLeftDistributedProps[]
+  >([]);
   const fetchBrokerPayments = async (
     formattedFirstDay: any,
     formattedLastDay: any
   ) => {
+    setIsLoading(true);
     setSelectedStartDate(formattedFirstDay);
     setSelectedEndDate(formattedLastDay);
     GetMonthlyBrokerLeftDistributedPaymentService({
@@ -44,6 +53,9 @@ const MonthlyFilterPayInLeftDistributed = () => {
       .catch(async (error) => {
         const err = await error;
         toast.error(err.message);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
   useEffect(() => {
@@ -53,11 +65,11 @@ const MonthlyFilterPayInLeftDistributed = () => {
     let formattedFirstDay = format(firstDayOfMonth, "yyyy-MM-dd");
     let formattedLastDay = format(lastDayOfMonth, "yyyy-MM-dd");
     fetchBrokerPayments(formattedFirstDay, formattedLastDay);
-     // eslint-disable-next-line 
+    // eslint-disable-next-line
   }, []);
   const handleDownloadExcel = () => {
-    generateBrokerPayInLeftDistributedExcel(brokerPayment)
-  }
+    generateBrokerPayInLeftDistributedExcel(brokerPayment);
+  };
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
       schema = schema();
@@ -76,6 +88,7 @@ const MonthlyFilterPayInLeftDistributed = () => {
     endDate: yup.string().nullable().required("End Date is required"),
   });
   const validate = validateFormValues(validationSchema);
+
   const onSubmit = async (value: any) => {
     const newStartDate = dayjs(value.startDate).format(DAY_FORMAT);
     const newEndDate = dayjs(value.endDate).format(DAY_FORMAT);
@@ -85,11 +98,13 @@ const MonthlyFilterPayInLeftDistributed = () => {
     <div className="bg-blue-200 p-7 mt-3">
       <Paper elevation={3} style={{ padding: 20 }}>
         <div className="flex items-center justify-between">
-        <Typography variant="h5" className="text-black" gutterBottom>
-          {title}{" "}
-          <span className="text-safekaroDarkOrange">{brokerTotalPayment}</span>
-        </Typography>
-        <Tooltip title="download Excel">
+          <Typography variant="h5" className="text-black" gutterBottom>
+            {title}{" "}
+            <span className="text-safekaroDarkOrange">
+              {brokerTotalPayment}
+            </span>
+          </Typography>
+          <Tooltip title="download Excel">
             <button
               className="md:w-10 md:h-10 h-4 w-4 bg-[#3BDB03] shadow-sm rounded flex justify-center items-center text-white"
               onClick={handleDownloadExcel}
@@ -105,7 +120,6 @@ const MonthlyFilterPayInLeftDistributed = () => {
             render={({ handleSubmit, submitting, errors, values }) => (
               <form onSubmit={handleSubmit} noValidate>
                 <Grid container spacing={2} mt={2} mb={2}>
-                  
                   <Grid item lg={3} md={3} sm={6} xs={12}>
                     <Field name="startDate">
                       {({ input, meta }) => (
@@ -159,12 +173,12 @@ const MonthlyFilterPayInLeftDistributed = () => {
                   <Grid item lg={3} md={3} sm={6} xs={12}>
                     <Button
                       type="submit"
-                      disabled={submitting}
+                      disabled={isLoading}
                       variant="contained"
                       color="primary"
                       className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                     >
-                      {"Get Records"}
+                      {isLoading ? "Submitting..." : "Get Records"}
                     </Button>
                   </Grid>
                 </Grid>

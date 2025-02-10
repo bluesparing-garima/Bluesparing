@@ -27,6 +27,7 @@ const AddProductForm = (props: addProductFormProps) => {
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
   const { initialValues } = props;
   const navigate = useNavigate();
+  const[isLoading,setIsLoading] = useState(false);
   const location = useLocation() as any;
   const pathName = location.pathname.split("/");
   const isAddEdit = pathName[pathName.length - 1] as string;
@@ -72,20 +73,26 @@ const AddProductForm = (props: addProductFormProps) => {
   };
   const callAddProductAPI = async (product: IProductForm) => {
     try {
+      setIsLoading(true);
       const newProduct = await addProductService({ header, product });
       navigateToProducts(`${newProduct.message}`);
     } catch (error:any) {
       const err = await error
       toast.error(err.message)
+    }finally{
+      setIsLoading(false)
     }
   };
   const callEditProductAPI = async (product: IProductForm) => {
     try {
+      setIsLoading(true)
       const newProduct = await editProductService({ header, product });
       navigateToProducts(`${newProduct.message}`);
     } catch (error:any) {
       const err = await error
       toast.error(err.message)
+    }finally{
+      setIsLoading(false)
     }
   };
   const handleSelectCategory = async (e: ICategories) => {
@@ -159,12 +166,12 @@ const AddProductForm = (props: addProductFormProps) => {
             <Grid item xs={12}>
               <Button
                 type="submit"
-                disabled={submitting}
+                disabled={isLoading}
                 variant="contained"
                 color="primary"
                 className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
               >
-                {isAdd ? "Add Product" : "Update Product"}
+                {isLoading?'Submitting...':isAdd ? "Add Product" : "Update Product"}
               </Button>
             </Grid>
           </Grid>

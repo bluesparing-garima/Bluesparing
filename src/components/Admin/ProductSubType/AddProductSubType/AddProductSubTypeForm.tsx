@@ -23,9 +23,10 @@ export interface addPolicyTypeFormProps {
 }
 const AddProductSubTypeForm = (props: addPolicyTypeFormProps) => {
   const { initialValues } = props;
-  let [products] = useGetProducts({ header: header,category:"motor" });
+  let [products] = useGetProducts({ header: header, category: "motor" });
   const navigate = useNavigate();
   const [selectedProductName, setSelectedProductName] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState("");
   const location = useLocation() as any;
   const pathName = location.pathname.split("/");
@@ -74,6 +75,7 @@ const AddProductSubTypeForm = (props: addPolicyTypeFormProps) => {
     productSubType: IProductSubTypeForm
   ) => {
     try {
+      setIsLoading(true);
       const newProductSubType = await addProductSubTypeService({
         header,
         productSubType,
@@ -82,6 +84,8 @@ const AddProductSubTypeForm = (props: addPolicyTypeFormProps) => {
     } catch (error: any) {
       const err = await error;
       toast.error(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
   const handleSelectProduct = async (e: IProducts) => {
@@ -92,6 +96,7 @@ const AddProductSubTypeForm = (props: addPolicyTypeFormProps) => {
     productSubType: IProductSubTypeForm
   ) => {
     try {
+      setIsLoading(true);
       const newProductSubType = await editProductSubTypeService({
         header,
         productSubType,
@@ -100,6 +105,8 @@ const AddProductSubTypeForm = (props: addPolicyTypeFormProps) => {
     } catch (error: any) {
       const err = await error;
       toast.error(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
@@ -171,12 +178,16 @@ const AddProductSubTypeForm = (props: addPolicyTypeFormProps) => {
               <Grid item xs={12}>
                 <Button
                   type="submit"
-                  disabled={submitting}
+                  disabled={isLoading}
                   variant="contained"
                   color="primary"
                   className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                 >
-                  {isAdd ? "Add Product Sub Type" : "Update Product Sub Type"}
+                  {isLoading
+                    ? "Submitting"
+                    : isAdd
+                    ? "Add Product Sub Type"
+                    : "Update Product Sub Type"}
                 </Button>
               </Grid>
             </Grid>

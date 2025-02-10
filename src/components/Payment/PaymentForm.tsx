@@ -1,5 +1,5 @@
 import { Button, Grid, Paper, TextField, Typography } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { Field, Form } from "react-final-form";
 import { Link } from "react-router-dom";
 import logo from "../../assets/Blue_Sparinglogo_ornage - Copy.png";
@@ -13,9 +13,11 @@ interface RazorpayResponse {
 }
 
 const PaymentForm: React.FC = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const onSubmit = async (data: any) => {
     const { amount, name, phone, email } = data;
     try {
+      setIsLoading(true);
       const response = InitiatePaymentService({ amount });
       const data = await response;
 
@@ -51,6 +53,8 @@ const PaymentForm: React.FC = () => {
       }
     } catch (error) {
       toast.error("Error initiating payment");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -172,12 +176,12 @@ const PaymentForm: React.FC = () => {
                 <Grid item xs={12}>
                   <Button
                     type="submit"
-                    disabled={submitting}
+                    disabled={isLoading}
                     variant="contained"
                     color="primary"
                     className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                   >
-                    Pay Now
+                    {isLoading ? "Submitting..." : "Pay Now"}
                   </Button>
                 </Grid>
               </Grid>

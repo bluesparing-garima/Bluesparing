@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { TextField, Button, Grid } from "@mui/material";
 import addCaseTypeService from "../../../../api/CaseType/AddCaseType/addCaseTypeService";
 import { ICaseTypeForm } from "../ICaseTypes";
@@ -16,6 +16,7 @@ export interface AddCaseTypeFormProps {
 const AddCaseTypeForm = (props: AddCaseTypeFormProps) => {
   const { initialValues } = props;
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const location = useLocation() as any;
   const pathName = location.pathname.split("/");
   const isAddEdit = pathName[pathName.length - 1] as string;
@@ -55,20 +56,26 @@ const AddCaseTypeForm = (props: AddCaseTypeFormProps) => {
   };
   const callAddCaseTypeAPI = async (caseType: ICaseTypeForm) => {
     try {
+      setIsLoading(true);
       const newCaseType = await addCaseTypeService({ header, caseType });
       navigateToCaseTypes(`${newCaseType.message}`);
     } catch (error: any) {
       const err = await error;
       toast.error(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
   const callEditCaseTypeAPI = async (caseType: ICaseTypeForm) => {
     try {
+      setIsLoading(true);
       const updatedCaseType = await editCaseTypeService({ header, caseType });
       navigateToCaseTypes(`${updatedCaseType.message}`);
     } catch (error: any) {
       const err = await error;
       toast.error(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
@@ -98,12 +105,16 @@ const AddCaseTypeForm = (props: AddCaseTypeFormProps) => {
               <Grid item xs={12}>
                 <Button
                   type="submit"
-                  disabled={submitting}
+                  disabled={isLoading}
                   variant="contained"
                   color="primary"
                   className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                 >
-                  {isAdd ? "Add Case Type" : "Update Case Type"}
+                  {isLoading
+                    ? "Submitting..."
+                    : isAdd
+                    ? "Add Case Type"
+                    : "Update Case Type"}
                 </Button>
               </Grid>
             </Grid>

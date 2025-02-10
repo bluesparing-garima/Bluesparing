@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { TextField, Button, Grid } from "@mui/material";
 import addBrokerService from "../../../../api/Broker/AddBroker/addBrokerService";
 import editBrokerService from "../../../../api/Broker/EditBroker/editBrokerService";
@@ -16,6 +16,7 @@ export interface addPolicyTypeFormProps {
 const AddPolicyTypeForm = (props: addPolicyTypeFormProps) => {
   const { initialValues } = props;
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const location = useLocation() as any;
   const pathName = location.pathname.split("/");
   const isAddEdit = pathName[pathName.length - 1] as string;
@@ -41,6 +42,7 @@ const AddPolicyTypeForm = (props: addPolicyTypeFormProps) => {
       .max(100, "Broker cannot exceed 100 characters"),
   });
   const validate = validateFormValues(validationSchema);
+
   const onSubmit = async (broker: IBrokerForm) => {
     if (isAdd) {
       callAddBrokerAPI(broker);
@@ -55,20 +57,26 @@ const AddPolicyTypeForm = (props: addPolicyTypeFormProps) => {
   };
   const callAddBrokerAPI = async (broker: IBrokerForm) => {
     try {
+      setIsLoading(true);
       const newBroker = await addBrokerService({ header, broker });
       navigateToBrokers(`${newBroker.message}`);
     } catch (err: any) {
       const errObj = await err;
       toast.error(errObj.message);
+    } finally {
+      setIsLoading(false);
     }
   };
   const callEditBrokerAPI = async (broker: IBrokerForm) => {
     try {
+      setIsLoading(true);
       const newBroker = await editBrokerService({ header, broker });
       navigateToBrokers(`${newBroker.message}`);
     } catch (err: any) {
       const errObj = await err;
       toast.error(errObj.message);
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
@@ -98,12 +106,16 @@ const AddPolicyTypeForm = (props: addPolicyTypeFormProps) => {
               <Grid item xs={12}>
                 <Button
                   type="submit"
-                  disabled={submitting}
+                  disabled={isLoading}
                   variant="contained"
                   color="primary"
                   className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                 >
-                  {isAdd ? "Add Broker" : "Update Broker"}
+                  {isLoading
+                    ? "Submitting..."
+                    : isAdd
+                    ? "Add Broker"
+                    : "Update Broker"}
                 </Button>
               </Grid>
             </Grid>

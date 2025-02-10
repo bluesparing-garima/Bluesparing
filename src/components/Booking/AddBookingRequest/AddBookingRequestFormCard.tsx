@@ -66,6 +66,7 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
   const [selectedPartnerName, setSelectedPartnerName] = useState("");
   const [selectedPartnerId, setSelectedPartnerId] = useState("");
   const [selectedRMName, setSelectedRMName] = useState("");
+  const[isLoading,setIsLoading] = useState(false);
   const [selectedRMId, setSelectedRMId] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
@@ -329,6 +330,7 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
   };
   const callAddBookingRequestAPI = async (bookingRequest: any, form: any) => {
     try {
+      setIsLoading(true)
       const newBookingPolicy = await addBookingRequestService({
         header,
         bookingRequest,
@@ -343,6 +345,8 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
       toast.error(errObj.message);
       setDocuments([{ docName: "", file: "" }]);
       return { [FORM_ERROR]: `error ` };
+    }finally{
+      setIsLoading(false)
     }
   };
   const validateFormValues = (schema: any) => async (values: any) => {
@@ -857,8 +861,8 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
                           {submitError}
                         </div>
                       )}
-                      <Button variant="contained" type="submit">
-                        submit
+                      <Button variant="contained" type="submit" disabled={isLoading}>
+                        {isLoading?'Submitting...':'submit'}
                       </Button>
                     </Grid>
                   </Grid>

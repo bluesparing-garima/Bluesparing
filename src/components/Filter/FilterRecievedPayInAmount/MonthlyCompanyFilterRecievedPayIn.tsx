@@ -36,6 +36,7 @@ const MonthlyCompanyFilterReceivedPayIn = () => {
   const [selectedBrokerName, setSelectedBrokerName] = useState<string>();
   const [selectedBrokerCode, setSelectedBrokerCode] = useState<string>();
   const [selectedBrokerId, setSelectedBrokerId] = useState<string>();
+  const [isLoading, setIsLoading] = useState(false);
   const [companyDetails, setCompanyDetails] = useState<
     BrokerReceivedPayInCompanyProps[]
   >([]);
@@ -60,7 +61,7 @@ const MonthlyCompanyFilterReceivedPayIn = () => {
   const validate = validateFormValues(validationSchema);
   useEffect(() => {
     filterMonthlyBrokerPaymentWithCompany(startDate!, endDate!, brokerId!);
-     // eslint-disable-next-line 
+    // eslint-disable-next-line
   }, [startDate, endDate, brokerId]);
   const handleDownloadExcel = () => {
     generateBrokerReceivedPayInCompanyExcel(companyDetails);
@@ -70,6 +71,7 @@ const MonthlyCompanyFilterReceivedPayIn = () => {
     endDate: string,
     brokerId: string
   ) => {
+    setIsLoading(true);
     GetMonthlyBrokerWithReceivedCompanyPaymentService({
       header,
       brokerId: brokerId!,
@@ -86,6 +88,9 @@ const MonthlyCompanyFilterReceivedPayIn = () => {
       .catch(async (error) => {
         const err = await error;
         toast.error(err.message);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
   const onSubmit = async (value: any) => {
@@ -129,7 +134,6 @@ const MonthlyCompanyFilterReceivedPayIn = () => {
               render={({ handleSubmit, submitting, errors, values }) => (
                 <form onSubmit={handleSubmit} noValidate>
                   <Grid container spacing={2} mt={2} mb={2}>
-                    
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Field name="startDate">
                         {({ input, meta }) => (
@@ -226,12 +230,12 @@ const MonthlyCompanyFilterReceivedPayIn = () => {
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Button
                         type="submit"
-                        disabled={submitting}
+                        disabled={isLoading}
                         variant="contained"
                         color="primary"
                         className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                       >
-                        {"Get Records"}
+                        {isLoading ? "Submitting..." : "Get Records"}
                       </Button>
                     </Grid>
                   </Grid>

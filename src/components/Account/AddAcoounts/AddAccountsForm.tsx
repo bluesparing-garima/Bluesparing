@@ -36,7 +36,7 @@ const AddAccountsForm = (props: addAccountFormProps) => {
   let userData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
   // const [roles] = useGetRoles({ header });
   let [partners] = useGetPartners({ header: header, role: "partner" });
-  const [loading,setIsLoading] = useState(false);
+  const [isLoading,setIsLoading] = useState(false);
   // const [selectRoleData, setSelectRoleData] = useState();
   const onSubmit = (accountForm: IAccountForm, form: any) => {
     let accountHolderName = accountForm.accountHolderName!.toUpperCase();
@@ -300,8 +300,8 @@ const AddAccountsForm = (props: addAccountFormProps) => {
                           {submitError}
                         </div>
                       )}
-                      <Button variant="contained" type="submit" disabled={loading}>
-                       {loading?"Submitting":"Submit"} 
+                      <Button variant="contained" type="submit" disabled={isLoading}>
+                       {isLoading?"Submitting":"Submit"} 
                       </Button>
                     </Grid>
                   </Grid>
