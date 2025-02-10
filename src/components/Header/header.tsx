@@ -143,7 +143,7 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
       const newData = JSON.parse(storedTheme);
       setUserData(newData);
       if (newData.role === "Partner") {
-        getRankBadgeDetailsService({ header, partnerId: newData.partnerId })
+        getRankBadgeDetailsService({ header, partnerId: newData.profileId })
           .then((dashboardData) => {
             const rankData = dashboardData.data;
             setUserRank(rankData.rank);

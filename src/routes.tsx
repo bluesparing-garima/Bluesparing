@@ -171,6 +171,7 @@ import PolicyDispute from "./components/Policy/PolicyDispute/PolicyDispute";
 import AllBookingReq from "./components/Booking/BookingRequests/AllBooking";
 import BookedBooking from "./components/Booking/BookingRequests/BookedBooking";
 import PublishedPolicyPage from "./components/Policy/PublishedPolicy/PublishedPolicyPage";
+import TransferMoney from "./components/Account/TransferMoney/TransferMoney";
 
 const routes = [
   {
@@ -638,6 +639,10 @@ const routes = [
     path: "account",
     children: [
       {
+        path: "money-transfer",
+        element: <TransferMoney />,
+      },
+      {
         path: "",
         element: <Accounts />,
       },
@@ -715,7 +720,7 @@ const routes = [
       },
     ],
   },
-  
+
   {
     path: "booking",
     children: [
@@ -753,11 +758,7 @@ const routes = [
       },
       {
         path: "publish",
-        element: (
-         
-            <PublishedPolicyPage />
-         
-        ),
+        element: <PublishedPolicyPage />,
       },
     ],
   },
@@ -1155,6 +1156,7 @@ const routes = [
       },
     ],
   },
+  
   {
     path: "bookingdashboard",
     children: [
