@@ -8,9 +8,9 @@ export const disputedCol = [
     header: "Publish",
     size: 100,
     visible:
-      userData.role.toLowerCase() === "admin" ||
-      userData.role.toLowerCase() === "account" ||
-      userData.role.toLowerCase() === "booking",
+      userData?.role.toLowerCase() === "admin" ||
+      userData?.role.toLowerCase() === "account" ||
+      userData?.role.toLowerCase() === "booking",
     Cell: ({ cell }: any) => {
       const publish = cell.getValue();
       return <span>{publish ? "Yes" : "NO"}</span>;
@@ -20,7 +20,7 @@ export const disputedCol = [
     accessorKey: "category",
     header: "Category",
     size: 100,
-    visible: userData.role === "admin",
+    visible: userData?.role === "admin",
   },
   {
     accessorKey: "vehicleNumber",
@@ -92,9 +92,9 @@ export const disputedCol = [
     header: "Broker",
     size: 100,
     visible:
-      userData.role.toLowerCase() === "admin" ||
-      userData.role.toLowerCase() === "account" ||
-      userData.role.toLowerCase() === "booking",
+      userData?.role.toLowerCase() === "admin" ||
+      userData?.role.toLowerCase() === "account" ||
+      userData?.role.toLowerCase() === "booking",
     Cell: ({ row }: { row: { original: IViewPolicy } }) => {
       const { broker, brokerCode } = row.original;
       return (
@@ -109,9 +109,9 @@ export const disputedCol = [
     header: "Partner",
     size: 100,
     visible:
-      userData.role.toLowerCase() === "admin" ||
-      userData.role.toLowerCase() === "account" ||
-      userData.role.toLowerCase() === "booking",
+      userData?.role.toLowerCase() === "admin" ||
+      userData?.role.toLowerCase() === "account" ||
+      userData?.role.toLowerCase() === "booking",
     Cell: ({ row }: { row: { original: IViewPolicy } }) => {
       const { partnerName, partnerCode } = row.original;
       return (
@@ -181,48 +181,48 @@ export const disputedCol = [
     header: "PayIn OD %",
     size: 100,
     visible:
-      userData.role.toLowerCase() === "admin" ||
-      userData.role.toLowerCase() === "account",
+      userData?.role.toLowerCase() === "admin" ||
+      userData?.role.toLowerCase() === "account",
   },
   {
     accessorKey: "payInTPPercentage",
     header: "PayIn TP %",
     size: 100,
     visible:
-      userData.role.toLowerCase() === "admin" ||
-      userData.role.toLowerCase() === "account",
+      userData?.role.toLowerCase() === "admin" ||
+      userData?.role.toLowerCase() === "account",
   },
   {
     accessorKey: "payInCommission",
     header: "PayIn Amount",
     size: 100,
     visible:
-      userData.role.toLowerCase() === "admin" ||
-      userData.role.toLowerCase() === "account",
+      userData?.role.toLowerCase() === "admin" ||
+      userData?.role.toLowerCase() === "account",
   },
   {
     accessorKey: "payInAmount",
     header: "PayIn Paid Amount",
     size: 100,
     visible:
-      userData.role.toLowerCase() === "admin" ||
-      userData.role.toLowerCase() === "account",
+      userData?.role.toLowerCase() === "admin" ||
+      userData?.role.toLowerCase() === "account",
   },
   {
     accessorKey: "payInBalance",
     header: "PayIn Balance",
     size: 100,
     visible:
-      userData.role.toLowerCase() === "admin" ||
-      userData.role.toLowerCase() === "account",
+      userData?.role.toLowerCase() === "admin" ||
+      userData?.role.toLowerCase() === "account",
   },
   {
     accessorKey: "payOutODPercentage",
     header: "PayOut OD %",
     size: 100,
     visible:
-      userData.role.toLowerCase() === "admin" ||
-      userData.role.toLowerCase() === "account",
+      userData?.role.toLowerCase() === "admin" ||
+      userData?.role.toLowerCase() === "account",
     Cell: ({ cell }: any) => {
       const od = cell.getValue();
       return <span>{od}%</span>;
@@ -233,8 +233,8 @@ export const disputedCol = [
     header: "PayOut TP %",
     size: 100,
     visible:
-      userData.role.toLowerCase() === "admin" ||
-      userData.role.toLowerCase() === "account",
+      userData?.role.toLowerCase() === "admin" ||
+      userData?.role.toLowerCase() === "account",
     Cell: ({ cell }: any) => {
       const tp = cell.getValue();
       return <span>{tp}%</span>;
@@ -245,31 +245,31 @@ export const disputedCol = [
     header: "PayOut Amount",
     size: 100,
     visible:
-      userData.role.toLowerCase() === "admin" ||
-      userData.role.toLowerCase() === "account",
+      userData?.role.toLowerCase() === "admin" ||
+      userData?.role.toLowerCase() === "account",
   },
   {
     accessorKey: "payOutAmount",
     header: "PayOut Paid Amount",
     size: 100,
     visible:
-      userData.role.toLowerCase() === "admin" ||
-      userData.role.toLowerCase() === "account",
+      userData?.role.toLowerCase() === "admin" ||
+      userData?.role.toLowerCase() === "account",
   },
   {
     accessorKey: "payOutBalance",
     header: "PayOut Balance",
     size: 100,
     visible:
-      userData.role.toLowerCase() === "admin" ||
-      userData.role.toLowerCase() === "account",
+      userData?.role.toLowerCase() === "admin" ||
+      userData?.role.toLowerCase() === "account",
   },
   {
     header: "Revenue OD %",
     accessorKey: "revenue",
     visible:
-      userData.role.toLowerCase() === "admin" ||
-      userData.role.toLowerCase() === "account",
+      userData?.role.toLowerCase() === "admin" ||
+      userData?.role.toLowerCase() === "account",
     Cell: ({ row }: { row: { original: IViewPolicy } }) => {
       const { payInODPercentage, payOutODPercentage } = row.original;
       const revenue = (payInODPercentage ?? 0) - (payOutODPercentage ?? 0);
@@ -281,8 +281,8 @@ export const disputedCol = [
     header: "Revenue TP %",
     accessorKey: "revenue",
     visible:
-      userData.role.toLowerCase() === "admin" ||
-      userData.role.toLowerCase() === "account",
+      userData?.role.toLowerCase() === "admin" ||
+      userData?.role.toLowerCase() === "account",
     Cell: ({ row }: { row: { original: IViewPolicy } }) => {
       const { payInTPPercentage, payOutTPPercentage } = row.original;
       const revenue = (payInTPPercentage ?? 0) - (payOutTPPercentage ?? 0);
@@ -294,8 +294,8 @@ export const disputedCol = [
     header: "Revenue Amount",
     accessorKey: "revenue",
     visible:
-      userData.role.toLowerCase() === "admin" ||
-      userData.role.toLowerCase() === "account",
+      userData?.role.toLowerCase() === "admin" ||
+      userData?.role.toLowerCase() === "account",
     Cell: ({ row }: { row: { original: IViewPolicy } }) => {
       const { payInCommission, payOutCommission } = row.original;
       const revenue = (payInCommission ?? 0) - (payOutCommission ?? 0);
