@@ -24,6 +24,7 @@ import getBookingRequestByOperationIdService from "../../../api/BookingRequest/G
 import Papa from "papaparse";
 import InputDialog from "../../../utils/InputDialog";
 import toast, { Toaster } from "react-hot-toast";
+import getPolicyByNumberService from "../../../api/Policies/GetPolicyByNumber/getPolicyByNumberService";
 const BookingRequests = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [bookingRequests, setBookingRequests] = useState<IBookingRequests[]>(
@@ -57,13 +58,13 @@ const BookingRequests = () => {
           toast.error(err.message);
           console.error("Failed to fetch Booking details", error);
         }),
-    [userData.profileId]
+    [userData.id]
   );
   const GetBookingByPartnerIdRequests = useCallback(
     () =>
       getBookingRequestByPartnerIdService({
         header,
-        partnerId: userData.profileId,
+        partnerId: userData.partnerId,
       })
         .then((bookingRequestDetails) => {
           setBookingRequests(bookingRequestDetails.data);
@@ -72,7 +73,7 @@ const BookingRequests = () => {
           const err = await error;
           toast.error(err.message);
         }),
-    [userData.profileId]
+    [userData.partnerId]
   );
   const GetBookingByBookingIdRequests = useCallback(
     () =>
@@ -89,6 +90,34 @@ const BookingRequests = () => {
         }),
     [userData.profileId]
   );
+  const handlePublishPolicy = async (row: IBookingRequestsVM) => {
+    const payload = {
+      policyId: row.motorPolicyId||"",
+      partnerName:row.partnerName ||"",
+      partnerId:row.partnerId||"",
+      policyNumber:row.policyNumber||"",
+      bookingId:row.id||"",
+      leadId:row?.leadId,
+      bookingCreated:row.createdOn
+    };
+    if(!payload.policyId){
+      toast.error("policyId not found")
+      return;
+    }
+    if(!payload.partnerName){
+      toast.error("partnerName not found")
+      return;
+    }
+    if(!payload.partnerId){
+      toast.error("partnerId not found")
+      return;
+    }
+    if(!payload.policyNumber){
+      toast.error("Policy number not found")
+      return;
+    }
+    navigate("publish",{state:payload});
+  };
   useEffect(() => {
     if (userData.role.toLowerCase() === "operation") {
       GetBookingByOperationIdRequests();
@@ -109,6 +138,21 @@ const BookingRequests = () => {
   const navigate = useNavigate();
   const handleAddBookingRequestClick = () => {
     navigate(bookingRequestsAddPath());
+  };
+  const handleChangePolicyNumber = async (policyNumber: string) => {
+    try {
+      const newPolicy = await getPolicyByNumberService({
+        header,
+        policyNumber,
+      });
+      if (newPolicy.exist) {
+        return false;
+      } else {
+        return true;
+      }
+    } catch (error: any) {
+      return false;
+    }
   };
   const columns = useMemo<MRT_ColumnDef<IBookingRequests>[]>(
     () => [
@@ -168,7 +212,10 @@ const BookingRequests = () => {
         accessorKey: "partnerName",
         header: "Partner Name",
         size: 200,
+        visible:
+        userData.role.toLowerCase() !== "partner"
       },
+
       {
         header: "Status",
         accessorKey: "isActive",
@@ -195,8 +242,11 @@ const BookingRequests = () => {
         },
       },
     ],
-    []
+    [userData]
   );
+  function capitalizeFirstLetter(val:string) {
+    return String(val).charAt(0).toUpperCase() + String(val).slice(1);
+}
   const parsedData = useMemo(
     () =>
       bookingRequests.map(
@@ -224,10 +274,13 @@ const BookingRequests = () => {
             timer: bookingRequest.timer,
             bookingAcceptedBy: bookingRequest.bookingAcceptedBy,
             bookingCreatedBy: bookingRequest.bookingCreatedBy,
-            bookingStatus: bookingRequest.bookingStatus,
+            bookingStatus: capitalizeFirstLetter(bookingRequest.bookingStatus),
             isActive: bookingRequest.isActive,
             createdOn: bookingRequest.createdOn,
             updatedOn: bookingRequest.updatedOn,
+            acceptedByName: bookingRequest.acceptedByName,
+            isPublished: bookingRequest.isPublished || false,
+            motorPolicyId:bookingRequest.motorPolicyId||""
           } as IBookingRequestsVM)
       ) ?? [],
     [bookingRequests]
@@ -289,8 +342,13 @@ const BookingRequests = () => {
       downloadFile(`${imagePath}${booking?.other!}`, "other");
     }
   };
-  const handleClickCreatePolicy = (booking: IBookingRequestsVM) => {
-    navigate(motorPolicyCreatePath(booking.id!));
+  const handleClickCreatePolicy = async (booking: IBookingRequestsVM) => {
+    const res = await handleChangePolicyNumber(booking.policyNumber);
+    if (res) {
+      navigate(motorPolicyCreatePath(booking.id!));
+    } else {
+      toast.error(`${booking.policyNumber} is already exist`);
+    }
   };
   useEffect(() => {
     updateLoading();
@@ -349,7 +407,7 @@ const BookingRequests = () => {
                 ""
               )}
             </div>
-            
+            {}
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
@@ -406,33 +464,65 @@ const BookingRequests = () => {
                 </Tooltip>
                 {userData.role.toLowerCase() === "booking" &&
                   row.original.bookingStatus.toLowerCase() === "accepted" && (
-                    <Tooltip title={"Create Policy"}>
-                      <IconButton
-                        color="primary"
-                        aria-label={"Create Policy"}
-                        component="span"
-                        onClick={() => {
-                          handleClickCreatePolicy(
-                            row.original as IBookingRequestsVM
-                          );
-                        }}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth="1.5"
-                          stroke="currentColor"
-                          className="size-5 text-addButton"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-                          />
-                        </svg>
-                      </IconButton>
-                    </Tooltip>
+                    <>
+                      {row.original.isPublished ? (
+                        <Tooltip title={"Publish to Partner"}>
+                          <IconButton
+                            color="primary"
+                            aria-label={"Publish to Partner"}
+                            component="span"
+                            onClick={() => {
+                              handlePublishPolicy(
+                                row.original as IBookingRequestsVM
+                              );
+                            }}
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1.5}
+                              stroke="currentColor"
+                              className="size-6"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M12 16.5V9.75m0 0 3 3m-3-3-3 3M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z"
+                              />
+                            </svg>
+                          </IconButton>
+                        </Tooltip>
+                      ) : (
+                        <Tooltip title={"Create Policy"}>
+                          <IconButton
+                            color="primary"
+                            aria-label={"Create Policy"}
+                            component="span"
+                            onClick={() => {
+                              handleClickCreatePolicy(
+                                row.original as IBookingRequestsVM
+                              );
+                            }}
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth="1.5"
+                              stroke="currentColor"
+                              className="size-5 text-addButton"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                              />
+                            </svg>
+                          </IconButton>
+                        </Tooltip>
+                      )}
+                    </>
                   )}
                 {userData.role.toLowerCase() === "booking" && (
                   <Tooltip title={"Reject"}>

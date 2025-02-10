@@ -63,12 +63,9 @@ const SidebarUi: FC<SidebarProps> = ({
 
   const renderMenuItems = (items: MenuItem[]) => {
     return items.map((item) => (
-      <li
-        key={item.id}
-        className="relative overflow-auto max-h-60 hide-scrollbar"
-      >
+      <li key={item.id} className="relative max-h-100 scroll-hidden">
         <div
-          className={`flex items-center px-2 py-1 text-[15px] cursor-pointer rounded-lg ${
+          className={`flex items-center px-2 py-1 text-[15px] cursor-pointer rounded-lg sticky top-0 z-10 bg-white  ${
             activeMenuItem === item.id
               ? "bg-safekaroDarkOrange text-white"
               : "text-black hover:bg-safekaroDarkOrange hover:text-white"
@@ -106,7 +103,7 @@ const SidebarUi: FC<SidebarProps> = ({
           )}
         </div>
         {item.subMenu && openSubMenus.includes(item.id) && (
-          <ul className="ml-4 mt-2 space-y-2 border-l border-gray-200 pl-2">
+          <ul className="ml-4 mt-2 space-y-1 px-1 border-l border-gray-200 pl-2 scroll-hidden max-h-60">
             {renderMenuItems(item.subMenu)}
           </ul>
         )}
@@ -114,8 +111,6 @@ const SidebarUi: FC<SidebarProps> = ({
     ));
   };
 
-
-  
   return (
     <div
       className={`${

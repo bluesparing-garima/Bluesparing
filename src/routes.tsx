@@ -168,6 +168,9 @@ import TdsPayInManage from "./components/Account/TDS/PayInTDS/TdsPayInManage";
 import TdsPayOutManage from "./components/Account/TDS/PayOutTDS/TdsPayOutManage";
 import DisputedPolicyPage from "./components/Policy/PolicyDispute/DisputedPolicyPage";
 import PolicyDispute from "./components/Policy/PolicyDispute/PolicyDispute";
+import AllBookingReq from "./components/Booking/BookingRequests/AllBooking";
+import BookedBooking from "./components/Booking/BookingRequests/BookedBooking";
+import PublishedPolicyPage from "./components/Policy/PublishedPolicy/PublishedPolicyPage";
 
 const routes = [
   {
@@ -712,10 +715,7 @@ const routes = [
       },
     ],
   },
-  {
-    path: "reject",
-    element: <RejectionPolicies />,
-  },
+  
   {
     path: "booking",
     children: [
@@ -738,6 +738,26 @@ const routes = [
       {
         path: "/booking/:leadId/new",
         element: <AddBookingRequest />,
+      },
+      {
+        path: "all",
+        element: <AllBookingReq />,
+      },
+      {
+        path: "booked",
+        element: <BookedBooking />,
+      },
+      {
+        path: "reject",
+        element: <RejectionPolicies />,
+      },
+      {
+        path: "publish",
+        element: (
+         
+            <PublishedPolicyPage />
+         
+        ),
       },
     ],
   },

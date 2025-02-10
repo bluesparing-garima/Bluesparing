@@ -185,7 +185,7 @@ const GetMotorPolicies = () => {
       setIsLoading(true);
       getPolicyByPartnerIdService({
         header,
-        partnerId: userData.partnerId,
+        partnerId: userData.profileId,
         startDate,
         endDate,
       })
@@ -200,14 +200,14 @@ const GetMotorPolicies = () => {
           setIsLoading(false);
         });
     },
-    [userData.partnerId]
+    [userData.profileId]
   );
   const GetPoliciesByPolicyCompletedById = useCallback(
     (startDate, endDate) => {
       setIsLoading(true);
       getPolicyCompletedByIdService({
         header,
-        policyCompletedById: userData.id,
+        policyCompletedById: userData.profileId,
         startDate,
         endDate,
       })
@@ -222,7 +222,7 @@ const GetMotorPolicies = () => {
           setIsLoading(false);
         });
     },
-    [userData.id]
+    [userData.profileId]
   );
   useEffect(() => {
     const currentDate = new Date();
