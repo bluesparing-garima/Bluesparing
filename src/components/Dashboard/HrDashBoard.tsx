@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  CardContent,
-  Grid,
-  TextField,
-} from "@mui/material";
+import { CardContent, CircularProgress, Grid, TextField } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import SearchIcon from "@mui/icons-material/Search";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
@@ -16,6 +12,7 @@ import GetHrDashboardServices from "../../api/HR/GetHrDashboard/GetHrDashboardSe
 import dayjs from "dayjs";
 const HrDashBoard: React.FC = () => {
   const [data, setData] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(false);
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
   useEffect(() => {
@@ -39,9 +36,9 @@ const HrDashBoard: React.FC = () => {
         console.error("Error fetching HR Dashboard data:", error);
       }
     };
-if(UserData.role.toLowerCase()==="hr"){
-  fetchData();
-}
+    if (UserData.role.toLowerCase() === "hr") {
+      fetchData();
+    }
     const intervalId = setInterval(fetchData, 30000);
     return () => clearInterval(intervalId);
   }, []);
@@ -86,6 +83,7 @@ if(UserData.role.toLowerCase()==="hr"){
     const formattedEndDate = format(utcEndDate, "yyyy-MM-dd'T'HH:mm:ss");
     value.endDate = formattedEndDate;
     try {
+      setIsLoading(true);
       const response = await GetHrDashboardServices({
         header,
         startDate: value.startDate,
@@ -97,6 +95,8 @@ if(UserData.role.toLowerCase()==="hr"){
       }
     } catch (error) {
       console.error("Error fetching HR Dashboard data:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
@@ -167,8 +167,13 @@ if(UserData.role.toLowerCase()==="hr"){
                           <button
                             className="md:w-10 md:h-10 h-4 w-4 bg-[#30A9FF] shadow-sm rounded flex justify-center items-center text-white"
                             type="submit"
+                            disabled={isLoading}
                           >
-                            <SearchIcon className="md:w-6 md:h-6 h-3 w-3" />
+                            {isLoading ? (
+                              <CircularProgress className="md:w-6 md:h-6 h-3 w-3" />
+                            ) : (
+                              <SearchIcon className="md:w-6 md:h-6 h-3 w-3" />
+                            )}
                           </button>
                         </div>
                       </form>

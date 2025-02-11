@@ -21,12 +21,13 @@ const MonthlyFilterPayOut = () => {
   const selectedCategory = location.state as string;
   const [selectedStartDate, setSelectedStartDate] = useState();
   const [selectedEndDate, setSelectedEndDate] = useState();
+  const[isLoading,setIsLoading] = useState(false);
   const [partnerTotalPayment, setPartnerTotalPayment] = useState<number>(0);
   const [partnerPayment, setPartnerPayment] = useState<PartnerPayment[]>([]);
   const fetchPartnerPayments = async (
     formattedFirstDay: any,
     formattedLastDay: any
-  ) => {
+  ) => {setIsLoading(true)
     setSelectedStartDate(formattedFirstDay);
     setSelectedEndDate(formattedLastDay);
     GetMonthlyPartnerPaymentService({
@@ -42,7 +43,9 @@ const MonthlyFilterPayOut = () => {
       .catch(async (error) => {
         const err = await error;
         toast.error(err.message);
-      });
+      }).finally(()=>{
+        setIsLoading(false)
+      })
   };
   const handleDownloadExcel = () => {
     generatePartnerPaymentExcel(partnerPayment)
@@ -157,12 +160,12 @@ const MonthlyFilterPayOut = () => {
                   <Grid item lg={3} md={3} sm={6} xs={12}>
                     <Button
                       type="submit"
-                      disabled={submitting}
+                      disabled={isLoading}
                       variant="contained"
                       color="primary"
                       className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                     >
-                      {"Get Records"}
+                      {isLoading?'Submitting...':"Get Records"}
                     </Button>
                   </Grid>
                 </Grid>

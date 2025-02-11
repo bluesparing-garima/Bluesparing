@@ -17,6 +17,7 @@ import MotorPolicyExcelService from "../../../api/Policies/MotorPolicyExcel/Moto
 const UploadPolicy = () => {
   const title = "Upload Motor Policy Excel";
   const [excelUploaded, setExcelUploaded] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const onSubmit = (values: FormValues) => {
     uploadFile(values.file);
   };
@@ -25,10 +26,11 @@ const UploadPolicy = () => {
       setExcelUploaded(false);
     }
   }, [excelUploaded]);
-  
+
   const uploadFile = async (file: File | null) => {
     if (file) {
       try {
+        setIsLoading(true);
         const formData = new FormData();
         formData.append("excel", file);
         MotorPolicyExcelService({ header, excel: formData })
@@ -50,6 +52,8 @@ const UploadPolicy = () => {
       } catch (error: any) {
         const err = await error;
         toast.error(err.message);
+      } finally {
+        setIsLoading(false);
       }
     }
   };
@@ -150,12 +154,12 @@ const UploadPolicy = () => {
                     <Grid item lg={4} xs={12}>
                       <Button
                         type="submit"
-                        disabled={submitting}
+                        disabled={isLoading}
                         variant="contained"
                         color="primary"
                         className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                       >
-                        Upload Excel
+                        {isLoading ? "Submitting..." : "Upload Excel"}
                       </Button>
                     </Grid>
                   </Grid>

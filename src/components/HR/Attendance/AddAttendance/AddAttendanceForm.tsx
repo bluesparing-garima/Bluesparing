@@ -17,6 +17,7 @@ const AddAttendanceForm: React.FC<AddAttendanceFormProps> = ({
   initialValues,
 }) => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   const [inTime, setInTime] = useState<string | null>(
     initialValues?.inTime || null
@@ -96,6 +97,7 @@ const AddAttendanceForm: React.FC<AddAttendanceFormProps> = ({
 
   const onSubmit = async (values: IAttendance) => {
     try {
+      setIsLoading(true);
       let attendanceData: IAddAttendanceProps = {
         employeeName: initialValues?.employeeName || "",
         employeeId: initialValues?.employeeId || "",
@@ -129,6 +131,8 @@ const AddAttendanceForm: React.FC<AddAttendanceFormProps> = ({
     } catch (error: any) {
       const err = await error;
       toast.error(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -249,12 +253,16 @@ const AddAttendanceForm: React.FC<AddAttendanceFormProps> = ({
               <Grid item xs={12}>
                 <Button
                   type="submit"
-                  disabled={submitting}
+                  disabled={isLoading}
                   variant="contained"
                   color="primary"
                   className="w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                 >
-                  {initialValues?._id ? "Update Attendance" : "Add Attendance"}
+                  {isLoading
+                    ? "Submitting..."
+                    : initialValues?._id
+                    ? "Update Attendance"
+                    : "Add Attendance"}
                 </Button>
               </Grid>
             </Grid>

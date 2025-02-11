@@ -1,6 +1,6 @@
 import { endOfMonth, format, startOfMonth } from "date-fns";
 import { setIn } from "final-form";
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { DAY_FORMAT, header } from "../../../context/constant";
 import toast from "react-hot-toast";
@@ -34,6 +34,7 @@ const MonthlyAllNetPremium = () => {
   const [selectedStartDate, setSelectedStartDate] = useState();
   const [selectedEndDate, setSelectedEndDate] = useState();
   const [totalNetPremium, setTotalNetPremium] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState(false);
   const [partnerTotalNetPremium, setPartnerTotalNetPremium] =
     useState<number>(0);
   const [brokerTotalNetPremium, setBrokerTotalNetPremium] = useState<number>(0);
@@ -57,6 +58,7 @@ const MonthlyAllNetPremium = () => {
     setSelectedStartDate(formattedFirstDay);
     setSelectedEndDate(formattedLastDay);
     try {
+      setIsLoading(true);
       const partnerResponse = await GetMonthlyBrokerNetPremiumService({
         header,
         startDate: formattedFirstDay,
@@ -80,6 +82,8 @@ const MonthlyAllNetPremium = () => {
     } catch (error) {
       const err: any = await error;
       toast.error(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
   useEffect(() => {
@@ -103,6 +107,7 @@ const MonthlyAllNetPremium = () => {
     endDate: yup.string().nullable().required("End Date is required"),
   });
   const validate = validateFormValues(validationSchema);
+
   const onSubmit = async (values: any) => {
     const newStartDate = dayjs(values.startDate).format(DAY_FORMAT);
     const newEndDate = dayjs(values.endDate).format(DAY_FORMAT);
@@ -198,12 +203,12 @@ const MonthlyAllNetPremium = () => {
                 <Grid item lg={3} md={3} sm={6} xs={12}>
                   <Button
                     type="submit"
-                    disabled={submitting}
+                    disabled={isLoading}
                     variant="contained"
                     color="primary"
                     className="w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                   >
-                    Get Records
+                    {isLoading ? "Submitting" : "Get Records"}
                   </Button>
                 </Grid>
               </Grid>

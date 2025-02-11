@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { header, SafeKaroUser } from "../../context/constant";
-import { Button, Grid, TextField, Tooltip as Tip } from "@mui/material";
+import { Button, CircularProgress, Grid, TextField, Tooltip as Tip } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import SearchIcon from "@mui/icons-material/Search";
 import {
   Chart as ChartJS,
   CategoryScale,
-  LinearScale,
+  LinearScale as linear,
   BarElement,
   LineElement,
   PointElement,
@@ -41,7 +41,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import toast, { Toaster } from "react-hot-toast";
 ChartJS.register(
   CategoryScale,
-  LinearScale,
+  linear,
   BarElement,
   LineElement,
   PointElement,
@@ -54,6 +54,7 @@ const BookingDashboard: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [firstCart, setFirstCart] = useState(true);
   const [selectedCard, setSelectedcard] = useState("1");
+  const[isLoading,setIsLoading]=useState(false);
   const [secondCart, setSecondCart] = useState(false);
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
@@ -84,7 +85,6 @@ const BookingDashboard: React.FC = () => {
     } catch (error:any) {
       const err= await error;
       toast.error(err.message)
-      
     }
   };
   const handleFirstCart = async () => {
@@ -103,8 +103,15 @@ const BookingDashboard: React.FC = () => {
     const lastDayOfMonth = endOfMonth(currentDate);
     const formattedFirstDay = format(firstDayOfMonth, "yyyy-MM-dd");
     const formattedLastDay = format(lastDayOfMonth, "yyyy-MM-dd");
-    const fetchData = () => {
-      GetDashboardCount(formattedFirstDay, formattedLastDay);
+    const fetchData = async() => {
+      try{
+        setIsLoading(true)
+        await GetDashboardCount(formattedFirstDay, formattedLastDay);
+      }catch(error){
+        console.error("Error fetching HR Dashboard data:", error);
+      }finally{
+        setIsLoading(false)
+      }
     };
     getAttendanceRecord();
     fetchData();
@@ -239,9 +246,9 @@ const BookingDashboard: React.FC = () => {
                   </div>
                   <Button
                     className=" h-10  bg-[#30A9FF] shadow-sm rounded flex justify-center items-center text-white"
-                    type="submit"
+                    type="submit" disabled={isLoading}
                   >
-                    <SearchIcon className="w-6 h-6" />
+                    {isLoading?<CircularProgress className="w-6 h-6" />:<SearchIcon className="w-6 h-6" />}
                   </Button>
                 </div>
               </form>

@@ -32,7 +32,7 @@ import toast, { Toaster } from "react-hot-toast";
 import useGetPartners from "../../../../Hooks/Partner/useGetPartners";
 import { useNavigate } from "react-router-dom";
 const PercentageForm = () => {
-  let [products] = useGetProducts({ header: header,category:"motor" });
+  let [products] = useGetProducts({ header: header, category: "motor" });
   let [companies] = useGetCompanies({ header: header });
   let [partners] = useGetPartners({ header: header, role: "partner" });
   let [makes] = useGetMakes({ header: header });
@@ -43,6 +43,7 @@ const PercentageForm = () => {
   let [policyTypes] = useGetPolicyTypes({ header: header });
   let [productSubTypes] = useGetProductSubTypes({ header: header });
   const [isVisibile, setIsVisibile] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedMake, setSelectedMake] = useState<IMakes>();
   const [filteredSubModels, setFilteredSubModels] = useState<IModels[]>([]);
   const [filteredSubcategories, setFilteredSubcategories] = useState<
@@ -51,7 +52,7 @@ const PercentageForm = () => {
   const [selectedPartnerId, setSelectedPartnerId] = useState("");
   const [partnerName, setPartnerName] = useState<string>("");
   const [selectedProduct, setSelectedProduct] = useState<IProducts>();
-const navigate = useNavigate()
+  const navigate = useNavigate();
   useEffect(() => {
     if (selectedMake) {
       const MakeId = selectedMake._id;
@@ -104,20 +105,24 @@ const navigate = useNavigate()
     partnerName: yup.string().nullable().required("Partner Name is required"),
   });
   const validate = validateFormValues(validationSchema);
+
   const onSubmit = async (policyFilter: IPercentagePolicy) => {
     policyFilter.partnerId = selectedPartnerId;
     policyFilter.partnerName = partnerName;
     try {
-    const res =   await addPercentageService({
+      setIsLoading(true);
+      const res = await addPercentageService({
         header,
         policy: policyFilter,
       });
-      if(res.status ==="success"){
-        navigate("/policy/motor-policies")
+      if (res.status === "success") {
+        navigate("/policy/motor-policies");
       }
     } catch (err: any) {
       const errObj = await err;
       toast.error(errObj.message);
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
@@ -775,12 +780,12 @@ const navigate = useNavigate()
               <Grid item xs={12}>
                 <Button
                   type="submit"
-                  disabled={submitting}
+                  disabled={isLoading}
                   variant="contained"
                   color="primary"
                   className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                 >
-                  {"Update Policies Percentage"}
+                  {isLoading ? "Submitting..." : "Update Policies Percentage"}
                 </Button>
               </Grid>
             </Grid>

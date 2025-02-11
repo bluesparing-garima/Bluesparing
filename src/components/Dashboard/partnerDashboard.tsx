@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { CardContent, Grid, TextField, Tooltip } from "@mui/material";
+import { CardContent, CircularProgress, Grid, TextField, Tooltip } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import { SafeKaroUser, header } from "../../context/constant";
 import { IPartnerData } from "./IDashboard";
@@ -34,6 +34,7 @@ const PartnerDashboard: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [firstCart, setFirstCart] = useState(true);
   const [secondCart, setSecondCart] = useState(false);
+  const[isLoading,setIsLoading] = useState(false)
   const [thirdCart, setThirdCart] = useState(false);
   const [selectedCard, setSelectedcard] = useState("1");
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
@@ -63,8 +64,15 @@ const PartnerDashboard: React.FC = () => {
     const lastDayOfMonth = endOfMonth(currentDate);
     const formattedFirstDay = format(firstDayOfMonth, "yyyy-MM-dd");
     const formattedLastDay = format(lastDayOfMonth, "yyyy-MM-dd");
-    const fetchData = () => {
-      GetDashboardCount(formattedFirstDay, formattedLastDay);
+    const fetchData = async() => {
+      try{
+setIsLoading(true)
+        await GetDashboardCount(formattedFirstDay, formattedLastDay);
+      }catch(error){
+        console.error("Error fetching HR Dashboard data:", error);
+      }finally{
+        setIsLoading(false);
+      }
     };
     fetchData();
     const intervalId = setInterval(fetchData, 30000);
@@ -220,29 +228,34 @@ const PartnerDashboard: React.FC = () => {
                       </div>
                       <button
                         className="md:w-10 md:h-10 h-4 w-4 bg-[#30A9FF] shadow-sm rounded flex justify-center items-center text-white"
-                        type="submit"
+                        type="submit" disabled={isLoading}
                       >
+                        {isLoading ? <CircularProgress 
+                        className="md:w-6 md:h-6 h-3 w-3"
+                         />: 
                         <SearchIcon className="md:w-6 md:h-6 h-3 w-3" />
+                        }
                       </button>
                     </div>
                   </form>
                 )}
               />
               <div className="flex justify-between items-center gap-x-2">
-                <Tooltip title="Download PDF">
+                
                   <button
                     className="md:w-10 md:h-10 h-4 w-4 bg-[#0095FF] shadow-sm rounded flex justify-center items-center text-white"
-                    onClick={handleDownloadPDF}
-                  >
-                    <PictureAsPdfSharpIcon className="md:w-6 md:h-6 h-3 w-3" />
-                  </button>
-                </Tooltip>
+                    onClick={handleDownloadPDF} disabled={isLoading}
+                  ><Tooltip title="Download PDF">
+                    {isLoading?<CircularProgress className="md:w-6 md:h-6 h-3 w-3" />:<PictureAsPdfSharpIcon className="md:w-6 md:h-6 h-3 w-3" />}
+                    </Tooltip>                      </button>
+                
                 <Tooltip title="Download Excel">
                   <button
                     className="md:w-10 md:h-10 h-4 w-4 bg-[#3BDB03] shadow-sm rounded flex justify-center items-center text-white"
                     onClick={handleDownloadExcel}
                   >
-                    <FileDownloadOutlinedIcon className="md:w-6 md:h-6 h-3 w-3" />
+                    {isLoading?<CircularProgress className="md:w-6 md:h-6 h-3 w-3" />:<FileDownloadOutlinedIcon className="md:w-6 md:h-6 h-3 w-3" />}
+                    
                   </button>
                 </Tooltip>
               </div>

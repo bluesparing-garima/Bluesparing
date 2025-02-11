@@ -32,6 +32,7 @@ const AddModelForm = (props: addModelFormProps) => {
   const pathName = location.pathname.split("/");
   const isAddEdit = pathName[pathName.length - 1] as string;
   const isAdd = isAddEdit === ADD;
+  const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
@@ -54,6 +55,7 @@ const AddModelForm = (props: addModelFormProps) => {
       .max(100, "Model cannot exceed 100 characters"),
   });
   const validate = validateFormValues(validationSchema);
+
   const onSubmit = async (model: IModelForm) => {
     model.makeId = selectedMakeId ? selectedMakeId : model.makeId;
     model.makeName = selectedMakeName ? selectedMakeName : model.makeName;
@@ -70,20 +72,26 @@ const AddModelForm = (props: addModelFormProps) => {
   };
   const callAddModelAPI = async (model: IModelForm) => {
     try {
+      setIsLoading(true);
       const newModel = await addModelService({ header, model });
       navigateToModels(`${newModel.message}`);
     } catch (error: any) {
       const err = await error;
       toast.error(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
   const callEditModelAPI = async (model: IModelForm) => {
     try {
+      setIsLoading(true);
       const newModel = await editModelService({ header, model });
       navigateToModels(`${newModel.message}`);
     } catch (error: any) {
       const err = await error;
       toast.error(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
   const handleSelectMake = async (e: IMakes) => {
@@ -181,12 +189,16 @@ const AddModelForm = (props: addModelFormProps) => {
               <Grid item xs={12}>
                 <Button
                   type="submit"
-                  disabled={submitting}
+                  disabled={isLoading}
                   variant="contained"
                   color="primary"
                   className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                 >
-                  {isAdd ? "Add Model" : "Update Model"}
+                  {isLoading
+                    ? "Submitting"
+                    : isAdd
+                    ? "Add Model"
+                    : "Update Model"}
                 </Button>
               </Grid>
             </Grid>

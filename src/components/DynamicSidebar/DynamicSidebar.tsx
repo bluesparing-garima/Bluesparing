@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import {
   CURRENT_ROLE_MENUS,
   CURRENT_SUBSID,
@@ -28,8 +28,8 @@ const DynamicSidebar: FC<DynamicSidebarProps> = ({
   setSidebarOpen,
 }) => {
   const [subsIds, setSubsIds] = useState<string[]>([]);
-  const [_, setSubsLocalData] = useLocalStorage<string[]>(CURRENT_SUBSID, []);
-  const [cuuentMenus, setCurrentMenu] = useLocalStorage<IMenu[]>(
+  const [, setSubsLocalData] = useLocalStorage<string[]>(CURRENT_SUBSID, []);
+  const [, setCurrentMenu] = useLocalStorage<IMenu[]>(
     CURRENT_ROLE_MENUS,
     []
   );
@@ -66,42 +66,51 @@ const DynamicSidebar: FC<DynamicSidebarProps> = ({
     }
   };
 
-  const isLockMenu = (id: string) => {
-    if (subsIds.includes(id)) {
-      return false;
-    } else {
-      return true;
-    }
-  };
-
-  function transformData(data: IMenu[]): MenuItem[] {
-    const map: { [key: string]: MenuItem } = {};
-    const menuItems: MenuItem[] = [];
-    data.forEach((item) => {
-      const checkLock = isLockMenu(item._id);
-      map[item._id] = {
-        id: item._id,
-        label: item.displayName,
-        svgIcon: checkLock ? lockSvg : item.cssClass || defaultMenu,
-        link: checkLock ? "unauthorized" : item.pageURL || undefined,
-        role: item.role || "",
-        isLocked: checkLock,
-        subMenu: [],
-      };
-    });
-    data.forEach((item) => {
-      const menuItem = map[item._id];
-      if (item.parentId && item.parentId !== "0") {
-        const parent = map[item.parentId];
-        if (parent) {
-          parent.subMenu!.push(menuItem);
-        }
+  const isLockMenu = useCallback(
+    (id: string) => {
+      if (subsIds.includes(id)) {
+        return false;
       } else {
-        menuItems.push(menuItem);
+        return true;
       }
-    });
-    return menuItems;
-  }
+    },
+    [subsIds]
+  );
+
+  const transformData = useCallback(
+    (data: IMenu[]): MenuItem[] => {
+      const map: { [key: string]: MenuItem } = {};
+      const menuItems: MenuItem[] = [];
+    data.sort((a, b) => (a.childOrder ?? 0) - (b.childOrder ?? 0));
+
+      data.forEach((item) => {
+        const checkLock = isLockMenu(item._id);
+        map[item._id] = {
+          id: item._id,
+          label: item.displayName,
+          svgIcon: checkLock ? lockSvg : item.cssClass || defaultMenu,
+          link: checkLock ? "unauthorized" : item.pageURL || undefined,
+          role: item.role || "",
+          isLocked: checkLock,
+          subMenu: [],
+        };
+      });
+
+      data.forEach((item) => {
+        const menuItem = map[item._id];
+        if (item.parentId && item.parentId !== "0") {
+          const parent = map[item.parentId];
+          if (parent) {
+            parent.subMenu!.push(menuItem);
+          }
+        } else {
+          menuItems.push(menuItem);
+        }
+      });
+      return menuItems;
+    },
+    [isLockMenu]
+  );
 
   useEffect(() => {
     const menuKey = mapAssignByRole();

@@ -9,12 +9,14 @@ import { ADD, header } from "../../../../context/constant";
 import { useLocation, useNavigate } from "react-router-dom";
 import { rolesPath } from "../../../../sitemap";
 import toast, { Toaster } from "react-hot-toast";
+import { useState } from "react";
 export interface addPolicyTypeFormProps {
   initialValues: IRoleForm;
 }
 const AddRoleForm = (props: addPolicyTypeFormProps) => {
   const { initialValues } = props;
   const navigate = useNavigate();
+  const[isLoading,setIsLoading] = useState(false);
   const location = useLocation() as any;
   const pathName = location.pathname.split("/");
   const isAddEdit = pathName[pathName.length - 1] as string;
@@ -54,20 +56,26 @@ const AddRoleForm = (props: addPolicyTypeFormProps) => {
   };
   const callAddRoleAPI = async (role: IRoleForm) => {
     try {
+      setIsLoading(true)
       const newRole = await addRoleService({ header, role });
       navigateToRoles(`${newRole.message}`);
     } catch (error:any) {
       const err = await error
       toast.error(err.message)
+    }finally{
+      setIsLoading(false)
     }
   };
   const callEditRoleAPI = async (role: IRoleForm) => {
     try {
+      setIsLoading(true)
       const newRole = await editRoleService({ header, role });
       navigateToRoles(`${newRole.message}`);
     } catch (error:any) {
       const err = await error
       toast.error(err.message)
+    }finally{
+      setIsLoading(false)
     }
   };
   return (
@@ -96,12 +104,12 @@ const AddRoleForm = (props: addPolicyTypeFormProps) => {
             <Grid item xs={12}>
               <Button
                 type="submit"
-                disabled={submitting}
+                disabled={isLoading}
                 variant="contained"
                 color="primary"
                 className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
               >
-                {isAdd ? "Add Role" : "Update Role"}
+                {isLoading ? 'Submitting...' : isAdd ? "Add Role" : "Update Role"}
               </Button>
             </Grid>
           </Grid>

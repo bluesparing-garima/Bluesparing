@@ -38,6 +38,7 @@ const MonthlyFinalPremium = () => {
   const [partnerFinalPremium, setPartnerFinalPremium] = useState<
   IFinalNetPremiumPartner[]
   >([]);
+  const[isLoading,setIsLoading] = useState(false)
   const [brokerFinalPremium, setBrokerFinalPremium] = useState<
   IFinalNetPremiumBroker[]
   >([]);
@@ -48,6 +49,7 @@ const MonthlyFinalPremium = () => {
     setSelectedStartDate(formattedFirstDay);
     setSelectedEndDate(formattedLastDay);
     try {
+      setIsLoading(true)
       const partnerResponse = await GetMonthlyBrokerFinalPremiumService({
         header,
         startDate: formattedFirstDay,
@@ -71,6 +73,8 @@ const MonthlyFinalPremium = () => {
     } catch (error) {
       const err: any = await error;
       toast.error(err.message);
+    }finally{
+      setIsLoading(false)
     }
   };
   const handleDownloadExcel = () => {
@@ -197,13 +201,13 @@ const MonthlyFinalPremium = () => {
                 <Grid item lg={3} md={3} sm={6} xs={12}>
                   <Button
                     type="submit"
-                    disabled={submitting}
+                    disabled={isLoading}
                     variant="contained"
                     color="primary"
                     className="w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                   >
-                    Get Records
-                  </Button>
+                    {isLoading?'Submitting':'Get Records'}
+                                      </Button>
                 </Grid>
               </Grid>
             </form>

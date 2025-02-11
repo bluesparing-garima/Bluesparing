@@ -42,8 +42,8 @@ const Attendance: React.FC = () => {
   const fetchEmployeeData = async () => {
     try {
       const res = await GetAttendanceDashboardService({ header });
-      setAttendanceData(res.data);
-      setEmployees(res.data["Account"]?.employees);
+      setAttendanceData(res?.data);
+      setEmployees(res?.data["Account"]?.employees);
       setSelectedCategoryIndex(0);
     } catch (error) {
       toast.error("error");
@@ -58,6 +58,7 @@ const Attendance: React.FC = () => {
     const filter: string = departments[selectedCategoryIndex];
     if (attendanceData) {
       const data = attendanceData[filter as keyof IAttendanceData]?.employees;
+      console.log("data",data);
       setEmployees(data);
     }
   }, [selectedCategoryIndex, departments, attendanceData]);
@@ -152,7 +153,7 @@ const Attendance: React.FC = () => {
             </div>
           </div>
           <Grid container spacing={4} justifyContent="center" mx="auto">
-            {employees.map((employee) => {
+            {employees?.map((employee) => {
               return <AttendanceCard employee={employee} />;
             })}
           </Grid>

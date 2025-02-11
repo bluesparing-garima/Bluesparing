@@ -42,6 +42,7 @@ const AddQuotation = () => {
   const pathName = location.pathname.split("/");
   const isAdd = pathName[pathName.length - 1] === ADD;
   const [editLeadDetails, setEditLeadDetails] = useState<ILeadForm>();
+  const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [image, setImage] = useState<any>(null);
   const [documents, setDocuments] = useState<Document[]>([
@@ -56,9 +57,9 @@ const AddQuotation = () => {
         .then((leadDetails) => {
           setViewQuotationDetails(leadDetails.data);
         })
-        .catch(async(error) => {
-          const err = await error
-          toast.error(err.message)
+        .catch(async (error) => {
+          const err = await error;
+          toast.error(err.message);
         });
     }
   }, [isAdd, leadId]);
@@ -125,9 +126,9 @@ const AddQuotation = () => {
           }
           setDocuments(updatedDocuments);
         })
-        .catch(async(error) => {
-          const err = await error
-          toast.error(err.message)
+        .catch(async (error) => {
+          const err = await error;
+          toast.error(err.message);
         });
     }
   }, [isAdd, leadId]);
@@ -158,8 +159,8 @@ const AddQuotation = () => {
     if (editLeadDetails) {
       quotationForm.partnerId = userData.profileId;
       quotationForm.partnerName = userData.name;
-       editFrom.append("partnerId", editLeadDetails.partnerId!);
-    editFrom.append("partnerName", editLeadDetails?.partnerName!);
+      editFrom.append("partnerId", editLeadDetails.partnerId!);
+      editFrom.append("partnerName", editLeadDetails?.partnerName!);
       editFrom.append("category", editLeadDetails.category);
       editFrom.append("policyType", editLeadDetails.policyType);
       editFrom.append("caseType", editLeadDetails.caseType);
@@ -196,6 +197,7 @@ const AddQuotation = () => {
       }
     }
     try {
+      setIsLoading(true);
       const newQuotation = await addQuotationService({
         header,
         quotation: formData,
@@ -203,9 +205,11 @@ const AddQuotation = () => {
       if (newQuotation.status === "success") {
         navigate(leadsPath());
       }
-    } catch (error:any) {
-      const err = await error
-      toast.error(err.message)
+    } catch (error: any) {
+      const err = await error;
+      toast.error(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
   const callEditLeadAPI = async (leadForm: any, leadId: string) => {
@@ -217,9 +221,9 @@ const AddQuotation = () => {
       });
       if (newLead.status === "success") {
       }
-    } catch (error:any) {
-      const err = await error
-      toast.error(err.message)
+    } catch (error: any) {
+      const err = await error;
+      toast.error(err.message);
     }
   };
   const handleStatus = (
@@ -279,7 +283,7 @@ const AddQuotation = () => {
               Lead /
             </Link>
             <span className="text-grey-600 text-sm">{title}</span>
-            
+
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
@@ -511,8 +515,12 @@ const AddQuotation = () => {
                             {submitError}
                           </div>
                         )}
-                        <Button variant="contained" type="submit">
-                          submit
+                        <Button
+                          variant="contained"
+                          type="submit"
+                          disabled={isLoading}
+                        >
+                          {isLoading ? "Submitting..." : "submit"}
                         </Button>
                         {userData.role.toLowerCase() === "operation" ? (
                           <>

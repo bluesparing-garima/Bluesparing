@@ -34,11 +34,10 @@ const MonthlyCompanyFilterPayOut = () => {
   let [partners] = useGetPartners({ header: header, role: "partner" });
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [selectedPartnerCode, setSelectedPartnerCode] = useState<string>();
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedPartnerName, setSelectedPartnerName] = useState<string>();
   const [selectedPartnerId, setSelectedPartnerId] = useState<string>();
-  const [companyDetails, setCompanyDetails] = useState<ICompanyView[]>(
-    []
-  );
+  const [companyDetails, setCompanyDetails] = useState<ICompanyView[]>([]);
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
       schema = schema();
@@ -53,7 +52,7 @@ const MonthlyCompanyFilterPayOut = () => {
     }
   };
   const handleDownloadExcel = () => {
-    generateCompanyViewExcel(companyDetails)
+    generateCompanyViewExcel(companyDetails);
   };
   const validationSchema = yup.object().shape({
     startDate: yup.string().required("Start Date is required").nullable(),
@@ -63,13 +62,14 @@ const MonthlyCompanyFilterPayOut = () => {
   const validate = validateFormValues(validationSchema);
   useEffect(() => {
     filterMonthlyPartnerPaymentWithCompany(startDate!, endDate!, partnerId!);
-     // eslint-disable-next-line 
+    // eslint-disable-next-line
   }, [startDate, endDate, partnerId]);
   const filterMonthlyPartnerPaymentWithCompany = async (
     startDate: string,
     endDate: string,
     partnerId: string
   ) => {
+    setIsLoading(true);
     GetMonthlyPartnerPaymentWithCompanyService({
       header,
       partnerId: partnerId!,
@@ -86,6 +86,9 @@ const MonthlyCompanyFilterPayOut = () => {
       .catch(async (error) => {
         const err = await error;
         toast.error(err.message);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
   const onSubmit = async (value: any) => {
@@ -102,25 +105,25 @@ const MonthlyCompanyFilterPayOut = () => {
       <div className="bg-blue-200 p-7 mt-3">
         <Paper elevation={3} style={{ padding: 20 }}>
           <div className="flex justify-between items-center">
-          <Typography
-            variant="h5"
-            className="text-safekaroDarkOrange"
-            gutterBottom
-            display="inline"
-          >
-            {title}{" "}
-            <span className="text-addButton">
-              {selectedPartnerName} ({selectedPartnerCode})
-            </span>
-          </Typography>
-          <Tooltip title="download Excel">
-            <button
-              className="md:w-10 md:h-10 h-4 w-4 bg-[#3BDB03] shadow-sm rounded flex justify-center items-center text-white"
-              onClick={handleDownloadExcel}
+            <Typography
+              variant="h5"
+              className="text-safekaroDarkOrange"
+              gutterBottom
+              display="inline"
             >
-              <FileDownloadOutlinedIcon className="md:w-6 md:h-6 h-3 w-3" />
-            </button>
-          </Tooltip>
+              {title}{" "}
+              <span className="text-addButton">
+                {selectedPartnerName} ({selectedPartnerCode})
+              </span>
+            </Typography>
+            <Tooltip title="download Excel">
+              <button
+                className="md:w-10 md:h-10 h-4 w-4 bg-[#3BDB03] shadow-sm rounded flex justify-center items-center text-white"
+                onClick={handleDownloadExcel}
+              >
+                <FileDownloadOutlinedIcon className="md:w-6 md:h-6 h-3 w-3" />
+              </button>
+            </Tooltip>
           </div>
           <React.Fragment>
             <Form
@@ -129,7 +132,6 @@ const MonthlyCompanyFilterPayOut = () => {
               render={({ handleSubmit, submitting, errors, values }) => (
                 <form onSubmit={handleSubmit} noValidate>
                   <Grid container spacing={2} mt={2} mb={2}>
-                    
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Field name="startDate">
                         {({ input, meta }) => (
@@ -222,12 +224,12 @@ const MonthlyCompanyFilterPayOut = () => {
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Button
                         type="submit"
-                        disabled={submitting}
+                        disabled={isLoading}
                         variant="contained"
                         color="primary"
                         className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                       >
-                        {"Get Records"}
+                        {isLoading ? "Submitting" : "Get Records"}
                       </Button>
                     </Grid>
                   </Grid>

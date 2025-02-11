@@ -57,6 +57,7 @@ const AddBlogForm = (props: addPolicyTypeFormProps) => {
   const isAddEdit = pathName[pathName.length - 1] as string;
   const isAdd = isAddEdit === ADD;
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const[isLoading,setIsLoading]=useState(false)
   const [editorContent, setEditorContent] = useState<string>("");
   const quillRef = useRef<ReactQuill | null>(null);
   useEffect(() => {
@@ -138,21 +139,25 @@ const AddBlogForm = (props: addPolicyTypeFormProps) => {
   };
   const callAddBlogAPI = async (blogForm: any) => {
     try {
+      setIsLoading(true)
       const blog = await addBlogServices({ header, blog: blogForm });
       navigateToBlogs(`${blog.message}`);
     } catch (error: any) {
       const err = await error;
       toast.error(err.message);
+    }finally{
+      setIsLoading(false)
     }
   };
   const callEditBlogAPI = async (blogForm: any) => {
     try {
+      setIsLoading(true)
       const blog = await editBlogService({ header, blog: blogForm, blogId });
       navigateToBlogs(`${blog.message}`);
     } catch (error: any) {
       const err = await error;
       toast.error(err.message);
-    }
+    }setIsLoading(false)
   };
   const handleFileInputChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -352,12 +357,12 @@ const AddBlogForm = (props: addPolicyTypeFormProps) => {
               <Grid item xs={12}>
                 <Button
                   type="submit"
-                  disabled={submitting}
+                  disabled={isLoading}
                   variant="contained"
                   color="primary"
                   className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                 >
-                  {isAdd ? "Add Blog" : "Update Blog"}
+                  {isLoading?'Submitting...':isAdd ? "Add Blog" : "Update Blog"}
                 </Button>
               </Grid>
             </Grid>

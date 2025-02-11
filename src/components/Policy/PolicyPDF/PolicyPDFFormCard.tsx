@@ -22,6 +22,7 @@ const PolicyPDFFormCard = () => {
   const location = useLocation();
   let [companies] = useGetCompanies({ header: header });
   let [policyTypes] = useGetPolicyTypes({ header: header });
+  const[isLoading,setIsLoading] = useState(false)
   let [brokers] = useGetBrokers({ header: header });
   const pathName = location.pathname.split("/");
   const isAdd = pathName[pathName.length - 1] === ADD;
@@ -61,6 +62,7 @@ const PolicyPDFFormCard = () => {
   const onSubmit = (values: FormValues) => {
     if (values.file) {
       try {
+        setIsLoading(true)
         const formData = new FormData();
         setPolicyFile(values.file!);
         formData.append("file", values.file);
@@ -82,6 +84,8 @@ const PolicyPDFFormCard = () => {
           });
       } catch (error) {
         console.error("Error uploading file:", error);
+      }finally{
+        setIsLoading(false)
       }
     } else {
     }
@@ -247,12 +251,12 @@ const PolicyPDFFormCard = () => {
                   <Grid item lg={4} xs={12}>
                     <Button
                       type="submit"
-                      disabled={submitting}
+                      disabled={isLoading}
                       variant="contained"
                       color="primary"
                       className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                     >
-                      Upload PDF
+                      {isLoading?'Submitting...':'Upload PDF'}
                     </Button>
                   </Grid>
                 </Grid>

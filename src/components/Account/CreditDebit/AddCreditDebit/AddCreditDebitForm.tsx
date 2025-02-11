@@ -37,6 +37,7 @@ export interface addCreditDebitFormProps {
 const AddCreditDebitForm = (props: addCreditDebitFormProps) => {
   let { initialValues } = props;
   const navigate = useNavigate();
+  const[isLoading, setIsLoading] = useState(false);
   const location = useLocation() as any;
   const pathName = location.pathname.split("/");
   const isAddEdit = pathName[pathName.length - 1] as string;
@@ -91,6 +92,7 @@ const AddCreditDebitForm = (props: addCreditDebitFormProps) => {
   };
   const callAddCreditDebitAPI = async (creditDebit: ICreditDebitForm) => {
     try {
+      setIsLoading(true)
       const creditdebitResponse = await addAccountManageService({
         header,
         creditDebit,
@@ -104,6 +106,8 @@ const AddCreditDebitForm = (props: addCreditDebitFormProps) => {
       const err = await error;
       toast.error(err.message);
       return { [FORM_ERROR]: `error` };
+    }finally{
+      setIsLoading(false)
     }
   };
   const callEditCreditDebitAPI = async (
@@ -111,6 +115,7 @@ const AddCreditDebitForm = (props: addCreditDebitFormProps) => {
     creditDebitId: string
   ) => {
     try {
+      setIsLoading(true)
       const creditdebitResponse = await editCreditDebitService({
         header,
         creditDebit,
@@ -125,6 +130,8 @@ const AddCreditDebitForm = (props: addCreditDebitFormProps) => {
       const err = await error;
       toast.error(err.message);
       return { [FORM_ERROR]: `error` };
+    }finally{
+      setIsLoading(false)
     }
   };
   const validateFormValues = (schema: any) => async (values: any) => {
@@ -590,8 +597,8 @@ const AddCreditDebitForm = (props: addCreditDebitFormProps) => {
                           {submitError}
                         </div>
                       )}
-                      <Button variant="contained" type="submit">
-                        Submit
+                      <Button variant="contained" type="submit" disabled={isLoading}>
+                        {isLoading ? 'Submitting':'Submit'}
                       </Button>
                     </Grid>
                   </Grid>

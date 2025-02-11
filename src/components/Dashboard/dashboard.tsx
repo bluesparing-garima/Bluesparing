@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import {
   Button,
   CardContent,
+  CircularProgress,
   FormControl,
   Grid,
   InputLabel,
@@ -52,6 +53,7 @@ const Dashboard: React.FC = () => {
   const [thirdCart, setThirdCart] = useState(false);
   const [fourCart, setFourCart] = useState(false);
   const [fifthCart, setFifthCart] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [categoryEntries, setCategoryEntries] = useState([]);
   const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState(0);
@@ -62,7 +64,7 @@ const Dashboard: React.FC = () => {
     getAdminDashboardService({
       header,
       startDate,
-      endDate
+      endDate,
     })
       .then((dashboardData) => {
         setIsVisible(true);
@@ -89,8 +91,15 @@ const Dashboard: React.FC = () => {
     const lastDayOfMonth = endOfMonth(currentDate);
     const formattedFirstDay = format(firstDayOfMonth, "yyyy-MM-dd");
     const formattedLastDay = format(lastDayOfMonth, "yyyy-MM-dd");
-    const fetchData = () => {
-      GetDashboardCount(formattedFirstDay, formattedLastDay);
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        await GetDashboardCount(formattedFirstDay, formattedLastDay);
+      } catch (error) {
+        console.error("Error fetching HR Dashboard data:", error);
+      } finally {
+        setIsLoading(false);
+      }
     };
     fetchData();
     const intervalId = setInterval(fetchData, 30000);
@@ -252,7 +261,7 @@ const Dashboard: React.FC = () => {
                           className=" h-10 w-10 bg-[#30A9FF] shadow-sm rounded flex justify-center items-center text-white"
                           type="submit"
                         >
-                          <SearchIcon className="w-6 h-6 " />
+                            <SearchIcon className="w-6 h-6 " />
                         </button>
                       </div>
                     </form>
@@ -272,15 +281,14 @@ const Dashboard: React.FC = () => {
                   <button
                     className="h-10 w-10 bg-[#3BDB03] shadow-sm rounded flex justify-center items-center text-white"
                     onClick={handleDownloadExcel}
-                  >
-                    <FileDownloadOutlinedIcon className="w-6 h-6 " />
+                  ><FileDownloadOutlinedIcon className="w-6 h-6 " />
                   </button>
                 </Tooltip>
                 <button className=" h-10 w-10 bg-[#E79E28] shadow-sm rounded flex justify-center items-center text-white">
-                  <DashboardMenu
+                {isLoading?<CircularProgress className="w-6 h-6 "/>:<DashboardMenu
                     selectedCategory={selectedCategory}
                     className="w-6 h-6 "
-                  />
+                  />}
                 </button>
               </div>
             </div>
@@ -295,7 +303,6 @@ const Dashboard: React.FC = () => {
                         {firstCart && (
                           <>
                             {data.map((item, index) => (
-                              <>
                                 <div key={index}>
                                   <div className="bg-blue-200 w-full">
                                     <div className="md:flex hidden w-full justify-center items-center">
@@ -320,7 +327,8 @@ const Dashboard: React.FC = () => {
                                                   category
                                                 )
                                               }
-                                            >
+                                              disabled={isLoading}
+                                            >{isLoading?<CircularProgress className="w-6 h-6 "/>:
                                               <Tooltip
                                                 title={`View ${category} Data`}
                                               >
@@ -335,7 +343,7 @@ const Dashboard: React.FC = () => {
                                                   {category ||
                                                     "Unnamed Category"}
                                                 </h2>
-                                              </Tooltip>
+                                              </Tooltip>}
                                             </Button>
                                           </Grid>
                                         )
@@ -407,7 +415,6 @@ const Dashboard: React.FC = () => {
                                     </Grid>
                                   </div>
                                 </div>
-                              </>
                             ))}
                           </>
                         )}
@@ -612,6 +619,7 @@ const renderCountBox = (
   link?: any,
   selectedCategory?: any
 ) => {
+  console.log(link);
   if (link === "/total payout amount") {
     link = "/payouts";
   }
@@ -639,10 +647,10 @@ const renderCountBox = (
   if (link === "/monthly payin balance") {
     link = "/payins/balance/monthly";
   }
-  if (link === "/total left dist.") {
+  if (link === "/total left dist") {
     link = "/payins/leftDistributed";
   }
-  if (link === "/monthly payin left dist.") {
+  if (link === "/monthly payin left dist") {
     link = "/payins/leftDistributed/monthly";
   }
   if (link === "/monthly paid payout amount") {
@@ -651,7 +659,7 @@ const renderCountBox = (
   if (link === "/monthly payout balance") {
     link = "/payouts/monthly/balance";
   }
-  if (link === "/monthly payout left dist.") {
+  if (link === "/monthly payout left dist") {
     link = "/payouts/monthly/leftDistributed";
   }
   if (link === "/total paid payout amount") {
@@ -660,7 +668,7 @@ const renderCountBox = (
   if (link === "/total payout balance") {
     link = "/payouts/balance";
   }
-  if (link === "/total payout left dist.") {
+  if (link === "/total payout left dist") {
     link = "/payouts/leftDistributed";
   }
   if (link === "/monthly net premium") {
@@ -687,10 +695,7 @@ const renderCountBox = (
         >
           {title}
         </Typography>
-        <Typography
-          variant="h5"
-          className="text-base font-bold text-[#202224]"
-        >
+        <Typography variant="h5" className="text-base font-bold text-[#202224]">
           {count}
         </Typography>
       </div>

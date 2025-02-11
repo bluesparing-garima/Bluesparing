@@ -50,6 +50,7 @@ const AddLeadFormCard = (props: addLeadRequestFormProps) => {
   let [companies] = useGetCompanies({ header: header });
   const [errorMessage, setErrorMessage] = useState("");
   const [selectedPolicyCreatedBy, setSelectedPolicyCreatedBy] = useState();
+  const[isLoading,setIsLoading] = useState(false);
   const [selectedPartnerName, setSelectedPartnerName] = useState("");
   const [selectedPartnerId, setSelectedPartnerId] = useState("");
   const [selectedRMName, setSelectedRMName] = useState("");
@@ -172,6 +173,7 @@ const AddLeadFormCard = (props: addLeadRequestFormProps) => {
   };
   const callAddLeadAPI = async (lead: any, form: any) => {
     try {
+      setIsLoading(true)
       const newLead = await addLeadsService({
         header,
         lead,
@@ -186,6 +188,8 @@ const AddLeadFormCard = (props: addLeadRequestFormProps) => {
       toast.error(errObj.message)
       setDocuments([{ docName: "", file: "" }]);
       return { [FORM_ERROR]: `error${errObj.message}` };
+    }finally{
+      setIsLoading(false)
     }
   };
   const validateFormValues = (schema: any) => async (values: any) => {
@@ -552,8 +556,8 @@ const AddLeadFormCard = (props: addLeadRequestFormProps) => {
                           {submitError}
                         </div>
                       )}
-                      <Button variant="contained" type="submit">
-                        submit
+                      <Button variant="contained" type="submit" disabled={isLoading}>
+                        {isLoading?'Submitting...':'submit'}
                       </Button>
                     </Grid>
                   </Grid>

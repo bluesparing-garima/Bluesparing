@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, Grid, Paper, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
@@ -24,6 +24,7 @@ const UploadLogo = () => {
   const storedTheme: any = localStorage.getItem("user");
   const UserData = storedTheme ? JSON.parse(storedTheme) : null;
   const navigate = useNavigate();
+  const[isLoading,setIsLoading] = useState(false)
   const onSubmit = (data: any) => {
     const team = new FormData();
     team.append("companyLogo", data.companyLogo);
@@ -44,6 +45,7 @@ const UploadLogo = () => {
   };
   const callEditTeamApi = async (data: AddEditTeamProps) => {
     try {
+      setIsLoading(true)
       const res = await editTeamService(data);
 
       if (res.data.companyLogo) {
@@ -53,6 +55,8 @@ const UploadLogo = () => {
     } catch (error: any) {
       const err = await error;
       toast.error(err.message);
+    }finally{
+      setIsLoading(false)
     }
   };
   const validate = (values: any) => {
@@ -139,12 +143,12 @@ const UploadLogo = () => {
                   <Grid item lg={4} xs={12}>
                     <Button
                       type="submit"
-                      disabled={submitting}
+                      disabled={isLoading}
                       variant="contained"
                       color="primary"
                       className="w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                     >
-                      Upload Logo
+                      {isLoading?'Submitting...':'Upload Logo'}
                     </Button>
                   </Grid>
                 </Grid>

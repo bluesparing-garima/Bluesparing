@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { TextField, Button, Grid } from "@mui/material";
 import editCategoryService from "../../../../api/Category/EditCategory/editCategoryService";
 import { ICategoryForm } from "../ICategory";
@@ -16,6 +16,7 @@ export interface addPolicyTypeFormProps {
 const AddCategoryForm = (props: addPolicyTypeFormProps) => {
   const { initialValues } = props;
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const location = useLocation() as any;
   const pathName = location.pathname.split("/");
   const isAddEdit = pathName[pathName.length - 1] as string;
@@ -41,6 +42,7 @@ const AddCategoryForm = (props: addPolicyTypeFormProps) => {
       .max(100, "Category cannot exceed 100 characters"),
   });
   const validate = validateFormValues(validationSchema);
+
   const onSubmit = async (category: ICategoryForm) => {
     if (isAdd) {
       callAddCategoryAPI(category);
@@ -55,21 +57,26 @@ const AddCategoryForm = (props: addPolicyTypeFormProps) => {
   };
   const callAddCategoryAPI = async (category: ICategoryForm) => {
     try {
+      setIsLoading(true);
       const newCategory = await addCategoryServices({ header, category });
       navigateToCategories(`${newCategory.message}`);
     } catch (error: any) {
       const err = await error;
       toast.error(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
   const callEditCategoryAPI = async (category: ICategoryForm) => {
     try {
+      setIsLoading(true);
       const newCategory = await editCategoryService({ header, category });
       navigateToCategories(`${newCategory.message}`);
     } catch (error: any) {
       const err = await error;
       toast.error(err.message);
     }
+    setIsLoading(false);
   };
   return (
     <>
@@ -98,12 +105,16 @@ const AddCategoryForm = (props: addPolicyTypeFormProps) => {
               <Grid item xs={12}>
                 <Button
                   type="submit"
-                  disabled={submitting}
+                  disabled={isLoading}
                   variant="contained"
                   color="primary"
                   className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                 >
-                  {isAdd ? "Add Category" : "Update Category"}
+                  {isLoading
+                    ? "Submitting..."
+                    : isAdd
+                    ? "Add Category"
+                    : "Update Category"}
                 </Button>
               </Grid>
             </Grid>

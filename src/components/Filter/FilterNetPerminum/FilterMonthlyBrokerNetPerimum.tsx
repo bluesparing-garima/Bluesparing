@@ -35,6 +35,7 @@ const FilterMonthlyBrokerNetPremium = () => {
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [selectedBrokerCode, setSelectedBrokerCode] = useState<string>();
   const [selectedBrokerName, setSelectedBrokerName] = useState<string>();
+  const[isLoading,setIsLoading] = useState(false);
   const [selectedBrokerId, setSelectedBrokerId] = useState<string>();
   const [companyDetails, setCompanyDetails] = useState<INetPremiumCompany[]>(
     []
@@ -69,7 +70,7 @@ const FilterMonthlyBrokerNetPremium = () => {
     startDate: string,
     endDate: string,
     brokerId: string
-  ) => {
+  ) => {setIsLoading(true)
     GetMonthlyBrokerCompanyNetPremiumService({
       header,
       brokerId: brokerId!,
@@ -86,7 +87,9 @@ const FilterMonthlyBrokerNetPremium = () => {
       .catch(async (error) => {
         const err = await error;
         toast.error(err.message);
-      });
+      }).finally(()=>{
+        setIsLoading(false)
+      })
   };
   const onSubmit = async (value: any) => {
     const newStartDate = dayjs(value.startDate).format(DAY_FORMAT);
@@ -222,12 +225,12 @@ const FilterMonthlyBrokerNetPremium = () => {
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Button
                         type="submit"
-                        disabled={submitting}
+                        disabled={isLoading}
                         variant="contained"
                         color="primary"
                         className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                       >
-                        {"Get Records"}
+                        {isLoading?'Submitting...':"Get Records"}
                       </Button>
                     </Grid>
                   </Grid>

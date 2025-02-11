@@ -9,12 +9,14 @@ import { ADD, header } from "../../../../context/constant";
 import { useLocation, useNavigate } from "react-router-dom";
 import { companyPath } from "../../../../sitemap";
 import toast, { Toaster } from "react-hot-toast";
+import { useState } from "react";
 export interface addCompanyFormProps {
   initialValues: ICompanyForm;
 }
 const AddCompanyForm = (props: addCompanyFormProps) => {
   const { initialValues } = props;
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const location = useLocation() as any;
   const pathName = location.pathname.split("/");
   const isAddEdit = pathName[pathName.length - 1] as string;
@@ -40,6 +42,7 @@ const AddCompanyForm = (props: addCompanyFormProps) => {
       .max(100, "Company cannot exceed 100 characters"),
   });
   const validate = validateFormValues(validationSchema);
+
   const onSubmit = async (company: ICompanyForm) => {
     if (isAdd) {
       callAddCompanyAPI(company);
@@ -54,20 +57,26 @@ const AddCompanyForm = (props: addCompanyFormProps) => {
   };
   const callAddCompanyAPI = async (company: ICompanyForm) => {
     try {
+      setIsLoading(true);
       const newCompany = await addCompanyService({ header, company });
       navigateToCompany(`${newCompany.message}`);
     } catch (error: any) {
       const err = await error;
       toast.error(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
   const callEditCompanyAPI = async (company: ICompanyForm) => {
     try {
+      setIsLoading(true);
       const newCompany = await editCompanyService({ header, company });
       navigateToCompany(`${newCompany.message}`);
     } catch (error: any) {
       const err = await error;
       toast.error(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
@@ -97,12 +106,16 @@ const AddCompanyForm = (props: addCompanyFormProps) => {
               <Grid item xs={12}>
                 <Button
                   type="submit"
-                  disabled={submitting}
+                  disabled={isLoading}
                   variant="contained"
                   color="primary"
                   className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                 >
-                  {isAdd ? "Add Company" : "Update Company"}
+                  {isLoading
+                    ? "Submitting"
+                    : isAdd
+                    ? "Add Company"
+                    : "Update Company"}
                 </Button>
               </Grid>
             </Grid>

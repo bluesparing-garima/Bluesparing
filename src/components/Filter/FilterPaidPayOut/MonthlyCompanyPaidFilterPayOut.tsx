@@ -34,6 +34,7 @@ const MonthlyCompanyPaidFilterPayOut = () => {
   let [partners] = useGetPartners({ header: header, role: "partner" });
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [selectedPartnerCode, setSelectedPartnerCode] = useState<string>();
+  const[isLoading,setIsLoading] = useState(false);
   const [selectedPartnerName, setSelectedPartnerName] = useState<string>();
   const [selectedPartnerId, setSelectedPartnerId] = useState<string>();
   const [companyDetails, setCompanyDetails] = useState<ICompanyPaid[]>([]);
@@ -67,7 +68,7 @@ const MonthlyCompanyPaidFilterPayOut = () => {
     startDate: string,
     endDate: string,
     partnerId: string
-  ) => {
+  ) => {setIsLoading(true)
     GetMonthlyPartnerWithCompanyPaidService({
       header,
       partnerId: partnerId!,
@@ -84,7 +85,9 @@ const MonthlyCompanyPaidFilterPayOut = () => {
       .catch(async (error) => {
         const err = await error;
         toast.error(err.message);
-      });
+      }).finally(()=>{
+        setIsLoading(false)
+      })
   };
   const onSubmit = async (value: any) => {
     const newStartDate = dayjs(value.startDate).format(DAY_FORMAT);
@@ -220,12 +223,12 @@ const MonthlyCompanyPaidFilterPayOut = () => {
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Button
                         type="submit"
-                        disabled={submitting}
+                        disabled={isLoading}
                         variant="contained"
                         color="primary"
                         className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                       >
-                        {"Get Records"}
+                        {isLoading?'Submitting...':"Get Records"}
                       </Button>
                     </Grid>
                   </Grid>

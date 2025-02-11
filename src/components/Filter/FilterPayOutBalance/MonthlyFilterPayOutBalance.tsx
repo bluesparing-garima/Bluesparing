@@ -27,6 +27,7 @@ const MonthlyFilterPayOutBalance = () => {
   const location = useLocation();
   const selectedCategory = location.state as string;
   const [selectedStartDate, setSelectedStartDate] = useState();
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedEndDate, setSelectedEndDate] = useState();
   const [partnerTotalPayment, setPartnerTotalPayment] = useState<number>(0);
   const [partnerPayment, setPartnerPayment] = useState<IPartnerPaid[]>([]);
@@ -34,6 +35,7 @@ const MonthlyFilterPayOutBalance = () => {
     formattedFirstDay: any,
     formattedLastDay: any
   ) => {
+    setIsLoading(true);
     setSelectedStartDate(formattedFirstDay);
     setSelectedEndDate(formattedLastDay);
     GetMonthlyPayoutBalanceService({
@@ -49,6 +51,9 @@ const MonthlyFilterPayOutBalance = () => {
       .catch(async (error) => {
         const err = await error;
         toast.error(err.message);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
   useEffect(() => {
@@ -58,7 +63,7 @@ const MonthlyFilterPayOutBalance = () => {
     let formattedFirstDay = format(firstDayOfMonth, "yyyy-MM-dd");
     let formattedLastDay = format(lastDayOfMonth, "yyyy-MM-dd");
     fetchPartnerPayments(formattedFirstDay, formattedLastDay);
-     // eslint-disable-next-line 
+    // eslint-disable-next-line
   }, []);
   const handleDownloadExcel = () => {
     generatePartnerPaidExcel(partnerPayment);
@@ -112,7 +117,6 @@ const MonthlyFilterPayOutBalance = () => {
             render={({ handleSubmit, submitting, errors, values }) => (
               <form onSubmit={handleSubmit} noValidate>
                 <Grid container spacing={2} mt={2} mb={2}>
-                  
                   <Grid item lg={3} md={3} sm={6} xs={12}>
                     <Field name="startDate">
                       {({ input, meta }) => (
@@ -166,12 +170,12 @@ const MonthlyFilterPayOutBalance = () => {
                   <Grid item lg={3} md={3} sm={6} xs={12}>
                     <Button
                       type="submit"
-                      disabled={submitting}
+                      disabled={isLoading}
                       variant="contained"
                       color="primary"
                       className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                     >
-                      {"Get Records"}
+                      {isLoading ? "Submitting" : "Get Records"}
                     </Button>
                   </Grid>
                 </Grid>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { TextField, Button, Grid } from "@mui/material";
 import { IPolicyTypeForm } from "../IPolicyType";
 import { Form, Field } from "react-final-form";
@@ -16,6 +16,7 @@ export interface AddPolicyTypeFormProps {
 const AddPolicyTypeForm = (props: AddPolicyTypeFormProps) => {
   const { initialValues } = props;
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const location = useLocation() as any;
   const pathName = location.pathname.split("/");
   const isAddEdit = pathName[pathName.length - 1] as string;
@@ -41,6 +42,7 @@ const AddPolicyTypeForm = (props: AddPolicyTypeFormProps) => {
       .max(100, "Policy Type cannot exceed 100 characters"),
   });
   const validate = validateFormValues(validationSchema);
+
   const onSubmit = async (policyType: IPolicyTypeForm) => {
     if (isAdd) {
       callAddPolicyTypeAPI(policyType);
@@ -55,60 +57,70 @@ const AddPolicyTypeForm = (props: AddPolicyTypeFormProps) => {
   };
   const callAddPolicyTypeAPI = async (policyType: IPolicyTypeForm) => {
     try {
+      setIsLoading(true);
       const newPolicyType = await addPolicyTypeService({ header, policyType });
       navigateToPolicyTypes(`${newPolicyType.message}`);
     } catch (error: any) {
-      const err = await error
-      toast.error(err.message)
+      const err = await error;
+      toast.error(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
   const callEditPolicyTypeAPI = async (policyType: IPolicyTypeForm) => {
     try {
+      setIsLoading(true);
       const newPolicyType = await editPolicyTypeService({ header, policyType });
       navigateToPolicyTypes(`${newPolicyType.message}`);
     } catch (error: any) {
-      const err = await error
-      toast.error(err.message)
+      const err = await error;
+      toast.error(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
     <>
-    <Form
-      onSubmit={onSubmit}
-      initialValues={initialValues}
-      validate={validate}
-      render={({ handleSubmit, submitting, errors }) => (
-        <form onSubmit={handleSubmit} noValidate>
-          <Grid container spacing={2}>
-            <Grid item sm={12}>
-              <Field name="policyType">
-                {({ input, meta }) => (
-                  <TextField
-                    {...input}
-                    label="Enter Policy Type"
-                    variant="outlined"
-                    className="rounded-sm w-full"
-                    error={meta.touched && Boolean(meta.error)}
-                    helperText={meta.touched && meta.error}
-                  />
-                )}
-              </Field>
+      <Form
+        onSubmit={onSubmit}
+        initialValues={initialValues}
+        validate={validate}
+        render={({ handleSubmit, submitting, errors }) => (
+          <form onSubmit={handleSubmit} noValidate>
+            <Grid container spacing={2}>
+              <Grid item sm={12}>
+                <Field name="policyType">
+                  {({ input, meta }) => (
+                    <TextField
+                      {...input}
+                      label="Enter Policy Type"
+                      variant="outlined"
+                      className="rounded-sm w-full"
+                      error={meta.touched && Boolean(meta.error)}
+                      helperText={meta.touched && meta.error}
+                    />
+                  )}
+                </Field>
+              </Grid>
+              <Grid item xs={12}>
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  variant="contained"
+                  color="primary"
+                  className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
+                >
+                  {isLoading
+                    ? "Submitting"
+                    : isAdd
+                    ? "Add Policy Type"
+                    : "Update Policy Type"}
+                </Button>
+              </Grid>
             </Grid>
-            <Grid item xs={12}>
-              <Button
-                type="submit"
-                disabled={submitting}
-                variant="contained"
-                color="primary"
-                className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
-              >
-                {isAdd ? "Add Policy Type" : "Update Policy Type"}
-              </Button>
-            </Grid>
-          </Grid>
-        </form>
-      )}
-    />
+          </form>
+        )}
+      />
       <Toaster position="bottom-center" reverseOrder={false} />
     </>
   );

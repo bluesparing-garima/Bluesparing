@@ -34,6 +34,7 @@ const FilterMonthlyBrokerFinalPremium = () => {
   let [brokers] = useGetBrokers({ header: header });
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [selectedBrokerCode, setSelectedBrokerCode] = useState<string>();
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedBrokerName, setSelectedBrokerName] = useState<string>();
   const [selectedBrokerId, setSelectedBrokerId] = useState<string>();
   const [companyDetails, setCompanyDetails] = useState<
@@ -63,13 +64,14 @@ const FilterMonthlyBrokerFinalPremium = () => {
   const validate = validateFormValues(validationSchema);
   useEffect(() => {
     filterMonthlyBrokerPaymentWithCompany(startDate!, endDate!, brokerId!);
-     // eslint-disable-next-line 
+    // eslint-disable-next-line
   }, [startDate, endDate, brokerId]);
   const filterMonthlyBrokerPaymentWithCompany = async (
     startDate: string,
     endDate: string,
     brokerId: string
   ) => {
+    setIsLoading(true);
     GetMonthlyBrokerCompanyFinalPremiumService({
       header,
       brokerId: brokerId!,
@@ -86,6 +88,9 @@ const FilterMonthlyBrokerFinalPremium = () => {
       .catch(async (error) => {
         const err = await error;
         toast.error(err.message);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
   const onSubmit = async (value: any) => {
@@ -222,12 +227,12 @@ const FilterMonthlyBrokerFinalPremium = () => {
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Button
                         type="submit"
-                        disabled={submitting}
+                        disabled={isLoading}
                         variant="contained"
                         color="primary"
                         className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                       >
-                        {"Get Records"}
+                        {isLoading ? "Submitting" : "Get Records"}
                       </Button>
                     </Grid>
                   </Grid>

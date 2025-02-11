@@ -21,7 +21,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { format } from "date-fns";
 import toast, { Toaster } from "react-hot-toast";
 const ViewCreditDebitByBrokerCard = () => {
-  const [loading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const title = "Get Credits Details";
   let [brokers] = useGetBrokers({ header: header });
   const [isVisible, setIsVisible] = useState(false);
@@ -182,12 +182,12 @@ const ViewCreditDebitByBrokerCard = () => {
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Button
                         type="submit"
-                        disabled={loading}
+                        disabled={isLoading}
                         variant="contained"
                         color="primary"
                         className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                       >
-                        {loading ? "Submitting..." : "Get Record"}
+                        {isLoading ? "Submitting..." : "Get Record"}
                       </Button>
                     </Grid>
                   </Grid>

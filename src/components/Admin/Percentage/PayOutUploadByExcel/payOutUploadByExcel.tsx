@@ -18,6 +18,7 @@ import DownloadExcel from "../../../../utils/downloadExcel";
 const PayOutUploadByExcel = () => {
   const title = "Upload PayOut Excel";
   const [excelUploaded, setExcelUploaded] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const onSubmit = (values: FormValues) => {
     uploadFile(values.file);
   };
@@ -32,6 +33,7 @@ const PayOutUploadByExcel = () => {
   const uploadFile = async (file: File | null) => {
     if (file) {
       try {
+        setIsLoading(true);
         const formData = new FormData();
         formData.append("excel", file);
         PayOutExcelService({ header, excel: formData })
@@ -51,6 +53,8 @@ const PayOutUploadByExcel = () => {
       } catch (error: any) {
         const err = await error;
         toast.error(err.message);
+      } finally {
+        setIsLoading(false);
       }
     }
   };
@@ -151,12 +155,12 @@ const PayOutUploadByExcel = () => {
                     <Grid item lg={4} xs={12}>
                       <Button
                         type="submit"
-                        disabled={submitting}
+                        disabled={isLoading}
                         variant="contained"
                         color="primary"
                         className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                       >
-                        Upload Excel
+                        {isLoading ? "Submitting..." : "Upload Excel"}
                       </Button>
                     </Grid>
                   </Grid>

@@ -34,6 +34,7 @@ export interface addLeadRequestFormProps {
 const EditLeadForm = (props: addLeadRequestFormProps) => {
   const { initialValues } = props;
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const { leadId } = useParams();
   const [errors, setErrors] = useState<{ docName: string; file: string }[]>([
     { docName: "", file: "" },
@@ -136,6 +137,7 @@ const EditLeadForm = (props: addLeadRequestFormProps) => {
   };
   const callEditLeadAPI = async (leadForm: any, leadId: string) => {
     try {
+      setIsLoading(true);
       const newLead = await editLeadService({
         header,
         lead: leadForm,
@@ -147,6 +149,8 @@ const EditLeadForm = (props: addLeadRequestFormProps) => {
     } catch (error: any) {
       const err = await error;
       toast.error(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
   const handleChangeDocumentName = (newValue: any, index: any) => {
@@ -277,7 +281,10 @@ const EditLeadForm = (props: addLeadRequestFormProps) => {
                               </Grid>
 
                               <Grid item lg={4} md={4} sm={4} xs={12}>
-                                <FileView fileName={formatFilename(doc.file)} index={index}>
+                                <FileView
+                                  fileName={formatFilename(doc.file)}
+                                  index={index}
+                                >
                                   <input
                                     id={`file ${index}`}
                                     type="file"
@@ -341,8 +348,12 @@ const EditLeadForm = (props: addLeadRequestFormProps) => {
                             {submitError}
                           </div>
                         )}
-                        <Button variant="contained" type="submit">
-                          submit
+                        <Button
+                          variant="contained"
+                          type="submit"
+                          disabled={isLoading}
+                        >
+                          {isLoading ? "Submitting" : "submit"}
                         </Button>
                       </Grid>
                     </Grid>
