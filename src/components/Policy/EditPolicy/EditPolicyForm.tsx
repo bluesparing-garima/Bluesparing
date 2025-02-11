@@ -300,7 +300,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
       userData.role.toLowerCase() === "admin"
         ? selectedPartnerId
         : policyForm.policyCreatedBy === "Direct"
-        ? userData.partnerId
+        ? userData.profileId
         : selectedPartnerId;
     policyForm.partnerName =
       userData.role.toLowerCase() === "admin"

@@ -64,7 +64,7 @@ const BookingRequests = () => {
     () =>
       getBookingRequestByPartnerIdService({
         header,
-        partnerId: userData.partnerId,
+        partnerId: userData.profileId,
       })
         .then((bookingRequestDetails) => {
           setBookingRequests(bookingRequestDetails.data);
@@ -73,7 +73,7 @@ const BookingRequests = () => {
           const err = await error;
           toast.error(err.message);
         }),
-    [userData.partnerId]
+    [userData.profileId]
   );
   const GetBookingByBookingIdRequests = useCallback(
     () =>
