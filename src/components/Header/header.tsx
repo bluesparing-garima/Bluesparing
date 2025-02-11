@@ -12,7 +12,7 @@ import GetTodayAttendanceRecordService from "../../api/HR/Attendance/GetTodayAtt
 import MarkInTime from "../HR/Attendance/MarkAttendance/MarkInTime";
 import MarkOutTime from "../HR/Attendance/MarkAttendance/MarkOutTime";
 import { INotification } from "../Notification/INotification";
-import GetNotificationByRoleService from "../../api/Notification/GetNotificationByRole/GetNotificationByRoleService";
+// import GetNotificationByRoleService from "../../api/Notification/GetNotificationByRole/GetNotificationByRoleService";
 import CustomToast from "../../utils/CustomToast";
 import {
   getNotifications,
@@ -65,55 +65,55 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
     );
   }, [UserData?.role]);
   // eslint-disable-next-line
-  const fetchNotification = useCallback(
-    debounce(async () => {
-      try {
-        const res = await GetNotificationByRoleService({
-          header,
-          role: accessNotification,
-          type: "success",
-          isView: false,
-        });
-        if (res.status === "success") {
-          const filterData = res.data.filter(
-            (ele: INotification) => ele.notificationFor === UserData?.profileId
-          );
-          setNotificationData(filterData);
-          const storeNotification = getNotifications(UserData?.profileId);
-          if (
-            storeNotification.length > 0 &&
-            filterData.length > storeNotification.length
-          ) {
-            const filterDataIds = new Set(
-              storeNotification.map((ele: INotification) => ele._id)
-            );
-            const extraElements = filterData.filter(
-              (ele: INotification) => !filterDataIds.has(ele._id)
-            );
-            storeNotifications(UserData?.profileId, filterData);
-            extraElements.forEach((ele: INotification) => {
-              handlePlay(ele.title || "");
-            });
-          }
-        }
-      } catch (error: any) {
-        toast.error(error.message);
-      }
-    }, 300),
-    [UserData?.profileId, accessNotification]
-  );
-  const fetchNotificationData = useCallback(() => {
-    if (isViewNotification()) {
-      fetchNotification();
-    }
-  }, [fetchNotification, isViewNotification]);
-  useEffect(() => {
-    if (isViewNotification()) {
-      fetchNotificationData();
-      const intervalId = setInterval(fetchNotificationData, 30000);
-      return () => clearInterval(intervalId);
-    }
-  }, [fetchNotificationData, isViewNotification]);
+  // const fetchNotification = useCallback(
+  //   debounce(async () => {
+  //     try {
+  //       const res = await GetNotificationByRoleService({
+  //         header,
+  //         role: accessNotification,
+  //         type: "success",
+  //         isView: false,
+  //       });
+  //       if (res.status === "success") {
+  //         const filterData = res.data.filter(
+  //           (ele: INotification) => ele.notificationFor === UserData?.profileId
+  //         );
+  //         setNotificationData(filterData);
+  //         const storeNotification = getNotifications(UserData?.profileId);
+  //         if (
+  //           storeNotification.length > 0 &&
+  //           filterData.length > storeNotification.length
+  //         ) {
+  //           const filterDataIds = new Set(
+  //             storeNotification.map((ele: INotification) => ele._id)
+  //           );
+  //           const extraElements = filterData.filter(
+  //             (ele: INotification) => !filterDataIds.has(ele._id)
+  //           );
+  //           storeNotifications(UserData?.profileId, filterData);
+  //           extraElements.forEach((ele: INotification) => {
+  //             handlePlay(ele.title || "");
+  //           });
+  //         }
+  //       }
+  //     } catch (error: any) {
+  //       toast.error(error.message);
+  //     }
+  //   }, 300),
+  //   [UserData?.profileId, accessNotification]
+  // );
+  // const fetchNotificationData = useCallback(() => {
+  //   if (isViewNotification()) {
+  //     fetchNotification();
+  //   }
+  // }, [fetchNotification, isViewNotification]);
+  // useEffect(() => {
+  //   if (isViewNotification()) {
+  //     fetchNotificationData();
+  //     const intervalId = setInterval(fetchNotificationData, 30000);
+  //     return () => clearInterval(intervalId);
+  //   }
+  // }, [fetchNotificationData, isViewNotification]);
   const fetchData = async () => {
     try {
       const now = dayjs().format("YYYY-MM-DD");
@@ -143,7 +143,7 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
       const newData = JSON.parse(storedTheme);
       setUserData(newData);
       if (newData.role === "Partner") {
-        getRankBadgeDetailsService({ header, partnerId: newData.partnerId })
+        getRankBadgeDetailsService({ header, partnerId: newData.profileId })
           .then((dashboardData) => {
             const rankData = dashboardData.data;
             setUserRank(rankData.rank);
@@ -221,11 +221,11 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
           {userData?.name}
         </div>
         <div className="flex items-center justify-center gap-[2px]">
-          {isViewNotification() && (
+          {/* {isViewNotification() && (
             <div className="cursor-pointer rounded-lg mr-3">
               <NotificationBadge notificationData={notificationData || []} />
             </div>
-          )}
+          )} */}
           <Avatar
             className="md:w-[50px] md:h-[50px] w-[30px] h-[30px]"
             alt={userData?.name}

@@ -1,63 +1,55 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { MaterialReactTable, type MRT_ColumnDef } from "material-react-table";
 import { Button, IconButton, Paper, Tooltip, Typography } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
-import { bookingRequestsAddPath, bookingRequestsPath } from "../../../sitemap";
+import { Link } from "react-router-dom";
+
 import dayjs from "dayjs";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
-import getBookingRequestService from "../../../api/BookingRequest/GetBookingRequest/getBookingRequestService";
 import { IBookingRequests, IBookingRequestsVM } from "../IBookingRequests";
 import {
   DAYJS_DISPLAY_FORMAT,
   SafeKaroUser,
-  header,
   imagePath,
 } from "../../../context/constant";
 import CountdownTimer from "../../../utils/CountdownTimer";
-import acceptBookingRequestService from "../../../api/BookingRequest/AcceptBookingRequest/acceptBookingRequestService";
-import InputDialog from "../../../utils/InputDialog";
+import Papa from "papaparse";
 import toast, { Toaster } from "react-hot-toast";
-const NewBookingRequests = () => {
+import GetAllBookingService from "../../../api/BookingRequest/GetAllBooking/GetAllBookingService";
+const AllBookingReq = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [bookingRequests, setBookingRequests] = useState<IBookingRequests[]>(
     []
   );
-  const [open, setOpen] = useState(false);
-  const [selectedBookingId, setSelectedBookingId] = useState("");
-  const [bookingData, setBookingData] = useState<IBookingRequestsVM>();
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let userData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
   const GetBookingRequests = useCallback(
     () =>
-      getBookingRequestService({ header })
+        GetAllBookingService()
         .then((bookingRequestDetails) => {
-          const newBookings = bookingRequestDetails.data.filter(
-            (booking: any) => booking.bookingAcceptedBy === ""
-          );
-          setBookingRequests(newBookings);
+          setBookingRequests(bookingRequestDetails.data);
         })
-        .catch(async(error) => {
-          const err = await error
-          toast.error(err.message)
+        .catch(async (error: any) => {
+          const err = await error;
+          toast.error(err.message);
         }),
     []
   );
+
   useEffect(() => {
     GetBookingRequests();
   }, [GetBookingRequests]);
-  const navigate = useNavigate();
-  const handleAddBookingRequestClick = () => {
-    navigate(bookingRequestsAddPath());
-  };
+
   const columns = useMemo<MRT_ColumnDef<IBookingRequests>[]>(
     () => [
       {
         header: "Timer",
-        accessorKey: "createdOn",
+        accessorKey: "timer",
         Cell: ({ row }) => (
           <CountdownTimer
             registerDate={row.original.updatedOn || row.original.createdOn}
+            status={row.original.bookingStatus}
+            timer={row.original.timer!}
           />
         ),
         size: 200,
@@ -106,7 +98,9 @@ const NewBookingRequests = () => {
         accessorKey: "partnerName",
         header: "Partner Name",
         size: 200,
+        visible: userData.role.toLowerCase() !== "partner",
       },
+
       {
         header: "Status",
         accessorKey: "isActive",
@@ -133,81 +127,53 @@ const NewBookingRequests = () => {
         },
       },
     ],
-    []
+    [userData]
   );
+  function capitalizeFirstLetter(val:string) {
+    return String(val).charAt(0).toUpperCase() + String(val).slice(1);
+}
   const parsedData = useMemo(
     () =>
       bookingRequests.map(
         (bookingRequest: IBookingRequests) =>
-        ({
-          id: bookingRequest._id,
-          policyNumber: bookingRequest.policyNumber,
-          category: bookingRequest.category,
-          policyType: bookingRequest.policyType,
-          caseType: bookingRequest.caseType,
-          productType: bookingRequest.productType,
-          subCategory: bookingRequest.subCategory,
-          companyName: bookingRequest.companyName,
-          partnerId: bookingRequest.partnerId,
-          partnerName: bookingRequest.partnerName,
-          rcFront: bookingRequest.rcFront,
-          rcBack: bookingRequest.rcBack,
-          previousPolicy: bookingRequest.previousPolicy,
-          survey: bookingRequest.survey,
-          puc: bookingRequest.puc,
-          fitness: bookingRequest.fitness,
-          proposal: bookingRequest.proposal,
-          currentPolicy: bookingRequest.currentPolicy,
-          other: bookingRequest.other,
-          bookingStatus: bookingRequest.bookingStatus,
-          bookingCreatedBy: bookingRequest.bookingCreatedBy,
-          bookingAcceptedBy: bookingRequest.bookingAcceptedBy,
-          relationshipManagerName: bookingRequest.relationshipManagerName,
-          relationshipManagerId: bookingRequest.relationshipManagerId,
-          isActive: bookingRequest.isActive,
-          createdOn: bookingRequest.createdOn,
-          updatedOn: bookingRequest.updatedOn,
-        } as IBookingRequestsVM)
+          ({
+            id: bookingRequest._id,
+            policyNumber: bookingRequest.policyNumber,
+            category: bookingRequest.category,
+            policyType: bookingRequest.policyType,
+            caseType: bookingRequest.caseType,
+            productType: bookingRequest.productType,
+            subCategory: bookingRequest.subCategory,
+            companyName: bookingRequest.companyName,
+            partnerId: bookingRequest.partnerId,
+            partnerName: bookingRequest.partnerName,
+            rcFront: bookingRequest.rcFront,
+            rcBack: bookingRequest.rcBack,
+            previousPolicy: bookingRequest.previousPolicy,
+            survey: bookingRequest.survey,
+            puc: bookingRequest.puc,
+            fitness: bookingRequest.fitness,
+            proposal: bookingRequest.proposal,
+            currentPolicy: bookingRequest.currentPolicy,
+            other: bookingRequest.other,
+            timer: bookingRequest.timer,
+            bookingAcceptedBy: bookingRequest.bookingAcceptedBy,
+            bookingCreatedBy: bookingRequest.bookingCreatedBy,
+            bookingStatus: capitalizeFirstLetter(bookingRequest.bookingStatus),
+            isActive: bookingRequest.isActive,
+            createdOn: bookingRequest.createdOn,
+            updatedOn: bookingRequest.updatedOn,
+            acceptedByName: bookingRequest.acceptedByName,
+            isPublished: bookingRequest.isPublished || false,
+            motorPolicyId: bookingRequest.motorPolicyId || "",
+          } as IBookingRequestsVM)
       ) ?? [],
     [bookingRequests]
   );
   const updateLoading = useCallback(async () => {
     setIsLoading(false);
   }, []);
-  const handleReject = (bookingForm: IBookingRequestsVM) => {
-    setSelectedBookingId(bookingForm.id!);
-    bookingForm.isRejected = true;
-    bookingForm.bookingAcceptedBy = userData.profileId;
-    setBookingData(bookingForm);
-    setOpen(true);
-  };
-  const handleClickAcceptBooking = (bookingForm: IBookingRequestsVM) => {
-    bookingForm.bookingAcceptedBy = userData.profileId;
-    bookingForm.bookingStatus = "accepted";
-    bookingForm.updatedBy = userData.role;
-    bookingForm.updatedOn = "";
-
-    callEditLeadAPI(bookingForm, bookingForm.id!);
-  };
-  const callEditLeadAPI = async (bookingForm: any, bookingId: string) => {
-    try {
-      const newBooking = await acceptBookingRequestService({
-        header,
-        bookingRequest: bookingForm,
-        bookingId,
-      });
-      if (newBooking.status === "success") {
-        navigate(bookingRequestsPath());
-      }
-    } catch (error:any) {
-      const err = await error
-      toast.error(err.message)
-    }
-  };
-  useEffect(() => {
-    updateLoading();
-  }, [updateLoading]);
-   const downloadFile = (url: string, fileName: string) => {
+  const downloadFile = (url: string, fileName: string) => {
     const urlFileName = url.substring(url.lastIndexOf("/") + 1);
     const fileExtension = urlFileName.split(".").pop()?.toLowerCase();
     if (
@@ -261,12 +227,35 @@ const NewBookingRequests = () => {
       downloadFile(`${imagePath}${booking?.other!}`, "other");
     }
   };
+
+  useEffect(() => {
+    updateLoading();
+  }, [updateLoading]);
+
+  const downloadCsv = (filename: string, csv: string) => {
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    if (link.download !== undefined) {
+      const url = URL.createObjectURL(blob);
+      link.setAttribute("href", url);
+      link.setAttribute("download", filename);
+      link.style.visibility = "hidden";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
+  const handleExportRows = (rows: any[]) => {
+    const rowData = rows.map((row) => row.original);
+    const csv = Papa.unparse(rowData, { header: true });
+    downloadCsv("exported-rows.csv", csv);
+  };
   return (
     <>
       <div className="bg-blue-200 md:p-7 p-2">
         <Paper elevation={3} style={{ padding: 30 }}>
           <Typography className="text-safekaroDarkOrange" variant="h5">
-           New Booking Request Table
+            Booking Request Table
           </Typography>
           <Typography variant="h5" mb={2}>
             <div style={{ display: "flex", alignItems: "center" }}>
@@ -279,19 +268,8 @@ const NewBookingRequests = () => {
                 </Link>
                 <span className="text-grey-600 text-sm"> Booking Request</span>
               </div>
-              {userData.role.toLowerCase() !== "booking" ? (
-                <Button
-                  type="button"
-                  className="w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
-                  onClick={handleAddBookingRequestClick}
-                >
-                  Add Booking Request
-                </Button>
-              ) : (
-                ""
-              )}
             </div>
-            
+            {}
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
@@ -304,6 +282,19 @@ const NewBookingRequests = () => {
             enableRowActions
             enablePagination
             autoResetPageIndex={false}
+            renderTopToolbarCustomActions={({ table }) => (
+              <>
+                <Button
+                  className="text-white bg-safekaroDarkOrange md:m-2 md:p-2 md:text-xs text-[10px]"
+                  disabled={table.getRowModel().rows.length === 0}
+                  onClick={() =>
+                    handleExportRows(table.getFilteredRowModel().rows)
+                  }
+                >
+                  Export Filter Data
+                </Button>
+              </>
+            )}
             renderRowActions={({ row }) => (
               <div style={{ display: "flex", flexWrap: "nowrap" }}>
                 <Tooltip title={"Download Documents"}>
@@ -333,66 +324,14 @@ const NewBookingRequests = () => {
                     </svg>
                   </IconButton>
                 </Tooltip>
-                <Tooltip title={"Accept"}>
-                  <IconButton
-                    color="primary"
-                    aria-label={"Accept"}
-                    component="span"
-                    onClick={() => {
-                      handleClickAcceptBooking(
-                        row.original as IBookingRequestsVM
-                      );
-                    }}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth="1.5"
-                      stroke="currentColor"
-                      className="size-5 text-addButton"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15M12 9l3 3m0 0-3 3m3-3H2.25"
-                      />
-                    </svg>
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title={"Reject"}>
-                  <IconButton
-                    color="primary"
-                    aria-label={"reject"}
-                    component="span"
-                    onClick={() => {
-                      handleReject(row.original as IBookingRequestsVM);
-                    }}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth="1.5"
-                      stroke="currentColor"
-                      className="size-6 text-[red]"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M6 18 18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </IconButton>
-                </Tooltip>
               </div>
             )}
           />
         </Paper>
       </div>
-      <InputDialog open={open} setOpen={setOpen} BookingId={selectedBookingId} bookingData={bookingData} />
+
       <Toaster position="bottom-center" reverseOrder={false} />
     </>
   );
 };
-export default NewBookingRequests;
+export default AllBookingReq;

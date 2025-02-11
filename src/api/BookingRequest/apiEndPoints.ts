@@ -42,3 +42,7 @@ export const RmRequestedBookingEndPoint = (rmId: string) =>
 
 export const RmLeadEndpoint = (rmId: string) =>
   (`/api/lead-generate/relationship-manager?relationshipManagerId=${rmId}`);
+export const getAllBookingEndpoint = () =>
+  (`/api/booking-request/all`);
+export const getBookedEndpoint = () =>
+  (`/api/booking-request/booked-bookings`);

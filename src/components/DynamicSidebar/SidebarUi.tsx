@@ -65,7 +65,7 @@ const SidebarUi: FC<SidebarProps> = ({
     return items.map((item) => (
       <li key={item.id} className="relative max-h-100 scroll-hidden">
         <div
-          className={`flex items-center px-2 py-1 text-[15px] cursor-pointer rounded-lg sticky top-0 z-10 bg-white ${
+          className={`flex items-center px-2 py-1 text-[15px] cursor-pointer rounded-lg sticky top-0 z-10 bg-white  ${
             activeMenuItem === item.id
               ? "bg-safekaroDarkBlue text-white"
               : "text-black hover:bg-safekaroDarkBlue hover:text-white"
