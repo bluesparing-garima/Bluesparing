@@ -29,7 +29,7 @@ const DynamicSidebar: FC<DynamicSidebarProps> = ({
 }) => {
   const [subsIds, setSubsIds] = useState<string[]>([]);
   const [_, setSubsLocalData] = useLocalStorage<string[]>(CURRENT_SUBSID, []);
-  const [cuuentMenus, setCurrentMenu] = useLocalStorage<IMenu[]>(
+  const [currentMenus, setCurrentMenu] = useLocalStorage<IMenu[]>(
     CURRENT_ROLE_MENUS,
     []
   );
