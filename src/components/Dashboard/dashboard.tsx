@@ -626,6 +626,7 @@ const renderCountBox = (
   link?: any,
   selectedCategory?: any
 ) => {
+  console.log(link);
   if (link === "/total payout amount") {
     link = "/payouts";
   }
@@ -653,10 +654,10 @@ const renderCountBox = (
   if (link === "/monthly payin balance") {
     link = "/payins/balance/monthly";
   }
-  if (link === "/total left dist.") {
+  if (link === "/total left dist") {
     link = "/payins/leftDistributed";
   }
-  if (link === "/monthly payin left dist.") {
+  if (link === "/monthly payin left dist") {
     link = "/payins/leftDistributed/monthly";
   }
   if (link === "/monthly paid payout amount") {
@@ -665,7 +666,7 @@ const renderCountBox = (
   if (link === "/monthly payout balance") {
     link = "/payouts/monthly/balance";
   }
-  if (link === "/monthly payout left dist.") {
+  if (link === "/monthly payout left dist") {
     link = "/payouts/monthly/leftDistributed";
   }
   if (link === "/total paid payout amount") {
@@ -674,7 +675,7 @@ const renderCountBox = (
   if (link === "/total payout balance") {
     link = "/payouts/balance";
   }
-  if (link === "/total payout left dist.") {
+  if (link === "/total payout left dist") {
     link = "/payouts/leftDistributed";
   }
   if (link === "/monthly net premium") {
