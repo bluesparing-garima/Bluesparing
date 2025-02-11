@@ -17,7 +17,7 @@ const ChatFeedBox: FC<ChatFeedBoxProps> = (p) => {
   const ref = useChatScroll<MsgContentProps>({});
 
   const isYouSender = (id: string) => {
-    if (userData.id === id) {
+    if (userData.profileId === id) {
       return "Sender";
     }
     return "Viewer";
