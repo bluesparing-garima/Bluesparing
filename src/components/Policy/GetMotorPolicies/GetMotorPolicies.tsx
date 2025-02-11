@@ -772,9 +772,9 @@ const GetMotorPolicies = () => {
           accessorKey: "policyCompletedByName",
           header: "Booking Person Name",
           visible:
-            userData.role.toLowerCase() === "admin" ||
-            userData.role.toLowerCase() === "account" ||
-            userData.role.toLowerCase() === "operation",
+            userData?.role.toLowerCase() === "admin" ||
+            userData?.role.toLowerCase() === "account" ||
+            userData?.role.toLowerCase() === "operation",
           size: 100,
           Cell: ({ row }: { row: { original: IViewPolicy } }) => {
             const { policyCompletedByName, policyCompletedByCode } =

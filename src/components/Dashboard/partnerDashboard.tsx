@@ -180,7 +180,7 @@ setIsLoading(true)
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                               <DatePicker
                                 disableFuture
-                                inputFormat="DD/MM/YYY"
+                                inputFormat="DD/MM/YYYY"
                                 value={input.value || null}
                                 onChange={(date) => {
                                   input.onChange(date);
@@ -206,7 +206,7 @@ setIsLoading(true)
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                               <DatePicker
                                 disableFuture
-                                inputFormat="DD/MM/YYY"
+                                inputFormat="DD/MM/YYYY"
                                 value={input.value || null}
                                 onChange={(date) => {
                                   input.onChange(date);

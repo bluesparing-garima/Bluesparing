@@ -901,7 +901,7 @@ const PolicyPDFForm = (props: AddPolicyFormProps) => {
                             <DatePicker
                               disableFuture
                               label="Registration Date"
-                              inputFormat="DD/MM/YYY"
+                              inputFormat="DD/MM/YYYY"
                               value={input.value || null} // Initialize the value if it's undefined
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
@@ -926,7 +926,7 @@ const PolicyPDFForm = (props: AddPolicyFormProps) => {
                             <DatePicker
                               disableFuture
                               label="Issue Date"
-                              inputFormat="DD/MM/YYY"
+                              inputFormat="DD/MM/YYYY"
                               value={input.value || null} // Initialize the value if it's undefined
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
@@ -951,7 +951,7 @@ const PolicyPDFForm = (props: AddPolicyFormProps) => {
                             <DatePicker
                               disablePast
                               label="End Date"
-                              inputFormat="DD/MM/YYY"
+                              inputFormat="DD/MM/YYYY"
                               value={input.value || null} // Initialize the value if it's undefined
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
