@@ -13,14 +13,33 @@ code {
   font-family: "Satoshi-Variable", sans-serif;
 }
 
-.hide-scrollbar {
-  overflow: hidden;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+
+.scroll-hidden::-webkit-scrollbar {
+  width: 6px; 
+  height: 6px;
 }
 
-.hide-scrollbar::-webkit-scrollbar {
-  display: none;
+.scroll-hidden::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.scroll-hidden::-webkit-scrollbar-thumb {
+  background: #95c5d9;
+  border-radius: 4px;
+}
+
+.scroll-hidden::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
+
+.scroll-hidden {
+  overflow-y: auto; 
+  overflow-x: hidden; 
+}
+
+.scroll-hidden {
+  scroll-behavior: smooth;
 }
 
 @font-face {

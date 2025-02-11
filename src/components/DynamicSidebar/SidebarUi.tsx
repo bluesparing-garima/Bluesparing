@@ -67,8 +67,8 @@ const SidebarUi: FC<SidebarProps> = ({
         <div
           className={`flex items-center px-2 py-1 text-[15px] cursor-pointer rounded-lg sticky top-0 z-10 bg-white  ${
             activeMenuItem === item.id
-              ? "bg-safekaroDarkOrange text-white"
-              : "text-black hover:bg-safekaroDarkOrange hover:text-white"
+              ? "bg-safekaroDarkBlue text-white"
+              : "text-black hover:bg-safekaroDarkBlue hover:text-white"
           }`}
           onClick={() => {
             if (item.subMenu && item.subMenu.length > 0) {
@@ -93,7 +93,7 @@ const SidebarUi: FC<SidebarProps> = ({
               />
             </svg>
           )}
-          {item.label}
+          <span className="text-sm">{item.label}</span>
           {item.subMenu && item.subMenu.length > 0 && (
             <i
               className={`fas fa-chevron-${
@@ -113,9 +113,9 @@ const SidebarUi: FC<SidebarProps> = ({
 
   return (
     <div
-      className={`${
-        isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-      } md:translate-x-0 sticky top-0 z-20 md:flex flex-col w-60 bg-white h-screen shadow-lg border-r-2 border-[#FEF9F3] transition-transform delay-150 duration-200`}
+    className={`${
+      isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+    } md:translate-x-0 sticky top-0 z-20 md:flex flex-col w-60 bg-white h-screen shadow-lg border-r-2 border-[#FEF9F3] transition-transform delay-150 duration-200`}
     >
       <Link
         to={generateDashBoardLink()}
@@ -141,7 +141,7 @@ const SidebarUi: FC<SidebarProps> = ({
           </svg>
         </button>
       </div>
-      <div className="flex-1 py-7 ">
+      <div className="flex-1 py-7 overflow-y-auto scroll-hidden">
         <ul className="space-y-2 ml-1">{renderMenuItems(menuItems)}</ul>
       </div>
     </div>
