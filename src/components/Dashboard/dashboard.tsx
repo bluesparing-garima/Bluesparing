@@ -211,7 +211,7 @@ const Dashboard: React.FC = () => {
                               <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <DatePicker
                                   disableFuture
-                                  inputFormat="DD/MM/YYY"
+                                  inputFormat="DD/MM/YYYY"
                                   value={input.value || null}
                                   onChange={(date) => {
                                     input.onChange(date);
@@ -237,7 +237,7 @@ const Dashboard: React.FC = () => {
                               <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <DatePicker
                                   disableFuture
-                                  inputFormat="DD/MM/YYY"
+                                  inputFormat="DD/MM/YYYY"
                                   value={input.value || null}
                                   onChange={(date) => {
                                     input.onChange(date);
@@ -319,7 +319,7 @@ const Dashboard: React.FC = () => {
                                                 : "bg-white text-black"
                                             }`}
                                           >
-                                            <Button
+                                            <Button className="w-full"
                                               type="button"
                                               onClick={() =>
                                                 handleCategoryCart(
@@ -333,7 +333,7 @@ const Dashboard: React.FC = () => {
                                                 title={`View ${category} Data`}
                                               >
                                                 <h2
-                                                  className={`w-full  font-satoshi md:text-xs text-[10px] font-semibold text-center ${
+                                                  className={`w-full font-satoshi md:text-xs text-[10px] font-semibold text-center ${
                                                     catIndex ===
                                                     selectedCategoryIndex
                                                       ? "text-white"
@@ -626,8 +626,8 @@ const renderCountBox = (
   if (link === "/total payin amount") {
     link = "/payins";
   }
-  if (link === "/total policy count" || link === "/monthly policy count") {
-    link = "/policy/motor-policies";
+  if (link === "/total policy count" || link === '/monthly policy count') {
+    link = "/policy/motorpolicies";
   }
   if (link === "/monthly payout amount") {
     link = "/payouts/monthly";
@@ -647,7 +647,7 @@ const renderCountBox = (
   if (link === "/monthly payin balance") {
     link = "/payins/balance/monthly";
   }
-  if (link === "/total left dist") {
+  if (link === "/total payin left dist") {
     link = "/payins/leftDistributed";
   }
   if (link === "/monthly payin left dist") {
@@ -685,6 +685,9 @@ const renderCountBox = (
   }
   if (link === "/total revenue" || link === "/monthly revenue") {
     link = "/dashboard";
+  }
+  if (link === "/quarterly renewed count" || link === "/half yearly renewed count" || link === "/yearly renewed count" || link === "/monthly renewed policy count") {
+    link = "/policy/renewals";
   }
   const content = (
     <div className="bg-white m-2 p-3 rounded-[10.33px] shadow-lg flex items-center justify-between transform transition-transform duration-200 hover:scale-105">

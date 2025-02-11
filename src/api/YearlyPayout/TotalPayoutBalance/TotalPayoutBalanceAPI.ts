@@ -10,9 +10,7 @@ const TotalPayoutBalanceAPI = async ({ header,category }: getTotalProps) => {
       headers: header,
     }
   
-    return fetchInterceptor(url, options)
-
-    
+    return fetchInterceptor(url, options)    
 };
 
 export default TotalPayoutBalanceAPI;

@@ -241,7 +241,7 @@ const EmployeeAttendance: React.FC = () => {
                             <DatePicker
                               disableFuture
                               label="Start Date"
-                              inputFormat="DD/MM/YYY"
+                              inputFormat="DD/MM/YYYY"
                               value={input.value ? dayjs(input.value) : null}
                               onChange={(newValue) => {
                                 input.onChange(
@@ -271,7 +271,7 @@ const EmployeeAttendance: React.FC = () => {
                             <DatePicker
                               disableFuture
                               label="End Date"
-                              inputFormat="DD/MM/YYY"
+                              inputFormat="DD/MM/YYYY"
                               value={input.value ? dayjs(input.value) : null}
                               onChange={(newValue) => {
                                 input.onChange(
