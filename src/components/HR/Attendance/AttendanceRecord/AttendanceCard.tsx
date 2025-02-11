@@ -32,6 +32,7 @@ const getRowStyle = (attendanceType: string) => {
 };
 
 const AttendanceCard: React.FC<AttendanceCardProps> = ({ employee }) => {
+  console.log("em",employee);
   const [timePassed, setTimePassed] = useState<string>("");
   const link = `/hr/attendance/${employee.employeeId}`;
   const ui = getRowStyle(employee.todaysAttendance);
@@ -39,7 +40,7 @@ const AttendanceCard: React.FC<AttendanceCardProps> = ({ employee }) => {
   const avatarContent = employee.profileImage ? (
     <Avatar src={employee.profileImage} alt={employee.employeeName} />
   ) : (
-    <Avatar>{employee.employeeName.charAt(0)}</Avatar>
+    <Avatar>{employee.employeeName?.charAt(0)}</Avatar>
   );
 
   const calculateTotalHours = (inTime: string | null) => {
@@ -147,7 +148,7 @@ const AttendanceCard: React.FC<AttendanceCardProps> = ({ employee }) => {
                 color: ui.color,
               }}
             >
-              {employee.employeeName.toUpperCase()}
+              {employee.employeeName?.toUpperCase()}
             </Typography>
           </Box>
 
