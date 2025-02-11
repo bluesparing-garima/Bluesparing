@@ -6,7 +6,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import {
   Chart as ChartJS,
   CategoryScale,
-  LinearScale,
+  LinearScale as linear,
   BarElement,
   LineElement,
   PointElement,
@@ -41,7 +41,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import toast, { Toaster } from "react-hot-toast";
 ChartJS.register(
   CategoryScale,
-  LinearScale,
+  linear,
   BarElement,
   LineElement,
   PointElement,

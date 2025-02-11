@@ -58,7 +58,7 @@ const BookingRequests = () => {
           toast.error(err.message);
           console.error("Failed to fetch Booking details", error);
         }),
-    [userData.id]
+    [userData.profileId]
   );
   const GetBookingByPartnerIdRequests = useCallback(
     () =>

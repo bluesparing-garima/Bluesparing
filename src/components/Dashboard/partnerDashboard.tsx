@@ -241,14 +241,14 @@ setIsLoading(true)
                 )}
               />
               <div className="flex justify-between items-center gap-x-2">
-                <Tooltip title="Download PDF">
+                
                   <button
                     className="md:w-10 md:h-10 h-4 w-4 bg-[#0095FF] shadow-sm rounded flex justify-center items-center text-white"
                     onClick={handleDownloadPDF} disabled={isLoading}
-                  >
+                  ><Tooltip title="Download PDF">
                     {isLoading?<CircularProgress className="md:w-6 md:h-6 h-3 w-3" />:<PictureAsPdfSharpIcon className="md:w-6 md:h-6 h-3 w-3" />}
-                                      </button>
-                </Tooltip>
+                    </Tooltip>                      </button>
+                
                 <Tooltip title="Download Excel">
                   <button
                     className="md:w-10 md:h-10 h-4 w-4 bg-[#3BDB03] shadow-sm rounded flex justify-center items-center text-white"

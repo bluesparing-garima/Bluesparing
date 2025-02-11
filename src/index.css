@@ -13,33 +13,34 @@ code {
   font-family: "Satoshi-Variable", sans-serif;
 }
 
-
-.scroll-hidden::-webkit-scrollbar {
-  width: 6px; 
-  height: 6px;
+:root {
+  --safekaroDarkOrange: "#e59411";
+  --safekaroOrange: " #edb65c";
+  --safekaroLightOrange: "#e9b35b";
+  --safekaroLighterOrange: "#f4d096";
 }
 
-.scroll-hidden::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 4px;
-}
+@layer utilities {
+  .scrollbar::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
 
-.scroll-hidden::-webkit-scrollbar-thumb {
-  background: #95c5d9;
-  border-radius: 4px;
-}
+  .scrollbar::-webkit-scrollbar-track {
+    border-radius: 100vh;
+    background: rgb(194, 193, 193);
+  }
 
-.scroll-hidden::-webkit-scrollbar-thumb:hover {
-  background: #555; 
-}
+  .scrollbar::-webkit-scrollbar-thumb {
+    background: #e59411;
+    border-radius: 100vh;
+    border: 1px solid #e59411;
+  }
 
-.scroll-hidden {
-  overflow-y: auto; 
-  overflow-x: hidden; 
-}
-
-.scroll-hidden {
-  scroll-behavior: smooth;
+  .scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #edb65c;
+    border: 1px solid #edb65c;
+  }
 }
 
 @font-face {

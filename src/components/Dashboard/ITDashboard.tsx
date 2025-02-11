@@ -5,7 +5,7 @@ import Typography from "@mui/material/Typography";
 import {
   Chart as ChartJS,
   CategoryScale,
-  LinearScale,
+  LinearScale as linear,
   BarElement,
   LineElement,
   PointElement,
@@ -24,7 +24,7 @@ import AttendanceCard from "../HR/Attendance/AttendanceRecord/AttendanceCard";
 
 ChartJS.register(
   CategoryScale,
-  LinearScale,
+  linear,
   BarElement,
   LineElement,
   PointElement,

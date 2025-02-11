@@ -68,7 +68,7 @@ const SidebarUi: FC<SidebarProps> = ({
           className={`flex items-center px-2 py-1 text-[15px] cursor-pointer rounded-lg sticky top-0 z-10 bg-white  ${
             activeMenuItem === item.id
               ? "bg-safekaroDarkBlue text-white"
-              : "text-black hover:bg-safekaroDarkBlue hover:text-white"
+              : "text-black hover:bg-safekaroDarkOrange hover:text-white"
           }`}
           onClick={() => {
             if (item.subMenu && item.subMenu.length > 0) {
@@ -103,7 +103,7 @@ const SidebarUi: FC<SidebarProps> = ({
           )}
         </div>
         {item.subMenu && openSubMenus.includes(item.id) && (
-          <ul className="ml-4 mt-2 space-y-1 px-1 border-l border-gray-200 pl-2 scroll-hidden max-h-60">
+          <ul className="ml-4 mt-2 space-y-1 px-1 border-l border-gray-200 pl-2 overflow-y-auto scrollbar .overflow max-h-[40vh]">
             {renderMenuItems(item.subMenu)}
           </ul>
         )}
@@ -119,9 +119,9 @@ const SidebarUi: FC<SidebarProps> = ({
     >
       <Link
         to={generateDashBoardLink()}
-        className="flex items-center justify-center h-16 bg-white"
+        className="flex items-center justify-center h-16 mt-1 bg-white"
       >
-        <img src={logo} alt="Logo" className="w-32 cursor-pointer" />
+        <img src={logo} alt="Logo" className="h-[45px] cursor-pointer" />
       </Link>
       <div className="md:hidden flex w-full justify-end">
         <button onClick={() => setSidebarOpen((prev) => !prev)}>
@@ -141,8 +141,8 @@ const SidebarUi: FC<SidebarProps> = ({
           </svg>
         </button>
       </div>
-      <div className="flex-1 py-7 overflow-y-auto scroll-hidden">
-        <ul className="space-y-2 ml-1">{renderMenuItems(menuItems)}</ul>
+      <div className="flex-1 py-7 overflow-y-auto scrollbar">
+        <ul className="space-y-2 ml-1 mr-1">{renderMenuItems(menuItems)}</ul>
       </div>
     </div>
   );

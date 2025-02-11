@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import {
   Chart as ChartJS,
   CategoryScale,
-  LinearScale,
+  LinearScale as linear,
   BarElement,
   LineElement,
   PointElement,
@@ -40,7 +40,7 @@ import toast, { Toaster } from "react-hot-toast";
 
 ChartJS.register(
   CategoryScale,
-  LinearScale,
+  linear,
   BarElement,
   LineElement,
   PointElement,

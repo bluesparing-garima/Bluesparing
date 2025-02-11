@@ -260,13 +260,8 @@ const Dashboard: React.FC = () => {
                         <button
                           className=" h-10 w-10 bg-[#30A9FF] shadow-sm rounded flex justify-center items-center text-white"
                           type="submit"
-                          disabled={isLoading}
                         >
-                          {isLoading ? (
-                            <CircularProgress className="w-6 h-6 " />
-                          ) : (
                             <SearchIcon className="w-6 h-6 " />
-                          )}
                         </button>
                       </div>
                     </form>
@@ -277,19 +272,19 @@ const Dashboard: React.FC = () => {
                 <Tooltip title="Download PDF">
                   <button
                     className="h-10 w-10 bg-[#0095FF] shadow-sm rounded flex justify-center items-center text-white"
-                    onClick={handleDownloadPDF} disabled={isLoading}
+                    onClick={handleDownloadPDF}
                   >
-                    {isLoading?<CircularProgress className="w-6 h-6 "/>:<PictureAsPdfSharpIcon className=" h-6 w-6" />}
+                    <PictureAsPdfSharpIcon className=" h-6 w-6" />
                   </button>
                 </Tooltip>
                 <Tooltip title="Download Excel">
                   <button
                     className="h-10 w-10 bg-[#3BDB03] shadow-sm rounded flex justify-center items-center text-white"
-                    onClick={handleDownloadExcel} disabled={isLoading}
-                  >{isLoading?<CircularProgress className="w-6 h-6 "/>:<FileDownloadOutlinedIcon className="w-6 h-6 " />}
+                    onClick={handleDownloadExcel}
+                  ><FileDownloadOutlinedIcon className="w-6 h-6 " />
                   </button>
                 </Tooltip>
-                <button className=" h-10 w-10 bg-[#E79E28] shadow-sm rounded flex justify-center items-center text-white" disabled={isLoading}>
+                <button className=" h-10 w-10 bg-[#E79E28] shadow-sm rounded flex justify-center items-center text-white">
                 {isLoading?<CircularProgress className="w-6 h-6 "/>:<DashboardMenu
                     selectedCategory={selectedCategory}
                     className="w-6 h-6 "
@@ -308,7 +303,6 @@ const Dashboard: React.FC = () => {
                         {firstCart && (
                           <>
                             {data.map((item, index) => (
-                              <>
                                 <div key={index}>
                                   <div className="bg-blue-200 w-full">
                                     <div className="md:flex hidden w-full justify-center items-center">
@@ -421,7 +415,6 @@ const Dashboard: React.FC = () => {
                                     </Grid>
                                   </div>
                                 </div>
-                              </>
                             ))}
                           </>
                         )}

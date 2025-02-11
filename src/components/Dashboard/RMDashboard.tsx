@@ -293,26 +293,16 @@ const RMDashboard: React.FC = () => {
                   <button
                     className="md:w-10 md:h-10 h-4 w-4 bg-[#0095FF] shadow-sm rounded flex justify-center items-center text-white"
                     onClick={handleDownloadPDF}
-                    disabled={isLoading}
                   >
-                    {isLoading ? (
-                      <CircularProgress className="md:w-6 md:h-6 h-3 w-3" />
-                    ) : (
-                      <PictureAsPdfSharpIcon className="md:w-6 md:h-6 h-3 w-3" />
-                    )}
+                    <PictureAsPdfSharpIcon className="md:w-6 md:h-6 h-3 w-3" />
                   </button>
                 </Tooltip>
                 <Tooltip title="Download Excel">
                   <button
                     className="md:w-10 md:h-10 h-4 w-4 bg-[#3BDB03] shadow-sm rounded flex justify-center items-center text-white"
                     onClick={handleDownloadExcel}
-                    disabled={isLoading}
                   >
-                    {isLoading ? (
-                      <CircularProgress className="md:w-6 md:h-6 h-3 w-3" />
-                    ) : (
-                      <FileDownloadOutlinedIcon className="md:w-6 md:h-6 h-3 w-3" />
-                    )}
+                    <FileDownloadOutlinedIcon className="md:w-6 md:h-6 h-3 w-3" />
                   </button>
                 </Tooltip>
               </div>
@@ -351,27 +341,21 @@ const RMDashboard: React.FC = () => {
                                                 category
                                               )
                                             }
-                                            disabled={isLoading}
                                           >
-                                            {isLoading ? (
-                                              <CircularProgress />
-                                            ) : (
-                                              <Tooltip
-                                                title={`View ${category} Data`}
+                                            <Tooltip
+                                              title={`View ${category} Data`}
+                                            >
+                                              <h2
+                                                className={` font-satoshi font-semibold text-center ${
+                                                  catIndex ===
+                                                  selectedCategoryIndex
+                                                    ? "text-white"
+                                                    : "text-black"
+                                                }`}
                                               >
-                                                <h2
-                                                  className={` font-satoshi font-semibold text-center ${
-                                                    catIndex ===
-                                                    selectedCategoryIndex
-                                                      ? "text-white"
-                                                      : "text-black"
-                                                  }`}
-                                                >
-                                                  {category ||
-                                                    "Unnamed Category"}
-                                                </h2>
-                                              </Tooltip>
-                                            )}
+                                                {category || "Unnamed Category"}
+                                              </h2>
+                                            </Tooltip>
                                           </Button>
                                         </Grid>
                                       )
