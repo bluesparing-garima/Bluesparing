@@ -195,7 +195,7 @@ const MonthlyCompanyFilterPayOutLeftDistributed = () => {
                                 getOptionLabel={(option) =>
                                   typeof option === "string"
                                     ? option
-                                    : `${option.fullName} - ${option.partnerId}` ||
+                                    : `${option.name} - ${option.userCode}` ||
                                       ""
                                 }
                                 options={partners}

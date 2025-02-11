@@ -1551,7 +1551,7 @@ const routes = [
       },
       {
         path: "reject",
-        element: <RejectionPolicies />,
+        element:  <SuspenseWrapper> <RejectionPolicies /></SuspenseWrapper> ,
       },
       {
         path: "publish",

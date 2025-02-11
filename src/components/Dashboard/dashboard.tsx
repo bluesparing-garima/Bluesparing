@@ -55,7 +55,7 @@ const Dashboard: React.FC = () => {
   const [fifthCart, setFifthCart] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [categoryEntries, setCategoryEntries] = useState([]);
-  const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(1);
+  const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(0)
   const [selectedCategory, setSelectedCategory] = useState(0);
   const [selectedCard, setSelectedcard] = useState("1");
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
