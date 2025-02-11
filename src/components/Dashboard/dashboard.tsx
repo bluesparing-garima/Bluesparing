@@ -55,7 +55,7 @@ const Dashboard: React.FC = () => {
   const [fifthCart, setFifthCart] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [categoryEntries, setCategoryEntries] = useState([]);
-  const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(0);
+  const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState(0);
   const [selectedCard, setSelectedcard] = useState("1");
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
@@ -647,7 +647,8 @@ const renderCountBox = (
   if (link === "/monthly payin balance") {
     link = "/payins/balance/monthly";
   }
-  if (link === "/total left dist") {
+  if (link === "/total payin left dist") {
+
     link = "/payins/leftDistributed";
   }
   if (link === "/monthly payin left dist") {
