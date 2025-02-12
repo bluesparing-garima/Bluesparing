@@ -58,7 +58,6 @@ const Attendance: React.FC = () => {
     const filter: string = departments[selectedCategoryIndex];
     if (attendanceData) {
       const data = attendanceData[filter as keyof IAttendanceData]?.employees;
-      console.log("data",data);
       setEmployees(data);
     }
   }, [selectedCategoryIndex, departments, attendanceData]);

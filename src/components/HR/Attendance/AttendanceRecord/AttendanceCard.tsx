@@ -32,7 +32,6 @@ const getRowStyle = (attendanceType: string) => {
 };
 
 const AttendanceCard: React.FC<AttendanceCardProps> = ({ employee }) => {
-  console.log("em",employee);
   const [timePassed, setTimePassed] = useState<string>("");
   const link = `/hr/attendance/${employee.employeeId}`;
   const ui = getRowStyle(employee.todaysAttendance);

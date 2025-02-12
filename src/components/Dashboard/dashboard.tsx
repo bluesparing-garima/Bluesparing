@@ -619,7 +619,6 @@ const renderCountBox = (
   link?: any,
   selectedCategory?: any
 ) => {
-  console.log(link);
   if (link === "/total payout amount") {
     link = "/payouts";
   }
