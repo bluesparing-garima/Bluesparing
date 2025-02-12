@@ -30,11 +30,9 @@ const Attendance: React.FC = () => {
   const fetchDepartments = async () => {
     try {
       const res = await GetEmployeeDepartmentService({ header });
-      const data = res.roles?.filter(
-        (ele: string) => ele.toLowerCase() !== "partner"
-      );
-
-      setDepartments(data);
+      const excludeRoles = ["admin", "superadmin", "partner"];
+      const filteredRoles = res.roles?.filter((role: string) => !excludeRoles.includes(role.toLowerCase()));
+      setDepartments(filteredRoles);
     } catch (error) {
       toast.error("");
     }

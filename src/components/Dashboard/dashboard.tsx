@@ -626,7 +626,7 @@ const renderCountBox = (
     link = "/payins";
   }
   if (link === "/total policy count" || link === '/monthly policy count') {
-    link = "/policy/motorpolicies";
+    link = "/policy/motor-policies";
   }
   if (link === "/monthly payout amount") {
     link = "/payouts/monthly";

@@ -95,7 +95,7 @@ const MarkAttendanceCard: React.FC<AttendanceCardProps> = ({
   const avatarContent = employee.profileImage ? (
     <Avatar src={employee.profileImage} alt={employee.employeeName} />
   ) : (
-    <Avatar>{employee.employeeName.charAt(0)}</Avatar>
+    <Avatar>{employee.employeeName?.charAt(0)}</Avatar>
   );
 
   return (
@@ -133,7 +133,7 @@ const MarkAttendanceCard: React.FC<AttendanceCardProps> = ({
               className="ml-2"
               style={{ color: ui.color }}
             >
-              {employee.employeeName.toUpperCase()}
+              {employee.employeeName?.toUpperCase()}
             </Typography>
           </div>
 

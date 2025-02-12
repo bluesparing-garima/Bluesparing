@@ -13,7 +13,8 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { IEmployee } from "../IAttendance";
 import AvTimerIcon from "@mui/icons-material/AvTimer";
 import dayjs from "dayjs";
-
+import duration from "dayjs/plugin/duration"; 
+dayjs.extend(duration);
 interface AttendanceCardProps {
   employee: IEmployee;
 }

@@ -12,6 +12,7 @@ import { AddAttendanceFormProps, IAttendance } from "../IAttendance";
 import AddAttendanceService from "../../../../api/HR/Attendance/AddAttendance/AddHolidayService";
 import { IAddAttendanceProps } from "../../../../api/HR/getHrTypes";
 import { header } from "../../../../context/constant";
+import { setIn } from "final-form";
 
 const AddAttendanceForm: React.FC<AddAttendanceFormProps> = ({
   initialValues,
@@ -62,9 +63,11 @@ const AddAttendanceForm: React.FC<AddAttendanceFormProps> = ({
     (schema: yup.ObjectSchema<any>) => async (values: Record<string, any>) => {
       try {
         await schema.validate(values, { abortEarly: false });
-      } catch (error: any) {
-        const err = await error;
-        toast.error(err.message);
+      } catch (err: any) {
+        const errors = err.inner.reduce((formError: any, innerError: any) => {
+          return setIn(formError, innerError.path, innerError.message);
+        }, {});
+        return errors;
       }
     };
 

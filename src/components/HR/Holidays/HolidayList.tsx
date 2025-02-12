@@ -205,7 +205,6 @@ const HolidaysList: React.FC = () => {
               render={({ handleSubmit, submitting, errors }) => (
                 <form onSubmit={handleSubmit} noValidate>
                   <Grid container spacing={2}>
-                    
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Field name="startDate">
                         {({ input, meta }) => (
@@ -235,7 +234,7 @@ const HolidaysList: React.FC = () => {
                         )}
                       </Field>
                     </Grid>
-                    
+
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Field name="endDate">
                         {({ input, meta }) => (
@@ -265,7 +264,7 @@ const HolidaysList: React.FC = () => {
                         )}
                       </Field>
                     </Grid>
-                    
+
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Button
                         type="submit"

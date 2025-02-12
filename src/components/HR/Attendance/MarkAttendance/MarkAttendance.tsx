@@ -17,6 +17,7 @@ const MarkAttendance = () => {
   const getAttendanceRecord = async () => {
     try {
       const res = await GetAttendanceCountService({ header, eId: UserData.profileId });
+      console.log(res);
       setEmployee(res.data);
     } catch (error: any) {
       const err = await error;

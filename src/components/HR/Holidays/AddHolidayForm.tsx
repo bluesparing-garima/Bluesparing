@@ -9,28 +9,29 @@ import toast, { Toaster } from "react-hot-toast";
 import { IHolidayForm } from "./IHolidayForm";
 import dayjs from "dayjs";
 import AddHolidayService from "../../../api/HR/Holidays/AddHoliday/AddHolidayService";
-import { header } from "../../../context/constant";
+import { DAY_FORMAT, DAYJS_FORMAT, header } from "../../../context/constant";
 import { IAddHolidays } from "../../../api/HR/getHrTypes";
 import { useNavigate } from "react-router-dom";
 import EditHolidayService from "../../../api/HR/Holidays/EditHoliday/EditHolidayService";
+import { setIn } from "final-form";
 interface AddHolidayFormProps {
   initialValues: IHolidayForm;
 }
 
 const AddHolidayForm: React.FC<AddHolidayFormProps> = ({ initialValues }) => {
   const navigate = useNavigate();
-  const[isLoading,setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [selectedDay, setSelectedDay] = useState(
     initialValues ? initialValues.day : ""
   );
   const validationSchema = yup.object().shape({
-    holidayName: yup
+    name: yup
       .string()
       .required("Holiday Name is required")
       .min(1, "Holiday Name must be at least 1 character")
       .max(100, "Holiday Name cannot exceed 100 characters"),
-    holidayDate: yup
+    date: yup
       .date()
       .required("Date is required")
       .nullable()
@@ -41,9 +42,11 @@ const AddHolidayForm: React.FC<AddHolidayFormProps> = ({ initialValues }) => {
     (schema: yup.ObjectSchema<any>) => async (values: Record<string, any>) => {
       try {
         await schema.validate(values, { abortEarly: false });
-      } catch (error: any) {
-        const err = await error;
-        toast.error(err.message);
+      } catch (err: any) {
+        const errors = err.inner.reduce((formError: any, innerError: any) => {
+          return setIn(formError, innerError.path, innerError.message);
+        }, {});
+        return errors;
       }
     };
 
@@ -51,8 +54,8 @@ const AddHolidayForm: React.FC<AddHolidayFormProps> = ({ initialValues }) => {
 
   const onSubmit = async (values: IHolidayForm) => {
     try {
-      setIsLoading(true)
-      const hd = dayjs(values.date).format("MM/DD/YYYY");
+      setIsLoading(true);
+      const hd = dayjs(values.date).format(DAY_FORMAT);
       const holidayData: IAddHolidays = { name: values.name, date: hd };
       if (initialValues.id) {
         await EditHolidayService({ header, holidayData, id: initialValues.id });
@@ -64,8 +67,8 @@ const AddHolidayForm: React.FC<AddHolidayFormProps> = ({ initialValues }) => {
     } catch (error: any) {
       const err = await error;
       toast.error(err.message);
-    }finally{
-      setIsLoading(false)
+    } finally {
+      setIsLoading(false);
     }
   };
   const handleChange = (input: any, date: any) => {
@@ -104,7 +107,7 @@ const AddHolidayForm: React.FC<AddHolidayFormProps> = ({ initialValues }) => {
                     <DatePicker
                       {...input}
                       label="Select Holiday Date"
-                      inputFormat="DD/MM/YYYY"
+                      inputFormat="dd/MM/yyyy"
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -145,7 +148,11 @@ const AddHolidayForm: React.FC<AddHolidayFormProps> = ({ initialValues }) => {
                   color="primary"
                   className="w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                 >
-                  {isLoading ? 'Submitting...' :initialValues.id === "0" ? "Add Holiday" : "Update Holiday"}
+                  {isLoading
+                    ? "Submitting..."
+                    : initialValues.id === "0"
+                    ? "Add Holiday"
+                    : "Update Holiday"}
                 </Button>
               </Grid>
             </Grid>
