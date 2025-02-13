@@ -93,7 +93,7 @@ const Accounts = () => {
           ({
             id: team._id!,
             branchName: team.branchName!,
-            partnerId: team.partnerId!,
+            userCode: team.userCode!,
             role: team.role!,
             headRMId: team.headRMId!,
             headRM: team.headRM!,

@@ -56,8 +56,8 @@ const RmTeams = () => {
         size: 200,
       },
       {
-        accessorKey: "partnerId",
-        header: "Partner Code",
+        accessorKey: "userCode",
+        header: "Member Code",
         size: 200,
       },
       {
@@ -98,7 +98,7 @@ const RmTeams = () => {
           ({
             id: team._id!,
             branchName: team.branchName!,
-            partnerId: team.partnerId!,
+            userCode: team.userCode!,
             role: team.role!,
             headRMId: team.headRMId!,
             headRM: team.headRM!,

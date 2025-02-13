@@ -7,7 +7,7 @@ const convertITeamToITeamVM = (data: ITeams): ITeamsVM => {
     id: data._id ? data._id : "",
     branchName: data.branchName ? data.branchName : "",
     role: data.role ? data.role : "",
-    partnerId: data.partnerId ? data.partnerId : "",
+    userCode: data.userCode ? data.userCode : "",
     headRMId: data.headRMId ? data.headRMId : "",
     headRM: data.headRM ? data.headRM : "",
     name: data.name ? data.name : "",

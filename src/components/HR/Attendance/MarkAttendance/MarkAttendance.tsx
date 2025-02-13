@@ -14,18 +14,23 @@ const MarkAttendance = () => {
   const id = UserData.profileId;
   const [attendance, setAttendance] = useState<IAttendance | null>();
   const [employee, setEmployee] = useState<IEmployee | null>();
+  const [isLoading,setIsLoading]=useState(false);
   const getAttendanceRecord = async () => {
     try {
+      setIsLoading(true)
       const res = await GetAttendanceCountService({ header, eId: UserData.profileId });
       console.log(res);
       setEmployee(res.data);
     } catch (error: any) {
       const err = await error;
       toast.error(err.message);
+    }finally{
+      setIsLoading(false)
     }
   };
   const FetchData = async () => {
     try {
+      setIsLoading(true)
       const now = dayjs().format("YYYY-MM-DD");
       const res = await GetTodayAttendanceRecordService({
         header,
@@ -36,6 +41,8 @@ const MarkAttendance = () => {
     } catch (error: any) {
       const err = await error;
       toast.error(err.message);
+    }finally{
+      setIsLoading(false)
     }
   };
   useEffect(() => {
@@ -43,8 +50,11 @@ const MarkAttendance = () => {
     getAttendanceRecord();
     // eslint-disable-next-line
   }, []);
+  if(isLoading){
+    return <div className="flex justify-center w-full items-center h-[50vh]"><CircularProgress  /></div>;
+  }
   if (!employee || !attendance) {
-    return <CircularProgress />;
+    return <span>Error occurred while fetching attendance</span>;
   }
   return (
     <>
