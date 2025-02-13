@@ -3,7 +3,7 @@ export interface ITeamForm {
   branch?: any;
   role: any;
   roleId?:string;
-  partnerId?: string;
+  userCode?: string;
   headRMId?: string;
   headRM?: string;
   name?: string;
@@ -40,7 +40,7 @@ export interface ITeamsVM {
   branchName?: string;
   role?: string;
   originalPassword?: string;
-  partnerId?: string;
+  userCode?: string;
   headRMId?: string;
   headRM?: string;
   name?: string;
@@ -83,7 +83,7 @@ export interface ITeams {
   branchName?: string;
   role?: string;
   originalPassword?: string;
-  partnerId?: string;
+  userCode?: string;
   headRMId?: string;
   headRM?: string;
   name?: string;

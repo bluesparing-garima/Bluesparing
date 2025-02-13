@@ -10,7 +10,7 @@ export const convertITeamVMToITeamForm = (team: ITeamsVM): ITeamForm => {
     role: team.role!,
     headRMId: team.headRMId!,
     headRM: team.headRM!,
-    partnerId: team.partnerId!,
+    userCode: team.userCode!,
     name: team.name!,
     phoneNumber: team.phoneNumber!,
     password: team.password!,
