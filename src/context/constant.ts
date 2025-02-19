@@ -61,6 +61,7 @@ export type SafeKaroUser = {
   policyCount?:number;
   transactionStatus?:boolean;
   profileImage?: string;
+  planExpired?:string;
 };
 export type Header = {
   "Content-Type": string;

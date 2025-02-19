@@ -289,7 +289,7 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
                   </MenuItem>
                 </div>
               )}
-              {UserData.role?.toLowerCase().trim() === "admin" && (
+              {UserData?.role?.toLowerCase().trim() === "admin" && (
                 <Link to="/upload-logo" onClick={handleClose}>
                   <MenuItem>Upload Logo</MenuItem>
                 </Link>

@@ -222,6 +222,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
         teamForm.headRM = selectedRMName;
         teamForm.planId = UserData.planId;
         teamForm.planName = UserData.planName;
+        teamForm.planExpired=UserData.planExpired;
         documents.forEach((doc: Document) => {
           if (doc.file && doc.docName) {
             teamForm[doc.docName as keyof typeof teamForm] = doc.file;
@@ -248,6 +249,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
         teamForm.headRM = selectedRMName;
         teamForm.planId = UserData.planId;
         teamForm.planName = UserData.planName;
+        teamForm.planExpired=UserData.planExpired;
         documents.forEach((doc: Document) => {
           if (doc.file && doc.docName) {
             teamForm[doc.docName as keyof typeof teamForm] = doc.file;

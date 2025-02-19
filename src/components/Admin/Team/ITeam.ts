@@ -20,6 +20,7 @@ export interface ITeamForm {
   adharCardBack?: string;
   adharCardFront?: string;
   panCard?: string;
+  planExpired?:any;
   qualification?: string;
   bankProof?: string;
   experience?: string;
