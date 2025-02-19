@@ -7,7 +7,10 @@ import toast, { Toaster } from "react-hot-toast";
 import VerifyPaymentService from "../../api/Razorpay/VerifyPayment/VerifyPaymentService";
 import logo from "../../assets/fav.png";
 import { useNavigate } from "react-router-dom";
-import { getFromSessionStorage, updateLocalStorage } from "../../utils/HandleStore";
+import {
+  getFromSessionStorage,
+  updateLocalStorage,
+} from "../../utils/HandleStore";
 import { SafeKaroUser, SESSION_USER } from "../../context/constant";
 import { IUser } from "../../Auth/IAuth";
 import { AddTransactionProps } from "../../api/Transaction/ITransaction";
@@ -26,8 +29,6 @@ const PlanCard: FC<PlanCardProps> = ({ p }) => {
   const getAmount = () => {
     if (selectedPlan === "monthly") {
       return p.monthlyAmount;
-    } else {
-      return p.annualAmount;
     }
   };
   const CalculateCurrentDate = (): string => {
@@ -99,16 +100,15 @@ const PlanCard: FC<PlanCardProps> = ({ p }) => {
     return false;
   };
 
-
-  const handleNavigation = ()=>{
-    if(userData?.role){
-      navigate("/dashboard")
-      sessionStorage.clear()
-    }else{
-      navigate("/")
-      sessionStorage.clear()
+  const handleNavigation = () => {
+    if (userData?.role) {
+      navigate("/dashboard");
+      sessionStorage.clear();
+    } else {
+      navigate("/");
+      sessionStorage.clear();
     }
-  }
+  };
   const handleTransaction = async (
     tId: string,
     oId: string,
@@ -123,87 +123,25 @@ const PlanCard: FC<PlanCardProps> = ({ p }) => {
       toast.error(err.message);
     }
   };
-  const handleMakePayment = async () => {
+
+  const handleCheckout = () => {
     if (!isCheckUserData()) {
       navigate("/signup");
-      sessionStorage.clear()
+      sessionStorage.clear();
       return;
     }
-    const amount = getAmount();
 
     if (p.planName.toLowerCase().trim() === "free") {
       handleTransaction("free", "free", true);
-      updateLocalStorage({transactionStatus:true})
-      handleNavigation()
-    } else {
-      try {
-        const response = InitiatePaymentService({ amount });
-        const data = await response;
-        if (data.success) {
-          const { order_id } = data;
-          const options = {
-            key: process.env.REACT_APP_API_KEY,
-            amount: Number(amount) * 100,
-            currency: "INR",
-            name: "Blue Sparing",
-            description: `Payment for ${p.planName} plan`,
-            image: logo,
-            order_id: order_id,
-            handler: async (response: IVerifyResponsePayload) => {
-              try {
-                await verifyPayment(
-                  response.razorpay_order_id,
-                  response.razorpay_payment_id,
-                  response.razorpay_signature
-                );
-              } catch (error) {
-                handleTransaction("error", "error", false);
-              }
-            },
-            prefill: {
-              name: user ? user.name : userData.name,
-              email: user ? user.email : userData.email,
-              contact: user ? user.phone : userData.phoneNumber,
-            },
-            theme: {
-              color: "#e59411",
-            },
-          };
-          const razorpay = new (window as any).Razorpay(options);
-          razorpay.open();
-        }
-      } catch (error) {
-        handleTransaction("error", "error", false);
-        toast.error("Error initiating payment");
-      }
+      updateLocalStorage({ transactionStatus: true });
+      handleNavigation();
+    }else{
+      navigate('/checkout', { state: { plan: p, selectedPlan } });
     }
   };
 
-  const verifyPayment = async (
-    razorpay_order_id: string,
-    razorpay_payment_id: string,
-    razorpay_signature: string
-  ) => {
-    try {
-      const response = await VerifyPaymentService({
-        razorpay_order_id,
-        razorpay_payment_id,
-        razorpay_signature,
-      });
 
-      if (response.success) {
-        handleTransaction(razorpay_payment_id, razorpay_order_id, true);
-        updateLocalStorage({transactionStatus:true})
-        handleNavigation()
-      } else {
-        toast.error("Payment verification failed");
-      }
-    } catch (error) {
-      handleTransaction("free", "free", false);
-      toast.error("Error verifying payment");
-      handleNavigation()
-    }
-  };
+
   return (
     <Box
       sx={{
@@ -225,7 +163,7 @@ const PlanCard: FC<PlanCardProps> = ({ p }) => {
         </Typography>
       </Box>
       <Typography variant="h3" fontWeight="bold" mt={1}>
-        ₹{selectedPlan === "monthly" ? p.monthlyAmount : p.annualAmount}
+        ₹{p.monthlyAmount}
       </Typography>
       <Box mt={2}>
         <Button
@@ -268,11 +206,11 @@ const PlanCard: FC<PlanCardProps> = ({ p }) => {
         variant="contained"
         sx={{ mt: 3, px: 4, borderRadius: 1, backgroundColor: "#027AAE" }}
         className="font-satoshi"
-        onClick={handleMakePayment}
+        onClick={handleCheckout}
       >
-        Make Payment
+        Checkout
       </Button>
-      <Toaster position="bottom-center" reverseOrder={true} />
+            <Toaster position="bottom-center" reverseOrder={true} />
     </Box>
   );
 };

@@ -6,6 +6,7 @@ import PublishedPolicyPage from "./components/Policy/PublishedPolicy/PublishedPo
 import BookedBooking from "./components/Booking/BookingRequests/BookedBooking";
 import AllBookingReq from "./components/Booking/BookingRequests/AllBooking";
 import TransferMoney from "./components/Account/TransferMoney/TransferMoney";
+import Checkout from "./components/UpdatePlan/Checkout";
 
 const Dashboard = lazy(() => import("./components/Dashboard/dashboard"));
 const PartnerDashboard = lazy(
@@ -640,6 +641,19 @@ const routes = [
         element: (
           <SuspenseWrapper>
             <UpdatePlan />
+          </SuspenseWrapper>
+        ),
+      },
+    ],
+  },
+  {
+    path: "/checkout",
+    children: [
+      {
+        path: "",
+        element: (
+          <SuspenseWrapper>
+            <Checkout />
           </SuspenseWrapper>
         ),
       },
@@ -1342,7 +1356,12 @@ const routes = [
     children: [
       {
         path: "money-transfer",
-        element:<SuspenseWrapper> <TransferMoney/></SuspenseWrapper>,
+        element: (
+          <SuspenseWrapper>
+            {" "}
+            <TransferMoney />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "",
@@ -1543,11 +1562,20 @@ const routes = [
       },
       {
         path: "all",
-        element: <SuspenseWrapper><AllBookingReq/></SuspenseWrapper>,
+        element: (
+          <SuspenseWrapper>
+            <AllBookingReq />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "booked",
-        element: <SuspenseWrapper> <BookedBooking /></SuspenseWrapper> ,
+        element: (
+          <SuspenseWrapper>
+            {" "}
+            <BookedBooking />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "reject",
@@ -1555,9 +1583,11 @@ const routes = [
       },
       {
         path: "publish",
-        element: <SuspenseWrapper>
-      <PublishedPolicyPage />
-      </SuspenseWrapper>,
+        element: (
+          <SuspenseWrapper>
+            <PublishedPolicyPage />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
@@ -2243,7 +2273,7 @@ const routes = [
       },
     ],
   },
-  
+
   {
     path: "bookingdashboard",
     children: [
