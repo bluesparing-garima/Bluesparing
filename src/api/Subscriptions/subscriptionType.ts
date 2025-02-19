@@ -2,9 +2,9 @@ export interface ISubscription {
     _id: string;
     planName: string;
     monthlyAmount: number;
-    annualAmount: number;
     policyCount: number;
-    users: string;
+    userLimit: Record<string, number>;
+    discount: Record<string, number>
     assignedMenu?: string[];
     assignedAccountMenu?:string[];
     assignedAdminMenu?:string[];
@@ -13,12 +13,11 @@ export interface ISubscription {
     assignedOperationMenu?:string[];
     assignedPartnerMenu?:string[];
     assignedRMMenu?:string[];
-    planDetails?:any;
     createdBy: string;
+    planDetails?:any;
     updatedBy: string;
     createdOn: string;
     updatedOn: string;
     isActive: boolean;
 }
-
-
+ 
