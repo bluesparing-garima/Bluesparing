@@ -85,11 +85,13 @@ const Checkout: FC = () => {
 
   const handleNavigation = () => {
     if (userData?.role) {
+      sessionStorage.clear();
+      localStorage.clear()
       navigate("/dashboard");
-      sessionStorage.clear();
     } else {
-      navigate("/");
       sessionStorage.clear();
+      localStorage.clear()
+      navigate("/");
     }
   };
   const verifyPayment = async (
@@ -123,8 +125,9 @@ const Checkout: FC = () => {
     status: boolean
   ) => {
     try {
+      const amount =   getTotalAmount();
       AddTransactionServices({
-        data: makeTransactionPayload(tId, oId, status),
+        data: makeTransactionPayload(tId, oId, status,amount),
       });
     } catch (error: any) {
       const err = await error;
@@ -134,7 +137,7 @@ const Checkout: FC = () => {
   const makeTransactionPayload = (
     pId: string,
     oId: string,
-    status: boolean
+    status: boolean,amount:number
   ): AddTransactionProps => {
     if (userData?.role) {
       const payload: AddTransactionProps = {
@@ -146,6 +149,7 @@ const Checkout: FC = () => {
         planId: plan._id,
         planType: plan.planName,
         planStartDate: CalculateCurrentDate(),
+        amount:amount||0,
         planEndDate:
           plan.planName?.toLowerCase() === "free"
             ? calculateFreePlanEndDate()
@@ -161,10 +165,12 @@ const Checkout: FC = () => {
         transactionStatus: status,
         planId: plan._id,
         planType: plan.planName,
+        amount:amount||0,
         planStartDate: CalculateCurrentDate(),
         planEndDate: calculatePlanEndDate(),
       };
       sessionStorage.clear();
+      localStorage.clear()
       return payload;
     }
   };
@@ -173,6 +179,7 @@ const Checkout: FC = () => {
     if (!isCheckUserData()) {
       navigate("/signup");
       sessionStorage.clear();
+      localStorage.clear();
       return;
     }
     if (plan?.planName.toLowerCase().trim() === "free") {
