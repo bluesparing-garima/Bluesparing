@@ -129,7 +129,7 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
     }
   };
   const canMarkAttendance = useMemo(() => {
-    const role = UserData?.role.toLowerCase();
+    const role = UserData?.role?.toLowerCase();
     return role !== "admin" && role !== "partner";
   }, [UserData?.role]);
   useEffect(() => {

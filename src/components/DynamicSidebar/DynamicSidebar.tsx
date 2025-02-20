@@ -45,7 +45,7 @@ const DynamicSidebar: FC<DynamicSidebarProps> = ({
   const [subsData] = useGetSubsById(userData?.planId || "");
 
   const mapAssignByRole = () => {
-    const roleName = userData?.role.toLowerCase();
+    const roleName = userData?.role?.toLowerCase();
     switch (roleName) {
       case "partner":
         return "assignedPartnerMenu";
