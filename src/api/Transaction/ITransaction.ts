@@ -12,6 +12,7 @@ planType:string;
 planStartDate:string;
 planEndDate:string;
 transactionStatus:boolean;
+amount:number,
 createdBy:string;
 }
 export interface IAddTransaction{
