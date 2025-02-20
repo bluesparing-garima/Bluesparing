@@ -20,7 +20,6 @@ export interface ITeamForm {
   adharCardBack?: string;
   adharCardFront?: string;
   panCard?: string;
-  planExpired?:any;
   qualification?: string;
   bankProof?: string;
   experience?: string;
@@ -34,6 +33,8 @@ export interface ITeamForm {
   planName?:string;
   branchId?:string;
   branchName:string;
+  planExpired?:string;
+  planStartDate?:string;
 }
 
 export interface ITeamsVM {
