@@ -45,12 +45,29 @@ const Checkout: FC = () => {
     const baseAmount = plan.monthlyAmount;
     return Number(baseAmount) * selectedMonths;
   };
+
+  const getNearestDiscount = (month: number): number => {
+    if (!plan.discount) return 0;
+
+    const discountMonths = Object.keys(plan.discount)
+      .map(Number)
+      .sort((a, b) => a - b); // Sort months in ascending order
+
+    for (let i = month; i >= 1; i--) {
+      if (discountMonths.includes(i)) {
+        return plan.discount[i]; // Return the discount from the nearest previous month
+      }
+    }
+    return 0; // Default to 0% if no previous discount found
+  };
+
   const getDiscount = () => {
-    const monthDiscount = plan.discount?.[selectedMonths] ?? 0;
-    const discountPercentage = Number(monthDiscount) || 0;
+    const discountPercentage = getNearestDiscount(selectedMonths); // Get closest valid discount
     const monthlyDiscount = (plan.monthlyAmount * discountPercentage) / 100;
+
     return monthlyDiscount * selectedMonths;
   };
+
   const getTotalAmount = () => {
     return getAmount() - getDiscount();
   };
@@ -86,11 +103,11 @@ const Checkout: FC = () => {
   const handleNavigation = () => {
     if (userData?.role) {
       sessionStorage.clear();
-      localStorage.clear()
+      localStorage.clear();
       navigate("/dashboard");
     } else {
       sessionStorage.clear();
-      localStorage.clear()
+      localStorage.clear();
       navigate("/");
     }
   };
@@ -125,9 +142,9 @@ const Checkout: FC = () => {
     status: boolean
   ) => {
     try {
-      const amount =   getTotalAmount();
+      const amount = getTotalAmount();
       AddTransactionServices({
-        data: makeTransactionPayload(tId, oId, status,amount),
+        data: makeTransactionPayload(tId, oId, status, amount),
       });
     } catch (error: any) {
       const err = await error;
@@ -137,7 +154,8 @@ const Checkout: FC = () => {
   const makeTransactionPayload = (
     pId: string,
     oId: string,
-    status: boolean,amount:number
+    status: boolean,
+    amount: number
   ): AddTransactionProps => {
     if (userData?.role) {
       const payload: AddTransactionProps = {
@@ -149,7 +167,7 @@ const Checkout: FC = () => {
         planId: plan._id,
         planType: plan.planName,
         planStartDate: CalculateCurrentDate(),
-        amount:amount||0,
+        amount: amount || 0,
         planEndDate:
           plan.planName?.toLowerCase() === "free"
             ? calculateFreePlanEndDate()
@@ -165,12 +183,12 @@ const Checkout: FC = () => {
         transactionStatus: status,
         planId: plan._id,
         planType: plan.planName,
-        amount:amount||0,
+        amount: amount || 0,
         planStartDate: CalculateCurrentDate(),
         planEndDate: calculatePlanEndDate(),
       };
       sessionStorage.clear();
-      localStorage.clear()
+      localStorage.clear();
       return payload;
     }
   };
@@ -182,14 +200,14 @@ const Checkout: FC = () => {
       localStorage.clear();
       return;
     }
-    if (plan?.planName.toLowerCase().trim() === "free") {
+    const amount = getTotalAmount();
+    if (amount<=0) {
       handleTransaction("free", "free", true);
       updateLocalStorage({ transactionStatus: true });
       handleNavigation();
     } else {
       try {
-        const amount = getTotalAmount() ;
-        const response = InitiatePaymentService({ amount});
+        const response = InitiatePaymentService({ amount });
         const data = await response;
         if (data.success) {
           const { order_id } = data;
@@ -230,42 +248,66 @@ const Checkout: FC = () => {
       }
     }
   };
+
+  const getMaxDiscountMonth = () => {
+    if (!plan.discount) return { month: 0, discount: 0 };
+  
+    return Object.entries(plan.discount).reduce(
+      (max, [month, discount]) =>
+        Number(discount) > max.discount ? { month: Number(month), discount: Number(discount) } : max,
+      { month: 0, discount: 0 }
+    );
+  };
+  
+  const { month: highestMonth, discount: highestDiscount } = getMaxDiscountMonth();
+  
   return (
     <div className="w-full h-screen flex flex-col bg-blue-200 justify-center ">
       {}
-      <h1 className="w-full text-center mb-4 text-2xl uppercase font-extrabold underline  text-[#213555]">
-        Payment Page
-      </h1>
-      <div className="flex justify-center ">
-        <Box className="mt-16 p-10 w-[500px] h-[400px] rounded-xl rounded-r-none bg-white shadow-[-4px_2px_10px_rgba(0,0,0,0.25)]">
+      <h1 className="w-full mt-5 text-center text-2xl uppercase font-extrabold text-[#213555]">
+        Your Cart
+      </h1> 
+        <div className="m-auto mt-5 pl-10 p-5 w-[73.5vw] rounded-xl bg-[#e59411] text-white shadow-[-4px_2px_10px_rgba(0,0,0,0.25)] ">
+            <h2 className="font-satoshi font-extrabold text-lg">🔥 Hurry! Limited-Time Offer on {plan.planName} Plans! 🔥
+            </h2>
+            <p className="font-satoshi text-md">
+  💰 Select {plan.planName} plan for {highestMonth}{" "}
+  {highestMonth > 1 ? "Months" : "Month"} to get{" "}
+  {highestDiscount}% off
+</p>
+        </div>
+               
+        {/* //! checkout section */}
+      <div className="flex justify-center mb-10 ">
+        <Box className="p-10 w-[500px] h-[400px] rounded-xl rounded-r-none bg-white shadow-[-4px_2px_10px_rgba(0,0,0,0.25)]">
           <div className="bg-[#e59411] p-2 text-center text-white">
             <Typography className="text-md font-extrabold font-satoshi">
               Checkout{" "}
             </Typography>
             <Typography className="text-sm font-satoshi">
-              Selected Plan :({plan.planName})
+              Selected Plan : ({plan.planName})
             </Typography>
           </div>
           <Typography className="font-satoshi mt-5">
-            <span className="text-[#027AAE] font-semibold">Monthly Amount :</span>{" "}
-            <span className="text-sm font-semibold">₹{getAmount()}</span>
+            <span className="text-[#027AAE] font-semibold">
+              Monthly Amount :
+            </span>{" "}
+            <span className="text-sm font-semibold">₹{plan.monthlyAmount}</span>
           </Typography>
           <Typography className="font-satoshi my-3">
-            <span className="text-[#027AAE] font-semibold">
-              Policy Count :
-            </span>{" "}
+            <span className="text-[#027AAE] font-semibold">Policy Count :</span>{" "}
             <span className="text-sm font-semibold">{plan.policyCount}</span>
           </Typography>
           {Object.keys(plan.userLimit).map((ele) => {
-          return (
-            <Typography key={ele} className="font-satoshi">
-              <span className="font-semibold text-[#027AAE] capitalize ">
-                {ele.toLowerCase()} Limit:
-              </span>
-              <span className="font-medium"> {plan.userLimit?.[ele]}</span>
-            </Typography>
-          );
-        })}
+            return (
+              <Typography key={ele} className="font-satoshi">
+                <span className="font-semibold text-[#027AAE] capitalize ">
+                  {ele.toLowerCase()} Limit:
+                </span>
+                <span className="font-medium"> {plan.userLimit?.[ele]}</span>
+              </Typography>
+            );
+          })}
           <Typography className="font-satoshi mt-3">
             <span className="text-[#027AAE] font-semibold">Duration :</span>
             <Select
@@ -281,17 +323,21 @@ const Checkout: FC = () => {
               }}
               IconComponent={KeyboardArrowDownIcon}
             >
-              {Object.keys(plan.discount).map((item) => {
+              {[...Array(12)].map((_, index) => {
+                const month = index + 1;
+                // Fetch discount from API or plan.discount object
+                const discount = plan.discount?.[month] || 0;
+
                 return (
-                  <MenuItem key={`${item}-month`} value={`${item}`}>
-                    {`${item} Month`}
+                  <MenuItem key={`${month}-month`} value={month}>
+                    {`${month} - Month`}
                   </MenuItem>
                 );
               })}
             </Select>
           </Typography>
         </Box>
-        <Box className="mt-16 p-10 w-[500px] h-[400px] rounded-xl rounded-l-none bg-white shadow-[6px_2px_15px_rgba(0,0,0,0.25)]">
+        <Box className="p-10 w-[500px] h-[400px] rounded-xl rounded-l-none bg-white shadow-[6px_2px_15px_rgba(0,0,0,0.25)]">
           <div className="bg-[#e59411] p-2 text-center text-white">
             <Typography className="text-md font-semibold font-satoshi">
               Selected Plan
@@ -301,18 +347,23 @@ const Checkout: FC = () => {
             </Typography>
           </div>
           <Typography className="font-satoshi mt-5">
-            <span className="text-[#027AAE] font-semibold font-extrabold">Amount :</span>{" "}
+            <span className="text-[#027AAE] font-semibold font-extrabold">
+              Amount :
+            </span>{" "}
             <span className="text-sm font-semibold">₹{getAmount()}</span>
           </Typography>
-  
-          <Typography className="font-satoshi mt-3">
-            <span className="text-[#027AAE] font-semibold">Discount :</span>{" "}
-            <span className="text-sm font-semibold">
-              ₹{getDiscount().toFixed(2)} ({`${plan.discount[selectedMonths]}%`}
-              )
-            </span>
-          </Typography>
-          <hr className="h-1 rounded mt-2"/>
+
+          {getNearestDiscount(selectedMonths) > 0 && (
+            <Typography className="font-satoshi mt-3">
+              <span className="text-[#027AAE] font-semibold">Discount :</span>{" "}
+              <span className="text-sm font-semibold">
+                ₹{getDiscount().toFixed(2)} (
+                {getNearestDiscount(selectedMonths)}%)
+              </span>
+            </Typography>
+          )}
+
+          <hr className="h-1 rounded mt-2" />
           <Typography className="font-satoshi mt-3">
             <span className="text-[#027AAE] font-semibold">Total :</span>{" "}
             <span className="text-sm font-semibold">

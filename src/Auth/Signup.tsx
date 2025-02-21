@@ -22,7 +22,8 @@ import useGetRoles from "../Hooks/Role/useGetRoles";
 import toast, { Toaster } from "react-hot-toast";
 import { storeInSessionStorage } from "../utils/HandleStore";
 import generateFormData from "../utils/generateFromData";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Cookie } from "@mui/icons-material";
 const Signup = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
@@ -109,6 +110,10 @@ const Signup = () => {
     }
     return { [FORM_ERROR]: "Sign up failed. Try again!" };
   };
+  useEffect(()=>{
+localStorage.clear();
+sessionStorage.clear();
+  },[])
   return (
     <>
       <div className="min-h-screen bg-gray-100 text-gray-900 flex justify-center">
