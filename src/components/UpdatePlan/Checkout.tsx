@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -30,6 +30,23 @@ interface CheckoutState {
 const Checkout: FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const [timeLeft, setTimeLeft] = useState(3600); // 10-minute countdown (600 seconds)
+
+  useEffect(() => {
+    if (timeLeft <= 0) return; // Stop countdown when it reaches 0
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(timer); // Cleanup on unmount
+  }, [timeLeft]);
+
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
+  };
+
   const state = location.state as CheckoutState | undefined;
   const plan = state?.plan;
   const user = getFromSessionStorage(SESSION_USER) as IUser;
@@ -270,7 +287,8 @@ const Checkout: FC = () => {
       <h1 className="w-full mt-5 text-center text-2xl uppercase font-extrabold text-[#213555]">
         Your Cart
       </h1>
-      <div className="m-auto mt-5 pl-10 p-5 w-[73.5vw] rounded-xl bg-[#e59411] text-white shadow-[-4px_2px_10px_rgba(0,0,0,0.25)] ">
+      <div className="m-auto mt-5 pl-10 p-5 flex w-[73.5vw] rounded-xl bg-[#e59411] text-white shadow-[-4px_2px_10px_rgba(0,0,0,0.25)] ">
+        <div>
         <h2 className="font-satoshi font-extrabold text-lg">
           <span style={{ filter: "drop-shadow(0px 0px 2px gold)" }}>🔥</span>{" "}
           Hurry! Limited-Time Offer on {plan.planName} Plans!{" "}
@@ -281,6 +299,12 @@ const Checkout: FC = () => {
           Select {plan.planName} plan for {highestMonth}{" "}
           {highestMonth > 1 ? "Months" : "Month"} to get {highestDiscount}% off
         </p>
+        </div>
+        <div>
+        <span className=" text-[#fff] p-2 font-satoshi font-semibold pt-5 px-4 ml-56 text-lg">
+          <span style={{ filter: "drop-shadow(0px 0px 2px gold)" }}>⏳</span> Offer Ends In: {formatTime(timeLeft)}
+          </span>
+        </div>
       </div>
 
       {/* //! checkout section */}
