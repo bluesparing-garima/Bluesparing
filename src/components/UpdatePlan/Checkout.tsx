@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -35,6 +35,7 @@ const Checkout: FC = () => {
   const user = getFromSessionStorage(SESSION_USER) as IUser;
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let userData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
+  const [discountPercentage, setDiscountPercentage] = useState(0);
   const [selectedMonths, setSelectedMonths] = useState<number>(1);
   if (!plan) {
     toast.error("No plan selected. Redirecting to plans page...");
@@ -45,8 +46,25 @@ const Checkout: FC = () => {
     const baseAmount = plan.monthlyAmount;
     return Number(baseAmount) * selectedMonths;
   };
+
+  const calculateMonthDiscount = (monthSelected: number) => {
+    let result = 0;
+    if (!plan || !plan.discount) return result;
+
+    for (let i = monthSelected; i >= 1; i--) {
+      if (Object.hasOwn(plan.discount, i)) {
+        result = plan.discount[i];
+        break;
+      }
+    }
+
+    return result;
+  };
+
+ 
   const getDiscount = () => {
-    const monthDiscount = plan.discount?.[selectedMonths] ?? 0;
+    const monthDiscount = calculateMonthDiscount(selectedMonths);
+
     const discountPercentage = Number(monthDiscount) || 0;
     const monthlyDiscount = (plan.monthlyAmount * discountPercentage) / 100;
     return monthlyDiscount * selectedMonths;
@@ -86,11 +104,11 @@ const Checkout: FC = () => {
   const handleNavigation = () => {
     if (userData?.role) {
       sessionStorage.clear();
-      localStorage.clear()
+      localStorage.clear();
       navigate("/dashboard");
     } else {
       sessionStorage.clear();
-      localStorage.clear()
+      localStorage.clear();
       navigate("/");
     }
   };
@@ -125,9 +143,9 @@ const Checkout: FC = () => {
     status: boolean
   ) => {
     try {
-      const amount =   getTotalAmount();
+      const amount = getTotalAmount();
       AddTransactionServices({
-        data: makeTransactionPayload(tId, oId, status,amount),
+        data: makeTransactionPayload(tId, oId, status, amount),
       });
     } catch (error: any) {
       const err = await error;
@@ -137,7 +155,8 @@ const Checkout: FC = () => {
   const makeTransactionPayload = (
     pId: string,
     oId: string,
-    status: boolean,amount:number
+    status: boolean,
+    amount: number
   ): AddTransactionProps => {
     if (userData?.role) {
       const payload: AddTransactionProps = {
@@ -149,7 +168,7 @@ const Checkout: FC = () => {
         planId: plan._id,
         planType: plan.planName,
         planStartDate: CalculateCurrentDate(),
-        amount:amount||0,
+        amount: amount || 0,
         planEndDate:
           plan.planName?.toLowerCase() === "free"
             ? calculateFreePlanEndDate()
@@ -165,12 +184,12 @@ const Checkout: FC = () => {
         transactionStatus: status,
         planId: plan._id,
         planType: plan.planName,
-        amount:amount||0,
+        amount: amount || 0,
         planStartDate: CalculateCurrentDate(),
         planEndDate: calculatePlanEndDate(),
       };
       sessionStorage.clear();
-      localStorage.clear()
+      localStorage.clear();
       return payload;
     }
   };
@@ -188,8 +207,8 @@ const Checkout: FC = () => {
       handleNavigation();
     } else {
       try {
-        const amount = getTotalAmount() ;
-        const response = InitiatePaymentService({ amount});
+        const amount = getTotalAmount();
+        const response = InitiatePaymentService({ amount });
         const data = await response;
         if (data.success) {
           const { order_id } = data;
@@ -230,6 +249,10 @@ const Checkout: FC = () => {
       }
     }
   };
+
+
+
+ 
   return (
     <div className="w-full h-screen flex flex-col bg-blue-200 justify-center ">
       {}
@@ -247,25 +270,25 @@ const Checkout: FC = () => {
             </Typography>
           </div>
           <Typography className="font-satoshi mt-5">
-            <span className="text-[#027AAE] font-semibold">Monthly Amount :</span>{" "}
-            <span className="text-sm font-semibold">₹{getAmount()}</span>
+            <span className="text-[#027AAE] font-semibold">
+              Monthly Amount :
+            </span>{" "}
+            <span className="text-sm font-semibold">₹{plan.monthlyAmount}</span>
           </Typography>
           <Typography className="font-satoshi my-3">
-            <span className="text-[#027AAE] font-semibold">
-              Policy Count :
-            </span>{" "}
+            <span className="text-[#027AAE] font-semibold">Policy Count :</span>{" "}
             <span className="text-sm font-semibold">{plan.policyCount}</span>
           </Typography>
           {Object.keys(plan.userLimit).map((ele) => {
-          return (
-            <Typography key={ele} className="font-satoshi">
-              <span className="font-semibold text-[#027AAE] capitalize ">
-                {ele.toLowerCase()} Limit:
-              </span>
-              <span className="font-medium"> {plan.userLimit?.[ele]}</span>
-            </Typography>
-          );
-        })}
+            return (
+              <Typography key={ele} className="font-satoshi">
+                <span className="font-semibold text-[#027AAE] capitalize ">
+                  {ele.toLowerCase()} Limit:
+                </span>
+                <span className="font-medium"> {plan.userLimit?.[ele]}</span>
+              </Typography>
+            );
+          })}
           <Typography className="font-satoshi mt-3">
             <span className="text-[#027AAE] font-semibold">Duration :</span>
             <Select
@@ -281,13 +304,11 @@ const Checkout: FC = () => {
               }}
               IconComponent={KeyboardArrowDownIcon}
             >
-              {Object.keys(plan.discount).map((item) => {
-                return (
-                  <MenuItem key={`${item}-month`} value={`${item}`}>
-                    {`${item} Month`}
-                  </MenuItem>
-                );
-              })}
+              {Array.from({ length: 24 }, (_, item) => item).map((item) => (
+                <MenuItem key={`${item + 1}-month`} value={`${item + 1}`}>
+                  {`${item + 1} Month`}
+                </MenuItem>
+              ))}
             </Select>
           </Typography>
         </Box>
@@ -301,18 +322,19 @@ const Checkout: FC = () => {
             </Typography>
           </div>
           <Typography className="font-satoshi mt-5">
-            <span className="text-[#027AAE] font-semibold font-extrabold">Amount :</span>{" "}
+            <span className="text-[#027AAE] font-semibold ">Amount :</span>{" "}
             <span className="text-sm font-semibold">₹{getAmount()}</span>
           </Typography>
-  
-          <Typography className="font-satoshi mt-3">
-            <span className="text-[#027AAE] font-semibold">Discount :</span>{" "}
-            <span className="text-sm font-semibold">
-              ₹{getDiscount().toFixed(2)} ({`${plan.discount[selectedMonths]}%`}
-              )
-            </span>
-          </Typography>
-          <hr className="h-1 rounded mt-2"/>
+
+          {calculateMonthDiscount(selectedMonths) > 0 && (
+            <Typography className="font-satoshi mt-3">
+              <span className="text-[#027AAE] font-semibold">Discount :</span>{" "}
+              <span className="text-sm font-semibold">
+                ₹{getDiscount().toFixed(2)} ({`${calculateMonthDiscount(selectedMonths)}%`})
+              </span>
+            </Typography>
+          )}
+          <hr className="h-1 rounded mt-2" />
           <Typography className="font-satoshi mt-3">
             <span className="text-[#027AAE] font-semibold">Total :</span>{" "}
             <span className="text-sm font-semibold">
