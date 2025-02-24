@@ -2,6 +2,8 @@ import React, { FC, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/login_logo.png";
 import { SafeKaroUser } from "../../context/constant";
+import { imagePath } from "../../context/constant";
+
 interface MenuItem {
   id: string;
   label: string;
@@ -11,11 +13,13 @@ interface MenuItem {
   isLocked: boolean;
   subMenu?: MenuItem[];
 }
+
 interface SidebarProps {
   isSidebarOpen: boolean;
   setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
   menuItems: MenuItem[];
 }
+
 const SidebarUi: FC<SidebarProps> = ({
   menuItems,
   isSidebarOpen,
@@ -28,6 +32,7 @@ const SidebarUi: FC<SidebarProps> = ({
   const userData: SafeKaroUser | null = storedUser
     ? JSON.parse(storedUser)
     : null;
+
   const generateDashBoardLink = () => {
     const role = userData?.role.toLowerCase();
     switch (role) {
@@ -45,6 +50,7 @@ const SidebarUi: FC<SidebarProps> = ({
         return "/dashboard";
     }
   };
+
   const handleMenuItemClick = (item: MenuItem) => {
     if (item.link) {
       navigate(item.link);
@@ -113,15 +119,34 @@ const SidebarUi: FC<SidebarProps> = ({
 
   return (
     <div
-    className={`${
-      isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-    } md:translate-x-0 sticky top-0 z-20 md:flex flex-col w-60 bg-white h-screen shadow-lg border-r-2 border-[#FEF9F3] transition-transform delay-150 duration-200`}
+      className={`${
+        isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+      } md:translate-x-0 sticky top-0 z-20 md:flex flex-col w-60 bg-white h-screen shadow-lg border-r-2 border-[#FEF9F3] transition-transform delay-150 duration-200`}
     >
       <Link
         to={generateDashBoardLink()}
         className="flex items-center justify-center h-16 mt-1 bg-white"
       >
-        <img src={logo} alt="Logo" className="h-[45px] cursor-pointer" />
+        <picture className="mb-1 flex flex-col justify-center items-center">
+          {userData?.companyLogo ? (
+            <>
+              <source
+                srcSet={`${imagePath}/${userData.companyLogo}`}
+                type="image/png"
+              />
+              <img
+                src={`${imagePath}/${userData.companyLogo}`}
+                className="w-36 h-12 mx-auto"
+                alt="company Logo"
+              />
+            </>
+          ) : (
+            <>
+              <source srcSet={logo} type="image/png" />
+              <img src={logo} className="w-44 mx-auto" alt="company Logo" />
+            </>
+          )}
+        </picture>
       </Link>
       <div className="md:hidden flex w-full justify-end">
         <button onClick={() => setSidebarOpen((prev) => !prev)}>

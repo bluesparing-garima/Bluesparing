@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState, useMemo } from "react";
-import { header, SafeKaroUser } from "../../context/constant";
+import { header, imagePath, SafeKaroUser } from "../../context/constant";
 import NotificationBadge from "../../utils/NotificationBadge";
 import { Link } from "react-router-dom";
 import { Avatar, Button, Menu, MenuItem } from "@mui/material";
@@ -174,6 +174,7 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
   const handleSidebar = () => {
     setSidebarOpen((prev) => !prev);
   };
+
   return (
     <>
       <div className="flex items-center justify-between bg-white py-2 px-2">
@@ -226,10 +227,12 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
               <NotificationBadge notificationData={notificationData || []} />
             </div>
           )} */}
+       
           <Avatar
             className="md:w-[50px] md:h-[50px] w-[30px] h-[30px]"
             alt={userData?.name}
-            src=""
+            // src="https://picsum.photos/200"
+            src={`${imagePath}/${userData?.profileImage}`}
           />
           <div className="flex items-center justify-between space-x-0 bg-white px-4">
             <Link to="/profile" className="menu-hover text-black lg:mx-4">

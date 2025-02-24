@@ -353,9 +353,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen, setSidebarOpen }) => {
 
   return (
     <div
-      className={` ${
-        isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-      } md:translate-x-0 sticky  top-0  z-20 md:flex flex-col w-60 bg-white h-screen shadow-lg border-r-2 border-[#FEF9F3] transition-transform delay-150 duration-200`}
+      className={` ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } md:translate-x-0 sticky  top-0  z-20 md:flex flex-col w-60 bg-white h-screen shadow-lg border-r-2 border-[#FEF9F3] transition-transform delay-150 duration-200`}
     >
       <div className="md:hidden flex w-full justify-end ">
         <IconButton onClick={() => setSidebarOpen((prev) => !prev)}>
@@ -377,27 +376,35 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen, setSidebarOpen }) => {
       </div>
       <div className="flex flex-col flex-1 overflow-hidden">
         <Link to="/dashboard" className="mx-1 my-2">
-          <picture className="mb-1 flex flex-col justify-center items-center ">
-            {UserData.companyLogo ? (
-              <>
-                <source
-                  srcSet={`${imagePath}/${UserData.companyLogo}`}
-                  type="image/png"
-                />
-                <img
-                  src={`${imagePath}/${UserData.companyLogo}`}
-                  className="w-36 h-12 mx-auto"
-                  alt="company Logo"
-                />
-              </>
-            ) : (
-              <>
-                <source srcSet={logo} type="image/png" />
-                <img src={logo} className="w-44 mx-auto" alt="company Logo" />
-              </>
-            )}
+          <picture className="mb-1 flex flex-col justify-center items-center">
+            {(() => {
+              if (UserData.companyLogo) {
+                return (
+                  <>
+                    <source
+                      srcSet={`${imagePath}/${UserData.companyLogo}`}
+                      type="image/png"
+                    />
+                    <img
+                      src={`${imagePath}/${UserData.companyLogo}`}
+                      className="w-36 h-12 mx-auto"
+                      alt="company Logo"
+                    />
+                  </>
+                );
+              } else {
+                return (
+                  <>
+                    <source srcSet={logo} type="image/png" />
+                    <img src={logo} className="w-44 mx-auto" alt="company Logo" />
+                  </>
+                );
+              }
+            })()}
           </picture>
         </Link>
+
+
         <div className="flex-1 py-7 overflow-y-auto bg-white hide-scrollbar">
           <ul className="space-y-2">
             {menuItems.map((item) => (
@@ -435,9 +442,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen, setSidebarOpen }) => {
                       </svg>
                       {item.label}
                       <i
-                        className={`fas fa-chevron-${
-                          openSubMenus.includes(item.id) ? "up" : "down"
-                        } text-sm text-gray-400 ml-auto`}
+                        className={`fas fa-chevron-${openSubMenus.includes(item.id) ? "up" : "down"
+                          } text-sm text-gray-400 ml-auto`}
                       />
                     </div>
                     {openSubMenus.includes(item.id) && (
