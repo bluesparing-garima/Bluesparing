@@ -157,6 +157,10 @@ const Checkout: FC = () => {
     status: boolean,
     amount: number
   ): AddTransactionProps => {
+    const newUserLimit: Record<string, number> = {};
+    for (const key in plan.userLimit) {
+      newUserLimit[key] = plan.userLimit[key]*selectedMonths;
+    }
     if (userData?.role) {
       const payload: AddTransactionProps = {
         userId: userData.profileId,
@@ -167,6 +171,8 @@ const Checkout: FC = () => {
         planId: plan._id,
         planType: plan.planName,
         planStartDate: CalculateCurrentDate(),
+        policyCount: (Number(plan.policyCount) * selectedMonths) || 1,
+        userLimit: newUserLimit,
         amount: amount || 0,
         planEndDate:
           plan.planName?.toLowerCase() === "free"
@@ -186,6 +192,8 @@ const Checkout: FC = () => {
         amount: amount || 0,
         planStartDate: CalculateCurrentDate(),
         planEndDate: calculatePlanEndDate(),
+        policyCount: Number(plan.policyCount) * selectedMonths || 1,
+        userLimit: newUserLimit,
       };
       sessionStorage.clear();
       localStorage.clear();
@@ -201,7 +209,7 @@ const Checkout: FC = () => {
       return;
     }
     const amount = getTotalAmount();
-    if (amount<=0) {
+    if (amount <= 0) {
       handleTransaction("free", "free", true);
       updateLocalStorage({ transactionStatus: true });
       handleNavigation();
@@ -251,33 +259,35 @@ const Checkout: FC = () => {
 
   const getMaxDiscountMonth = () => {
     if (!plan.discount) return { month: 0, discount: 0 };
-  
+
     return Object.entries(plan.discount).reduce(
       (max, [month, discount]) =>
-        Number(discount) > max.discount ? { month: Number(month), discount: Number(discount) } : max,
+        Number(discount) > max.discount
+          ? { month: Number(month), discount: Number(discount) }
+          : max,
       { month: 0, discount: 0 }
     );
   };
-  
-  const { month: highestMonth, discount: highestDiscount } = getMaxDiscountMonth();
-  
+
+  const { month: highestMonth, discount: highestDiscount } =
+    getMaxDiscountMonth();
+
   return (
     <div className="w-full h-screen flex flex-col bg-blue-200 justify-center ">
       {}
       <h1 className="w-full mt-5 text-center text-2xl uppercase font-extrabold text-[#213555]">
         Your Cart
-      </h1> 
-        <div className="m-auto mt-5 pl-10 p-5 w-[73.5vw] rounded-xl bg-[#e59411] text-white shadow-[-4px_2px_10px_rgba(0,0,0,0.25)] ">
-            <h2 className="font-satoshi font-extrabold text-lg">🔥 Hurry! Limited-Time Offer on {plan.planName} Plans! 🔥
-            </h2>
-            <p className="font-satoshi text-md">
-  💰 Select {plan.planName} plan for {highestMonth}{" "}
-  {highestMonth > 1 ? "Months" : "Month"} to get{" "}
-  {highestDiscount}% off
-</p>
-        </div>
-               
-        {/* //! checkout section */}
+      </h1>
+      <div className="m-auto mt-5 pl-10 p-5 w-[73.5vw] rounded-xl bg-[#e59411] text-white shadow-[-4px_2px_10px_rgba(0,0,0,0.25)] ">
+        <h2 className="font-satoshi font-extrabold text-lg">
+          🔥 Hurry! Limited-Time Offer on {plan.planName} Plans! 🔥
+        </h2>
+        <p className="font-satoshi text-md">
+          💰 Select {plan.planName} plan for {highestMonth}{" "}
+          {highestMonth > 1 ? "Months" : "Month"} to get {highestDiscount}% off
+        </p>
+      </div>
+
       <div className="flex justify-center mb-10 ">
         <Box className="p-10 w-[500px] h-[400px] rounded-xl rounded-r-none bg-white shadow-[-4px_2px_10px_rgba(0,0,0,0.25)]">
           <div className="bg-[#e59411] p-2 text-center text-white">
@@ -323,11 +333,8 @@ const Checkout: FC = () => {
               }}
               IconComponent={KeyboardArrowDownIcon}
             >
-              {[...Array(12)].map((_, index) => {
+              {[...Array(24)].map((_, index) => {
                 const month = index + 1;
-                // Fetch discount from API or plan.discount object
-                const discount = plan.discount?.[month] || 0;
-
                 return (
                   <MenuItem key={`${month}-month`} value={month}>
                     {`${month} - Month`}

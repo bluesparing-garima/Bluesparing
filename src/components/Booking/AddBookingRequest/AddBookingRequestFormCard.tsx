@@ -163,7 +163,7 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
   };
   const handleSelectPartnerChange = async (e: any) => {
     setSelectedPartnerId(e._id!);
-    setSelectedPartnerName(e.fullName!);
+    setSelectedPartnerName(e.name!);
     setSelectedRMId(e.headRMId!);
     setSelectedRMName(e.headRM!);
   };
@@ -686,7 +686,7 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
                                         {...input}
                                         value={input.value || null}
                                         getOptionLabel={(option) =>
-                                          `${option.fullName} - ${option.partnerId}`
+                                          `${option.name} - ${option.userCode}`
                                         }
                                         options={partners}
                                         onChange={(event, newValue) => {
