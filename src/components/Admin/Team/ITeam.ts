@@ -35,6 +35,8 @@ export interface ITeamForm {
   branchName:string;
   planExpired?:string;
   planStartDate?:string;
+  transactionId?:string;
+  transactionStatus?:boolean;
 }
 
 export interface ITeamsVM {

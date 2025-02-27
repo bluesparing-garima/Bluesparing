@@ -47,3 +47,53 @@ export const useSupabaseStorage = () => {
     error,
   };
 };
+
+
+// //! How to use in our component
+// import { useState } from "react";
+// import { useSupabaseStorage } from "./useSupabaseStorage";
+
+// const FileUploadComponent = () => {
+//   const { uploadFile, getFileUrl, uploading, downloading, error } =
+//     useSupabaseStorage();
+//   const [file, setFile] = useState<File | null>(null);
+//   const [fileUrl, setFileUrl] = useState<string | null>(null);
+//   const bucket = "my-bucket"; // Replace with your bucket name
+
+//   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     if (e.target.files && e.target.files.length > 0) {
+//       setFile(e.target.files[0]);
+//     }
+//   };
+
+//   const handleUpload = async () => {
+//     if (!file) return;
+//     const path = await uploadFile(bucket, file);
+//     if (path) {
+//       const url = await getFileUrl(bucket, path);
+//       setFileUrl(url);
+//     }
+//   };
+
+//   return (
+//     <div>
+//       <input type="file" onChange={handleFileChange} />
+//       <button onClick={handleUpload} disabled={uploading}>
+//         {uploading ? "Uploading..." : "Upload File"}
+//       </button>
+
+//       {fileUrl && (
+//         <div>
+//           <p>File URL:</p>
+//           <a href={fileUrl} target="_blank" rel="noopener noreferrer">
+//             {fileUrl}
+//           </a>
+//         </div>
+//       )}
+
+//       {error && <p style={{ color: "red" }}>{error}</p>}
+//     </div>
+//   );
+// };
+
+// export default FileUploadComponent;

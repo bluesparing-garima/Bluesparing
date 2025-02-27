@@ -64,6 +64,7 @@ export type SafeKaroUser = {
   planExpired?:string;
   planStartDate?:string;
   profileImage?: string;
+  transactionId?:string;
 };
 export type Header = {
   "Content-Type": string;

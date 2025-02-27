@@ -25,6 +25,7 @@ const UploadLogo = () => {
   const UserData = storedTheme ? JSON.parse(storedTheme) : null;
   const navigate = useNavigate();
   const[isLoading,setIsLoading] = useState(false)
+
   const onSubmit = (data: any) => {
     const team = new FormData();
     team.append("companyLogo", data.companyLogo);
@@ -32,6 +33,7 @@ const UploadLogo = () => {
     const payload: AddEditTeamProps = { team, teamId };
     callEditTeamApi(payload);
   };
+
   const updateLogoInLocalstroage = (newValue: string) => {
     const storedData = localStorage.getItem("user");
     const newKey = "companyLogo";
@@ -43,6 +45,7 @@ const UploadLogo = () => {
     }
     localStorage.setItem("user", JSON.stringify(currentData));
   };
+
   const callEditTeamApi = async (data: AddEditTeamProps) => {
     try {
       setIsLoading(true)
@@ -59,6 +62,7 @@ const UploadLogo = () => {
       setIsLoading(false)
     }
   };
+  
   const validate = (values: any) => {
     const errors: { [key: string]: string } = {};
     return schema
