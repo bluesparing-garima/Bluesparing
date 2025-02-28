@@ -86,7 +86,7 @@ const Signin = () => {
   };
   return (
     <div className="min-h-screen flex justify-center items-center bg-blue-400">
-      <div className="max-w-[98vw] h-[95vh] bg-white shadow rounded-lg flex justify-center flex-1">
+      <div className="max-w-[90vw] h-[90vh] bg-white shadow rounded-lg flex justify-center flex-1">
         <div className="lg:w-1/2 xl:w-6/12 p-3 sm:p-6">
           <picture>
             <source srcSet={logo} type="image/png" />
@@ -98,18 +98,18 @@ const Signin = () => {
               <div className="mt-1 mb-4 border-b text-center">
                 <div className="leading-none px-2 inline-block text-sm text-gray-600 tracking-wide font-medium bg-white transform translate-y-1/2"></div>
               </div>
-              <div className="mx-auto max-w-xs">
+              <div className="mx-auto max-w-lg">
                 <Form
                   onSubmit={onSubmit}
                   validate={validate}
                   render={({ handleSubmit, submitError }) => (
                     <form onSubmit={handleSubmit}>
-                      <Grid container spacing={2}>
+                      <Grid container spacing={4}>
                         <Grid item lg={12} md={12} sm={12} xs={12}>
-                          <div className="mb-2">
+                          <div className="mb-2 mt-2">
                             <label
                               htmlFor="email"
-                              className="mb-3 block text-base font-medium text-[#07074D]"
+                              className="mb-4 block text-base font-medium text-[#07074D]"
                             >
                               Email
                             </label>
@@ -132,10 +132,10 @@ const Signin = () => {
                           </div>
                         </Grid>
                         <Grid item lg={12} md={12} sm={12} xs={12}>
-                          <div className="mb-2">
+                          <div className="mb-2 mt-2">
                             <label
                               htmlFor="password"
-                              className="mb-3 block text-base font-medium text-[#07074D]"
+                              className="mb-4 block text-base font-medium text-[#07074D]"
                             >
                               Password
                             </label>
@@ -168,7 +168,7 @@ const Signin = () => {
                         <Grid item lg={12} md={12} sm={12} xs={12}>
                         <Button
                           type="submit"
-                          className="tracking-wide font-semibold bg-gradient-to-r from-[#E9762B] to-[#EDB65C] text-[#443627] transition-all w-full px-4 py-2 rounded hover:from-[#EDB65C] hover:to-[#E9762B] active:scale-90 duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
+                          className="tracking-wide font-semibold bg-gradient-to-r from-[#E9762B] to-[#EDB65C] text-[#443627] transition-all w-full mb-10 px-4 py-3 rounded hover:from-[#EDB65C] hover:to-[#E9762B] active:scale-90 duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
                           disabled={isLoading}
                         >
                           {isLoading ? (
