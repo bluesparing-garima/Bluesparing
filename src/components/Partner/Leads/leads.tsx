@@ -52,7 +52,7 @@ const Leads = () => {
   );
   const GetLeadByPartnerIdRequests = useCallback(
     () =>
-      getLeadByPartnerIdService({ header, partnerId: userData.profileId})
+      getLeadByPartnerIdService({ header, partnerId: userData.profileId })
         .then((leadDetails) => {
           setLeads(leadDetails.data);
         })
@@ -96,35 +96,39 @@ const Leads = () => {
   };
   const parsedData = useMemo(
     () =>
-      leads.map(
-        (lead: ILeads) =>
-          ({
-            id: lead._id,
-            category: lead.category,
-            policyType: lead.policyType,
-            caseType: lead.caseType,
-            companyName: lead.companyName,
-            partnerId: lead.partnerId,
-            partnerName: lead.partnerName,
-            relationshipManagerId: lead.relationshipManagerId,
-            relationshipManagerName: lead.relationshipManagerName,
-            rcFront: lead.rcFront,
-            rcBack: lead.rcBack,
-            previousPolicy: lead.previousPolicy,
-            survey: lead.survey,
-            puc: lead.puc,
-            fitness: lead.fitness,
-            proposal: lead.proposal,
-            currentPolicy: lead.currentPolicy,
-            other: lead.other,
-            remarks: lead.remarks,
-            status: lead.status,
-            isActive: lead.isActive,
-            createdOn: lead.createdOn,
-            updatedOn: lead.updatedOn,
-            timer: lead.timer,
-          } as ILeadsVM)
-      ) ?? [],
+      leads
+        .map(
+          (lead: ILeads) =>
+            ({
+              id: lead._id,
+              category: lead.category,
+              policyType: lead.policyType,
+              caseType: lead.caseType,
+              companyName: lead.companyName,
+              partnerId: lead.partnerId,
+              partnerName: lead.partnerName,
+              relationshipManagerId: lead.relationshipManagerId,
+              relationshipManagerName: lead.relationshipManagerName,
+              rcFront: lead.rcFront,
+              rcBack: lead.rcBack,
+              previousPolicy: lead.previousPolicy,
+              survey: lead.survey,
+              puc: lead.puc,
+              fitness: lead.fitness,
+              proposal: lead.proposal,
+              currentPolicy: lead.currentPolicy,
+              other: lead.other,
+              remarks: lead.remarks,
+              status: lead.status,
+              isActive: lead.isActive,
+              createdOn: lead.createdOn,
+              updatedOn: lead.updatedOn,
+              timer: lead.timer,
+            } as ILeadsVM)
+        )
+        .sort(
+          (a, b) => dayjs(b.createdOn).valueOf() - dayjs(a.createdOn).valueOf()
+        ) ?? [],
     [leads]
   );
   const columns = useMemo<MRT_ColumnDef<ILeads>[]>(
