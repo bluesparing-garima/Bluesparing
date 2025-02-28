@@ -116,9 +116,9 @@ sessionStorage.clear();
   },[])
   return (
     <>
-      <div className="min-h-screen bg-gray-100 text-gray-900 flex justify-center">
+      <div className="min-h-screen flex justify-center items-center bg-gradient-to-r from-orange-300 to-blue-300">
         <div className="max-w-screen-xl m-0 sm:m-0 bg-white shadow sm:rounded-lg flex justify-center flex-1">
-          <div className="flex-1 bg-indigo-100 text-center hidden lg:flex">
+        <div className="flex-1 bg-indigo-100 rounded-tl-lg rounded-bl-lg text-center hidden lg:flex">
             <div
               className="m-12 xl:m-16 w-full bg-contain bg-center bg-no-repeat"
               style={{
@@ -129,12 +129,12 @@ sessionStorage.clear();
           </div>
           <div className="lg:w-1/2 xl:w-6/12 p-3 sm:p-2">
             <div>
-              <img src={logo} className="w-56 mx-auto" alt="" />
+              <img src={logo} className="w-56 mx-auto mt-2" alt="" />
             </div>
             <div className="mt-1 flex flex-col items-center">
               <h1 className="text-2xl xl:text-3xl font-extrabold">Sign up</h1>
               <div className="w-full flex-1">
-                <div className="my-1 border-b text-center">
+                <div className="mb-3 border-b text-center">
                   <div className="leading-none px-2 inline-block text-sm text-gray-600 tracking-wide font-medium bg-white transform translate-y-1/2"></div>
                 </div>
                 <div className="mx-auto max-w-full px-20">
@@ -406,9 +406,10 @@ sessionStorage.clear();
                               </div>
                             )}
                           </Grid>
+                          <Grid item lg={12} md={12} sm={12} xs={12}>
                           <Button
                             type="submit"
-                            className="mt-1 ml-4 tracking-wide font-semibold bg-indigo-500 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
+                            className="mt-2 tracking-wide font-semibold bg-gradient-to-r to-indigo-400 from-orange-400 text-gray-100 w-full py-4 rounded-lg hover:bg-gradient-to-r hover:from-orange-500 hover:to-blue-500 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
                             disabled={isLoading}
                           >
                             {isLoading ? (
@@ -431,6 +432,7 @@ sessionStorage.clear();
                               </>
                             )}
                           </Button>
+                          </Grid>
                         </Grid>
                       </form>
                     )}
@@ -446,7 +448,7 @@ sessionStorage.clear();
                     </a>
                   </div>
                 </div>
-                <div className="my-3 border-b text-center">
+                <div className="my-4 border-b text-center">
                   <div className="leading-none px-2 inline-block text-sm text-gray-600 tracking-wide font-medium bg-white transform translate-y-1/2">
                     If you have already account{" "}
                     <a href="/#/" className="text-safekaroDarkOrange">

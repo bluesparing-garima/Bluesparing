@@ -85,9 +85,9 @@ const Signin = () => {
     }
   };
   return (
-    <div className="min-h-screen bg-gray-100 text-gray-900 flex justify-center">
-      <div className="max-w-screen-xl m-0 sm:m-0 bg-white shadow sm:rounded-lg flex justify-center flex-1">
-        <div className="lg:w-1/4 xl:w-6/12 p-3 sm:p-6">
+    <div className="min-h-screen flex justify-center items-center bg-gradient-to-r from-blue-300 to-orange-300">
+      <div className="max-w-screen-xl bg-white shadow rounded-lg flex justify-center flex-1">
+        <div className="lg:w-1/2 xl:w-6/12 p-3 sm:p-6">
           <picture>
             <source srcSet={logo} type="image/png" />
             <img src={logo} className="w-56 mx-auto" alt="company Logo" />
@@ -95,7 +95,7 @@ const Signin = () => {
           <div className="mt-4 flex flex-col items-center">
             <h1 className="text-2xl xl:text-3xl font-extrabold">Sign In</h1>
             <div className="w-full flex-1">
-              <div className="my-4 border-b text-center">
+              <div className="mt-1 mb-4 border-b text-center">
                 <div className="leading-none px-2 inline-block text-sm text-gray-600 tracking-wide font-medium bg-white transform translate-y-1/2"></div>
               </div>
               <div className="mx-auto max-w-xs">
@@ -165,9 +165,10 @@ const Signin = () => {
                             </div>
                           )}
                         </Grid>
+                        <Grid item lg={12} md={12} sm={12} xs={12}>
                         <Button
                           type="submit"
-                          className="mt-5 ml-4 tracking-wide font-semibold bg-indigo-500 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
+                          className="tracking-wide font-semibold bg-gradient-to-r from-indigo-400 to-orange-400 text-gray-100 w-full py-4 rounded-lg hover:bg-gradient-to-r hover:to-orange-500 hover:from-blue-500 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
                           disabled={isLoading}
                         >
                           {isLoading ? (
@@ -190,6 +191,7 @@ const Signin = () => {
                             </>
                           )}
                         </Button>
+                        </Grid>
                       </Grid>
                     </form>
                   )}
@@ -206,9 +208,9 @@ const Signin = () => {
             </div>
           </div>
         </div>
-        <div className="flex-1 bg-indigo-100 text-center hidden lg:flex">
+        <div className="flex-1 bg-indigo-100 rounded-tr-lg rounded-br-lg text-center lg:w-1/2 hidden lg:flex">
           <div
-            className="m-12 xl:m-16 w-full bg-contain bg-center bg-no-repeat"
+            className="w-full lg:m-16 bg-contain bg-center bg-no-repeat"
             style={{
               backgroundImage:
                 "url('https://storage.googleapis.com/devitary-image-host.appspot.com/15848031292911696601-undraw_designer_life_w96d.svg')",
