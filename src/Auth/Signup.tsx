@@ -116,8 +116,8 @@ sessionStorage.clear();
   },[])
   return (
     <>
-      <div className="min-h-screen flex justify-center items-center bg-gradient-to-r from-orange-300 to-blue-300">
-        <div className="max-w-screen-xl m-0 sm:m-0 bg-white shadow sm:rounded-lg flex justify-center flex-1">
+      <div className="min-h-screen flex justify-center items-center bg-blue-400">
+        <div className="max-w-[98vw] h-[95vh] bg-white shadow sm:rounded-lg flex justify-center flex-1">
         <div className="flex-1 bg-indigo-100 rounded-tl-lg rounded-bl-lg text-center hidden lg:flex">
             <div
               className="m-12 xl:m-16 w-full bg-contain bg-center bg-no-repeat"
@@ -409,7 +409,7 @@ sessionStorage.clear();
                           <Grid item lg={12} md={12} sm={12} xs={12}>
                           <Button
                             type="submit"
-                            className="mt-2 tracking-wide font-semibold bg-gradient-to-r to-indigo-400 from-orange-400 text-gray-100 w-full py-4 rounded-lg hover:bg-gradient-to-r hover:from-orange-500 hover:to-blue-500 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
+                            className="mt-2 tracking-wide font-semibold w-full bg-gradient-to-r from-[#E9762B] to-[#EDB65C] text-[#443627] transition-all  duration-300 px-4 py-2 rounded hover:from-[#EDB65C] hover:to-[#E9762B] active:scale-90 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
                             disabled={isLoading}
                           >
                             {isLoading ? (
