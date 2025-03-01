@@ -1,5 +1,5 @@
 import React, { FC, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../assets/login_logo.png";
 import { SafeKaroUser } from "../../context/constant";
 import { imagePath } from "../../context/constant";
@@ -67,54 +67,50 @@ const SidebarUi: FC<SidebarProps> = ({
     }
   };
 
+  const location = useLocation();
+
   const renderMenuItems = (items: MenuItem[]) => {
-    return items.map((item) => (
-      <li key={item.id} className="relative max-h-100 scroll-hidden">
-        <div
-          className={`flex items-center px-2 py-1 text-[15px] cursor-pointer rounded-lg sticky top-0 z-10 bg-white  ${
-            activeMenuItem === item.id
-              ? "bg-safekaroDarkBlue text-white"
-              : "text-black hover:bg-safekaroDarkOrange hover:text-white"
-          }`}
-          onClick={() => {
-            if (item.subMenu && item.subMenu.length > 0) {
-              toggleSubMenu(item.id);
-            } else {
-              handleMenuItemClick(item);
-            }
-          }}
-        >
-          {item.svgIcon && (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4 mr-2"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              fill="none"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d={item.svgIcon}
-              />
-            </svg>
+    return items.map((item) => {
+      const isActive = location.pathname === item.link;
+  
+      return (
+        <li key={item.id} className="relative max-h-100 scroll-hidden">
+          <div
+            className={`flex items-center px-2 py-1 text-[15px] cursor-pointer rounded-lg sticky top-0 z-10 
+              ${isActive ? "bg-safekaroDarkOrange text-white" : "text-black hover:bg-safekaroDarkOrange hover:text-white"}
+            `}
+            onClick={() => {
+              if (item.subMenu && item.subMenu.length > 0) {
+                toggleSubMenu(item.id);
+              } else {
+                handleMenuItemClick(item);
+              }
+            }}
+          >
+            {item.svgIcon && (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4 mr-2"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                fill="none"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d={item.svgIcon} />
+              </svg>
+            )}
+            <span className="text-sm">{item.label}</span>
+            {item.subMenu && item.subMenu.length > 0 && (
+              <i className={`fas fa-chevron-${openSubMenus.includes(item.id) ? "up" : "down"} text-sm text-gray-400 ml-auto`} />
+            )}
+          </div>
+          {item.subMenu && openSubMenus.includes(item.id) && (
+            <ul className="ml-4 mt-2 space-y-1 px-1 border-l border-gray-200 pl-2 overflow-y-auto scrollbar .overflow max-h-[40vh]">
+              {renderMenuItems(item.subMenu)}
+            </ul>
           )}
-          <span className="text-sm">{item.label}</span>
-          {item.subMenu && item.subMenu.length > 0 && (
-            <i
-              className={`fas fa-chevron-${
-                openSubMenus.includes(item.id) ? "up" : "down"
-              } text-sm text-gray-400 ml-auto`}
-            />
-          )}
-        </div>
-        {item.subMenu && openSubMenus.includes(item.id) && (
-          <ul className="ml-4 mt-2 space-y-1 px-1 border-l border-gray-200 pl-2 overflow-y-auto scrollbar .overflow max-h-[40vh]">
-            {renderMenuItems(item.subMenu)}
-          </ul>
-        )}
-      </li>
-    ));
+        </li>
+      );
+    });
   };
 
   return (
@@ -128,24 +124,12 @@ const SidebarUi: FC<SidebarProps> = ({
         className="flex items-center justify-center h-16 mt-1 bg-white"
       >
         <picture className="mb-1 flex flex-col justify-center items-center">
-          {userData?.companyLogo ? (
-            <>
-              <source
-                srcSet={`${imagePath}/${userData.companyLogo}`}
-                type="image/png"
-              />
-              <img
-                src={`${imagePath}/${userData.companyLogo}`}
-                className="w-36 h-12 mx-auto"
-                alt="company Logo"
-              />
-            </>
-          ) : (
-            <>
-              <source srcSet={logo} type="image/png" />
-              <img src={logo} className="w-44 mx-auto" alt="company Logo" />
-            </>
-          )}
+        <img
+      src={userData?.companyLogo ? `${imagePath}/${userData.companyLogo}` : logo}
+      className="w-36 h-12 mx-auto"
+      alt="Company Logo"
+      onError={(e) => (e.currentTarget.src = logo)} // Agar image load fail ho toh default logo dikhaye
+    />
         </picture>
       </Link>
       <div className="md:hidden flex w-full justify-end">
