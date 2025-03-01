@@ -252,6 +252,11 @@ sessionStorage.clear();
                                       {...input}
                                       type="number"
                                       placeholder="Phone Number"
+                                      maxLength={10}
+                                      onInput={(e) => {
+                                        e.currentTarget.value = e.currentTarget.value.replace(/\D/g, '').slice(0, 10);
+                                        input.onChange(e.currentTarget.value);
+                                      }}
                                       className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-2 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                                     />
                                     {meta.error && meta.touched && (
