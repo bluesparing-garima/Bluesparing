@@ -128,24 +128,12 @@ const SidebarUi: FC<SidebarProps> = ({
         className="flex items-center justify-center h-16 mt-1 bg-white"
       >
         <picture className="mb-1 flex flex-col justify-center items-center">
-          {userData?.companyLogo ? (
-            <>
-              <source
-                srcSet={`${imagePath}/${userData.companyLogo}`}
-                type="image/png"
-              />
-              <img
-                src={`${imagePath}/${userData.companyLogo}`}
-                className="w-36 h-12 mx-auto"
-                alt="company Logo"
-              />
-            </>
-          ) : (
-            <>
-              <source srcSet={logo} type="image/png" />
-              <img src={logo} className="w-44 mx-auto" alt="company Logo" />
-            </>
-          )}
+        <img
+      src={userData?.companyLogo ? `${imagePath}/${userData.companyLogo}` : logo}
+      className="w-36 h-12 mx-auto"
+      alt="Company Logo"
+      onError={(e) => (e.currentTarget.src = logo)} // Agar image load fail ho toh default logo dikhaye
+    />
         </picture>
       </Link>
       <div className="md:hidden flex w-full justify-end">
