@@ -55,7 +55,7 @@ const Dashboard: React.FC = () => {
   const [fifthCart, setFifthCart] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [categoryEntries, setCategoryEntries] = useState([]);
-  const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(0)
+  const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState(0);
   const [selectedCard, setSelectedcard] = useState("1");
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
@@ -162,7 +162,7 @@ const Dashboard: React.FC = () => {
   const isValidIndex = (index: any) =>
     index >= 0 && index < categoryEntries.length;
   return (
-    <div className="bg-blue-200 ">
+    <div className="bg-blue-200 h-[90vh]">
       <CardContent>
         <Grid>
           <div className="flex w-full items-center md:flex-row flex-col justify-center  md:justify-start bg-blue-200 md:pr-1">
@@ -261,7 +261,7 @@ const Dashboard: React.FC = () => {
                           className=" h-10 w-10 bg-[#30A9FF] shadow-sm rounded flex justify-center items-center text-white"
                           type="submit"
                         >
-                            <SearchIcon className="w-6 h-6 " />
+                          <SearchIcon className="w-6 h-6 " />
                         </button>
                       </div>
                     </form>
@@ -281,14 +281,19 @@ const Dashboard: React.FC = () => {
                   <button
                     className="h-10 w-10 bg-[#3BDB03] shadow-sm rounded flex justify-center items-center text-white"
                     onClick={handleDownloadExcel}
-                  ><FileDownloadOutlinedIcon className="w-6 h-6 " />
+                  >
+                    <FileDownloadOutlinedIcon className="w-6 h-6 " />
                   </button>
                 </Tooltip>
                 <button className=" h-10 w-10 bg-[#E79E28] shadow-sm rounded flex justify-center items-center text-white">
-                {isLoading?<CircularProgress className="w-6 h-6 "/>:<DashboardMenu
-                    selectedCategory={selectedCategory}
-                    className="w-6 h-6 "
-                  />}
+                  {isLoading ? (
+                    <CircularProgress className="w-6 h-6 " />
+                  ) : (
+                    <DashboardMenu
+                      selectedCategory={selectedCategory}
+                      className="w-6 h-6 "
+                    />
+                  )}
                 </button>
               </div>
             </div>
@@ -303,32 +308,36 @@ const Dashboard: React.FC = () => {
                         {firstCart && (
                           <>
                             {data.map((item, index) => (
-                                <div key={index}>
-                                  <div className="bg-blue-200 w-full">
-                                    <div className="md:flex hidden w-full justify-center items-center">
-                                      {Object.entries(item.categories).map(
-                                        ([category], catIndex) => (
-                                          <Grid
-                                            item
-                                            md={4}
-                                            xs={12}
-                                            key={category}
-                                            className={`md:p-1  flex items-center justify-center ${
-                                              catIndex === selectedCategoryIndex
-                                                ? "bg-[#0095FF] shadow-md "
-                                                : "bg-white text-black"
-                                            }`}
+                              <div key={index}>
+                                <div className="bg-blue-200 w-full">
+                                  <div className="md:flex hidden w-full justify-center items-center">
+                                    {Object.entries(item.categories).map(
+                                      ([category], catIndex) => (
+                                        <Grid
+                                          item
+                                          md={4}
+                                          xs={12}
+                                          key={category}
+                                          className={`md:p-1  flex items-center justify-center ${
+                                            catIndex === selectedCategoryIndex
+                                              ? "bg-[#0095FF] shadow-md "
+                                              : "bg-white text-black"
+                                          }`}
+                                        >
+                                          <Button
+                                            className="w-full"
+                                            type="button"
+                                            onClick={() =>
+                                              handleCategoryCart(
+                                                catIndex,
+                                                category
+                                              )
+                                            }
+                                            disabled={isLoading}
                                           >
-                                            <Button className="w-full"
-                                              type="button"
-                                              onClick={() =>
-                                                handleCategoryCart(
-                                                  catIndex,
-                                                  category
-                                                )
-                                              }
-                                              disabled={isLoading}
-                                            >{isLoading?<CircularProgress className="w-6 h-6 "/>:
+                                            {isLoading ? (
+                                              <CircularProgress className="w-6 h-6 " />
+                                            ) : (
                                               <Tooltip
                                                 title={`View ${category} Data`}
                                               >
@@ -343,78 +352,88 @@ const Dashboard: React.FC = () => {
                                                   {category ||
                                                     "Unnamed Category"}
                                                 </h2>
-                                              </Tooltip>}
-                                            </Button>
-                                          </Grid>
-                                        )
-                                      )}
-                                    </div>
-                                    <div className="flex w-full md:hidden justify-center items-center">
-                                      <FormControl fullWidth>
-                                        <InputLabel>Select Category</InputLabel>
-                                        <Select
-                                          value={selectedCategoryIndex}
-                                          onChange={(e) => {
-                                            const selectedIndex = e.target
-                                              .value as number;
-                                            handleCategoryCart(
-                                              selectedIndex,
-                                              Object.keys(item.categories)[
-                                                selectedIndex
-                                              ]
-                                            );
-                                          }}
-                                        >
-                                          {Object.entries(item.categories).map(
-                                            ([category], catIndex) => (
-                                              <MenuItem
-                                                key={category}
-                                                value={catIndex}
-                                              >
-                                                <Tooltip
-                                                  title={`View ${category} Data`}
-                                                >
-                                                  <h2
-                                                    className={`font-satoshi text-center ${
-                                                      catIndex ===
-                                                      selectedCategoryIndex
-                                                        ? "text-[#0095FF]"
-                                                        : "text-black"
-                                                    }`}
-                                                  >
-                                                    {category ||
-                                                      "Unnamed Category"}
-                                                  </h2>
-                                                </Tooltip>
-                                              </MenuItem>
-                                            )
-                                          )}
-                                        </Select>
-                                      </FormControl>
-                                    </div>
-                                    <Grid container sx={{ margin: 1 }}>
-                                      {isValidIndex(selectedCategoryIndex) && (
-                                        <Grid container>
-                                          {Object.entries(
-                                            categoryEntries[
-                                              selectedCategoryIndex
-                                            ][1]
-                                          ).map(([key, value]) => (
-                                            <React.Fragment key={key}>
-                                              {renderCountBox(
-                                                key,
-                                                value,
-                                                "",
-                                                `/${key.toLowerCase()}`,
-                                                selectedCategory
-                                              )}
-                                            </React.Fragment>
-                                          ))}
+                                              </Tooltip>
+                                            )}
+                                          </Button>
                                         </Grid>
-                                      )}
-                                    </Grid>
+                                      )
+                                    )}
                                   </div>
+                                  <div className="flex w-full md:hidden justify-center items-center">
+                                    <FormControl fullWidth>
+                                      <InputLabel>Select Category</InputLabel>
+                                      <Select
+                                        value={selectedCategoryIndex}
+                                        onChange={(e) => {
+                                          const selectedIndex = e.target
+                                            .value as number;
+                                          handleCategoryCart(
+                                            selectedIndex,
+                                            Object.keys(item.categories)[
+                                              selectedIndex
+                                            ]
+                                          );
+                                        }}
+                                      >
+                                        {Object.entries(item.categories).map(
+                                          ([category], catIndex) => (
+                                            <MenuItem
+                                              key={category}
+                                              value={catIndex}
+                                            >
+                                              <Tooltip
+                                                title={`View ${category} Data`}
+                                              >
+                                                <h2
+                                                  className={`font-satoshi text-center ${
+                                                    catIndex ===
+                                                    selectedCategoryIndex
+                                                      ? "text-[#0095FF]"
+                                                      : "text-black"
+                                                  }`}
+                                                >
+                                                  {category ||
+                                                    "Unnamed Category"}
+                                                </h2>
+                                              </Tooltip>
+                                            </MenuItem>
+                                          )
+                                        )}
+                                      </Select>
+                                    </FormControl>
+                                  </div>
+                                  <Grid
+                                    container
+                                    sx={{
+                                      margin: 1,
+                                      paddingBottom: 2,
+                                      height: "70vh",
+                                      overflowY: "scroll",
+                                    }}
+                                    className="hide-scrollbar"
+                                  >
+                                    {isValidIndex(selectedCategoryIndex) && (
+                                      <Grid container>
+                                        {Object.entries(
+                                          categoryEntries[
+                                            selectedCategoryIndex
+                                          ][1]
+                                        ).map(([key, value]) => (
+                                          <React.Fragment key={key}>
+                                            {renderCountBox(
+                                              key,
+                                              value,
+                                              "",
+                                              `/${key.toLowerCase()}`,
+                                              selectedCategory
+                                            )}
+                                          </React.Fragment>
+                                        ))}
+                                      </Grid>
+                                    )}
+                                  </Grid>
                                 </div>
+                              </div>
                             ))}
                           </>
                         )}
@@ -625,7 +644,7 @@ const renderCountBox = (
   if (link === "/total payin amount") {
     link = "/payins";
   }
-  if (link === "/total policy count" || link === '/monthly policy count') {
+  if (link === "/total policy count" || link === "/monthly policy count") {
     link = "/policy/motor-policies";
   }
   if (link === "/monthly payout amount") {
@@ -647,7 +666,6 @@ const renderCountBox = (
     link = "/payins/balance/monthly";
   }
   if (link === "/total payin left dist") {
-
     link = "/payins/leftDistributed";
   }
   if (link === "/monthly payin left dist") {
@@ -686,7 +704,12 @@ const renderCountBox = (
   if (link === "/total revenue" || link === "/monthly revenue") {
     link = "/dashboard";
   }
-  if (link === "/quarterly renewed count" || link === "/half yearly renewed count" || link === "/yearly renewed count" || link === "/monthly renewed policy count") {
+  if (
+    link === "/quarterly renewed count" ||
+    link === "/half yearly renewed count" ||
+    link === "/yearly renewed count" ||
+    link === "/monthly renewed policy count"
+  ) {
     link = "/policy/renewals";
   }
   const content = (
