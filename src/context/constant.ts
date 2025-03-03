@@ -7,7 +7,7 @@ export const DAY_FORMAT = "YYYY-MM-DD";
 export const DAYS_DB_DISPLAY_FORMAT_DATE_TYPE = "YYYY-MM-DDTHH:mm:ss.SSS[Z]";
 export const DAYJS_DISPLAY_FORMAT_TABLES = "MMM DD, YYYY";
 export const DAYJS_DISPLAY_FORMAT = "MMM DD YYYY";
-export const MAX_FILE_SIZE = 4 * 1024 * 1024;
+export const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
 export const ALLOWED_FILE_TYPES = [
   "image/jpeg",
@@ -18,8 +18,8 @@ export const ALLOWED_FILE_TYPES = [
 
 export const ALLOWED_BLOG_FILE_TYPES = ["image/jpeg", "image/png", "image/jpg"];
 
-// export const imagePath = "https://iimapi.bluesparing.com/uploads";
-export const imagePath = "http://localhost:7000/uploads";
+export const imagePath = "https://iimapi.bluesparing.com/uploads/";
+// export const imagePath = "http://localhost:7000/uploads/";
 
 export type SafeKaroContextType = {
   user: SafeKaroUser;
