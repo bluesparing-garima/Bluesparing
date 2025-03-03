@@ -23,6 +23,7 @@ import {
   header,
   ALLOWED_FILE_TYPES,
   DAY_FORMAT,
+  imagePath,
 } from "../../../context/constant";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -1619,9 +1620,42 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                         </Grid>
                         {documents.map((doc, index) => (
                           <Grid item key={index} md={12} xs={12}>
+                            <Grid sx={{display:'flex', alignItems:'center'}}>
+                              {/* Document Name */}
+                        <Typography variant="body1">
+                          {doc.docName || "No Document Name"}
+                        </Typography>
+              
+                        {/* View Icon Button (अगर File Available हो) */}
+                        {doc.file && (
+                          <Tooltip title="View Document">
+                            <IconButton
+                              color="primary"
+                              aria-label="View Document"
+                              component="span"
+                              onClick={() => window.open(`${imagePath}${doc.file}`, "_blank")}
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth="1.5"
+                                stroke="currentColor"
+                                className="size-6"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M15.75 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM2.25 12c3-6 6.75-9 9.75-9s6.75 3 9.75 9c-3 6-6.75 9-9.75 9s-6.75-3-9.75-9Z"
+                                />
+                              </svg>
+                            </IconButton>
+                          </Tooltip>
+                        )}
+                            </Grid>
                             <Grid container spacing={2} mt={1}>
                               <Grid item lg={4} md={4} sm={4} xs={12}>
-                                <Autocomplete
+                                                              <Autocomplete
                                   value={
                                     documentTypes.find(
                                       (option) => option.value === doc.docName
