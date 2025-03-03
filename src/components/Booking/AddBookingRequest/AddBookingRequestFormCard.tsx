@@ -44,9 +44,8 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
   let { initialValues } = props;
   const { leadId } = useParams();
   const [policyErrorMessage, setPolicyErrorMessage] = useState("");
-  const [documents, setDocuments] = useState<Document[]>([
-    { docName: "", file: "" },
-  ]);
+const [documents, setDocuments] = useState<Document[]>([]);
+
   const [errors, setErrors] = useState<{ docName: string; file: string }[]>([
     { docName: "", file: "" },
   ]);
@@ -72,49 +71,76 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let userData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
   useEffect(() => {
-    const updatedDocuments: Document[] = [];
-    if (initialValues.rcBack) {
-      updatedDocuments.push({ docName: "rcBack", file: initialValues.rcBack });
-    }
-    if (initialValues.rcFront) {
-      updatedDocuments.push({
-        docName: "rcFront",
-        file: initialValues.rcFront,
-      });
-    }
-    if (initialValues.previousPolicy) {
-      updatedDocuments.push({
-        docName: "previousPolicy",
-        file: initialValues.previousPolicy,
-      });
-    }
-    if (initialValues.survey) {
-      updatedDocuments.push({ docName: "survey", file: initialValues.survey });
-    }
-    if (initialValues.puc) {
-      updatedDocuments.push({ docName: "puc", file: initialValues.puc });
-    }
-    if (initialValues.fitness) {
-      updatedDocuments.push({
-        docName: "fitness",
-        file: initialValues.fitness,
-      });
-    }
-    if (initialValues.proposal) {
-      updatedDocuments.push({
-        docName: "proposal",
-        file: initialValues.proposal,
-      });
-    }
-    if (initialValues.currentPolicy) {
-      updatedDocuments.push({
-        docName: "currentPolicy",
-        file: initialValues.currentPolicy,
-      });
-    }
-    if (initialValues.other) {
-      updatedDocuments.push({ docName: "other", file: initialValues.other });
-    }
+const updatedDocuments: Document[] = [];
+if (initialValues.rcBack) {
+  updatedDocuments.push({ docName: "rcBack", file: initialValues.rcBack });
+} else {
+  console.log("rcBack is not set in initialValues");
+}
+
+if (initialValues.rcFront) {
+  updatedDocuments.push({
+    docName: "rcFront",
+    file: initialValues.rcFront,
+  });
+} else {
+  console.log("rcFront is not set in initialValues");
+}
+
+if (initialValues.previousPolicy) {
+  updatedDocuments.push({
+    docName: "previousPolicy",
+    file: initialValues.previousPolicy,
+  });
+} else {
+  console.log("previousPolicy is not set in initialValues");
+}
+
+if (initialValues.survey) {
+  updatedDocuments.push({ docName: "survey", file: initialValues.survey });
+} else {
+  console.log("survey is not set in initialValues");
+}
+
+if (initialValues.puc) {
+  updatedDocuments.push({ docName: "puc", file: initialValues.puc });
+} else {
+  console.log("puc is not set in initialValues");
+}
+
+if (initialValues.fitness) {
+  updatedDocuments.push({
+    docName: "fitness",
+    file: initialValues.fitness,
+  });
+} else {
+  console.log("fitness is not set in initialValues");
+}
+
+if (initialValues.proposal) {
+  updatedDocuments.push({
+    docName: "proposal",
+    file: initialValues.proposal,
+  });
+} else {
+  console.log("proposal is not set in initialValues");
+}
+
+if (initialValues.currentPolicy) {
+  updatedDocuments.push({
+    docName: "currentPolicy",
+    file: initialValues.currentPolicy,
+  });
+} else {
+  console.log("currentPolicy is not set in initialValues");
+}
+
+if (initialValues.other) {
+  updatedDocuments.push({ docName: "other", file: initialValues.other });
+} else {
+  console.log("other is not set in initialValues");
+}
+
     setDocuments(updatedDocuments);
   }, [initialValues]);
   useEffect(() => {
@@ -266,6 +292,7 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
     openFileInNewTab(url, docName);
   };
   const onSubmit = (bookingForm: any, form: any) => {
+    console.log(bookingForm)
     const formValid = documents.every((doc, index) =>
       validateDocument(doc, index)
     );
