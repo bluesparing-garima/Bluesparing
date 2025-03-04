@@ -29,6 +29,7 @@ import { CartButton } from "./dashboard";
 import SearchIcon from "@mui/icons-material/Search";
 import { MotorSvg, ViewAdminDataSvg, ViewPartnerSvg } from "./data/Svg";
 import { Toaster } from "react-hot-toast";
+
 const PartnerDashboard: React.FC = () => {
   const [data, setData] = useState<IPartnerData[]>([]);
   const [isVisible, setIsVisible] = useState(false);
@@ -110,15 +111,40 @@ const PartnerDashboard: React.FC = () => {
       </Grid>
     );
   };
+
+
   const onSubmit = async (value: any) => {
+    if (!value.startDate || !value.endDate) {
+      alert("Both start date and end date are required.");
+      return;
+    }
+    // Convert input dates to Date objects
     const utcStartDate = new Date(value.startDate!);
-    const formattedStartDate = format(utcStartDate, "yyyy-MM-dd'T'HH:mm:ss");
-    value.startDate = formattedStartDate;
     const utcEndDate = new Date(value.endDate!);
+  
+    // Validate if dates are valid
+    if (isNaN(utcStartDate.getTime()) || isNaN(utcEndDate.getTime())) {
+      alert("Invalid date selected. Please select valid dates.");
+      return;
+    }
+  
+    // Ensure endDate is not before startDate
+    if (utcEndDate < utcStartDate) {
+      alert("End date cannot be before start date.");
+      return;
+    }
+  
+    // Format dates before passing them
+    const formattedStartDate = format(utcStartDate, "yyyy-MM-dd'T'HH:mm:ss");
     const formattedEndDate = format(utcEndDate, "yyyy-MM-dd'T'HH:mm:ss");
+  
+    value.startDate = formattedStartDate;
     value.endDate = formattedEndDate;
+  
+    // Call API or function with validated & formatted dates
     GetDashboardCount(value.startDate, value.endDate);
   };
+  
   const handleFirstCart = async () => {
     setFirstCart(true);
     setSecondCart(false);
@@ -191,10 +217,7 @@ const PartnerDashboard: React.FC = () => {
                                     size="small"
                                     fullWidth
                                     {...params}
-                                    inputProps={{
-                                      ...params.inputProps,
-                                      readOnly: true, // prevents manual editing
-                                    }}
+                                  
                                     error={meta.touched && !!meta.error}
                                     helperText={meta.touched && meta.error}
                                   />
@@ -222,10 +245,7 @@ const PartnerDashboard: React.FC = () => {
                                     size="small"
                                     fullWidth
                                     {...params}
-                                    inputProps={{
-                                      ...params.inputProps,
-                                      readOnly: true, // prevents manual editing
-                                    }}
+                                 
                                     error={meta.touched && !!meta.error}
                                     helperText={meta.touched && meta.error}
                                   />
