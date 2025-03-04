@@ -132,22 +132,51 @@ const GetMotorPolicies = () => {
     const p = getPaginationState(MOTOR_POLICY_STORAGE_KEY);
     setPagination(p);
   }, []);
+ 
+
   const onSubmit = async (filterForm: any) => {
-    const newStartDate = dayjs(stDate).format(DAY_FORMAT);
-    const newEndDate = dayjs(eDate).format(DAY_FORMAT);
+    // Ensure both dates are provided
+    if (!stDate || !eDate) {
+      alert("Both start date and end date are required.");
+      return;
+    }
+  
+    // Convert input dates using dayjs
+    const startDate = dayjs(stDate);
+    const endDate = dayjs(eDate);
+  
+    // Validate if dates are valid
+    if (!startDate.isValid() || !endDate.isValid()) {
+      alert("Invalid date selected. Please select valid dates.");
+      return;
+    }
+  
+    // Ensure endDate is not before startDate
+    if (endDate.isBefore(startDate)) {
+      alert("End date cannot be before start date.");
+      return;
+    }
+  
+    // Format dates
+    const newStartDate = startDate.format(DAY_FORMAT);
+    const newEndDate = endDate.format(DAY_FORMAT);
+  
     try {
-    } catch (error) {}
-    if (
-      userData.role.toLowerCase() === "admin" ||
-      userData.role.toLowerCase() === "account"
-    ) {
-      GetPolicies(newStartDate, newEndDate);
-    } else if (userData.role.toLowerCase() === "booking") {
-      GetPoliciesByPolicyCompletedById(newStartDate, newEndDate);
-    } else if (userData.role.toLowerCase() === "partner") {
-      GetPoliciesById(newStartDate, newEndDate);
+      const userRole = userData.role.toLowerCase();
+  
+      if (userRole === "admin" || userRole === "account") {
+        await GetPolicies(newStartDate, newEndDate);
+      } else if (userRole === "booking") {
+        await GetPoliciesByPolicyCompletedById(newStartDate, newEndDate);
+      } else if (userRole === "partner") {
+        await GetPoliciesById(newStartDate, newEndDate);
+      }
+    } catch (error) {
+      console.error("Error fetching policies:", error);
+      alert("Failed to fetch policies. Please try again.");
     }
   };
+  
   const GetPolicies = useCallback((startDate, endDate) => {
     setIsLoading(true);
     getMotorPolicyService({ header, startDate, endDate })
