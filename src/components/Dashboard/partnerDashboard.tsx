@@ -344,7 +344,7 @@ setIsLoading(true)
                                       "Motor",
                                       item.policyCounts?.motor || 0,
                                       MotorIcon,
-                                      "/booking"
+                                      "/policy/motor-policies"
                                     )}
                                   </Grid>
                                   <Grid container spacing={2}>
