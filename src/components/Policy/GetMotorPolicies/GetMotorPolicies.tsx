@@ -223,7 +223,7 @@ const GetMotorPolicies = () => {
         })
         .catch(async (error) => {
           const err = await error;
-          toast.error(err.message);
+          // toast.error(err.message);
         })
         .finally(() => {
           setIsLoading(false);
