@@ -37,7 +37,7 @@ const NewBookingRequests = () => {
           );
           setBookingRequests(newBookings);
         })
-        .catch(async(error) => {
+        .catch(async (error) => {
           const err = await error
           toast.error(err.message)
         }),
@@ -196,10 +196,13 @@ const NewBookingRequests = () => {
         bookingRequest: bookingForm,
         bookingId,
       });
+
       if (newBooking.status === "success") {
-        navigate(bookingRequestsPath());
+        const newData = bookingRequests?.filter((ele) => ele._id != bookingId)
+        setBookingRequests([...newData])
+
       }
-    } catch (error:any) {
+    } catch (error: any) {
       const err = await error
       toast.error(err.message)
     }
@@ -207,7 +210,7 @@ const NewBookingRequests = () => {
   useEffect(() => {
     updateLoading();
   }, [updateLoading]);
-   const downloadFile = (url: string, fileName: string) => {
+  const downloadFile = (url: string, fileName: string) => {
     const urlFileName = url.substring(url.lastIndexOf("/") + 1);
     const fileExtension = urlFileName.split(".").pop()?.toLowerCase();
     if (
@@ -266,7 +269,7 @@ const NewBookingRequests = () => {
       <div className="bg-blue-200 md:p-7 p-2">
         <Paper elevation={3} style={{ padding: 30 }}>
           <Typography className="text-safekaroDarkOrange" variant="h5">
-           New Booking Request Table
+            New Booking Request Table
           </Typography>
           <Typography variant="h5" mb={2}>
             <div style={{ display: "flex", alignItems: "center" }}>
@@ -291,7 +294,7 @@ const NewBookingRequests = () => {
                 ""
               )}
             </div>
-            
+
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
