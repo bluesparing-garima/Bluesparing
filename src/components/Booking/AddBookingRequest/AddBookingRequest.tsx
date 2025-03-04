@@ -88,7 +88,7 @@ const AddBookingRequest = () => {
           />
         </Paper>
       </div>
-      {/* <Toaster position="bottom-center" reverseOrder={false} /> */}
+      <Toaster position="bottom-center" reverseOrder={false} />
     </>
   );
 };

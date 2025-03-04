@@ -394,7 +394,7 @@ const NewBookingRequests = () => {
         </Paper>
       </div>
       <InputDialog open={open} setOpen={setOpen} BookingId={selectedBookingId} bookingData={bookingData} />
-      {/* <Toaster position="bottom-center" reverseOrder={false} /> */}
+      <Toaster position="bottom-center" reverseOrder={false} />
     </>
   );
 };

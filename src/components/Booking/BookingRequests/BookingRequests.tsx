@@ -562,7 +562,7 @@ const BookingRequests = () => {
         BookingId={selectedBookingId}
         bookingData={bookingData}
       />
-      {/* <Toaster position="bottom-center" reverseOrder={false} /> */}
+      <Toaster position="bottom-center" reverseOrder={false} />
     </>
   );
 };

@@ -1903,7 +1903,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
           </CardContent>
         </Card>
       </React.Fragment>
-      {/* <Toaster position="bottom-center" reverseOrder={false} /> */}
+      <Toaster position="bottom-center" reverseOrder={false} />
     </>
   );
 };

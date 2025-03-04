@@ -1782,7 +1782,7 @@ const GetMotorPolicies = () => {
           />
         </Paper>
       </div>
-      {/* <Toaster position="bottom-center" reverseOrder={false} /> */}
+      <Toaster position="bottom-center" reverseOrder={false} />
       <AddRemarksModal
         handleClose={handleClose}
         handleOpen={handleOpen}
