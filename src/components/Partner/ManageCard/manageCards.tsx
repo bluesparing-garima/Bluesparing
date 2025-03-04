@@ -387,7 +387,7 @@ const ManageCards = () => {
           )}
         />
       </Paper>
-      {/* <Toaster position="bottom-center" reverseOrder={false} /> */}
+      <Toaster position="bottom-center" reverseOrder={false} />
     </div>
   );
 };

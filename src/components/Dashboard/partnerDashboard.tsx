@@ -444,7 +444,7 @@ const PartnerDashboard: React.FC = () => {
           </Grid>
         </Grid>
       </CardContent>
-      {/* <Toaster position="bottom-center" reverseOrder={false} /> */}
+      <Toaster position="bottom-center" reverseOrder={false} />
     </div>
   );
 };
