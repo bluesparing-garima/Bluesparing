@@ -567,7 +567,7 @@ const AddLeadFormCard = (props: addLeadRequestFormProps) => {
           </CardContent>
         </Card>
       </React.Fragment>
-      <Toaster position="bottom-center" reverseOrder={false} />
+      {/* <Toaster position="bottom-center" reverseOrder={false} /> */}
     </>
   );
 };
