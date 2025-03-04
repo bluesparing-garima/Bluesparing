@@ -698,9 +698,14 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
     }
   };
   const handleClickViewDocument = (file: any, docName: any) => {
-    const url = imagePath + file;
-    openFileInNewTab(url, docName);
-  };
+  const fileName = file instanceof File ? file.name : file;
+  const encodedFileName = encodeURIComponent(fileName); // Encode karein
+
+  const url = `${imagePath}${encodedFileName}`;
+  console.log("Encoded Opening URL:", url);
+
+  openFileInNewTab(url, docName);
+};
   return (
     <>
       <React.Fragment>
@@ -1898,7 +1903,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
           </CardContent>
         </Card>
       </React.Fragment>
-      <Toaster position="bottom-center" reverseOrder={false} />
+      {/* <Toaster position="bottom-center" reverseOrder={false} /> */}
     </>
   );
 };
