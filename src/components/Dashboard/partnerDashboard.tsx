@@ -34,7 +34,7 @@ const PartnerDashboard: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [firstCart, setFirstCart] = useState(true);
   const [secondCart, setSecondCart] = useState(false);
-  const[isLoading,setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const [thirdCart, setThirdCart] = useState(false);
   const [selectedCard, setSelectedcard] = useState("1");
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
@@ -64,13 +64,13 @@ const PartnerDashboard: React.FC = () => {
     const lastDayOfMonth = endOfMonth(currentDate);
     const formattedFirstDay = format(firstDayOfMonth, "yyyy-MM-dd");
     const formattedLastDay = format(lastDayOfMonth, "yyyy-MM-dd");
-    const fetchData = async() => {
-      try{
-setIsLoading(true)
+    const fetchData = async () => {
+      try {
+        setIsLoading(true)
         await GetDashboardCount(formattedFirstDay, formattedLastDay);
-      }catch(error){
+      } catch (error) {
         console.error("Error fetching HR Dashboard data:", error);
-      }finally{
+      } finally {
         setIsLoading(false);
       }
     };
@@ -191,6 +191,10 @@ setIsLoading(true)
                                     size="small"
                                     fullWidth
                                     {...params}
+                                    inputProps={{
+                                      ...params.inputProps,
+                                      readOnly: true, // prevents manual editing
+                                    }}
                                     error={meta.touched && !!meta.error}
                                     helperText={meta.touched && meta.error}
                                   />
@@ -199,6 +203,7 @@ setIsLoading(true)
                             </LocalizationProvider>
                           )}
                         </Field>
+
                       </div>
                       <div className="w-[47%]">
                         <Field name="endDate">
@@ -217,6 +222,10 @@ setIsLoading(true)
                                     size="small"
                                     fullWidth
                                     {...params}
+                                    inputProps={{
+                                      ...params.inputProps,
+                                      readOnly: true, // prevents manual editing
+                                    }}
                                     error={meta.touched && !!meta.error}
                                     helperText={meta.touched && meta.error}
                                   />
@@ -230,10 +239,10 @@ setIsLoading(true)
                         className="md:w-10 md:h-10 h-4 w-4 bg-[#30A9FF] shadow-sm rounded flex justify-center items-center text-white"
                         type="submit" disabled={isLoading}
                       >
-                        {isLoading ? <CircularProgress 
-                        className="md:w-6 md:h-6 h-3 w-3"
-                         />: 
-                        <SearchIcon className="md:w-6 md:h-6 h-3 w-3" />
+                        {isLoading ? <CircularProgress
+                          className="md:w-6 md:h-6 h-3 w-3"
+                        /> :
+                          <SearchIcon className="md:w-6 md:h-6 h-3 w-3" />
                         }
                       </button>
                     </div>
@@ -241,21 +250,21 @@ setIsLoading(true)
                 )}
               />
               <div className="flex justify-between items-center gap-x-2">
-                
-                  <button
-                    className="md:w-10 md:h-10 h-4 w-4 bg-[#0095FF] shadow-sm rounded flex justify-center items-center text-white"
-                    onClick={handleDownloadPDF} disabled={isLoading}
-                  ><Tooltip title="Download PDF">
-                    {isLoading?<CircularProgress className="md:w-6 md:h-6 h-3 w-3" />:<PictureAsPdfSharpIcon className="md:w-6 md:h-6 h-3 w-3" />}
-                    </Tooltip>                      </button>
-                
+
+                <button
+                  className="md:w-10 md:h-10 h-4 w-4 bg-[#0095FF] shadow-sm rounded flex justify-center items-center text-white"
+                  onClick={handleDownloadPDF} disabled={isLoading}
+                ><Tooltip title="Download PDF">
+                    {isLoading ? <CircularProgress className="md:w-6 md:h-6 h-3 w-3" /> : <PictureAsPdfSharpIcon className="md:w-6 md:h-6 h-3 w-3" />}
+                  </Tooltip>                      </button>
+
                 <Tooltip title="Download Excel">
                   <button
                     className="md:w-10 md:h-10 h-4 w-4 bg-[#3BDB03] shadow-sm rounded flex justify-center items-center text-white"
                     onClick={handleDownloadExcel}
                   >
-                    {isLoading?<CircularProgress className="md:w-6 md:h-6 h-3 w-3" />:<FileDownloadOutlinedIcon className="md:w-6 md:h-6 h-3 w-3" />}
-                    
+                    {isLoading ? <CircularProgress className="md:w-6 md:h-6 h-3 w-3" /> : <FileDownloadOutlinedIcon className="md:w-6 md:h-6 h-3 w-3" />}
+
                   </button>
                 </Tooltip>
               </div>
@@ -289,21 +298,21 @@ setIsLoading(true)
                                     {renderCountBox(
                                       "Monthly PayOut",
                                       item.commissions?.[
-                                        "Monthly Commission"
+                                      "Monthly Commission"
                                       ] || 0,
                                       PayInCommissionIcon
                                     )}
                                     {renderCountBox(
                                       "Monthly Paid PayOut",
                                       item.commissions?.[
-                                        "Monthly Paid Amount"
+                                      "Monthly Paid Amount"
                                       ] || 0,
                                       PayOutCommissionIcon
                                     )}
                                     {renderCountBox(
                                       "Monthly UnPaid PayOut",
                                       item.commissions?.[
-                                        "Monthly UnPaid Amount"
+                                      "Monthly UnPaid Amount"
                                       ] || 0,
                                       FinalPremiumIcon
                                     )}
@@ -312,19 +321,19 @@ setIsLoading(true)
                                     {renderCountBox(
                                       "Total PayOut",
                                       item.commissions?.["Total Commission"] ||
-                                        0,
+                                      0,
                                       PayOutCommissionIcon
                                     )}
                                     {renderCountBox(
                                       "Total Paid PayOut",
                                       item.commissions?.["Total Paid Amount"] ||
-                                        0,
+                                      0,
                                       PayOutCommissionIcon
                                     )}
                                     {renderCountBox(
                                       "Total UnPaid PayOut",
                                       item.commissions?.[
-                                        "Total UnPaid Amount"
+                                      "Total UnPaid Amount"
                                       ] || 0,
                                       FinalPremiumIcon
                                     )}
@@ -351,7 +360,7 @@ setIsLoading(true)
                                     {renderCountBox(
                                       "Requested Booking",
                                       item.bookingRequests?.[
-                                        "Requested Booking"
+                                      "Requested Booking"
                                       ] || 0,
                                       RequestedBookingIcon,
                                       "/booking"
@@ -359,7 +368,7 @@ setIsLoading(true)
                                     {renderCountBox(
                                       "Accepted Booking",
                                       item.bookingRequests?.[
-                                        "Accepted Booking"
+                                      "Accepted Booking"
                                       ] || 0,
                                       AcceptedBookingIcon,
                                       "/booking"
@@ -367,7 +376,7 @@ setIsLoading(true)
                                     {renderCountBox(
                                       "Rejected Booking",
                                       item.bookingRequests?.[
-                                        "Rejected Booking"
+                                      "Rejected Booking"
                                       ] || 0,
                                       deleteIcon,
                                       "/booking/reject"
