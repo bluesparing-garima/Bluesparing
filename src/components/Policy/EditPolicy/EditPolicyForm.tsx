@@ -53,8 +53,6 @@ import { IModels } from "../../Admin/Model/IModel";
 import { IMakes } from "../../Admin/Make/IMake";
 import getPolicyByNumberService from "../../../api/Policies/GetPolicyByNumber/getPolicyByNumberService";
 import dayjs from "dayjs";
-import editBookingRequestService from "../../../api/BookingRequest/EditBookingRequest/editBookingRequestService";
-import editLeadService from "../../../api/Leads/EditLead/editLeadService";
 import toast, { Toaster } from "react-hot-toast";
 export interface AddPolicyFormProps {
   initialValues: IAddEditPolicyForm;
@@ -289,26 +287,26 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
       userData.role.toLowerCase() === "admin"
         ? selectedRMId
         : policyForm.policyCreatedBy === "Direct"
-        ? userData.headRMId
-        : selectedRMId;
+          ? userData.headRMId
+          : selectedRMId;
     policyForm.relationshipManagerName =
       userData.role.toLowerCase() === "admin"
         ? selectedRMName
         : policyForm.policyCreatedBy === "Direct"
-        ? userData.headRM
-        : selectedRMName;
+          ? userData.headRM
+          : selectedRMName;
     policyForm.partnerId =
       userData.role.toLowerCase() === "admin"
         ? selectedPartnerId
         : policyForm.policyCreatedBy === "Direct"
-        ? userData.profileId
-        : selectedPartnerId;
+          ? userData.profileId
+          : selectedPartnerId;
     policyForm.partnerName =
       userData.role.toLowerCase() === "admin"
         ? selectedPartnerName
         : policyForm.policyCreatedBy === "Direct"
-        ? userData.name
-        : selectedPartnerName;
+          ? userData.name
+          : selectedPartnerName;
     policyForm.createdBy = userData.name;
     policyForm.vehicleNumber = policyForm.vehicleNumber.toUpperCase();
     policyForm.rto = policyForm.vehicleNumber.substring(0, 4);
@@ -389,73 +387,39 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
     const formValid = documents.every((doc, index) =>
       validateDocument(doc, index)
     );
-    const bookingForm = new FormData();
     const createdOn = dayjs(initialValues.createdOn);
     const now = dayjs();
     const diff = now.diff(createdOn);
-    bookingForm.append("timer", diff.toString());
-    bookingForm.append("bookingStatus", "Booked");
-
-      await callEditBookingApi(bookingForm, initialValues.bookingId!);
-      if (policyForm.policyCreatedBy.toLowerCase() === "admin") {
-        if (!selectedRMId) {
-          setRMErrorMessage("Select Partner or RM");
-        } else if (formValid) {
-          await bindValues(policyForm);
-        }
-      } else if (policyForm.policyCreatedBy !== "Direct") {
-        setPolicyErrorMessage("");
-        if (!selectedRMId) {
-          setRMErrorMessage("Select Partner or RM");
-        } else if (formValid) {
-          await bindValues(policyForm);
-        }
-      } else {
-        if (formValid) {
-          await bindValues(policyForm);
-        }
-      }
-  
-  };
-  const callEditLeadAPI = async (leadForm: any, leadId: string) => {
-    try {
-      setIsLoading(true)
-      const newLead = await editLeadService({
-        header,
-        lead: leadForm,
-        leadId,
-      });
-      if (newLead.status === "success") {
-      }
-    } catch (error: any) {
-      const err = await error;
-      toast.error(err.message);
-    }finally{
-      setIsLoading(false)
+    policyForm["timer"] = diff.toString();
+    if (initialValues.bookingId) {
+      policyForm['bookingId'] = initialValues.bookingId;
     }
+    if (initialValues.leadId) {
+      policyForm["leadId"] = initialValues.leadId;
+    }
+    if (policyForm.policyCreatedBy.toLowerCase() === "admin") {
+      if (!selectedRMId) {
+        setRMErrorMessage("Select Partner or RM");
+      } else if (formValid) {
+        await bindValues(policyForm);
+      }
+    } else if (policyForm.policyCreatedBy !== "Direct") {
+      setPolicyErrorMessage("");
+      if (!selectedRMId) {
+        setRMErrorMessage("Select Partner or RM");
+      } else if (formValid) {
+        await bindValues(policyForm);
+      }
+    } else {
+      if (formValid) {
+        await bindValues(policyForm);
+      }
+    }
+
   };
 
-  const callEditBookingApi = async (bookingForm: any, bookingId: string) => {
-    try {
-      setIsLoading(true)
-      const newLead = await editBookingRequestService({
-        header,
-        bookingRequest: bookingForm,
-        bookingId,
-      });
-      const leadId = initialValues?.leadId;
-      if (newLead.status === "success" && leadId) {
-        const leadForm = new FormData();
-        leadForm.append("status", "Booked");
-        callEditLeadAPI(leadForm, initialValues.leadId!);
-      }
-    } catch (error: any) {
-      const err = await error;
-      toast.error(err.message);
-    }finally{
-      setIsLoading(false)
-    }
-  };
+
+
 
   const callAddPolicyAPI = async (policy: any) => {
     try {
@@ -470,7 +434,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
       const err = await error;
       toast.error(err.message);
       return { [FORM_ERROR]: `${"message"}` };
-    }finally{
+    } finally {
       setIsLoading(false)
     }
   };
@@ -884,7 +848,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                                   typeof option === "string"
                                     ? option
                                     : `${option.brokerName} - ${option.brokerCode}` ||
-                                      ""
+                                    ""
                                 }
                                 options={brokers}
                                 onChange={(event, newValue) => {
@@ -1068,6 +1032,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                         {({ input, meta }) => (
                           <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
+                              disableFuture
                               label="Issue Date"
                               value={input.value || null}
                               inputFormat="DD/MM/YYYY"
@@ -1246,6 +1211,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                             {...input}
                             size="small"
                             label="Enter CC"
+                             type="number"
                             fullWidth
                             variant="outlined"
                             error={meta.touched && Boolean(meta.error)}
@@ -1263,6 +1229,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                             size="small"
                             fullWidth
                             label="Enter IDV"
+                             type="number"
                             variant="outlined"
                             disabled={policyType === "Third Party Only/ TP"}
                             error={meta.touched && Boolean(meta.error)}
@@ -1279,6 +1246,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                             size="small"
                             fullWidth
                             label="Enter OD"
+                             type="number"
                             value={od}
                             onChangeCapture={(e: any) => setOd(e.target.value)}
                             variant="outlined"
@@ -1298,6 +1266,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                             fullWidth
                             label="Enter TP"
                             variant="outlined"
+                             type="number"
                             value={tp}
                             onChangeCapture={(e: any) => setTp(e.target.value)}
                             error={meta.touched && Boolean(meta.error)}
@@ -1522,7 +1491,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                                         typeof option === "string"
                                           ? option
                                           : `${option.fullName} - ${option.partnerId}` ||
-                                            ""
+                                          ""
                                       }
                                       options={partners}
                                       onChange={(event, newValue) => {
@@ -1565,13 +1534,13 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                                         typeof option === "string"
                                           ? option
                                           : `${option.fullName} - ${option.partnerId}` ||
-                                            ""
+                                          ""
                                       }
                                       value={
                                         input.value !== undefined
                                           ? input.value
                                           : initialValues.relationshipManagerName ||
-                                            null
+                                          null
                                       }
                                       options={relationshipManagers}
                                       onChange={(event, newValue) => {
@@ -1611,7 +1580,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                           Add More Document
                         </Button>
                         <Typography variant="body1" gutterBottom mr={4}>
-                          {"Image or PDF should be <= 2MB."}
+                          {"Image or PDF should be <= 4MB."}
                         </Typography>
                       </Grid>
                       <Grid item md={12}>
