@@ -178,21 +178,44 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
       setFilteredSubModels(models);
     }
   }, [selectedMake, models]);
+
+  const extractNumbers = (str: string): number[] => {
+    const match = str.match(/\d+/g);
+    return match ? match.map(Number) : [];
+  };
   useEffect(() => {
     if (selectedProduct) {
-      const ProductId = selectedProduct._id;
-      if (selectedProduct.productName === "Goods carrying vehicle") {
-        setIsVisibile(true);
-      } else {
-        setIsVisibile(false);
-      }
-      setFilteredSubcategories(
-        productSubTypes.filter((sub) => sub.productId === ProductId)
+      const productId: string = selectedProduct._id!;
+      const filterData: IProductSubTypes[] = productSubTypes.filter(
+        (sub) => sub.productId === productId
       );
+      if (selectedProduct.productName?.toLowerCase() === 'goods carrying vehicle') {
+        setIsVisibile(true);
+        filterData.sort((a, b) => {
+          const aNumbers = extractNumbers(a.productSubType!);
+          const bNumbers = extractNumbers(b.productSubType!);
+
+          for (let i = 0; i < Math.min(aNumbers.length, bNumbers.length); i++) {
+            if (aNumbers[i] !== bNumbers[i]) {
+              return aNumbers[i] - bNumbers[i];
+            }
+          }
+
+          return aNumbers.length - bNumbers.length;
+        });
+        setFilteredSubcategories(filterData);
+      } else {
+        setFilteredSubcategories(filterData.sort());
+      }
+
+
+
     } else {
+      setIsVisibile(false);
       setFilteredSubcategories(productSubTypes);
     }
   }, [selectedProduct, productSubTypes]);
+
 
   const handleFileInputChange = (event: any, index: any) => {
     if (event.target.files && event.target.files[0]) {
