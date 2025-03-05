@@ -117,7 +117,7 @@ sessionStorage.clear();
   return (
     <>
       <div className="min-h-screen flex justify-center items-center bg-blue-400">
-        <div className="max-w-[90vw] h-[90vh] bg-white shadow sm:rounded-lg flex justify-center flex-1">
+        <div className="max-w-[90vw] h-auto bg-white shadow sm:rounded-lg flex justify-center flex-1">
         <div className="flex-1 bg-indigo-100 rounded-tl-lg rounded-bl-lg text-center hidden lg:flex">
             <div
               className="m-12 xl:m-16 w-full bg-contain bg-center bg-no-repeat"
