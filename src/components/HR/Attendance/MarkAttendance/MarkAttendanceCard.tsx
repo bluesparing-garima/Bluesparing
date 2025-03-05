@@ -7,6 +7,7 @@ import {
   Card,
   CardContent,
   CardActions,
+  Box,
 } from "@mui/material";
 import CancelIcon from "@mui/icons-material/Cancel";
 import AccessAlarmIcon from "@mui/icons-material/AccessAlarm";
@@ -93,12 +94,21 @@ const MarkAttendanceCard: React.FC<AttendanceCardProps> = ({
   }, [attendance]);
 
   const avatarContent = employee.profileImage ? (
-    <Avatar src={employee.profileImage} alt={employee.employeeName} />
+    <Avatar src={employee.profileImage} alt={attendance?.employeeName} />
   ) : (
-    <Avatar>{employee.employeeName?.charAt(0)}</Avatar>
+    <Avatar>{attendance?.employeeName?.charAt(0).toLocaleUpperCase()}</Avatar>
   );
 
   return (
+    <Box
+    sx={{
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      height:'87vh',
+      marginTop : 'auto',
+    }}
+  >
     <Badge
       color="primary"
       badgeContent={timePassed}
@@ -107,116 +117,85 @@ const MarkAttendanceCard: React.FC<AttendanceCardProps> = ({
         "& .MuiBadge-dot": {
           height: "12px",
           width: "12px",
-          borderRadius: "50%",
+          borderRadius: "50%"
         },
-        margin: "20px",
       }}
     >
-      <Card
-        sx={{
-          ...ui,
-          borderRadius: 2,
-          boxShadow: 3,
-          transition: "transform 0.3s ease, box-shadow 0.3s ease",
-          position: "relative",
-          "&:hover": {
-            transform: "scale(1.02)",
-            boxShadow: 6,
-          },
-        }}
-      >
-        <CardContent>
-          <div className="flex items-center mb-4">
-            {avatarContent}
-            <Typography
-              variant="h6"
-              className="ml-2"
-              style={{ color: ui.color }}
-            >
-              {employee.employeeName?.toUpperCase()}
-            </Typography>
-          </div>
-
-          {/* Status Icons */}
-          <div className="flex justify-around mt-2">
-            <div className="flex flex-col items-center">
-              <CancelIcon className="text-red-500" fontSize="large" />
-              <span className="text-sm font-bold">{employee.leave}</span>
-              <Typography variant="caption" className="text-gray-600">
-                Leave
-              </Typography>
-            </div>
-            <div className="flex flex-col items-center">
-              <AccessAlarmIcon className="text-yellow-500" fontSize="large" />
-              <span className="text-sm font-bold">{employee.halfDay}</span>
-              <Typography variant="caption" className="text-gray-600">
-                Half Day
-              </Typography>
-            </div>
-            <div className="flex flex-col items-center">
-              <CheckCircleIcon className="text-green-500" fontSize="large" />
-              <span className="text-sm font-bold">{employee.present}</span>
-              <Typography variant="caption" className="text-gray-600">
-                Present
-              </Typography>
-            </div>
-          </div>
-          <Typography
-            variant="body2"
-            className="mt-4"
-            style={{ color: ui.color }}
-          >
-            Today -{" "}
-            <span className="font-bold">
-              {employee.todaysAttendance === "Default"
-                ? "No Record"
-                : employee.todaysAttendance}
-            </span>
+    <Card
+      sx={{
+        ...ui,
+        width: "40vw",
+        padding: "20px",
+        borderRadius: 3,
+        boxShadow: 5,
+        transition: "transform 0.3s ease, box-shadow 0.3s ease",
+        position: "relative",
+        "&:hover": {
+          transform: "scale(1.02)",
+          boxShadow: 8,
+        },
+      }}
+      className='sm:w-[50vw]'
+    >
+      <CardContent>
+        <div className="flex items-center mb-4">
+          {avatarContent}
+          <Typography variant="h5" className="ml-2" sx={{ color: ui.color }}>
+            {attendance?.employeeName?.toUpperCase()}
           </Typography>
-        </CardContent>
-
-        <CardActions
-          sx={{ justifyContent: "space-between", padding: "8px 16px" }}
+        </div>
+  
+        {/* Status Icons */}
+        <div className="flex justify-around mt-4">
+          <div className="flex flex-col items-center">
+            <CancelIcon className="text-red-500" fontSize="large" />
+            <Typography variant="h6">{employee.leave}</Typography>
+            <Typography variant="caption">Leave</Typography>
+          </div>
+          <div className="flex flex-col items-center">
+            <AccessAlarmIcon className="text-yellow-500" fontSize="large" />
+            <Typography variant="h6">{employee.halfDay}</Typography>
+            <Typography variant="caption">Half Day</Typography>
+          </div>
+          <div className="flex flex-col items-center">
+            <CheckCircleIcon className="text-green-500" fontSize="large" />
+            <Typography variant="h6">{employee.present}</Typography>
+            <Typography variant="caption">Present</Typography>
+          </div>
+        </div>
+  
+        <Typography variant="body1" sx={{ mt: 4, color: ui.color }}>
+          Today -{" "}
+          <strong>
+            {employee.todaysAttendance === "Default" ? "No Record" : employee.todaysAttendance}
+          </strong>
+        </Typography>
+      </CardContent>
+  
+      <CardActions sx={{ justifyContent: "space-between", padding: "8px 16px" }}>
+        <Button
+          sx={{
+            backgroundColor: "#FCFAEE",
+            color: "black",
+            "&:hover": { backgroundColor: "#FADFA1" },
+          }}
         >
-          <Button
-            size="small"
-            sx={{
-              padding: "4px 8px",
-              fontSize: "0.875rem",
-              display: "flex",
-              alignItems: "center",
-              backgroundColor: "#FCFAEE",
-              color: "white",
-              "&:hover": {
-                backgroundColor: "#FADFA1",
-              },
-            }}
-          >
-            <MarkInTime attendance={attendance} setAttendance={setAttendance} />
-          </Button>
-
-          <Button
-            size="small"
-            sx={{
-              padding: "4px 8px",
-              fontSize: "0.875rem",
-              display: "flex",
-              alignItems: "center",
-              backgroundColor: "#FCFAEE",
-              color: "white",
-              "&:hover": {
-                backgroundColor: "#FADFA1",
-              },
-            }}
-          >
-            <MarkOutTime
-              attendance={attendance}
-              setAttendance={setAttendance}
-            />
-          </Button>
-        </CardActions>
-      </Card>
+          <MarkInTime attendance={attendance} setAttendance={setAttendance} />
+        </Button>
+  
+        <Button
+          sx={{
+            backgroundColor: "#FCFAEE",
+            color: "black",
+            "&:hover": { backgroundColor: "#FADFA1" },
+          }}
+        >
+          <MarkOutTime attendance={attendance} setAttendance={setAttendance} />
+        </Button>
+      </CardActions>
+    </Card>
     </Badge>
+  </Box>  
   );
 };
 
