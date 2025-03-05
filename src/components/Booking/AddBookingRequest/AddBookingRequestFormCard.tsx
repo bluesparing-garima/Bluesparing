@@ -261,10 +261,15 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
       console.error("Unsupported file type:", fileExtension);
     }
   };
-  const handleClickViewDocument = (file: any, docName: any) => {
-    const url = imagePath + file;
-    openFileInNewTab(url, docName);
+  
+  const getDocumentUrl = (file: any): string | undefined => {
+    if (!file) return undefined; // null ki jagah undefined return karein
+    if (file instanceof File) {
+      return URL.createObjectURL(file); // Naya upload hua file
+    }
+    return `${imagePath}${encodeURIComponent(file)}`; // API se aayi purani file
   };
+
   const onSubmit = (bookingForm: any, form: any) => {
     const formValid = documents.every((doc, index) =>
       validateDocument(doc, index)
@@ -786,38 +791,38 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
                               {doc.file ? (
                                 <>
                                   <Tooltip title={`${doc.file}`}>
-                                    <IconButton
-                                      color="primary"
-                                      aria-label={`${doc.file}`}
-                                      component="span"
-                                      onClick={() =>
-                                        handleClickViewDocument(
-                                          doc.file,
-                                          doc.docName
-                                        )
-                                      }
-                                    >
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        strokeWidth="1.5"
-                                        stroke="currentColor"
-                                        className="size-6 text-safekaroDarkOrange"
+                                      <IconButton
+                                        color="primary"
+                                        aria-label={`${doc.file}`}
+                                        component="span"
+                                        onClick={() =>
+                                          window.open(
+                                            getDocumentUrl(doc.file),
+                                            "_blank"
+                                          )
+                                        }
                                       >
-                                        <path
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                          d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
-                                        />
-                                        <path
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                          d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-                                        />
-                                      </svg>
-                                    </IconButton>
-                                  </Tooltip>
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          fill="none"
+                                          viewBox="0 0 24 24"
+                                          strokeWidth="1.5"
+                                          stroke="currentColor"
+                                          className="size-6 text-safekaroDarkOrange"
+                                        >
+                                          <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
+                                          />
+                                          <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                                          />
+                                        </svg>
+                                      </IconButton>
+                                    </Tooltip>
                                 </>
                               ) : (
                                 <></>
