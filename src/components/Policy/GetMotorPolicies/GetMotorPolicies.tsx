@@ -137,7 +137,8 @@ const GetMotorPolicies = () => {
   const onSubmit = async (filterForm: any) => {
     // Ensure both dates are provided
     if (!stDate || !eDate) {
-      alert("Both start date and end date are required.");
+      toast.error("Both start date and end date are required.")
+      // alert("Both start date and end date are required.");
       return;
     }
   
@@ -147,13 +148,15 @@ const GetMotorPolicies = () => {
   
     // Validate if dates are valid
     if (!startDate.isValid() || !endDate.isValid()) {
-      alert("Invalid date selected. Please select valid dates.");
+      toast.error("Invalid date selected. Please select valid dates.");
+      // alert("Invalid date selected. Please select valid dates.");
       return;
     }
   
     // Ensure endDate is not before startDate
     if (endDate.isBefore(startDate)) {
-      alert("End date cannot be before start date.");
+      toast.error("End date cannot be before start date.")
+      // alert("End date cannot be before start date.");
       return;
     }
   
@@ -173,7 +176,8 @@ const GetMotorPolicies = () => {
       }
     } catch (error) {
       console.error("Error fetching policies:", error);
-      alert("Failed to fetch policies. Please try again.");
+      toast.error("Failed to fetch policies. Please try again.")
+      // alert("Failed to fetch policies. Please try again.");
     }
   };
   

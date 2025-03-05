@@ -190,7 +190,8 @@ const ManageCards = () => {
   const onSubmit = async (creditdebitForm: any) => {
     // Ensure both dates are provided
     if (!creditdebitForm.startDate || !creditdebitForm.endDate) {
-      alert("Both start date and end date are required.");
+      toast.error("Both start date and end date are required.")
+      // alert("Both start date and end date are required.");
       return;
     }
   
@@ -200,13 +201,15 @@ const ManageCards = () => {
   
     // Validate if dates are valid
     if (isNaN(utcStartDate.getTime()) || isNaN(utcEndDate.getTime())) {
-      alert("Invalid date selected. Please select valid dates.");
+      toast.error("Invalid date selected. Please select valid dates.");
+      // alert("Invalid date selected. Please select valid dates.");
       return;
     }
   
     // Ensure endDate is not before startDate
     if (utcEndDate < utcStartDate) {
-      alert("End date cannot be before start date.");
+      toast.error("End date cannot be before start date.")
+      // alert("End date cannot be before start date.");
       return;
     }
   

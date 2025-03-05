@@ -111,7 +111,8 @@ const GetRenewals = () => {
   const onSubmit = async (filterForm: any) => {
     // Ensure both dates are provided
     if (!stDate || !eDate) {
-      alert("Both start date and end date are required.");
+      toast.error("Both start date and end date are required.");
+      // alert("Both start date and end date are required.");
       return;
     }
   
@@ -121,13 +122,15 @@ const GetRenewals = () => {
   
     // Validate if dates are valid
     if (isNaN(newStartDate.getTime()) || isNaN(newEndDate.getTime())) {
-      alert("Invalid date selected. Please select valid dates.");
+      toast.error("Invalid date selected. Please select valid dates.");
+      // alert("Invalid date selected. Please select valid dates.");
       return;
     }
   
     // Ensure endDate is not before startDate
     if (newEndDate < newStartDate) {
-      alert("End date cannot be before start date.");
+      toast.error("End date cannot be before start date.")
+      // alert("End date cannot be before start date.");
       return;
     }
   

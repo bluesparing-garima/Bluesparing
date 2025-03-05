@@ -29,6 +29,7 @@ import { CartButton } from "./dashboard";
 import SearchIcon from "@mui/icons-material/Search";
 import { MotorSvg, ViewAdminDataSvg, ViewPartnerSvg } from "./data/Svg";
 import { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 const PartnerDashboard: React.FC = () => {
   const [data, setData] = useState<IPartnerData[]>([]);
@@ -115,7 +116,10 @@ const PartnerDashboard: React.FC = () => {
 
   const onSubmit = async (value: any) => {
     if (!value.startDate || !value.endDate) {
-      alert("Both start date and end date are required.");
+      
+      toast.error("Both start date and end date are required");
+      
+      // alert("Both start date and end date are required.");
       return;
     }
     // Convert input dates to Date objects
@@ -124,13 +128,15 @@ const PartnerDashboard: React.FC = () => {
   
     // Validate if dates are valid
     if (isNaN(utcStartDate.getTime()) || isNaN(utcEndDate.getTime())) {
-      alert("Invalid date selected. Please select valid dates.");
+      toast.error("Invalid date selected. Please select valid dates.");
+      // alert("Invalid date selected. Please select valid dates.");
       return;
     }
   
     // Ensure endDate is not before startDate
     if (utcEndDate < utcStartDate) {
-      alert("End date cannot be before start date.");
+      toast.error("End date cannot be before start date.")
+      // alert("End date cannot be before start date.");
       return;
     }
   
