@@ -50,12 +50,12 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
   const [errors, setErrors] = useState<{ docName: string; file: string }[]>([
     { docName: "", file: "" },
   ]);
-  const timeRef = useRef<NodeJS.Timeout|null>(null)
+  const timeRef = useRef<NodeJS.Timeout | null>(null)
   const navigate = useNavigate();
   let [policyTypes] = useGetPolicyTypes({ header: header });
   let [caseTypes] = useGetCaseTypes({ header: header });
   let [companies] = useGetCompanies({ header: header });
-  let [products] = useGetProducts({ header: header,category:"motor" });
+  let [products] = useGetProducts({ header: header, category: "motor" });
   let [productSubTypes] = useGetProductSubTypes({ header: header });
   let [partners] = useGetPartners({ header: header, role: "partner" });
   const [selectedProduct, setSelectedProduct] = useState<IProducts>();
@@ -66,7 +66,7 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
   const [selectedPartnerName, setSelectedPartnerName] = useState("");
   const [selectedPartnerId, setSelectedPartnerId] = useState("");
   const [selectedRMName, setSelectedRMName] = useState("");
-  const[isLoading,setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedRMId, setSelectedRMId] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
@@ -117,21 +117,45 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
     }
     setDocuments(updatedDocuments);
   }, [initialValues]);
+
+  const extractNumbers = (str: string): number[] => {
+    const match = str.match(/\d+/g);
+    return match ? match.map(Number) : [];
+  };
   useEffect(() => {
     if (selectedProduct) {
-      const ProductId = selectedProduct._id;
-      const subCategory = productSubTypes.filter(
-        (sub) => sub.productId === ProductId
+      const productId: string = selectedProduct._id!;
+      const filterData: IProductSubTypes[] = productSubTypes.filter(
+        (sub) => sub.productId === productId
       );
-      if (subCategory.length > 0) {
-        setFilteredSubcategories(subCategory);
+      if (selectedProduct.productName?.toLowerCase() === 'goods carrying vehicle') {
+
+        filterData.sort((a, b) => {
+          const aNumbers = extractNumbers(a.productSubType!);
+          const bNumbers = extractNumbers(b.productSubType!);
+
+          for (let i = 0; i < Math.min(aNumbers.length, bNumbers.length); i++) {
+            if (aNumbers[i] !== bNumbers[i]) {
+              return aNumbers[i] - bNumbers[i];
+            }
+          }
+
+          return aNumbers.length - bNumbers.length;
+        });
+        setFilteredSubcategories(filterData);
       } else {
-        setFilteredSubcategories([]);
+        setFilteredSubcategories(filterData.sort());
       }
+
+
+
     } else {
+
       setFilteredSubcategories(productSubTypes);
     }
   }, [selectedProduct, productSubTypes]);
+
+
   const handleChangeDocumentName = (newValue: any, index: any) => {
     const updatedDocuments = documents.map((doc, i) =>
       i === index ? { ...doc, docName: newValue?.value! } : doc
@@ -345,7 +369,7 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
       toast.error(errObj.message);
       setDocuments([{ docName: "", file: "" }]);
       return { [FORM_ERROR]: `error ` };
-    }finally{
+    } finally {
       setIsLoading(false)
     }
   };
@@ -375,14 +399,14 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
   });
   const addValidate = validateFormValues(validationSchema);
 
-  
+
   const handleChangePolicyNumber = async (e: any) => {
-    if(timeRef.current){
+    if (timeRef.current) {
       clearTimeout(timeRef.current)
     }
     const policyNumber = e.target.value;
-    timeRef.current = setTimeout(async() => {
-      
+    timeRef.current = setTimeout(async () => {
+
       try {
         const newPolicy = await validatePolicyNumberService({
           header,
@@ -638,8 +662,8 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
                       </Field>
                     </Grid>
                     {!leadId &&
-                    (userData.role.toLowerCase() === "operation" ||
-                      userData.role.toLowerCase() === "admin") ? (
+                      (userData.role.toLowerCase() === "operation" ||
+                        userData.role.toLowerCase() === "admin") ? (
                       <>
                         <Grid item lg={4} md={4} sm={6} xs={12}>
                           <Field name="policyCreatedBy">
@@ -728,7 +752,7 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
                         {"Image or pdf should be <= 4MB."}
                       </Typography>
                     </Grid>
-                    
+
                     <Grid item md={12}>
                       <Grid item lg={12} md={12} sm={12} xs={12}>
                         <span style={{ color: "red" }}>{errorMessage}</span>
@@ -863,7 +887,7 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
                         </div>
                       )}
                       <Button variant="contained" type="submit" disabled={isLoading}>
-                        {isLoading?'Submitting...':'submit'}
+                        {isLoading ? 'Submitting...' : 'submit'}
                       </Button>
                     </Grid>
                   </Grid>
