@@ -139,13 +139,12 @@ const GetRenewals = () => {
   
     if (userRole === "admin" || userRole === "account") {
       GetPolicies(newStartDate, newEndDate);
-    } else if (userRole === "booking") {
+    } else if (userData.role.toLowerCase() === "booking") {
       GetPoliciesByPolicyCompletedById(newStartDate, newEndDate);
-    } else if (userRole === "partner") {
+    } else if (userData.role.toLowerCase() === "partner") {
       GetPoliciesById(newStartDate, newEndDate);
     }
   };
-  
 
   const GetPolicies = useCallback(
     (startDate, endDate) =>
@@ -440,32 +439,25 @@ const GetRenewals = () => {
   const columns = useMemo<MRT_ColumnDef<IViewPolicy>[]>(
     () =>
       [
-        // {
-        //   header: "Booking Time",
-        //   accessorKey: "bookingTimer",
-        //   visible: userData.role.toLowerCase() === "admin", //Conditional visibility
-        //   Cell: ({ row }: { row: { original: IViewPolicy } }) => (
-        //     <Timer timer={row.original.bookingTimer!} />
-        //   ),
-        //   size: 200,
-        // },
-        // {
-        //   accessorKey: "leadTimer", //normal accessorKey
-        //   header: "Lead Time",
-        //   size: 100,
-        //   visible: userData.role === "admin", // Conditional visibility
-        //   Cell: ({ row }: { row: { original: IViewPolicy } }) => (
-        //     <Timer timer={row.original.bookingTimer!} />
-        //   ),
-        // },
         {
-          accessorKey: "category", //normal accessorKey
-          header: "Category",
+          accessorKey: "endDate", 
+          header: "End Date",
           size: 100,
-          visible: userData.role === "admin", // Conditional visibility
+          visible: userData.role === "admin", 
         },
         {
-          accessorKey: "vehicleNumber", //normal accessorKey
+          accessorKey: "issueDate", 
+          header: "Issue Date",
+          size: 100,
+        },
+        {
+          accessorKey: "category", 
+          header: "Category",
+          size: 100,
+          visible: userData.role === "admin", 
+        },
+        {
+          accessorKey: "vehicleNumber", 
           header: "Vehicle Number",
           size: 100,
         },
@@ -752,11 +744,7 @@ const GetRenewals = () => {
           },
         },
 
-        {
-          accessorKey: "issueDate", //normal accessorKey
-          header: "Issue Date",
-          size: 100,
-        },
+        
         {
           header: "Created On",
           accessorKey: "createdOn",
@@ -771,14 +759,9 @@ const GetRenewals = () => {
       motorPolicies?.map(
         (motorPolicy: IViewPolicy) =>
           ({
-            // uuid: motorPolicy.uuid,
             id: motorPolicy._id,
             policyId: motorPolicy.policyId,
             fullName: motorPolicy.fullName,
-            //  bookingDate: motorPolicy.bookingDate,
-            // bookingTimer: motorPolicy.bookingTimer,
-            //leadDate: motorPolicy.leadDate,
-            //  leadTimer: motorPolicy.leadTimer,
             productType: motorPolicy.productType,
             emailId: motorPolicy.emailId,
             weight: motorPolicy.weight,
@@ -853,8 +836,7 @@ const GetRenewals = () => {
             payOutAmount: motorPolicy.payOutAmount,
             payOutPaymentStatus: motorPolicy.payOutPaymentStatus,
             other: motorPolicy.other,
-            // documents: motorPolicy.documents,
-            // forceUpdate: forcedRenderCount,
+           
           } as unknown as IViewPolicy)
       ) ?? [],
     [motorPolicies]
@@ -1513,92 +1495,7 @@ const GetRenewals = () => {
             state={{ isLoading }}
             columns={columns}
             data={parsedData}
-            enableRowActions
-            editingMode="cell"
-            enableEditing={userData.role?.toLowerCase() === "admin"}
-            muiTableBodyCellEditTextFieldProps={({ cell }) => {
-              const editableColumns = [
-                "partnerName",
-                "payInODPercentage",
-                "payInTPPercentage",
-                "payOutTPPercentage",
-                "payOutODPercentage",
-                "brokerName",
-              ];
-
-              const isEditable = editableColumns.includes(cell.column.id);
-              if (cell.column.id === "partnerName") {
-                return {
-                  select: true,
-                  children: (
-                    <Autocomplete
-                      sx={{ width: "200px", margin: "3px" }}
-                      options={partners.sort()}
-                      getOptionLabel={(option) =>
-                        `${option.name} - ${option.userCode}`
-                      }
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="Select Partner"
-                          variant="outlined"
-                        />
-                      )}
-                      onChange={(event, newValue) => {
-                        handleSaveCell(cell, newValue);
-                      }}
-                      value={
-                        partners.find((p) => p._id === cell.getValue()) || null
-                      }
-                      isOptionEqualToValue={(option, value) =>
-                        option._id === value._id
-                      }
-                    />
-                  ),
-                };
-              }
-              if (cell.column.id === "broker") {
-                return {
-                  select: true,
-                  children: (
-                    <Autocomplete
-                      sx={{ width: "200px", margin: "3px" }}
-                      options={brokers.sort()}
-                      getOptionLabel={(option) =>
-                        `${option.brokerName} - ${option.brokerCode}`
-                      }
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="Select Broker"
-                          variant="outlined"
-                        />
-                      )}
-                      onChange={(event, newValue) => {
-                        handleSaveCell(cell, newValue);
-                      }}
-                      value={
-                        brokers.find((b) => b._id === cell.getValue()) || null
-                      }
-                      isOptionEqualToValue={(option, value) =>
-                        option._id === value._id
-                      }
-                    />
-                  ),
-                };
-              }
-
-              return isEditable
-                ? {
-                    onBlur: (event) => {
-                      const newValue = event.target.value;
-                      handleSaveCell(cell, newValue);
-                    },
-                  }
-                : {
-                    disabled: true,
-                  };
-            }}
+          
             renderTopToolbarCustomActions={({ table }) => (
               <>
                 <Button
@@ -1612,42 +1509,7 @@ const GetRenewals = () => {
                 </Button>
               </>
             )}
-            renderRowActions={({ row }) => {
-              return (
-                <>
-                  {/* <MenuIconButton
-                    row={row}
-                    isAdmin={
-                      userData.role.toLowerCase() === "admin" ||
-                      userData.role.toLowerCase() === "account"
-                        ? true
-                        : false
-                    }
-                    isAdminAction={
-                      row.original.payInPaymentStatus! === "UnPaid" &&
-                      row.original.payOutPaymentStatus! === "UnPaid"
-                        ? true
-                        : false
-                    }
-                    onEdit={() => handleClickEditPolicy(row.original)}
-                    onDelete={() => handleClickDeletePolicy(row.original)}
-                    onDownload={() =>
-                      handleClickDownloadDocuments(row.original)
-                    }
-                    onAdminView={() => handleClickViewAdminPolicy(row.original)}
-                    onView={() => handleClickViewPolicy(row.original)}
-                    onEditCommission={() =>
-                      handleClickPolicyEditCommission(row.original)
-                    }
-                    onViewCommission={() =>
-                      handleClickViewPaymentDetails(row.original)
-                    }
-                    onPayIn={() => handleClickCalculatePayIn(row.original)}
-                    onPayOut={() => handleClickCalculatePayOut(row.original)}
-                  /> */}
-                </>
-              );
-            }}
+           
           />
           <ConfirmationDialogBox
             open={dialogOpen}

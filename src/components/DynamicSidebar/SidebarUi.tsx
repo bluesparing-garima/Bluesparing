@@ -35,10 +35,7 @@ const SidebarUi: FC<SidebarProps> = ({
 
   const generateDashBoardLink = () => {
     const role = userData?.role.toLowerCase();
-    console.log(role);
     switch (role) {
-      case "partner":
-        return "/partnerdashboard"
       case "hr":
         return "/hr/dashboard";
       case "booking":

@@ -1742,7 +1742,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                           Add More Document
                         </Button>
                         <Typography variant="body1" gutterBottom mr={4}>
-                          {"Image or PDF should be <= 2MB."}
+                          {"Image or PDF should be <= 4MB."}
                         </Typography>
                       </Grid>
                       <Grid item md={12}>

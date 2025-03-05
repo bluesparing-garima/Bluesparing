@@ -132,8 +132,6 @@ const GetMotorPolicies = () => {
     const p = getPaginationState(MOTOR_POLICY_STORAGE_KEY);
     setPagination(p);
   }, []);
- 
-
   const onSubmit = async (filterForm: any) => {
     // Ensure both dates are provided
     if (!stDate || !eDate) {
@@ -180,7 +178,6 @@ const GetMotorPolicies = () => {
       // alert("Failed to fetch policies. Please try again.");
     }
   };
-  
   const GetPolicies = useCallback((startDate, endDate) => {
     setIsLoading(true);
     getMotorPolicyService({ header, startDate, endDate })
@@ -227,7 +224,7 @@ const GetMotorPolicies = () => {
         })
         .catch(async (error) => {
           const err = await error;
-          // toast.error(err.message);
+          toast.error(err.message);
         })
         .finally(() => {
           setIsLoading(false);

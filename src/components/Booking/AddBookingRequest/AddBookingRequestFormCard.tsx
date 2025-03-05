@@ -730,9 +730,10 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
                         Add More Document
                       </Button>
                       <Typography variant="body1" gutterBottom mr={4}>
-                        {"Image or pdf should be <= 2MB."}
+                        {"Image or pdf should be <= 4MB."}
                       </Typography>
                     </Grid>
+                    
                     <Grid item md={12}>
                       <Grid item lg={12} md={12} sm={12} xs={12}>
                         <span style={{ color: "red" }}>{errorMessage}</span>

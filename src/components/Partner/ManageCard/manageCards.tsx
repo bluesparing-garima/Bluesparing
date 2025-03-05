@@ -185,8 +185,6 @@ const ManageCards = () => {
       )
     );
   };
-
-
   const onSubmit = async (creditdebitForm: any) => {
     // Ensure both dates are provided
     if (!creditdebitForm.startDate || !creditdebitForm.endDate) {
@@ -215,16 +213,12 @@ const ManageCards = () => {
   
     // Format dates before passing them
     const formattedStartDate = format(utcStartDate, "yyyy-MM-dd'T'HH:mm:ss");
-    const formattedEndDate = format(utcEndDate, "yyyy-MM-dd'T'HH:mm:ss");
-  
-    // Update form object with formatted dates
     creditdebitForm.startDate = formattedStartDate;
+    // const utcEndDate = new Date(creditdebitForm.endDate!);
+    const formattedEndDate = format(utcEndDate, "yyyy-MM-dd'T'HH:mm:ss");
     creditdebitForm.endDate = formattedEndDate;
-  
-    // Call API or function with validated & formatted dates
     GetPartnerCard(creditdebitForm.startDate, creditdebitForm.endDate);
   };
-  
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
       schema = schema();

@@ -243,7 +243,7 @@ const EditLeadForm = (props: addLeadRequestFormProps) => {
                           Add More Document
                         </Button>
                         <Typography variant="body1" gutterBottom mr={4}>
-                          {"Image should be <= 2MB."}
+                          {"Image should be <= 4MB."}
                         </Typography>
                       </Grid>
                       <Grid item md={12}>

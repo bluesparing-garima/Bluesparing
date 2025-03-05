@@ -23,6 +23,7 @@ import {
   header,
   ALLOWED_FILE_TYPES,
   DAY_FORMAT,
+  imagePath,
 } from "../../../context/constant";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -52,8 +53,6 @@ import { IModels } from "../../Admin/Model/IModel";
 import { IMakes } from "../../Admin/Make/IMake";
 import getPolicyByNumberService from "../../../api/Policies/GetPolicyByNumber/getPolicyByNumberService";
 import dayjs from "dayjs";
-import editBookingRequestService from "../../../api/BookingRequest/EditBookingRequest/editBookingRequestService";
-import editLeadService from "../../../api/Leads/EditLead/editLeadService";
 import toast, { Toaster } from "react-hot-toast";
 export interface AddPolicyFormProps {
   initialValues: IAddEditPolicyForm;
@@ -226,6 +225,14 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
     }
   };
 
+  const getDocumentUrl = (file: any): string | undefined => {
+    if (!file) return undefined; // null ki jagah undefined return karein
+    if (file instanceof File) {
+      return URL.createObjectURL(file); // Naya upload hua file
+    }
+    return `${imagePath}${encodeURIComponent(file)}`; // API se aayi purani file
+  };
+
   const calculateYearDifference = (
     startDate: string,
     endDate: string
@@ -388,77 +395,39 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
     const formValid = documents.every((doc, index) =>
       validateDocument(doc, index)
     );
-    const bookingForm = new FormData();
     const createdOn = dayjs(initialValues.createdOn);
     const now = dayjs();
     const diff = now.diff(createdOn);
-    bookingForm.append("timer", diff.toString());
-    bookingForm.append("bookingStatus", "Booked");
-
-      await callEditBookingApi(bookingForm, initialValues.bookingId!);
-      if (policyForm.policyCreatedBy.toLowerCase() === "admin") {
-        if (!selectedRMId) {
-          setRMErrorMessage("Select Partner or RM");
-        } else if (formValid) {
-          await bindValues(policyForm);
-        }
-      } else if (policyForm.policyCreatedBy !== "Direct") {
-        setPolicyErrorMessage("");
-        if (!selectedRMId) {
-          setRMErrorMessage("Select Partner or RM");
-        } else if (formValid) {
-          await bindValues(policyForm);
-        }
-      } else {
-        if (formValid) {
-          await bindValues(policyForm);
-        }
-      }
-  
-  };
-  const callEditLeadAPI = async (leadForm: any, leadId: string) => {
-    try {
-      setIsLoading(true)
-      const newLead = await editLeadService({
-        header,
-        lead: leadForm,
-        leadId,
-      });
-      if (newLead.status === "success") {
-      }
-    } catch (error: any) {
-      const err = await error;
-      toast.error(err.message);
-    }finally{
-      setIsLoading(false)
+    policyForm["timer"] = diff.toString();
+    if (initialValues.bookingId) {
+      policyForm["bookingId"] = initialValues.bookingId;
     }
-  };
-
-  const callEditBookingApi = async (bookingForm: any, bookingId: string) => {
-    try {
-      setIsLoading(true)
-      const newLead = await editBookingRequestService({
-        header,
-        bookingRequest: bookingForm,
-        bookingId,
-      });
-      const leadId = initialValues?.leadId;
-      if (newLead.status === "success" && leadId) {
-        const leadForm = new FormData();
-        leadForm.append("status", "Booked");
-        callEditLeadAPI(leadForm, initialValues.leadId!);
+    if (initialValues.leadId) {
+      policyForm["leadId"] = initialValues.leadId;
+    }
+    if (policyForm.policyCreatedBy.toLowerCase() === "admin") {
+      if (!selectedRMId) {
+        setRMErrorMessage("Select Partner or RM");
+      } else if (formValid) {
+        await bindValues(policyForm);
       }
-    } catch (error: any) {
-      const err = await error;
-      toast.error(err.message);
-    }finally{
-      setIsLoading(false)
+    } else if (policyForm.policyCreatedBy !== "Direct") {
+      setPolicyErrorMessage("");
+      if (!selectedRMId) {
+        setRMErrorMessage("Select Partner or RM");
+      } else if (formValid) {
+        await bindValues(policyForm);
+      }
+    } else {
+      if (formValid) {
+        await bindValues(policyForm);
+      }
     }
   };
 
   const callAddPolicyAPI = async (policy: any) => {
     try {
-      setIsLoading(true)
+      setIsLoading(true);
       const newPolicy = await addPolicyService({ header, policy });
       if (newPolicy.status === "success") {
         navigate(motorPolicyPath());
@@ -469,8 +438,8 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
       const err = await error;
       toast.error(err.message);
       return { [FORM_ERROR]: `${"message"}` };
-    }finally{
-      setIsLoading(false)
+    } finally {
+      setIsLoading(false);
     }
   };
   const handleChangeDocumentName = (newValue: any, index: any) => {
@@ -1067,6 +1036,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                         {({ input, meta }) => (
                           <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
+                              disableFuture
                               label="Issue Date"
                               value={input.value || null}
                               inputFormat="DD/MM/YYYY"
@@ -1245,6 +1215,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                             {...input}
                             size="small"
                             label="Enter CC"
+                            type="number"
                             fullWidth
                             variant="outlined"
                             error={meta.touched && Boolean(meta.error)}
@@ -1262,6 +1233,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                             size="small"
                             fullWidth
                             label="Enter IDV"
+                            type="number"
                             variant="outlined"
                             disabled={policyType === "Third Party Only/ TP"}
                             error={meta.touched && Boolean(meta.error)}
@@ -1278,6 +1250,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                             size="small"
                             fullWidth
                             label="Enter OD"
+                            type="number"
                             value={od}
                             onChangeCapture={(e: any) => setOd(e.target.value)}
                             variant="outlined"
@@ -1297,6 +1270,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                             fullWidth
                             label="Enter TP"
                             variant="outlined"
+                            type="number"
                             value={tp}
                             onChangeCapture={(e: any) => setTp(e.target.value)}
                             error={meta.touched && Boolean(meta.error)}
@@ -1610,7 +1584,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                           Add More Document
                         </Button>
                         <Typography variant="body1" gutterBottom mr={4}>
-                          {"Image or PDF should be <= 2MB."}
+                          {"Image or PDF should be <= 4MB."}
                         </Typography>
                       </Grid>
                       <Grid item md={12}>
@@ -1667,6 +1641,45 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                                 )}
                               </Grid>
                               <Grid item lg={4} md={4} sm={4} xs={4}>
+                                {doc.file ? (
+                                  <>
+                                    <Tooltip title={`${doc.file}`}>
+                                      <IconButton
+                                        color="primary"
+                                        aria-label={`${doc.file}`}
+                                        component="span"
+                                        onClick={() =>
+                                          window.open(
+                                            getDocumentUrl(doc.file),
+                                            "_blank"
+                                          )
+                                        }
+                                      >
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          fill="none"
+                                          viewBox="0 0 24 24"
+                                          strokeWidth="1.5"
+                                          stroke="currentColor"
+                                          className="size-6 text-safekaroDarkOrange"
+                                        >
+                                          <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
+                                          />
+                                          <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                                          />
+                                        </svg>
+                                      </IconButton>
+                                    </Tooltip>
+                                  </>
+                                ) : (
+                                  <></>
+                                )}
                                 {documents.length !== 1 && (
                                   <Tooltip title={"Delete Image"}>
                                     <IconButton
