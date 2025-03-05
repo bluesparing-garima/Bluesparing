@@ -178,21 +178,44 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
       setFilteredSubModels(models);
     }
   }, [selectedMake, models]);
+
+  const extractNumbers = (str: string): number[] => {
+    const match = str.match(/\d+/g);
+    return match ? match.map(Number) : [];
+  };
   useEffect(() => {
     if (selectedProduct) {
-      const ProductId = selectedProduct._id;
-      if (selectedProduct.productName === "Goods carrying vehicle") {
-        setIsVisibile(true);
-      } else {
-        setIsVisibile(false);
-      }
-      setFilteredSubcategories(
-        productSubTypes.filter((sub) => sub.productId === ProductId)
+      const productId: string = selectedProduct._id!;
+      const filterData: IProductSubTypes[] = productSubTypes.filter(
+        (sub) => sub.productId === productId
       );
+      if (selectedProduct.productName?.toLowerCase() === 'goods carrying vehicle') {
+        setIsVisibile(true);
+        filterData.sort((a, b) => {
+          const aNumbers = extractNumbers(a.productSubType!);
+          const bNumbers = extractNumbers(b.productSubType!);
+
+          for (let i = 0; i < Math.min(aNumbers.length, bNumbers.length); i++) {
+            if (aNumbers[i] !== bNumbers[i]) {
+              return aNumbers[i] - bNumbers[i];
+            }
+          }
+
+          return aNumbers.length - bNumbers.length;
+        });
+        setFilteredSubcategories(filterData);
+      } else {
+        setFilteredSubcategories(filterData.sort());
+      }
+
+
+
     } else {
+      setIsVisibile(false);
       setFilteredSubcategories(productSubTypes);
     }
   }, [selectedProduct, productSubTypes]);
+
 
   const handleFileInputChange = (event: any, index: any) => {
     if (event.target.files && event.target.files[0]) {
@@ -1211,7 +1234,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                             {...input}
                             size="small"
                             label="Enter CC"
-                             type="number"
+                            type="number"
                             fullWidth
                             variant="outlined"
                             error={meta.touched && Boolean(meta.error)}
@@ -1229,7 +1252,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                             size="small"
                             fullWidth
                             label="Enter IDV"
-                             type="number"
+                            type="number"
                             variant="outlined"
                             disabled={policyType === "Third Party Only/ TP"}
                             error={meta.touched && Boolean(meta.error)}
@@ -1246,7 +1269,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                             size="small"
                             fullWidth
                             label="Enter OD"
-                             type="number"
+                            type="number"
                             value={od}
                             onChangeCapture={(e: any) => setOd(e.target.value)}
                             variant="outlined"
@@ -1266,7 +1289,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                             fullWidth
                             label="Enter TP"
                             variant="outlined"
-                             type="number"
+                            type="number"
                             value={tp}
                             onChangeCapture={(e: any) => setTp(e.target.value)}
                             error={meta.touched && Boolean(meta.error)}
@@ -1589,42 +1612,42 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                         </Grid>
                         {documents.map((doc, index) => (
                           <Grid item key={index} md={12} xs={12}>
-                            <Grid sx={{display:'flex', alignItems:'center'}}>
+                            <Grid sx={{ display: 'flex', alignItems: 'center' }}>
                               {/* Document Name */}
-                        <Typography variant="body1">
-                          {doc.docName || "No Document Name"}
-                        </Typography>
-              
-                        {/* View Icon Button (अगर File Available हो) */}
-                        {doc.file && (
-                          <Tooltip title="View Document">
-                            <IconButton
-                              color="primary"
-                              aria-label="View Document"
-                              component="span"
-                              onClick={() => window.open(`${imagePath}${doc.file}`, "_blank")}
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth="1.5"
-                                stroke="currentColor"
-                                className="size-6"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="M15.75 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM2.25 12c3-6 6.75-9 9.75-9s6.75 3 9.75 9c-3 6-6.75 9-9.75 9s-6.75-3-9.75-9Z"
-                                />
-                              </svg>
-                            </IconButton>
-                          </Tooltip>
-                        )}
+                              <Typography variant="body1">
+                                {doc.docName || "No Document Name"}
+                              </Typography>
+
+                              {/* View Icon Button (अगर File Available हो) */}
+                              {doc.file && (
+                                <Tooltip title="View Document">
+                                  <IconButton
+                                    color="primary"
+                                    aria-label="View Document"
+                                    component="span"
+                                    onClick={() => window.open(`${imagePath}${doc.file}`, "_blank")}
+                                  >
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      fill="none"
+                                      viewBox="0 0 24 24"
+                                      strokeWidth="1.5"
+                                      stroke="currentColor"
+                                      className="size-6"
+                                    >
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M15.75 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM2.25 12c3-6 6.75-9 9.75-9s6.75 3 9.75 9c-3 6-6.75 9-9.75 9s-6.75-3-9.75-9Z"
+                                      />
+                                    </svg>
+                                  </IconButton>
+                                </Tooltip>
+                              )}
                             </Grid>
                             <Grid container spacing={2} mt={1}>
                               <Grid item lg={4} md={4} sm={4} xs={12}>
-                                                              <Autocomplete
+                                <Autocomplete
                                   value={
                                     documentTypes.find(
                                       (option) => option.value === doc.docName

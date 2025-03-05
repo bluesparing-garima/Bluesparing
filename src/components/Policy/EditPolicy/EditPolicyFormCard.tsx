@@ -134,15 +134,20 @@ const EditPolicyFormCard = () => {
             ? ""
             : editPolicyDetails?.relationshipManagerName!,
           createdBy: isAdd ? "" : editPolicyDetails?.createdBy!,
-          rcFront: isAdd ? "" : editPolicyDetails?.rcFront!,
-          rcBack: isAdd ? "" : editPolicyDetails?.rcBack!,
-          previousPolicy: isAdd ? "" : editPolicyDetails?.previousPolicy!,
-          survey: isAdd ? "" : editPolicyDetails?.survey!,
-          puc: isAdd ? "" : editPolicyDetails?.puc!,
-          fitness: isAdd ? "" : editPolicyDetails?.fitness!,
-          proposal: isAdd ? "" : editPolicyDetails?.proposal!,
-          currentPolicy: isAdd ? "" : editPolicyDetails?.currentPolicy!,
-          other: isAdd ? "" : editPolicyDetails?.other!,
+
+          documents: isAdd
+            ? []
+            : [
+                editPolicyDetails?.rcFront,
+                editPolicyDetails?.rcBack,
+                editPolicyDetails?.previousPolicy,
+                editPolicyDetails?.survey,
+                editPolicyDetails?.puc,
+                editPolicyDetails?.fitness,
+                editPolicyDetails?.proposal,
+                editPolicyDetails?.currentPolicy,
+                editPolicyDetails?.other,
+              ].filter(Boolean) as string[], // null ya undefined values remove karega
           policyCompletedBy: isAdd ? "" : editPolicyDetails?.policyCompletedBy!,
           createdOn: isAdd ? "" : editPolicyDetails?.createdOn!,
         }}
