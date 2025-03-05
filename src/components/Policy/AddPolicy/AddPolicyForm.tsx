@@ -315,26 +315,26 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       userData.role.toLowerCase() === "admin"
         ? selectedRMId
         : policyForm.policyCreatedBy === "Direct"
-          ? userData.headRMId
-          : selectedRMId;
+        ? userData.headRMId
+        : selectedRMId;
     policyForm.relationshipManagerName =
       userData.role.toLowerCase() === "admin"
         ? selectedRMName
         : policyForm.policyCreatedBy === "Direct"
-          ? userData.headRM
-          : selectedRMName;
+        ? userData.headRM
+        : selectedRMName;
     policyForm.partnerId =
       userData.role.toLowerCase() === "admin"
         ? selectedPartnerId
         : policyForm.policyCreatedBy === "Direct"
-          ? userData.profileId
-          : selectedPartnerId;
+        ? userData.profileId
+        : selectedPartnerId;
     policyForm.partnerName =
       userData.role.toLowerCase() === "admin"
         ? selectedPartnerName
         : policyForm.policyCreatedBy === "Direct"
-          ? userData.name
-          : selectedPartnerName;
+        ? userData.name
+        : selectedPartnerName;
     policyForm.createdBy = userData.name;
     policyForm.vehicleNumber = policyForm.vehicleNumber.toUpperCase();
     policyForm.rto = policyForm.vehicleNumber.substring(0, 4);
@@ -514,41 +514,16 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       setFilteredSubModels([]);
     }
   }, [selectedMake, models]);
-  const extractNumbers = (str: string): number[] => {
-    const match = str.match(/\d+/g);
-    return match ? match.map(Number) : [];
-  };
   useEffect(() => {
     if (selectedProduct) {
-      const productId: string = selectedProduct._id!;
-      const filterData: IProductSubTypes[] = productSubTypes.filter(
-        (sub) => sub.productId === productId
+      const ProductId = selectedProduct._id;
+      setFilteredSubcategories(
+        productSubTypes.filter((sub) => sub.productId === ProductId)
       );
-      if (selectedProduct.productName?.toLowerCase() === 'goods carrying vehicle') {
-        filterData.sort((a, b) => {
-          const aNumbers = extractNumbers(a.productSubType!);
-          const bNumbers = extractNumbers(b.productSubType!);
-
-          for (let i = 0; i < Math.min(aNumbers.length, bNumbers.length); i++) {
-            if (aNumbers[i] !== bNumbers[i]) {
-              return aNumbers[i] - bNumbers[i];
-            }
-          }
-
-          return aNumbers.length - bNumbers.length;
-        });
-        setFilteredSubcategories(filterData);
-      } else {
-        setFilteredSubcategories(filterData.sort());
-      }
-
-
-
     } else {
       setFilteredSubcategories(productSubTypes);
     }
   }, [selectedProduct, productSubTypes]);
-
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
       schema = schema();
@@ -723,14 +698,9 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
     }
   };
   const handleClickViewDocument = (file: any, docName: any) => {
-  const fileName = file instanceof File ? file.name : file;
-  const encodedFileName = encodeURIComponent(fileName); // Encode karein
-
-  const url = `${imagePath}${encodedFileName}`;
-  console.log("Encoded Opening URL:", url);
-
-  openFileInNewTab(url, docName);
-};
+    const url = imagePath + file;
+    openFileInNewTab(url, docName);
+  };
   return (
     <>
       <React.Fragment>
@@ -993,7 +963,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                                   typeof option === "string"
                                     ? option
                                     : `${option.brokerName} - ${option.brokerCode}` ||
-                                    ""
+                                      ""
                                 }
                                 options={brokers}
                                 onChange={(event, newValue) => {
@@ -1683,7 +1653,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                                         typeof option === "string"
                                           ? option
                                           : `${option.name} - ${option.userCode}` ||
-                                          ""
+                                            ""
                                       }
                                       options={partners}
                                       onChange={(event, newValue) => {
@@ -1726,13 +1696,13 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                                         typeof option === "string"
                                           ? option
                                           : `${option.fullName} - ${option.partnerId}` ||
-                                          ""
+                                            ""
                                       }
                                       value={
                                         input.value !== undefined
                                           ? input.value
                                           : initialValues.relationshipManagerName ||
-                                          null
+                                            null
                                       }
                                       options={relationshipManagers}
                                       onChange={(event, newValue) => {

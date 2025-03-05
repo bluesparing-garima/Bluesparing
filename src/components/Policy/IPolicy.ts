@@ -176,7 +176,7 @@ export interface IAddEditPolicyForm {
   registrationDate: string;
   endDate: string;
   issueDate: string;
-  idv: number | undefined;
+  idv: number|undefined;
   od: number;
   tp: number;
   netPremium: number;
@@ -203,9 +203,7 @@ export interface IAddEditPolicyForm {
   createdOn?: string;
   createdBy?: any;
   updatedBy?: any;
-  documents?: string[]; // ✅ Add this line to include documents
 }
-
 export interface IPDFPolicyForm {
   id?: string;
   bookingId?: string; //bookingrequestId
@@ -286,7 +284,7 @@ export interface IPolicyPayment {
   payInAmount?: number;
   payOutAmount?: number;
   payInPaymentStatus?: string;
-  policyCompletedByName?: string;
+  policyCompletedByName?:string;
   payOutPaymentStatus?: string;
   payInBalance?: number;
   payOutBalance?: number;
@@ -353,7 +351,7 @@ export interface IViewPolicyVM {
   other?: string;
   policyStatus?: string; //booked
   paymentDetails?: string;
-  policyCompletedByName?: string;
+  policyCompletedByName?:string;
   partnerCode?: string;
   partnerId?: string;
   partnerName?: string;
@@ -475,5 +473,5 @@ export interface IViewPolicy {
   leadTimer?: string;
   bookingDate?: string;
   leadDate?: string;
-  brokerCode?: string;
+  brokerCode?:string;
 }

@@ -116,10 +116,8 @@ sessionStorage.clear();
   },[])
   return (
     <>
-<div className="min-h-screen flex justify-center items-center bg-blue-400 p-4">
-
+      <div className="min-h-screen flex justify-center items-center bg-blue-400">
         <div className="max-w-[90vw] h-auto bg-white shadow sm:rounded-lg flex justify-center flex-1">
-
         <div className="flex-1 bg-indigo-100 rounded-tl-lg rounded-bl-lg text-center hidden lg:flex">
             <div
               className="m-12 xl:m-16 w-full bg-contain bg-center bg-no-repeat"
@@ -129,8 +127,7 @@ sessionStorage.clear();
               }}
             ></div>
           </div>
-          <div className="lg:w-1/2 xl:w-6/12 p-3 sm:p-2 flex flex-col justify-center">
-
+          <div className="lg:w-1/2 xl:w-6/12 p-3 sm:p-2">
             <div>
               <img src={logo} className="w-56 mx-auto mt-2" alt="" />
             </div>

@@ -185,43 +185,15 @@ const ManageCards = () => {
       )
     );
   };
-
-
   const onSubmit = async (creditdebitForm: any) => {
-    // Ensure both dates are provided
-    if (!creditdebitForm.startDate || !creditdebitForm.endDate) {
-      alert("Both start date and end date are required.");
-      return;
-    }
-  
-    // Convert input dates to Date objects
-    const utcStartDate = new Date(creditdebitForm.startDate);
-    const utcEndDate = new Date(creditdebitForm.endDate);
-  
-    // Validate if dates are valid
-    if (isNaN(utcStartDate.getTime()) || isNaN(utcEndDate.getTime())) {
-      alert("Invalid date selected. Please select valid dates.");
-      return;
-    }
-  
-    // Ensure endDate is not before startDate
-    if (utcEndDate < utcStartDate) {
-      alert("End date cannot be before start date.");
-      return;
-    }
-  
-    // Format dates before passing them
+    const utcStartDate = new Date(creditdebitForm.startDate!);
     const formattedStartDate = format(utcStartDate, "yyyy-MM-dd'T'HH:mm:ss");
-    const formattedEndDate = format(utcEndDate, "yyyy-MM-dd'T'HH:mm:ss");
-  
-    // Update form object with formatted dates
     creditdebitForm.startDate = formattedStartDate;
+    const utcEndDate = new Date(creditdebitForm.endDate!);
+    const formattedEndDate = format(utcEndDate, "yyyy-MM-dd'T'HH:mm:ss");
     creditdebitForm.endDate = formattedEndDate;
-  
-    // Call API or function with validated & formatted dates
     GetPartnerCard(creditdebitForm.startDate, creditdebitForm.endDate);
   };
-  
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
       schema = schema();

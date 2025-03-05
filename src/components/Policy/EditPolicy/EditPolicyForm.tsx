@@ -178,44 +178,21 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
       setFilteredSubModels(models);
     }
   }, [selectedMake, models]);
-
-  const extractNumbers = (str: string): number[] => {
-    const match = str.match(/\d+/g);
-    return match ? match.map(Number) : [];
-  };
   useEffect(() => {
     if (selectedProduct) {
-      const productId: string = selectedProduct._id!;
-      const filterData: IProductSubTypes[] = productSubTypes.filter(
-        (sub) => sub.productId === productId
-      );
-      if (selectedProduct.productName?.toLowerCase() === 'goods carrying vehicle') {
+      const ProductId = selectedProduct._id;
+      if (selectedProduct.productName === "Goods carrying vehicle") {
         setIsVisibile(true);
-        filterData.sort((a, b) => {
-          const aNumbers = extractNumbers(a.productSubType!);
-          const bNumbers = extractNumbers(b.productSubType!);
-
-          for (let i = 0; i < Math.min(aNumbers.length, bNumbers.length); i++) {
-            if (aNumbers[i] !== bNumbers[i]) {
-              return aNumbers[i] - bNumbers[i];
-            }
-          }
-
-          return aNumbers.length - bNumbers.length;
-        });
-        setFilteredSubcategories(filterData);
       } else {
-        setFilteredSubcategories(filterData.sort());
+        setIsVisibile(false);
       }
-
-
-
+      setFilteredSubcategories(
+        productSubTypes.filter((sub) => sub.productId === ProductId)
+      );
     } else {
-      setIsVisibile(false);
       setFilteredSubcategories(productSubTypes);
     }
   }, [selectedProduct, productSubTypes]);
-
 
   const handleFileInputChange = (event: any, index: any) => {
     if (event.target.files && event.target.files[0]) {
@@ -246,6 +223,14 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
         setErrors(newErrors);
       }
     }
+  };
+
+  const getDocumentUrl = (file: any): string | undefined => {
+    if (!file) return undefined; // null ki jagah undefined return karein
+    if (file instanceof File) {
+      return URL.createObjectURL(file); // Naya upload hua file
+    }
+    return `${imagePath}${encodeURIComponent(file)}`; // API se aayi purani file
   };
 
   const calculateYearDifference = (
@@ -310,26 +295,26 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
       userData.role.toLowerCase() === "admin"
         ? selectedRMId
         : policyForm.policyCreatedBy === "Direct"
-          ? userData.headRMId
-          : selectedRMId;
+        ? userData.headRMId
+        : selectedRMId;
     policyForm.relationshipManagerName =
       userData.role.toLowerCase() === "admin"
         ? selectedRMName
         : policyForm.policyCreatedBy === "Direct"
-          ? userData.headRM
-          : selectedRMName;
+        ? userData.headRM
+        : selectedRMName;
     policyForm.partnerId =
       userData.role.toLowerCase() === "admin"
         ? selectedPartnerId
         : policyForm.policyCreatedBy === "Direct"
-          ? userData.profileId
-          : selectedPartnerId;
+        ? userData.profileId
+        : selectedPartnerId;
     policyForm.partnerName =
       userData.role.toLowerCase() === "admin"
         ? selectedPartnerName
         : policyForm.policyCreatedBy === "Direct"
-          ? userData.name
-          : selectedPartnerName;
+        ? userData.name
+        : selectedPartnerName;
     policyForm.createdBy = userData.name;
     policyForm.vehicleNumber = policyForm.vehicleNumber.toUpperCase();
     policyForm.rto = policyForm.vehicleNumber.substring(0, 4);
@@ -415,7 +400,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
     const diff = now.diff(createdOn);
     policyForm["timer"] = diff.toString();
     if (initialValues.bookingId) {
-      policyForm['bookingId'] = initialValues.bookingId;
+      policyForm["bookingId"] = initialValues.bookingId;
     }
     if (initialValues.leadId) {
       policyForm["leadId"] = initialValues.leadId;
@@ -438,15 +423,11 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
         await bindValues(policyForm);
       }
     }
-
   };
-
-
-
 
   const callAddPolicyAPI = async (policy: any) => {
     try {
-      setIsLoading(true)
+      setIsLoading(true);
       const newPolicy = await addPolicyService({ header, policy });
       if (newPolicy.status === "success") {
         navigate(motorPolicyPath());
@@ -458,7 +439,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
       toast.error(err.message);
       return { [FORM_ERROR]: `${"message"}` };
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   };
   const handleChangeDocumentName = (newValue: any, index: any) => {
@@ -871,7 +852,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                                   typeof option === "string"
                                     ? option
                                     : `${option.brokerName} - ${option.brokerCode}` ||
-                                    ""
+                                      ""
                                 }
                                 options={brokers}
                                 onChange={(event, newValue) => {
@@ -1514,7 +1495,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                                         typeof option === "string"
                                           ? option
                                           : `${option.fullName} - ${option.partnerId}` ||
-                                          ""
+                                            ""
                                       }
                                       options={partners}
                                       onChange={(event, newValue) => {
@@ -1557,13 +1538,13 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                                         typeof option === "string"
                                           ? option
                                           : `${option.fullName} - ${option.partnerId}` ||
-                                          ""
+                                            ""
                                       }
                                       value={
                                         input.value !== undefined
                                           ? input.value
                                           : initialValues.relationshipManagerName ||
-                                          null
+                                            null
                                       }
                                       options={relationshipManagers}
                                       onChange={(event, newValue) => {
@@ -1612,39 +1593,6 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                         </Grid>
                         {documents.map((doc, index) => (
                           <Grid item key={index} md={12} xs={12}>
-                            <Grid sx={{ display: 'flex', alignItems: 'center' }}>
-                              {/* Document Name */}
-                              <Typography variant="body1">
-                                {doc.docName || "No Document Name"}
-                              </Typography>
-
-                              {/* View Icon Button (अगर File Available हो) */}
-                              {doc.file && (
-                                <Tooltip title="View Document">
-                                  <IconButton
-                                    color="primary"
-                                    aria-label="View Document"
-                                    component="span"
-                                    onClick={() => window.open(`${imagePath}${doc.file}`, "_blank")}
-                                  >
-                                    <svg
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      fill="none"
-                                      viewBox="0 0 24 24"
-                                      strokeWidth="1.5"
-                                      stroke="currentColor"
-                                      className="size-6"
-                                    >
-                                      <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        d="M15.75 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM2.25 12c3-6 6.75-9 9.75-9s6.75 3 9.75 9c-3 6-6.75 9-9.75 9s-6.75-3-9.75-9Z"
-                                      />
-                                    </svg>
-                                  </IconButton>
-                                </Tooltip>
-                              )}
-                            </Grid>
                             <Grid container spacing={2} mt={1}>
                               <Grid item lg={4} md={4} sm={4} xs={12}>
                                 <Autocomplete
@@ -1693,6 +1641,45 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                                 )}
                               </Grid>
                               <Grid item lg={4} md={4} sm={4} xs={4}>
+                                {doc.file ? (
+                                  <>
+                                    <Tooltip title={`${doc.file}`}>
+                                      <IconButton
+                                        color="primary"
+                                        aria-label={`${doc.file}`}
+                                        component="span"
+                                        onClick={() =>
+                                          window.open(
+                                            getDocumentUrl(doc.file),
+                                            "_blank"
+                                          )
+                                        }
+                                      >
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          fill="none"
+                                          viewBox="0 0 24 24"
+                                          strokeWidth="1.5"
+                                          stroke="currentColor"
+                                          className="size-6 text-safekaroDarkOrange"
+                                        >
+                                          <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
+                                          />
+                                          <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                                          />
+                                        </svg>
+                                      </IconButton>
+                                    </Tooltip>
+                                  </>
+                                ) : (
+                                  <></>
+                                )}
                                 {documents.length !== 1 && (
                                   <Tooltip title={"Delete Image"}>
                                     <IconButton
