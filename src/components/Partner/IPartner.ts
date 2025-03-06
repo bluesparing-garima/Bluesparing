@@ -61,7 +61,10 @@ export interface ILeads {
   createdOn?: string;
   updatedOn?: string;
   updatedBy?: string;
-  timer?: string
+  timer?: string;
+  isPolicyPdfUploaded:boolean;
+  policyNumber:string;
+  policyPdf:string;
 }
 export interface ILeadsVM {
   id?: string;
@@ -90,7 +93,10 @@ export interface ILeadsVM {
   createdOn?: string;
   updatedOn?: string;
   updatedBy?: string;
-  timer?: string
+  timer?: string;
+  isPolicyPdfUploaded:boolean;
+  policyNumber:string;
+  policyPdf:string;
 }
 
 export interface IQuotation {

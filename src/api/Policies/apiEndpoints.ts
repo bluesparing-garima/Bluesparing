@@ -94,3 +94,7 @@ return '/api/policy/motor/update-is-dispute'
 export const getAllDisputedEp = ()=>{
 return '/api/policy/motor/all-is-dispute'
 }
+
+export const uploadpolicyPdf = () => {
+  return (`/api/policy/motor/upload-policy-pdf`);
+};
