@@ -94,9 +94,9 @@ const MarkAttendanceCard: React.FC<AttendanceCardProps> = ({
   }, [attendance]);
 
   const avatarContent = employee.profileImage ? (
-    <Avatar src={employee.profileImage} alt={attendance?.employeeName} />
+    <Avatar src={employee.profileImage} alt={employee.employeeName} />
   ) : (
-    <Avatar>{attendance?.employeeName?.charAt(0).toLocaleUpperCase()}</Avatar>
+    <Avatar>{employee.employeeName?.charAt(0)}</Avatar>
   );
 
   return (
@@ -117,8 +117,9 @@ const MarkAttendanceCard: React.FC<AttendanceCardProps> = ({
         "& .MuiBadge-dot": {
           height: "12px",
           width: "12px",
-          borderRadius: "50%"
+          borderRadius: "50%",
         },
+        margin: "20px",
       }}
     >
     <Card
