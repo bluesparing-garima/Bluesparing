@@ -7,6 +7,8 @@ import BookedBooking from "./components/Booking/BookingRequests/BookedBooking";
 import AllBookingReq from "./components/Booking/BookingRequests/AllBooking";
 import TransferMoney from "./components/Account/TransferMoney/TransferMoney";
 import Checkout from "./components/UpdatePlan/Checkout";
+import { elements } from "chart.js";
+import UploadPolicyPdf from "./components/Partner/Leads/UploadPolicyPdf";
 
 const Dashboard = lazy(() => import("./components/Dashboard/dashboard"));
 const PartnerDashboard = lazy(
@@ -688,6 +690,12 @@ const routes = [
   {
     path: "lead",
     children: [
+      {
+        path: "upload-policy-pdf",
+        element: (<SuspenseWrapper>
+          <UploadPolicyPdf />
+        </SuspenseWrapper>)
+      },
       {
         path: "",
         element: (
@@ -1579,7 +1587,7 @@ const routes = [
       },
       {
         path: "reject",
-        element:  <SuspenseWrapper> <RejectionPolicies /></SuspenseWrapper> ,
+        element: <SuspenseWrapper> <RejectionPolicies /></SuspenseWrapper>,
       },
       {
         path: "publish",
