@@ -372,7 +372,32 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
     return false;
   };
 
+  //! get userDetails from local storage
+  // const userData = JSON.parse(localStorage.getItem("userData") || "{}");
+  console.log(userData)
+  // const policyCount = userData?.policyCount || 0;
+  // const userLimit = userData?.userLimit || {};
+  // const role = userData?.role?.toLowerCase() || '';
+
+  // //! policy limit accordingly user's role
+  // const maxLimit = userLimit?.[role] || 0;
+
+  // //! if policy count greater than max limit, so go on update-plan page
+  // useEffect(() => {
+  //   if (policyCount >= maxLimit) {
+  //     toast.error("You have reached your policy limit. Upgrade your plan.");
+  //     navigate("/update-plan"); // Plan page पर redirect करो
+  //   }
+  // }, [policyCount, maxLimit, navigate]); 
+
   const onSubmit = async (policyForm: any, form: any) => {
+  //! check policy limit first
+  // if (policyCount >= maxLimit) {
+  //   toast.error("You have reached your policy limit. Upgrade your plan.");
+  //   navigate("/update-plan");
+  //   return;
+  // }
+
     const isIssueDateValid = dayjs(policyForm.issueDate).isValid();
     const isRegDateValid = dayjs(policyForm.registrationDate).isValid();
     const isEndDateValid = dayjs(policyForm.endDate).isValid();
@@ -697,10 +722,14 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       console.error("Unsupported file type:", fileExtension);
     }
   };
-  const handleClickViewDocument = (file: any, docName: any) => {
-    const url = imagePath + file;
-    openFileInNewTab(url, docName);
-  };
+  
+  const getDocumentUrl = (file: any): string | undefined => {
+    if (!file) return undefined; // null ki jagah undefined return karein
+    if (file instanceof File) {
+      return URL.createObjectURL(file); // Naya upload hua file
+    }
+    return `${imagePath}${encodeURIComponent(file)}`; // API se aayi purani file
+  };
 
   const predefinedOrder = [
     "Two Wheeler",
@@ -1832,9 +1861,9 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                                         aria-label={`${doc.file}`}
                                         component="span"
                                         onClick={() =>
-                                          handleClickViewDocument(
-                                            doc.file,
-                                            doc.docName
+                                          window.open(
+                                            getDocumentUrl(doc.file),
+                                            "_blank"
                                           )
                                         }
                                       >
@@ -1858,7 +1887,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                                           />
                                         </svg>
                                       </IconButton>
-                                    </Tooltip>
+                                    </Tooltip>
                                   </>
                                 ) : (
                                   <></>
