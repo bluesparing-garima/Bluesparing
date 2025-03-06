@@ -268,7 +268,7 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
         </IconButton> */}
 
           {/* "Update Policy" Premium Icon with Tooltip */}
-          <Tooltip title="Update Policy" arrow>
+          <Tooltip title="Upgrade Plan" arrow>
             <GoldUpgradeButton onClick={() => navigate("/update-plan")}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
