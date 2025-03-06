@@ -159,7 +159,18 @@ const Checkout: FC = () => {
   ): AddTransactionProps => {
     const newUserLimit: Record<string, number> = {};
     for (const key in plan.userLimit) {
-      newUserLimit[key] = plan.userLimit[key]*selectedMonths;
+      newUserLimit[key] = plan.userLimit[key] * selectedMonths;
+    }
+    if (userData) {
+      for (const key in userData.userLimit) {
+        const val = userData.userLimit[key]
+        if (newUserLimit[key]) {
+          newUserLimit[key] = newUserLimit[key] + val > 0 ? val : 0;
+        } else {
+          newUserLimit[key] = val > 0 ? val : 0;
+        }
+
+      }
     }
     if (userData?.role) {
       const payload: AddTransactionProps = {
@@ -171,7 +182,7 @@ const Checkout: FC = () => {
         planId: plan._id,
         planType: plan.planName,
         planStartDate: CalculateCurrentDate(),
-        policyCount: (Number(plan.policyCount) * selectedMonths) || 1,
+        policyCount: ((Number(plan.policyCount) * selectedMonths) || 1) + Number(userData.policyCount > 0 ? userData.policyCount : 0),
         userLimit: newUserLimit,
         amount: amount || 0,
         planEndDate:
@@ -274,7 +285,7 @@ const Checkout: FC = () => {
 
   return (
     <div className="w-full h-screen flex flex-col bg-blue-200 justify-center ">
-      {}
+      { }
       <h1 className="w-full mt-5 text-center text-2xl uppercase font-extrabold text-[#213555]">
         Your Cart
       </h1>
