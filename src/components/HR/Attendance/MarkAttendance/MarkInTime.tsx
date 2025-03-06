@@ -29,7 +29,7 @@ const MarkInTime: React.FC<IMarkInTimeProps> = ({
         employeeName: attendance?.employeeName || "",
         employeeId: attendance?.employeeId || "",
         // attendanceType: isTimeAfter1130AM() ? "half day" : "present",
-        attendanceType: 'isTimeAfter1130AM() ? "half day" : "present"',
+        attendanceType: isTimeAfter1130AM() ? "half day" : "present",
         inTime: dayjs().format("HH:mm"),
         remarks: `${attendance?.employeeName} is present`,
       };

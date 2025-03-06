@@ -52,7 +52,7 @@ const AddPolicyFormCard = () => {
           fullName: isAdd ? "" : editPolicyDetails?.fullName!,
           emailId: isAdd ? "" : editPolicyDetails?.emailId!,
           phoneNumber: isAdd ? 0 : editPolicyDetails?.phoneNumber!,
-          mfgYear: isAdd ? 2000 : editPolicyDetails?.mfgYear!,
+          mfgYear: isAdd ? 0 : editPolicyDetails?.mfgYear!,
           tenure: isAdd ? 1 : editPolicyDetails?.tenure!,
           issueDate: isAdd ? "" : editPolicyDetails?.issueDate!,
           endDate: isAdd ? "" : editPolicyDetails?.endDate!,
