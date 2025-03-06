@@ -1,8 +1,15 @@
 import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { header, imagePath, SafeKaroUser } from "../../context/constant";
 import NotificationBadge from "../../utils/NotificationBadge";
-import { Link } from "react-router-dom";
-import { Avatar, Button, Menu, MenuItem } from "@mui/material";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  Avatar,
+  Button,
+  IconButton,
+  Menu,
+  MenuItem,
+  Tooltip,
+} from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import getRankBadgeDetailsService from "../../api/Rank/RankBadge/getRankBadgeDetailsService";
 import toast from "react-hot-toast";
@@ -18,10 +25,35 @@ import {
   getNotifications,
   storeNotifications,
 } from "../../utils/NotificationSessionHandler";
+import UpgradeRoundedIcon from "@mui/icons-material/WorkspacePremium"; // Premium Icon
+import { keyframes, styled } from "@mui/system";
+
 interface HeaderProps {
   isSidebarOpen: boolean;
   setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
+
+// ✨ **Gold Shine Animation**
+const shine = keyframes`
+  0% { filter: brightness(1.1); transform: rotate(0deg); }
+  100% { filter: brightness(1.2); transform: rotate(45deg); }
+`;
+
+// 🏆 **Styled Gold Upgrade Button**
+const GoldUpgradeButton = styled(IconButton)({
+  background: "#FD8112",
+  borderRadius: "50%",
+  boxShadow: "0px 0px 10px rgba(255, 215, 0, 0.5)",
+  padding: "12px",
+  transition: "all 0.3s ease-in-out",
+  animation: `${shine} 2s infinite alternate ease-in-out`,
+  "&:hover": {
+    background: "#f39610",
+    boxShadow: "0px 0px 10px rgba(255, 215, 0, 0.9)",
+    transform: "scale(1.2) rotate(5deg)",
+  },
+});
+
 const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
   const [userData, setUserData] = useState<any>();
   const [userRank, setUserRank] = useState<any>();
@@ -31,6 +63,8 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const [notificationData, setNotificationData] = useState<INotification[]>([]);
+  const navigate = useNavigate();
+
   const accessNotification = useMemo(() => {
     const role = UserData?.role?.toLowerCase();
     switch (role) {
@@ -44,7 +78,7 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
         return ["booking"];
     }
   }, [UserData?.role]);
-  
+
   const debounce = <T extends (...args: any[]) => void>(
     func: T,
     delay: number
@@ -221,13 +255,38 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
         <div className="flex md:hidden text-sm font-medium font-satoshi content-start">
           {userData?.name}
         </div>
-        <div className="flex items-center justify-center gap-[2px]">
+        <div className="flex items-center justify-center gap-[15px]">
           {/* {isViewNotification() && (
             <div className="cursor-pointer rounded-lg mr-3">
               <NotificationBadge notificationData={notificationData || []} />
             </div>
           )} */}
-       
+
+          {/* "Update Policy" Icon Button */}
+          {/* <IconButton onClick={() => navigate("/update-plan")} color="primary">
+          <UpgradeIcon />
+        </IconButton> */}
+
+          {/* "Update Policy" Premium Icon with Tooltip */}
+          <Tooltip title="Update Policy" arrow>
+            <GoldUpgradeButton onClick={() => navigate("/update-plan")}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-6 text-white font-bold"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
+                />
+              </svg>
+            </GoldUpgradeButton>
+          </Tooltip>
+
           <Avatar
             className="md:w-[50px] md:h-[50px] w-[30px] h-[30px]"
             alt={userData?.name}
