@@ -109,13 +109,35 @@ const GetRenewals = () => {
   }, [eDate]);
 
   const onSubmit = async (filterForm: any) => {
-    const newStartDate = stDate;
-    const newEndDate = eDate;
-
-    if (
-      userData.role.toLowerCase() === "admin" ||
-      userData.role.toLowerCase() === "account"
-    ) {
+    // Ensure both dates are provided
+    if (!stDate || !eDate) {
+      toast.error("Both start date and end date are required.");
+      // alert("Both start date and end date are required.");
+      return;
+    }
+  
+    // Convert input dates to Date objects
+    const newStartDate = new Date(stDate);
+    const newEndDate = new Date(eDate);
+  
+    // Validate if dates are valid
+    if (isNaN(newStartDate.getTime()) || isNaN(newEndDate.getTime())) {
+      toast.error("Invalid date selected. Please select valid dates.");
+      // alert("Invalid date selected. Please select valid dates.");
+      return;
+    }
+  
+    // Ensure endDate is not before startDate
+    if (newEndDate < newStartDate) {
+      toast.error("End date cannot be before start date.")
+      // alert("End date cannot be before start date.");
+      return;
+    }
+  
+    // Proceed based on user role
+    const userRole = userData.role.toLowerCase();
+  
+    if (userRole === "admin" || userRole === "account") {
       GetPolicies(newStartDate, newEndDate);
     } else if (userData.role.toLowerCase() === "booking") {
       GetPoliciesByPolicyCompletedById(newStartDate, newEndDate);

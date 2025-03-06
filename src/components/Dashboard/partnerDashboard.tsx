@@ -29,6 +29,8 @@ import { CartButton } from "./dashboard";
 import SearchIcon from "@mui/icons-material/Search";
 import { MotorSvg, ViewAdminDataSvg, ViewPartnerSvg } from "./data/Svg";
 import { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
+
 const PartnerDashboard: React.FC = () => {
   const [data, setData] = useState<IPartnerData[]>([]);
   const [isVisible, setIsVisible] = useState(false);
@@ -111,10 +113,35 @@ setIsLoading(true)
     );
   };
   const onSubmit = async (value: any) => {
+    if (!value.startDate || !value.endDate) {
+      
+      toast.error("Both start date and end date are required");
+      
+      // alert("Both start date and end date are required.");
+      return;
+    }
+    // Convert input dates to Date objects
     const utcStartDate = new Date(value.startDate!);
+    const utcEndDate = new Date(value.endDate!);
+  
+    // Validate if dates are valid
+    if (isNaN(utcStartDate.getTime()) || isNaN(utcEndDate.getTime())) {
+      toast.error("Invalid date selected. Please select valid dates.");
+      // alert("Invalid date selected. Please select valid dates.");
+      return;
+    }
+  
+    // Ensure endDate is not before startDate
+    if (utcEndDate < utcStartDate) {
+      toast.error("End date cannot be before start date.")
+      // alert("End date cannot be before start date.");
+      return;
+    }
+  
+    // Format dates before passing them
     const formattedStartDate = format(utcStartDate, "yyyy-MM-dd'T'HH:mm:ss");
     value.startDate = formattedStartDate;
-    const utcEndDate = new Date(value.endDate!);
+    // const utcEndDate = new Date(value.endDate!);
     const formattedEndDate = format(utcEndDate, "yyyy-MM-dd'T'HH:mm:ss");
     value.endDate = formattedEndDate;
     GetDashboardCount(value.startDate, value.endDate);
