@@ -484,19 +484,19 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       setIsLoading(true);
       const newPolicy = await addPolicyService({ header, policy });
       if (newPolicy.status === "success") {
+        const policyCount = userData?.policyCount || 0;
+
+        if (policyCount <= 0) {
+          setShowUpgradePopup(true); //! **Upgrade Plan Popup दिखाओ**
+          return;
+        }
+
         if(userData.policyCount>0){
           const updatedPolicyCount = userData.policyCount - 1;
           updateLocalStorage({ policyCount: updatedPolicyCount });
         }
      
       // console.log("updatedPolicyCount",updatedPolicyCount);
-        const policyCount = userData?.policyCount || 0;
-
-        if (policyCount <= 0) {
-          toast.error("You have reached your policy limit. Upgrade your plan.");
-          setShowUpgradePopup(true); //! **Upgrade Plan Popup दिखाओ**
-          return;
-        }
         navigate(motorPolicyPath());
         return;
       } else {
