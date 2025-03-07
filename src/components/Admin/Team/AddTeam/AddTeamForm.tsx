@@ -18,6 +18,7 @@ import { IAppUser, ITeamForm } from "../ITeam";
 import { Form, Field } from "react-final-form";
 import { setIn } from "final-form";
 import * as yup from "yup";
+import { updateLocalStorage } from "../../../../utils/HandleStore";
 import {
   ADD,
   header,
@@ -280,9 +281,20 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
   };
   const callAddTeamAPI = async (team: any) => {
     try {
+    
       setIsLoading(true);
       const newTeam = await addTeamService({ header, team });
+ 
+      const newRole = selectedRole ? selectedRole.toLowerCase() : "";
+
+      if (newRole && UserData.userLimit[newRole] > 0) {
+        
       
+        const updatedUserLimit = { ...UserData.userLimit, [newRole]: UserData.userLimit[newRole] - 1 };
+     
+        updateLocalStorage({ userLimit: updatedUserLimit });
+    }
+    
       navigateToTeams(`${newTeam.message}`);
     } catch (err: any) {
       const errObj = await err;

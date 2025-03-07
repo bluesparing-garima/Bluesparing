@@ -434,8 +434,10 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
       setIsLoading(true);
       const newPolicy = await addPolicyService({ header, policy });
       if (newPolicy.status === "success") {
-        const updatedPolicyCount = userData.policyCount - 1;
-        updateLocalStorage({ policyCount: updatedPolicyCount });
+         if(userData.policyCount>0){
+                const updatedPolicyCount = userData.policyCount - 1;
+                updateLocalStorage({ policyCount: updatedPolicyCount });
+              }
         navigate(motorPolicyPath());
       } else {
         return { [FORM_ERROR]: `${newPolicy.message}` };
