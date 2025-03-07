@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -36,6 +36,10 @@ const Checkout: FC = () => {
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let userData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
   const [selectedMonths, setSelectedMonths] = useState<number>(1);
+
+
+
+
   if (!plan) {
     toast.error("No plan selected. Redirecting to plans page...");
     navigate("/plans");
@@ -51,18 +55,19 @@ const Checkout: FC = () => {
 
     const discountMonths = Object.keys(plan.discount)
       .map(Number)
-      .sort((a, b) => a - b); // Sort months in ascending order
+      .sort((a, b) => a - b);
 
     for (let i = month; i >= 1; i--) {
       if (discountMonths.includes(i)) {
-        return plan.discount[i]; // Return the discount from the nearest previous month
+        return plan.discount[i];
       }
     }
-    return 0; // Default to 0% if no previous discount found
+    return 0;
   };
 
+
   const getDiscount = () => {
-    const discountPercentage = getNearestDiscount(selectedMonths); // Get closest valid discount
+    const discountPercentage = getNearestDiscount(selectedMonths);
     const monthlyDiscount = (plan.monthlyAmount * discountPercentage) / 100;
 
     return monthlyDiscount * selectedMonths;
@@ -73,7 +78,6 @@ const Checkout: FC = () => {
   };
 
   const handleUpdateMonth = (event: SelectChangeEvent<number>) => {
-    console.log(event.target.value);
     setSelectedMonths(Number(event.target.value));
   };
 
@@ -101,15 +105,10 @@ const Checkout: FC = () => {
   };
 
   const handleNavigation = () => {
-    if (userData?.role) {
-      sessionStorage.clear();
-      localStorage.clear();
-      navigate("/dashboard");
-    } else {
-      sessionStorage.clear();
-      localStorage.clear();
-      navigate("/");
-    }
+    sessionStorage.clear();
+    localStorage.clear();
+    navigate("/");
+
   };
   const verifyPayment = async (
     razorpay_order_id: string,
@@ -151,6 +150,8 @@ const Checkout: FC = () => {
       toast.error(err.message);
     }
   };
+
+
   const makeTransactionPayload = (
     pId: string,
     oId: string,
@@ -158,19 +159,17 @@ const Checkout: FC = () => {
     amount: number
   ): AddTransactionProps => {
     const newUserLimit: Record<string, number> = {};
-    for (const key in plan.userLimit) {
-      newUserLimit[key] = plan.userLimit[key] * selectedMonths;
-    }
-    if (userData) {
-      for (const key in userData.userLimit) {
-        const val = userData.userLimit[key]
-        if (newUserLimit[key]) {
-          newUserLimit[key] = newUserLimit[key] + val > 0 ? val : 0;
-        } else {
-          newUserLimit[key] = val > 0 ? val : 0;
-        }
-
+    for (let key in plan.userLimit) {
+      if(key.toLowerCase()==='relationship manager'){
+        key = 'rm';
       }
+      newUserLimit[key.toLowerCase()] = (plan.userLimit[key.toLowerCase()] * selectedMonths);
+    }
+    for (let key in userData.userLimit) {
+      if(key.toLowerCase()==='relationship manager'){
+        key = 'rm';
+      }
+      newUserLimit[key.toLowerCase()] += userData.userLimit[key.toLowerCase()]||0;
     }
     if (userData?.role) {
       const payload: AddTransactionProps = {
@@ -182,7 +181,7 @@ const Checkout: FC = () => {
         planId: plan._id,
         planType: plan.planName,
         planStartDate: CalculateCurrentDate(),
-        policyCount: ((Number(plan.policyCount) * selectedMonths) || 1) + Number(userData.policyCount > 0 ? userData.policyCount : 0),
+        policyCount: ((Number(plan.policyCount) * selectedMonths) || 1)+userData.policyCount||0,
         userLimit: newUserLimit,
         amount: amount || 0,
         planEndDate:
@@ -211,6 +210,7 @@ const Checkout: FC = () => {
       return payload;
     }
   };
+  
 
   const handleProceedPayment = async () => {
     if (!isCheckUserData()) {
@@ -317,7 +317,7 @@ const Checkout: FC = () => {
           </Typography>
           <Typography className="font-satoshi my-3">
             <span className="text-[#027AAE] font-semibold">Policy Count :</span>{" "}
-            <span className="text-sm font-semibold">{plan.policyCount}</span>
+            <span className="text-sm font-semibold">{plan.policyCount * selectedMonths + userData?.policyCount}</span>
           </Typography>
           {Object.keys(plan.userLimit).map((ele) => {
             return (
@@ -325,7 +325,7 @@ const Checkout: FC = () => {
                 <span className="font-semibold text-[#027AAE] capitalize ">
                   {ele.toLowerCase()} Limit:
                 </span>
-                <span className="font-medium"> {plan.userLimit?.[ele]}</span>
+                <span className="font-medium"> {(plan.userLimit?.[ele] * selectedMonths) + userData.userLimit[ele]}</span>
               </Typography>
             );
           })}
@@ -365,7 +365,7 @@ const Checkout: FC = () => {
             </Typography>
           </div>
           <Typography className="font-satoshi mt-5">
-            <span className="text-[#027AAE] font-semibold font-extrabold">
+            <span className="text-[#027AAE] font-semibold ">
               Amount :
             </span>{" "}
             <span className="text-sm font-semibold">₹{getAmount()}</span>
