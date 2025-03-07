@@ -60,6 +60,7 @@ import getVechicleNumberService from "../../../api/Policies/GetVehicleNumber/get
 import FileView from "../../../utils/FileView";
 import { formatFilename } from "../../../utils/convertLocaleStringToNumber";
 import { updateLocalStorage } from "../../../utils/HandleStore";
+import UpgradePlanPopup from "../../UpdatePlan/UpgradeExistingPlan";
 export interface AddPolicyFormProps {
   initialValues: IAddEditPolicyForm;
 }
@@ -127,6 +128,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   const [idv, setIdv] = useState<number>();
   const [tenure, setTenure] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [showUpgradePopup, setShowUpgradePopup] = useState(false);
   useEffect(() => {
     if (!isAdd) {
       setOd(initialValues.od ?? 0);
@@ -488,6 +490,13 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
         }
      
       // console.log("updatedPolicyCount",updatedPolicyCount);
+        const policyCount = userData?.policyCount || 0;
+
+        if (policyCount <= 0) {
+          toast.error("You have reached your policy limit. Upgrade your plan.");
+          setShowUpgradePopup(true); //! **Upgrade Plan Popup दिखाओ**
+          return;
+        }
         navigate(motorPolicyPath());
         return;
       } else {
@@ -677,6 +686,8 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       setRMErrorMessage("");
     }
   };
+
+
   const handleSelectRMChange = async (e: any) => {
     setSelectedRMId(e._id!);
     setSelectedRMName(e.fullName!);
@@ -733,14 +744,14 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       console.error("Unsupported file type:", fileExtension);
     }
   };
-  
+
   const getDocumentUrl = (file: any): string | undefined => {
     if (!file) return undefined; // null ki jagah undefined return karein
     if (file instanceof File) {
       return URL.createObjectURL(file); // Naya upload hua file
     }
     return `${imagePath}${encodeURIComponent(file)}`; // API se aayi purani file
-  };
+  };
 
   const predefinedOrder = [
     "Two Wheeler",
@@ -750,15 +761,19 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
     "Goods Carrying Vehicle",
     "Miscellaneous",
   ];
-  
+
   const sortedProducts = [...products].sort((a, b) => {
     const nameA = a.productName || "";
-    const nameB = b.productName || "";   
+    const nameB = b.productName || "";
     return predefinedOrder.indexOf(nameA) - predefinedOrder.indexOf(nameB);
-  });  
+  });
 
   return (
     <>
+      <UpgradePlanPopup
+        open={showUpgradePopup}
+        onClose={() => setShowUpgradePopup(false)}
+      />
       <React.Fragment>
         <Card>
           <CardContent>
@@ -1898,7 +1913,8 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                                           />
                                         </svg>
                                       </IconButton>
-                                    </Tooltip>
+                                            
+                                    </Tooltip>
                                   </>
                                 ) : (
                                   <></>
