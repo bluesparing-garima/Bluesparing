@@ -59,6 +59,7 @@ import editPolicyService from "../../../api/Policies/EditPolicy/editPolicyServic
 import getVechicleNumberService from "../../../api/Policies/GetVehicleNumber/getVechicleNumberService";
 import FileView from "../../../utils/FileView";
 import { formatFilename } from "../../../utils/convertLocaleStringToNumber";
+import { updateLocalStorage } from "../../../utils/HandleStore";
 export interface AddPolicyFormProps {
   initialValues: IAddEditPolicyForm;
 }
@@ -372,6 +373,8 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
     return false;
   };
 
+  
+
   //! get userDetails from local storage
   // const userData = JSON.parse(localStorage.getItem("userData") || "{}");
   console.log(userData)
@@ -471,12 +474,17 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
         await bindValues(policyForm);
       }
     }
+ 
+  // console.log("AddupdatedPolicyCount",updatedPolicyCount);
+
   };
   const callAddPolicyAPI = async (policy: any) => {
     try {
       setIsLoading(true);
       const newPolicy = await addPolicyService({ header, policy });
       if (newPolicy.status === "success") {
+        const updatedPolicyCount = userData.policyCount - 1;
+        updateLocalStorage({ policyCount: updatedPolicyCount });
         navigate(motorPolicyPath());
         return;
       } else {

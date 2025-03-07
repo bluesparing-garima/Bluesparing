@@ -282,6 +282,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
     try {
       setIsLoading(true);
       const newTeam = await addTeamService({ header, team });
+      
       navigateToTeams(`${newTeam.message}`);
     } catch (err: any) {
       const errObj = await err;
