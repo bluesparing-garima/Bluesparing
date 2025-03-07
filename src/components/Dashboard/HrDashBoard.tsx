@@ -10,6 +10,8 @@ import { header, SafeKaroUser } from "../../context/constant";
 import { endOfMonth, startOfMonth, format } from "date-fns";
 import GetHrDashboardServices from "../../api/HR/GetHrDashboard/GetHrDashboardServices";
 import dayjs from "dayjs";
+
+
 const HrDashBoard: React.FC = () => {
   const [data, setData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);

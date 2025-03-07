@@ -48,7 +48,7 @@ const PremiumButton = styled(IconButton)({
 // 👑 Styled Crown Icon
 const CrownImage = styled("img")({
   width: "25px",
-  filter: 'drop-shadow(0px 0px 8px gold)',
+  filter: 'drop-shadow(0px 0px 3px gold)',
   transition: 'transform 0.3s ease-in-out, filter 0.3s ease-in-out',
 });
 
