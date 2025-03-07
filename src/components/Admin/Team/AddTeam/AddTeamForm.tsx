@@ -41,6 +41,7 @@ import { userDocumentList } from "../../../Policy/IPolicyData";
 import toast, { Toaster } from "react-hot-toast";
 import dayjs from "dayjs";
 import generateFormData from "../../../../utils/generateFromData";
+import UpgradePlanPopup from "../../../UpdatePlan/UpgradeExistingPlan";
 export interface addPolicyTypeFormProps {
   initialValues?: IAppUser;
 }
@@ -74,6 +75,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
   const isAddEdit = pathName[pathName.length - 1] as string;
   const isAdd = isAddEdit === ADD;
   const [rmErrorMessage, setRMErrorMessage] = useState("");
+  const [showUpgradePopup, setShowUpgradePopup] = useState(false);
 
   useEffect(() => {
     if (!isAdd) {
@@ -281,6 +283,15 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
   const callAddTeamAPI = async (team: any) => {
     try {
       setIsLoading(true);
+      const userLimit = UserData?.userLimit || {};
+      const role = UserData?.role?.toLowerCase() || "";
+      const maxLimit = userLimit?.[role] || 0;
+
+      // **User Limit Check पहले करो**
+      if (maxLimit <= 0) {
+        setShowUpgradePopup(true); // **Upgrade Plan Popup दिखाओ**
+        return;
+      }
       const newTeam = await addTeamService({ header, team });
       navigateToTeams(`${newTeam.message}`);
     } catch (err: any) {
@@ -467,6 +478,10 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
   const validate = validateFormValues(validationSchema);
   return (
     <>
+      <UpgradePlanPopup
+        open={showUpgradePopup}
+        onClose={() => setShowUpgradePopup(false)}
+      />
       <Form
         onSubmit={onSubmit}
         initialValues={generateInitialValue()}

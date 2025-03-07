@@ -427,34 +427,41 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       return;
     }
 
-  const policyCount = userData?.policyCount || 0;
-  const userLimit = userData?.userLimit || {};
-  const role = userData?.role?.toLowerCase() || '';
+    const formValid = documents.every((doc, index) =>
+      validateDocument(doc, index)
+    );
 
-  const maxLimit = userLimit?.[role] || 0;
-
-  if (policyCount >= maxLimit) {
-    toast.error("You have reached your policy limit. Upgrade your plan.");
-    setShowUpgradePopup(true); //! **Upgrade Plan Popup दिखाओ**
-    return;
-  }
-
-  //! **अगर limit cross नहीं हुई तो policy create करो**
-  const formValid = documents.every((doc, index) => validateDocument(doc, index));
-
-  if (formValid) {
-    await bindValues(policyForm);
-
-    //! **Local Storage में policy count अपडेट करो**
-    let updatedUserData = { ...userData, policyCount: policyCount + 1 };
-    localStorage.setItem("user", JSON.stringify(updatedUserData));
-  }
-};
+    if (policyForm.policyCreatedBy.toLowerCase() === "admin") {
+      if (!selectedRMId) {
+        setRMErrorMessage("Select Partner or RM");
+      } else if (formValid) {
+        await bindValues(policyForm);
+      }
+    } else if (policyForm.policyCreatedBy !== "Direct") {
+      setPolicyErrorMessage("");
+      if (!selectedRMId) {
+        setRMErrorMessage("Select Partner or RM");
+      } else if (formValid) {
+        await bindValues(policyForm);
+      }
+    } else {
+      if (formValid) {
+        await bindValues(policyForm);
+      }
+    }
+  };
   const callAddPolicyAPI = async (policy: any) => {
     try {
       setIsLoading(true);
       const newPolicy = await addPolicyService({ header, policy });
       if (newPolicy.status === "success") {
+        const policyCount = userData?.policyCount || 0;
+
+        if (policyCount <= 0) {
+          toast.error("You have reached your policy limit. Upgrade your plan.");
+          setShowUpgradePopup(true); //! **Upgrade Plan Popup दिखाओ**
+          return;
+        }
         navigate(motorPolicyPath());
         return;
       } else {
@@ -700,14 +707,14 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       console.error("Unsupported file type:", fileExtension);
     }
   };
-  
+
   const getDocumentUrl = (file: any): string | undefined => {
     if (!file) return undefined; // null ki jagah undefined return karein
     if (file instanceof File) {
       return URL.createObjectURL(file); // Naya upload hua file
     }
     return `${imagePath}${encodeURIComponent(file)}`; // API se aayi purani file
-  };
+  };
 
   const predefinedOrder = [
     "Two Wheeler",
@@ -717,16 +724,19 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
     "Goods Carrying Vehicle",
     "Miscellaneous",
   ];
-  
+
   const sortedProducts = [...products].sort((a, b) => {
     const nameA = a.productName || "";
-    const nameB = b.productName || "";   
+    const nameB = b.productName || "";
     return predefinedOrder.indexOf(nameA) - predefinedOrder.indexOf(nameB);
-  });  
+  });
 
   return (
     <>
-    <UpgradePlanPopup open={showUpgradePopup} onClose={() => setShowUpgradePopup(false)} />
+      <UpgradePlanPopup
+        open={showUpgradePopup}
+        onClose={() => setShowUpgradePopup(false)}
+      />
       <React.Fragment>
         <Card>
           <CardContent>
@@ -1866,7 +1876,8 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                                           />
                                         </svg>
                                       </IconButton>
-                                    </Tooltip>
+                                            
+                                    </Tooltip>
                                   </>
                                 ) : (
                                   <></>
