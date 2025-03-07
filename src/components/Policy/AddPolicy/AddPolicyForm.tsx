@@ -60,6 +60,7 @@ import getVechicleNumberService from "../../../api/Policies/GetVehicleNumber/get
 import FileView from "../../../utils/FileView";
 import { formatFilename } from "../../../utils/convertLocaleStringToNumber";
 import { updateLocalStorage } from "../../../utils/HandleStore";
+import UpgradePlanPopup from "../../UpdatePlan/UpgradeExistingPlan";
 export interface AddPolicyFormProps {
   initialValues: IAddEditPolicyForm;
 }
@@ -127,6 +128,8 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   const [idv, setIdv] = useState<number>();
   const [tenure, setTenure] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [showUpgradePopup, setShowUpgradePopup] = useState(false);
+
   useEffect(() => {
     if (!isAdd) {
       setOd(initialValues.od ?? 0);
@@ -394,13 +397,6 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   // }, [policyCount, maxLimit, navigate]); 
 
   const onSubmit = async (policyForm: any, form: any) => {
-  //! check policy limit first
-  // if (policyCount >= maxLimit) {
-  //   toast.error("You have reached your policy limit. Upgrade your plan.");
-  //   navigate("/update-plan");
-  //   return;
-  // }
-
     const isIssueDateValid = dayjs(policyForm.issueDate).isValid();
     const isRegDateValid = dayjs(policyForm.registrationDate).isValid();
     const isEndDateValid = dayjs(policyForm.endDate).isValid();
@@ -452,32 +448,29 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       return;
     }
 
-    const formValid = documents.every((doc, index) =>
-      validateDocument(doc, index)
-    );
+  const policyCount = userData?.policyCount || 0;
+  const userLimit = userData?.userLimit || {};
+  const role = userData?.role?.toLowerCase() || '';
 
-    if (policyForm.policyCreatedBy.toLowerCase() === "admin") {
-      if (!selectedRMId) {
-        setRMErrorMessage("Select Partner or RM");
-      } else if (formValid) {
-        await bindValues(policyForm);
-      }
-    } else if (policyForm.policyCreatedBy !== "Direct") {
-      setPolicyErrorMessage("");
-      if (!selectedRMId) {
-        setRMErrorMessage("Select Partner or RM");
-      } else if (formValid) {
-        await bindValues(policyForm);
-      }
-    } else {
-      if (formValid) {
-        await bindValues(policyForm);
-      }
-    }
- 
-  // console.log("AddupdatedPolicyCount",updatedPolicyCount);
+  const maxLimit = userLimit?.[role] || 0;
 
-  };
+  if (policyCount >= maxLimit) {
+    toast.error("You have reached your policy limit. Upgrade your plan.");
+    setShowUpgradePopup(true); //! **Upgrade Plan Popup दिखाओ**
+    return;
+  }
+
+  //! **अगर limit cross नहीं हुई तो policy create करो**
+  const formValid = documents.every((doc, index) => validateDocument(doc, index));
+
+  if (formValid) {
+    await bindValues(policyForm);
+
+    //! **Local Storage में policy count अपडेट करो**
+    let updatedUserData = { ...userData, policyCount: policyCount + 1 };
+    localStorage.setItem("user", JSON.stringify(updatedUserData));
+  }
+};
   const callAddPolicyAPI = async (policy: any) => {
     try {
       setIsLoading(true);
@@ -756,6 +749,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
 
   return (
     <>
+    <UpgradePlanPopup open={showUpgradePopup} onClose={() => setShowUpgradePopup(false)} />
       <React.Fragment>
         <Card>
           <CardContent>
