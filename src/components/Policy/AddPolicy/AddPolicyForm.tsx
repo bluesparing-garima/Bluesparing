@@ -59,6 +59,7 @@ import editPolicyService from "../../../api/Policies/EditPolicy/editPolicyServic
 import getVechicleNumberService from "../../../api/Policies/GetVehicleNumber/getVechicleNumberService";
 import FileView from "../../../utils/FileView";
 import { formatFilename } from "../../../utils/convertLocaleStringToNumber";
+import { updateLocalStorage } from "../../../utils/HandleStore";
 import UpgradePlanPopup from "../../UpdatePlan/UpgradeExistingPlan";
 export interface AddPolicyFormProps {
   initialValues: IAddEditPolicyForm;
@@ -128,7 +129,6 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   const [tenure, setTenure] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [showUpgradePopup, setShowUpgradePopup] = useState(false);
-
   useEffect(() => {
     if (!isAdd) {
       setOd(initialValues.od ?? 0);
@@ -375,7 +375,34 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
     return false;
   };
 
+  
+
+  //! get userDetails from local storage
+  // const userData = JSON.parse(localStorage.getItem("userData") || "{}");
+  console.log(userData)
+  // const policyCount = userData?.policyCount || 0;
+  // const userLimit = userData?.userLimit || {};
+  // const role = userData?.role?.toLowerCase() || '';
+
+  // //! policy limit accordingly user's role
+  // const maxLimit = userLimit?.[role] || 0;
+
+  // //! if policy count greater than max limit, so go on update-plan page
+  // useEffect(() => {
+  //   if (policyCount >= maxLimit) {
+  //     toast.error("You have reached your policy limit. Upgrade your plan.");
+  //     navigate("/update-plan"); // Plan page पर redirect करो
+  //   }
+  // }, [policyCount, maxLimit, navigate]); 
+
   const onSubmit = async (policyForm: any, form: any) => {
+  //! check policy limit first
+  // if (policyCount >= maxLimit) {
+  //   toast.error("You have reached your policy limit. Upgrade your plan.");
+  //   navigate("/update-plan");
+  //   return;
+  // }
+
     const isIssueDateValid = dayjs(policyForm.issueDate).isValid();
     const isRegDateValid = dayjs(policyForm.registrationDate).isValid();
     const isEndDateValid = dayjs(policyForm.endDate).isValid();
@@ -449,12 +476,20 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
         await bindValues(policyForm);
       }
     }
+  
+
   };
   const callAddPolicyAPI = async (policy: any) => {
     try {
       setIsLoading(true);
       const newPolicy = await addPolicyService({ header, policy });
       if (newPolicy.status === "success") {
+        if(userData.policyCount>0){
+          const updatedPolicyCount = userData.policyCount - 1;
+          updateLocalStorage({ policyCount: updatedPolicyCount });
+        }
+     
+      // console.log("updatedPolicyCount",updatedPolicyCount);
         const policyCount = userData?.policyCount || 0;
 
         if (policyCount <= 0) {
@@ -651,6 +686,8 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       setRMErrorMessage("");
     }
   };
+
+
   const handleSelectRMChange = async (e: any) => {
     setSelectedRMId(e._id!);
     setSelectedRMName(e.fullName!);

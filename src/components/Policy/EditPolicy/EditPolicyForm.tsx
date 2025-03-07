@@ -15,6 +15,7 @@ import { setIn } from "final-form";
 import { IAddEditPolicyForm } from "../IPolicy";
 import { IconButton, Tooltip } from "@mui/material";
 import React from "react";
+import { updateLocalStorage } from "../../../utils/HandleStore";
 import addPolicyService from "../../../api/Policies/AddPolicy/addPolicyService";
 import {
   MAX_FILE_SIZE,
@@ -423,6 +424,9 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
         await bindValues(policyForm);
       }
     }
+  
+      // console.log("updatedPolicyCount",updatedPolicyCount);
+    
   };
 
   const callAddPolicyAPI = async (policy: any) => {
@@ -430,6 +434,10 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
       setIsLoading(true);
       const newPolicy = await addPolicyService({ header, policy });
       if (newPolicy.status === "success") {
+         if(userData.policyCount>0){
+                const updatedPolicyCount = userData.policyCount - 1;
+                updateLocalStorage({ policyCount: updatedPolicyCount });
+              }
         navigate(motorPolicyPath());
       } else {
         return { [FORM_ERROR]: `${newPolicy.message}` };
