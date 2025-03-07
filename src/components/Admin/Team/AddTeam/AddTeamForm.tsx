@@ -286,8 +286,11 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
     
       setIsLoading(true);
       const userLimit = UserData?.userLimit || {};
-      const role = UserData?.role?.toLowerCase() || "";
-      const maxLimit = userLimit?.[role] || 0;
+      let newRole = selectedRole ? selectedRole.toLowerCase() : "";
+      const maxLimit = userLimit?.[newRole] || 0;
+      if(newRole === 'relationship manager'){
+        newRole = 'rm';
+      }
 
       // **User Limit Check पहले करो**
       if (maxLimit <= 0) {
@@ -296,13 +299,13 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       }
       const newTeam = await addTeamService({ header, team });
  
-      const newRole = selectedRole ? selectedRole.toLowerCase() : "";
+     
 
       if (newRole && UserData.userLimit[newRole] > 0) {
         
       
         const updatedUserLimit = { ...UserData.userLimit, [newRole]: UserData.userLimit[newRole] - 1 };
-     
+
         updateLocalStorage({ userLimit: updatedUserLimit });
     }
     
