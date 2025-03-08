@@ -7,6 +7,13 @@ export interface AddEditTeamProps {
   teamId?: string;
 }
 
+export interface AddTeamProps {
+  header?: Header;
+  team: any;
+  teamId?: string;
+  onProgress: ((progress: number) => void) | undefined;
+}
+
 export interface GetTeamProps {
   header?: Header;
   headRMId?: string;

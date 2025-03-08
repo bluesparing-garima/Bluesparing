@@ -43,6 +43,7 @@ import toast, { Toaster } from "react-hot-toast";
 import dayjs from "dayjs";
 import generateFormData from "../../../../utils/generateFromData";
 import UpgradePlanPopup from "../../../UpdatePlan/UpgradeExistingPlan";
+import LoadingOverlay from "../../../../utils/ui/LoadingOverlay";
 export interface addPolicyTypeFormProps {
   initialValues?: IAppUser;
 }
@@ -77,6 +78,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
   const isAdd = isAddEdit === ADD;
   const [rmErrorMessage, setRMErrorMessage] = useState("");
   const [showUpgradePopup, setShowUpgradePopup] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     if (!isAdd) {
@@ -297,7 +299,10 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
         setShowUpgradePopup(true); // **Upgrade Plan Popup दिखाओ**
         return;
       }
-      const newTeam = await addTeamService({ header, team });
+      const onProgress = (p: number) => {
+        setProgress(p)
+      }
+      const newTeam = await addTeamService({ header, team, onProgress });
  
      
 
@@ -983,6 +988,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
         )}
       />
       <Toaster position="bottom-center" reverseOrder={false} />
+      <LoadingOverlay loading={progress > 0} message={progress} />
     </>
   );
 };

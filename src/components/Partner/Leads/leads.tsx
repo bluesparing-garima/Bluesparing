@@ -100,35 +100,35 @@ const Leads = () => {
       leads
         .map(
           (lead: ILeads) =>
-          ({
-            id: lead._id,
-            category: lead.category,
-            policyType: lead.policyType,
-            caseType: lead.caseType,
-            companyName: lead.companyName,
-            partnerId: lead.partnerId,
-            partnerName: lead.partnerName,
-            relationshipManagerId: lead.relationshipManagerId,
-            relationshipManagerName: lead.relationshipManagerName,
-            rcFront: lead.rcFront,
-            rcBack: lead.rcBack,
-            previousPolicy: lead.previousPolicy,
-            survey: lead.survey,
-            puc: lead.puc,
-            fitness: lead.fitness,
-            proposal: lead.proposal,
-            currentPolicy: lead.currentPolicy,
-            other: lead.other,
-            remarks: lead.remarks,
-            status: lead.status,
-            isActive: lead.isActive,
-            createdOn: lead.createdOn,
-            updatedOn: lead.updatedOn,
-            timer: lead.timer,
-            isPolicyPdfUploaded: lead.isPolicyPdfUploaded,
-            policyNumber: lead.policyNumber,
-            policyPdf: lead.policyPdf
-          } as ILeadsVM)
+            ({
+              id: lead._id,
+              category: lead.category,
+              policyType: lead.policyType,
+              caseType: lead.caseType,
+              companyName: lead.companyName,
+              partnerId: lead.partnerId,
+              partnerName: lead.partnerName,
+              relationshipManagerId: lead.relationshipManagerId,
+              relationshipManagerName: lead.relationshipManagerName,
+              rcFront: lead.rcFront,
+              rcBack: lead.rcBack,
+              previousPolicy: lead.previousPolicy,
+              survey: lead.survey,
+              puc: lead.puc,
+              fitness: lead.fitness,
+              proposal: lead.proposal,
+              currentPolicy: lead.currentPolicy,
+              other: lead.other,
+              remarks: lead.remarks,
+              status: lead.status,
+              isActive: lead.isActive,
+              createdOn: lead.createdOn,
+              updatedOn: lead.updatedOn,
+              timer: lead.timer,
+              isPolicyPdfUploaded: lead.isPolicyPdfUploaded,
+              policyNumber: lead.policyNumber,
+              policyPdf: lead.policyPdf,
+            } as ILeadsVM)
         )
         .sort(
           (a, b) => dayjs(b.createdOn).valueOf() - dayjs(a.createdOn).valueOf()
@@ -205,11 +205,10 @@ const Leads = () => {
     navigate(QuotationViewPath(lead.id!));
   };
   const handleNavigateToUpload = (lead: ILeadsVM) => {
-    const { policyNumber, id } = lead
-    navigate("upload-policy-pdf", { state: { policyNumber, leadId: id } })
-  }
+    const { policyNumber, id } = lead;
+    navigate("upload-policy-pdf", { state: { policyNumber, leadId: id } });
+  };
   const handleDownload = (url: string, fileName: string) => {
-
     const urlFileName = url.substring(url.lastIndexOf("/") + 1);
     const fileExtension = urlFileName.split(".").pop()?.toLowerCase();
     if (
@@ -234,7 +233,6 @@ const Leads = () => {
       console.error("Unsupported file type:", fileExtension);
     }
   };
-
 
   return (
     <>
@@ -383,53 +381,67 @@ const Leads = () => {
                         </IconButton>
                       </Tooltip>
 
-                      {
-
-                        (row.original.status?.toLowerCase() === 'booked' && row.original.isPolicyPdfUploaded === false) && (<Tooltip title={"Upload Policy PDF"}>
-                          <IconButton
-                            color="primary"
-                            aria-label={"Upload Policy PDF"}
-                            component="span"
-                            onClick={() => {
-                              handleNavigateToUpload(row.original as ILeadsVM)
-
-                            }}
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15m0-3-3-3m0 0-3 3m3-3V15" />
-                            </svg>
-
-                          </IconButton>
-                        </Tooltip>)
-                      }
-                      {
-                        (row.original.status?.toLowerCase() === 'booked' && row.original.isPolicyPdfUploaded) && (<Tooltip title={"Download Policy PDF"}>
-                          <IconButton
-                            color="primary"
-                            aria-label={"Download Policy PDF"}
-                            component="span"
-                            onClick={() => {
-                              handleDownload(`${imagePath}${row.original.policyPdf}`, `policy_${row.original.policyNumber}`)
-
-                            }}
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth="1.5"
-                              stroke="currentColor"
-                              className="size-5 text-safekaroDarkOrange"
+                      {row.original.status?.toLowerCase() === "booked" &&
+                        row.original.isPolicyPdfUploaded === false && (
+                          <Tooltip title={"Upload Policy PDF"}>
+                            <IconButton
+                              color="primary"
+                              aria-label={"Upload Policy PDF"}
+                              component="span"
+                              onClick={() => {
+                                handleNavigateToUpload(
+                                  row.original as ILeadsVM
+                                );
+                              }}
                             >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M7.5 7.5h-.75A2.25 2.25 0 0 0 4.5 9.75v7.5a2.25 2.25 0 0 0 2.25 2.25h7.5a2.25 2.25 0 0 0 2.25-2.25v-7.5a2.25 2.25 0 0 0-2.25-2.25h-.75m-6 3.75 3 3m0 0 3-3m-3 3V1.5m6 9h.75a2.25 2.25 0 0 1 2.25 2.25v7.5a2.25 2.25 0 0 1-2.25 2.25h-7.5a2.25 2.25 0 0 1-2.25-2.25v-.75"
-                              />
-                            </svg>
-                          </IconButton>
-                        </Tooltip>)
-                      }
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={1.5}
+                                stroke="currentColor"
+                                className="size-6"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15m0-3-3-3m0 0-3 3m3-3V15"
+                                />
+                              </svg>
+                            </IconButton>
+                          </Tooltip>
+                        )}
+                      {row.original.status?.toLowerCase() === "booked" &&
+                        row.original.isPolicyPdfUploaded && (
+                          <Tooltip title={"Download Policy PDF"}>
+                            <IconButton
+                              color="primary"
+                              aria-label={"Download Policy PDF"}
+                              component="span"
+                              onClick={() => {
+                                handleDownload(
+                                  `${imagePath}${row.original.policyPdf}`,
+                                  `policy_${row.original.policyNumber}`
+                                );
+                              }}
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth="1.5"
+                                stroke="currentColor"
+                                className="size-5 text-safekaroDarkOrange"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M7.5 7.5h-.75A2.25 2.25 0 0 0 4.5 9.75v7.5a2.25 2.25 0 0 0 2.25 2.25h7.5a2.25 2.25 0 0 0 2.25-2.25v-7.5a2.25 2.25 0 0 0-2.25-2.25h-.75m-6 3.75 3 3m0 0 3-3m-3 3V1.5m6 9h.75a2.25 2.25 0 0 1 2.25 2.25v7.5a2.25 2.25 0 0 1-2.25 2.25h-7.5a2.25 2.25 0 0 1-2.25-2.25v-.75"
+                                />
+                              </svg>
+                            </IconButton>
+                          </Tooltip>
+                        )}
                     </div>
                   </>
                 );
@@ -471,35 +483,38 @@ const Leads = () => {
                               </svg>
                             </IconButton>
                           </Tooltip>
-                          {
-                            (row.original.status?.toLowerCase() === 'booked' && row.original.isPolicyPdfUploaded) && (<Tooltip title={"Download Policy PDF"}>
-                              <IconButton
-                                color="primary"
-                                aria-label={"Download Policy PDF"}
-                                component="span"
-                                onClick={() => {
-                                  handleDownload(`${imagePath}${row.original.policyPdf}`, `policy_${row.original.policyNumber}`)
-                                }}
-                              >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  strokeWidth="1.5"
-                                  stroke="currentColor"
-                                  className="size-5 text-safekaroDarkOrange"
+                          {row.original.status?.toLowerCase() === "booked" &&
+                            row.original.isPolicyPdfUploaded && (
+                              <Tooltip title={"Download Policy PDF"}>
+                                <IconButton
+                                  color="primary"
+                                  aria-label={"Download Policy PDF"}
+                                  component="span"
+                                  onClick={() => {
+                                    handleDownload(
+                                      `${imagePath}${row.original.policyPdf}`,
+                                      `policy_${row.original.policyNumber}`
+                                    );
+                                  }}
                                 >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M7.5 7.5h-.75A2.25 2.25 0 0 0 4.5 9.75v7.5a2.25 2.25 0 0 0 2.25 2.25h7.5a2.25 2.25 0 0 0 2.25-2.25v-7.5a2.25 2.25 0 0 0-2.25-2.25h-.75m-6 3.75 3 3m0 0 3-3m-3 3V1.5m6 9h.75a2.25 2.25 0 0 1 2.25 2.25v7.5a2.25 2.25 0 0 1-2.25 2.25h-7.5a2.25 2.25 0 0 1-2.25-2.25v-.75"
-                                  />
-                                </svg>
-                              </IconButton>
-                            </Tooltip>)
-                          }
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth="1.5"
+                                    stroke="currentColor"
+                                    className="size-5 text-safekaroDarkOrange"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="M7.5 7.5h-.75A2.25 2.25 0 0 0 4.5 9.75v7.5a2.25 2.25 0 0 0 2.25 2.25h7.5a2.25 2.25 0 0 0 2.25-2.25v-7.5a2.25 2.25 0 0 0-2.25-2.25h-.75m-6 3.75 3 3m0 0 3-3m-3 3V1.5m6 9h.75a2.25 2.25 0 0 1 2.25 2.25v7.5a2.25 2.25 0 0 1-2.25 2.25h-7.5a2.25 2.25 0 0 1-2.25-2.25v-.75"
+                                    />
+                                  </svg>
+                                </IconButton>
+                              </Tooltip>
+                            )}
                         </>
-
                       ) : (
                         <>
                           <Tooltip title={"Add Comment"}>
