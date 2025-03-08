@@ -1,9 +1,9 @@
 
 import fetchInterceptor, { FetchOptions } from "../../../utils/fetchInterceptor ";
 import { addTeamEndpoint as endpoint } from "../apiEndpoints";
-import { AddTeamProps } from "../getTeamsTypes";
+import { AddEditTeamProps } from "../getTeamsTypes";
 
-const addTeamAPI = async ({  team ,onProgress}: AddTeamProps) => {
+const addTeamAPI = async ({  team, onProgress }: AddEditTeamProps) => {
   const url = endpoint()
   const options: FetchOptions = {
     method: "POST",
