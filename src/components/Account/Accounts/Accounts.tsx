@@ -21,8 +21,10 @@ const Accounts = () => {
   const GetAccounts = useCallback(() => {
     getAccountService({ header })
       .then((accountsDetails) => {
-        const adminAccount = accountsDetails.data.filter((ele:any)=>ele.roleName?.toLowerCase()==='admin')
-        setAccounts(adminAccount || []);
+        // const adminAccount = accountsDetails.data.filter((ele:any)=>ele.roleName?.toLowerCase()==='admin')
+        // console.log("Filtered Data:", adminAccount);
+        // setAccounts(adminAccount || []);
+        setAccounts(accountsDetails.data || []);
       })
       .catch(async (error) => {
         const err = await error;
@@ -30,6 +32,8 @@ const Accounts = () => {
         console.error("Failed to fetch account details", error);
       });
   }, []);
+  
+
   useEffect(() => {
     GetAccounts();
   }, [GetAccounts]);
@@ -78,6 +82,7 @@ const Accounts = () => {
         } as IAccountsVM)
     );
   }, [accounts]);
+
 
   const handleClickViewCreditDebit = (account: IAccountsVM) => {
     navigate(accountCreditDebitViewPath(account.id!));
