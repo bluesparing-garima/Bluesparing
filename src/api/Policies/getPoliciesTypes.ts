@@ -11,6 +11,7 @@ export interface DeletePolicyProps {
 export interface AddPolicyProps {
   header: Header;
   policy: any;
+  onProgress: ((progress: number) => void) | undefined;
 }
 export interface EditPolicyProps {
   header: Header;

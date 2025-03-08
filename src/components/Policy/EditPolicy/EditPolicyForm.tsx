@@ -55,6 +55,8 @@ import { IMakes } from "../../Admin/Make/IMake";
 import getPolicyByNumberService from "../../../api/Policies/GetPolicyByNumber/getPolicyByNumberService";
 import dayjs from "dayjs";
 import toast, { Toaster } from "react-hot-toast";
+import UpgradePlanPopup from "../../UpdatePlan/UpgradeExistingPlan";
+import LoadingOverlay from "../../../utils/ui/LoadingOverlay";
 export interface AddPolicyFormProps {
   initialValues: IAddEditPolicyForm;
 }
@@ -107,6 +109,8 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
   const [rmErrorMessage, setRMErrorMessage] = useState("");
   const [netPremium, setNetPremium] = useState(Number(od) + Number(tp));
   const [proType, setProType] = useState(initialValues.productType || "");
+  const [showUpgradePopup, setShowUpgradePopup] = useState(false);
+    const [progress, setProgress] = useState(0);
   useEffect(() => {
     setNetPremium(Number(od) + Number(tp));
   }, [od, tp]);
@@ -233,7 +237,9 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
     }
     return `${imagePath}${encodeURIComponent(file)}`; // API se aayi purani file
   };
-
+  const onProgress = (p: number) => {
+    setProgress(p)
+  }
   const calculateYearDifference = (
     startDate: string,
     endDate: string
@@ -424,20 +430,25 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
         await bindValues(policyForm);
       }
     }
-  
-      // console.log("updatedPolicyCount",updatedPolicyCount);
-    
+
+    // console.log("updatedPolicyCount",updatedPolicyCount);
   };
 
   const callAddPolicyAPI = async (policy: any) => {
     try {
       setIsLoading(true);
-      const newPolicy = await addPolicyService({ header, policy });
+      const newPolicy = await addPolicyService({ header, policy ,onProgress});
       if (newPolicy.status === "success") {
-         if(userData.policyCount>0){
-                const updatedPolicyCount = userData.policyCount - 1;
-                updateLocalStorage({ policyCount: updatedPolicyCount });
-              }
+        const policyCount = userData?.policyCount || 0;
+        if (policyCount <= 0) {
+          setShowUpgradePopup(true); //! **Upgrade Plan Popup दिखाओ**
+          return;
+        }
+
+        if (userData.policyCount > 0) {
+          const updatedPolicyCount = userData.policyCount - 1;
+          updateLocalStorage({ policyCount: updatedPolicyCount });
+        }
         navigate(motorPolicyPath());
       } else {
         return { [FORM_ERROR]: `${newPolicy.message}` };
@@ -601,6 +612,10 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
   };
   return (
     <>
+      <UpgradePlanPopup
+        open={showUpgradePopup}
+        onClose={() => setShowUpgradePopup(false)}
+      />
       <React.Fragment>
         <Card>
           <CardContent>
@@ -1739,6 +1754,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
           </CardContent>
         </Card>
         <Toaster position="bottom-center" reverseOrder={false} />
+        <LoadingOverlay loading={progress > 0} message={progress} />
       </React.Fragment>
     </>
   );

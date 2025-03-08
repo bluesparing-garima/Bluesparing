@@ -287,9 +287,13 @@ const PolicyPDFForm = (props: AddPolicyFormProps) => {
     }
   };
 
+  
+  const onProgress = (p:number)=>{
+    console.log(p);
+  }
   const callAddPolicyAPI = async (policy: any) => {
     try {
-      const newPolicy = await addPolicyService({ header, policy });
+      const newPolicy = await addPolicyService({ header, policy ,onProgress});
       if (newPolicy.status === "success") {
         navigate(motorPolicyPath());
       } else {

@@ -25,34 +25,49 @@ import {
   getNotifications,
   storeNotifications,
 } from "../../utils/NotificationSessionHandler";
-import UpgradeRoundedIcon from "@mui/icons-material/WorkspacePremium"; // Premium Icon
-import { keyframes, styled } from "@mui/system";
+import crownIcon from "../../assets/pl.png";
+import { styled, keyframes } from "@mui/system"; // Styled System MUI से
+
+// 🔴 Blinking Red Dot Animation
+const blink = keyframes`
+  0% { opacity: 1; transform: scale(1); box-shadow: 0 0 8px red; }
+  100% { opacity: 0.9; transform: scale(1.2); box-shadow: 0 0 2px red; }
+`;
+
+// 🏆 Styled Icon Button
+const PremiumButton = styled(IconButton)({
+  position: "relative",
+  transform: "scale(1.2)",
+  background: "transparent",
+  "&:hover": {
+    background: "transparent",
+    transform: "scale(1.3)",
+  },
+});
+
+// 👑 Styled Crown Icon
+const CrownImage = styled("img")({
+  width: "25px",
+  filter: 'drop-shadow(0px 0px 8px gold)',
+  transition: 'transform 0.3s ease-in-out, filter 0.3s ease-in-out',
+});
+
+// 🔴 Styled Red Dot
+const RedDot = styled("span")({
+  position: "absolute",
+  top: "8px",
+  right: "3px",
+  width: "5px",
+  height: "5px",
+  backgroundColor: "red",
+  borderRadius: "50%",
+  animation: `${blink} 1s infinite alternate`,
+});
 
 interface HeaderProps {
   isSidebarOpen: boolean;
   setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
-
-// ✨ **Gold Shine Animation**
-const shine = keyframes`
-  0% { filter: brightness(1.1); transform: rotate(0deg); }
-  100% { filter: brightness(1.2); transform: rotate(45deg); }
-`;
-
-// 🏆 **Styled Gold Upgrade Button**
-const GoldUpgradeButton = styled(IconButton)({
-  background: "#FD8112",
-  borderRadius: "50%",
-  boxShadow: "0px 0px 10px rgba(255, 215, 0, 0.5)",
-  padding: "12px",
-  transition: "all 0.3s ease-in-out",
-  animation: `${shine} 2s infinite alternate ease-in-out`,
-  "&:hover": {
-    background: "#f39610",
-    boxShadow: "0px 0px 10px rgba(255, 215, 0, 0.9)",
-    transform: "scale(1.2) rotate(5deg)",
-  },
-});
 
 const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
   const [userData, setUserData] = useState<any>();
@@ -255,7 +270,7 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
         <div className="flex md:hidden text-sm font-medium font-satoshi content-start">
           {userData?.name}
         </div>
-        <div className="flex items-center justify-center gap-[15px]">
+        <div className="flex items-center justify-center gap-3">
           {/* {isViewNotification() && (
             <div className="cursor-pointer rounded-lg mr-3">
               <NotificationBadge notificationData={notificationData || []} />
@@ -267,75 +282,49 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
           <UpgradeIcon />
         </IconButton> */}
 
-          {/* "Update Policy" Premium Icon with Tooltip */}
-          <Tooltip title="Upgrade Plan" arrow>
-            <GoldUpgradeButton onClick={() => navigate("/update-plan")}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="size-6 text-white font-bold"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
-                />
-              </svg>
-            </GoldUpgradeButton>
-          </Tooltip>
+<Tooltip title="Update Plan" arrow>
+    <PremiumButton onClick={() => navigate("/update-plan")}>
+      <RedDot />
+      <CrownImage src={crownIcon} alt="Crown" />
+    </PremiumButton>
+  </Tooltip>
 
-          <Avatar
-            className="md:w-[50px] md:h-[50px] w-[30px] h-[30px]"
-            alt={userData?.name}
-            // src="https://picsum.photos/200"
-            src={`${imagePath}/${userData?.profileImage}`}
-          />
-          <div className="flex items-center justify-between space-x-0 bg-white px-4">
-            <Link to="/profile" className="menu-hover text-black lg:mx-4">
-              <p className="md:text-[16px] text-[12px] font-medium font-satoshi">
-                {userData?.name} {" ("} {userData?.partnerCode} {")"}
-              </p>
-              <p className="text-[#737791] md:text-sm text-[10px]">
-                {userData?.role}
-                {userData?.role === "Partner" && (
-                  <span className="text-safekaroDarkOrange md:text-sm text-[10px]">
-                    {" "}
-                    ({userRank})
-                  </span>
-                )}
-              </p>
-            </Link>
-          </div>
-          <div className="self-start">
-            <Button
-              id="basic-button"
-              aria-controls={open ? "basic-menu" : undefined}
-              aria-haspopup="true"
-              aria-expanded={open ? "true" : undefined}
-              sx={{ color: "black" }}
-              onClick={handleClick}
-            >
-              <KeyboardArrowDownIcon />
-            </Button>
-            <Menu
-              id="basic-menu"
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleClose}
-              MenuListProps={{
-                "aria-labelledby": "basic-button",
-              }}
-            >
-              <Link
-                to="/profile"
-                className="my-2 block border-b border-gray-100 py-1 font-semibold text-gray-500 hover:text-black md:mx-1"
-              >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
-              </Link>
-              {canMarkAttendance && (
+  <Avatar
+    className="md:w-[40px] md:h-[40px] w-[30px] h-[30px]"
+    alt={userData?.name}
+    src={`${imagePath}/${userData?.profileImage}`}
+  />
+  <div className="flex items-center justify-between bg-white px-2">
+    <Link to="/profile" className="menu-hover text-black">
+      <p className="md:text-[14px] text-[12px] font-medium">
+        {userData?.name} ({userData?.partnerCode})
+      </p>
+      <p className="text-[#737791] md:text-xs text-[10px]">
+        {userData?.role}
+        {userData?.role === "Partner" && (
+          <span className="text-safekaroDarkOrange"> ({userRank})</span>
+        )}
+      </p>
+    </Link>
+  </div>
+  <div className="self-start">
+    <Button
+      id="basic-button"
+      sx={{ color: "black" }}
+      onClick={handleClick}
+    >
+      <KeyboardArrowDownIcon />
+    </Button>
+    <Menu
+      id="basic-menu"
+      anchorEl={anchorEl}
+      open={open}
+      onClose={handleClose}
+    >
+      <Link to="/profile" onClick={handleClose}>
+        <MenuItem>Profile</MenuItem>
+      </Link>
+      {canMarkAttendance && (
                 <div>
                   <MenuItem onClick={handleClose}>
                     <MarkInTime
@@ -351,7 +340,7 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
                   </MenuItem>
                 </div>
               )}
-              {UserData?.role?.toLowerCase().trim() === "admin" && (
+      {UserData?.role?.toLowerCase().trim() === "admin" && (
                 <Link to="/upload-logo" onClick={handleClose}>
                   <MenuItem>Upload Logo</MenuItem>
                 </Link>
@@ -361,7 +350,7 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
                 <MenuItem>Logout</MenuItem>
               </Link>
             </Menu>
-          </div>
+  </div>
         </div>
       </div>
     </>
