@@ -61,6 +61,7 @@ import FileView from "../../../utils/FileView";
 import { formatFilename } from "../../../utils/convertLocaleStringToNumber";
 import { updateLocalStorage } from "../../../utils/HandleStore";
 import UpgradePlanPopup from "../../UpdatePlan/UpgradeExistingPlan";
+import LoadingOverlay from "../../../utils/ui/LoadingOverlay";
 export interface AddPolicyFormProps {
   initialValues: IAddEditPolicyForm;
 }
@@ -129,6 +130,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   const [tenure, setTenure] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [showUpgradePopup, setShowUpgradePopup] = useState(false);
+  const [progress, setProgress] = useState(0);
   useEffect(() => {
     if (!isAdd) {
       setOd(initialValues.od ?? 0);
@@ -318,26 +320,26 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       userData.role.toLowerCase() === "admin"
         ? selectedRMId
         : policyForm.policyCreatedBy === "Direct"
-        ? userData.headRMId
-        : selectedRMId;
+          ? userData.headRMId
+          : selectedRMId;
     policyForm.relationshipManagerName =
       userData.role.toLowerCase() === "admin"
         ? selectedRMName
         : policyForm.policyCreatedBy === "Direct"
-        ? userData.headRM
-        : selectedRMName;
+          ? userData.headRM
+          : selectedRMName;
     policyForm.partnerId =
       userData.role.toLowerCase() === "admin"
         ? selectedPartnerId
         : policyForm.policyCreatedBy === "Direct"
-        ? userData.profileId
-        : selectedPartnerId;
+          ? userData.profileId
+          : selectedPartnerId;
     policyForm.partnerName =
       userData.role.toLowerCase() === "admin"
         ? selectedPartnerName
         : policyForm.policyCreatedBy === "Direct"
-        ? userData.name
-        : selectedPartnerName;
+          ? userData.name
+          : selectedPartnerName;
     policyForm.createdBy = userData.name;
     policyForm.vehicleNumber = policyForm.vehicleNumber.toUpperCase();
     policyForm.rto = policyForm.vehicleNumber.substring(0, 4);
@@ -375,33 +377,12 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
     return false;
   };
 
-  
 
-  //! get userDetails from local storage
-  // const userData = JSON.parse(localStorage.getItem("userData") || "{}");
-  console.log(userData)
-  // const policyCount = userData?.policyCount || 0;
-  // const userLimit = userData?.userLimit || {};
-  // const role = userData?.role?.toLowerCase() || '';
 
-  // //! policy limit accordingly user's role
-  // const maxLimit = userLimit?.[role] || 0;
 
-  // //! if policy count greater than max limit, so go on update-plan page
-  // useEffect(() => {
-  //   if (policyCount >= maxLimit) {
-  //     toast.error("You have reached your policy limit. Upgrade your plan.");
-  //     navigate("/update-plan"); // Plan page पर redirect करो
-  //   }
-  // }, [policyCount, maxLimit, navigate]); 
 
   const onSubmit = async (policyForm: any, form: any) => {
-  //! check policy limit first
-  // if (policyCount >= maxLimit) {
-  //   toast.error("You have reached your policy limit. Upgrade your plan.");
-  //   navigate("/update-plan");
-  //   return;
-  // }
+
 
     const isIssueDateValid = dayjs(policyForm.issueDate).isValid();
     const isRegDateValid = dayjs(policyForm.registrationDate).isValid();
@@ -476,13 +457,18 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
         await bindValues(policyForm);
       }
     }
-  
+
 
   };
+
+  const onProgress = (p: number) => {
+    setProgress(p)
+  }
+  
   const callAddPolicyAPI = async (policy: any) => {
     try {
       setIsLoading(true);
-      const newPolicy = await addPolicyService({ header, policy });
+      const newPolicy = await addPolicyService({ header, policy, onProgress });
       if (newPolicy.status === "success") {
         const policyCount = userData?.policyCount || 0;
 
@@ -491,12 +477,12 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
           return;
         }
 
-        if(userData.policyCount>0){
+        if (userData.policyCount > 0) {
           const updatedPolicyCount = userData.policyCount - 1;
           updateLocalStorage({ policyCount: updatedPolicyCount });
         }
-     
-      // console.log("updatedPolicyCount",updatedPolicyCount);
+
+        // console.log("updatedPolicyCount",updatedPolicyCount);
         navigate(motorPolicyPath());
         return;
       } else {
@@ -1034,7 +1020,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                                   typeof option === "string"
                                     ? option
                                     : `${option.brokerName} - ${option.brokerCode}` ||
-                                      ""
+                                    ""
                                 }
                                 options={brokers}
                                 onChange={(event, newValue) => {
@@ -1724,7 +1710,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                                         typeof option === "string"
                                           ? option
                                           : `${option.name} - ${option.userCode}` ||
-                                            ""
+                                          ""
                                       }
                                       options={partners}
                                       onChange={(event, newValue) => {
@@ -1767,13 +1753,13 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                                         typeof option === "string"
                                           ? option
                                           : `${option.fullName} - ${option.partnerId}` ||
-                                            ""
+                                          ""
                                       }
                                       value={
                                         input.value !== undefined
                                           ? input.value
                                           : initialValues.relationshipManagerName ||
-                                            null
+                                          null
                                       }
                                       options={relationshipManagers}
                                       onChange={(event, newValue) => {
@@ -1913,7 +1899,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                                           />
                                         </svg>
                                       </IconButton>
-                                            
+
                                     </Tooltip>
                                   </>
                                 ) : (
@@ -1971,6 +1957,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
         </Card>
       </React.Fragment>
       <Toaster position="bottom-center" reverseOrder={false} />
+      <LoadingOverlay loading={progress > 0} message={progress} />
     </>
   );
 };
