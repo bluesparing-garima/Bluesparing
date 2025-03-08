@@ -15,7 +15,7 @@ import toast from "react-hot-toast";
 import UpdateTdsStatusService from "../../../../api/Account/UpdateTdsStatus/UpdateTdsStatusService";
 import { IUpdateTdsPayout } from "../../../../api/Account/getAccountTypes";
 import PayOutTdsColumns from "./PayOutTdsColumns";
-
+import Papa from "papaparse";
 const PayOutTdsDetails: FC<PolicyTdsPayOutProps> = ({
   policies,
   accountId,
@@ -28,6 +28,10 @@ const PayOutTdsDetails: FC<PolicyTdsPayOutProps> = ({
   const [updatePolicies, setUpdatePolicies] = useState<ITdsType[]>(
     policies.map((policy) => ({ ...policy }))
   );
+
+  
+  console.log('policy : ', updatePolicies);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
@@ -47,6 +51,36 @@ const PayOutTdsDetails: FC<PolicyTdsPayOutProps> = ({
 
   const currLeftDisAmount = totalTdsAmount - totalDisTds;
 
+  const downloadCsv = (filename: string, csv: string) => {
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    if (link.download !== undefined) {
+      const url = URL.createObjectURL(blob);
+      link.setAttribute("href", url);
+      link.setAttribute("download", filename);
+      link.style.visibility = "hidden";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
+
+  const handleExportRows = (rows: any[]) => {
+    const exclusiveCol = [
+      "_id",
+      "updatedOn", "employeeId", "employeeName", "createdBy", "remarks", "policyNumber"
+    ];
+    const rowData = rows.map((row) => {
+      const modifiedRow = { ...row.original };
+      exclusiveCol.forEach((col) => {
+        delete modifiedRow[col];
+      });
+      return modifiedRow;
+    });
+    const csv = Papa.unparse(rowData, { header: true });
+    downloadCsv("tds_payout.csv", csv);
+  };
+
   const makePayload = (): Partial<ITdsType>[] => {
     return updatePolicies
       .filter((policy) => policy.tdsProcessed)
@@ -64,6 +98,12 @@ const PayOutTdsDetails: FC<PolicyTdsPayOutProps> = ({
         accountCode,
         partnerName: policy.partnerName,
         tdsPercentage: policy.tdsPercentage,
+        receiverPan: policy.receiverPan,
+        receiverIFSCCode: policy.receiverIFSCCode,
+        receiverAccountNumber: policy.receiverAccountNumber,
+        receiverBankName: policy.receiverBankName,
+        receiverAccountCode: policy.receiverAccountCode,
+        receiverName: policy.receiverName
       }));
   };
 
@@ -199,6 +239,19 @@ const PayOutTdsDetails: FC<PolicyTdsPayOutProps> = ({
             checked={row.original.tdsProcessed || false}
             onChange={(event) => handleRowCheckboxChange(event, row.original)}
           />
+        )}
+        renderTopToolbarCustomActions={({ table }) => (
+          <>
+            <Button
+              className="text-white bg-safekaroDarkOrange md:m-2 md:p-2 md:text-xs text-[10px]"
+              disabled={table.getRowModel().rows.length === 0}
+              onClick={() =>
+                handleExportRows(table.getFilteredRowModel().rows)
+              }
+            >
+              Export Filter Data
+            </Button>
+          </>
         )}
       />
     </TDSWrapper>

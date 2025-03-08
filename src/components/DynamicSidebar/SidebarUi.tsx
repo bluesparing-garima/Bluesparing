@@ -72,12 +72,16 @@ const SidebarUi: FC<SidebarProps> = ({
   const renderMenuItems = (items: MenuItem[]) => {
     return items.map((item) => {
       const isActive = location.pathname === item.link;
-  
+
       return (
-        <li key={item.id} className="relative max-h-100 scroll-hidden">
+        <li key={item.id} className="relative bg-white scroll-hidden">
           <div
-            className={`flex items-center px-2 py-1 text-[15px] cursor-pointer rounded-lg sticky top-0 z-10 
-              ${isActive ? "bg-safekaroDarkOrange text-white" : "text-black hover:bg-safekaroDarkOrange hover:text-white"}
+            className={`flex items-center px-2 py-1 text-[15px] cursor-pointer rounded-lg
+              ${
+                isActive
+                  ? "bg-safekaroDarkOrange text-white"
+                  : "text-black hover:bg-safekaroDarkOrange hover:text-white"
+              }
             `}
             onClick={() => {
               if (item.subMenu && item.subMenu.length > 0) {
@@ -95,16 +99,24 @@ const SidebarUi: FC<SidebarProps> = ({
                 stroke="currentColor"
                 fill="none"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" d={item.svgIcon} />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d={item.svgIcon}
+                />
               </svg>
             )}
             <span className="text-sm">{item.label}</span>
             {item.subMenu && item.subMenu.length > 0 && (
-              <i className={`fas fa-chevron-${openSubMenus.includes(item.id) ? "up" : "down"} text-sm text-gray-400 ml-auto`} />
+              <i
+                className={`fas fa-chevron-${
+                  openSubMenus.includes(item.id) ? "up" : "down"
+                } text-sm text-gray-400 ml-auto`}
+              />
             )}
           </div>
           {item.subMenu && openSubMenus.includes(item.id) && (
-            <ul className="ml-4 mt-2 space-y-1 px-1 border-l border-gray-200 pl-2 overflow-y-auto scrollbar .overflow max-h-[40vh]">
+            <ul className="ml-4 mt-2 space-y-1 px-1 border-l border-gray-200 pl-2  max-h-[40vh] overflow-y-auto bg-white scrollbar">
               {renderMenuItems(item.subMenu)}
             </ul>
           )}
@@ -116,7 +128,7 @@ const SidebarUi: FC<SidebarProps> = ({
   return (
     <div
       className={`${
-        isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        isSidebarOpen ? "left-0" : "-left-60"
       } md:translate-x-0 sticky top-0 z-20 md:flex flex-col w-60 bg-white h-screen shadow-lg border-r-2 border-[#FEF9F3] transition-transform delay-150 duration-200`}
     >
       <Link
@@ -124,12 +136,16 @@ const SidebarUi: FC<SidebarProps> = ({
         className="flex items-center justify-center h-16 mt-1 bg-white"
       >
         <picture className="mb-1 flex flex-col justify-center items-center">
-        <img
-      src={userData?.companyLogo ? `${imagePath}/${userData.companyLogo}` : logo}
-      className="w-36 h-12 mx-auto"
-      alt="Company Logo"
-      onError={(e) => (e.currentTarget.src = logo)} // Agar image load fail ho toh default logo dikhaye
-    />
+          <img
+            src={
+              userData?.companyLogo
+                ? `${imagePath}/${userData.companyLogo}`
+                : logo
+            }
+            className="w-36 h-12 mx-auto"
+            alt="Company Logo"
+            onError={(e) => (e.currentTarget.src = logo)} // Agar image load fail ho toh default logo dikhaye
+          />
         </picture>
       </Link>
       <div className="md:hidden flex w-full justify-end">

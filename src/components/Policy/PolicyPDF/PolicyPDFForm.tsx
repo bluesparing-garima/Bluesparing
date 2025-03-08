@@ -45,6 +45,7 @@ import getPolicyByNumberService from "../../../api/Policies/GetPolicyByNumber/ge
 import dayjs from "dayjs";
 import { format } from "date-fns";
 import getVehicleNumberService from "../../../api/Policies/GetVehicleNumber/getVehicleNumberService";
+import LoadingOverlay from "../../../utils/ui/LoadingOverlay";
 
 export interface AddPolicyFormProps {
   initialValues: IPDFPolicyForm;
@@ -101,6 +102,7 @@ const PolicyPDFForm = (props: AddPolicyFormProps) => {
   const isAdd = pathName[pathName.length - 1] === ADD;
   const [netPremium, setNetPremium] = useState(Number(od) + Number(tp));
   const [proType, setProType] = useState(initialValues.productType || "");
+  const [progress, setProgress] = useState(0);
   useEffect(() => {
     if (!isAdd) {
       setOd(initialValues.od ? initialValues.od : 0);
@@ -1507,6 +1509,7 @@ const PolicyPDFForm = (props: AddPolicyFormProps) => {
         </Card>
       </React.Fragment>
       <Toaster position="bottom-center" reverseOrder={false} />
+      <LoadingOverlay loading={progress > 0} message={progress} />
     </>
   );
 };
