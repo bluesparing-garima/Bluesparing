@@ -20,12 +20,20 @@ const ProfileUi: React.FC<ITeamsVM> = ({
   isActive,
   gender,
   joiningDate,
+  userCode,
+  planExpired,
+  planStartDate,
+  headRM,
+
+  wallet,
+  transactionId,
+  accounts,
 }) => {
   const data = [
     { key: "Email", value: email },
     { key: "Name", value: name },
     { key: "Phone Number", value: phoneNumber },
-    { key: "Salary", value:role==='admin'?"": `₹ ${salary?.toLocaleString()}` },
+    { key: "Salary", value: role === 'admin' ? "" : `₹ ${salary?.toLocaleString()}` },
     { key: "Branch Name", value: branchName },
     { key: "DOB", value: dateOfBirth },
     {
@@ -39,8 +47,14 @@ const ProfileUi: React.FC<ITeamsVM> = ({
     { key: "Role", value: role },
     { key: "Status", value: isActive ? "Active" : "Inactive" },
     { key: "Payment Status", value: transactionStatus ? "Success" : "Pending" },
-  ];
-
+    { key: "User Code", value: userCode },
+    { key: "Plan Expired", value: dayjs(planExpired).format(DAYJS_DISPLAY_FORMAT) },
+    { key: "Plan Start Date", value: dayjs(planStartDate).format(DAYJS_DISPLAY_FORMAT) },
+    { key: "Head RM", value: headRM },
+  
+    { key: "Wallet", value: wallet },
+    { key: "Accounts", value: accounts?.join(", ") },
+];
   return (
     <Box
       sx={{

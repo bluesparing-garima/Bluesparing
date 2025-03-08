@@ -60,8 +60,7 @@ export interface ITeamsVM {
   accountNumber?: string;
   password?: string;
   salary?: number;
-  image?:string;
-  //document?: any[];
+  image?: string;
   profileImage?: string;
   adharCardBack?: string;
   adharCardFront?: string;
@@ -71,17 +70,24 @@ export interface ITeamsVM {
   experience?: string;
   other?: string;
   isActive?: boolean;
-  joiningDate?:string,
+  joiningDate?: string;
   createdBy?: string;
   createdOn?: string;
   updatedOn?: string;
   updatedBy?: string;
-  companyLogo?:string;
+  companyLogo?: string;
   forceUpdate?: number;
-  partnerCode?:string;
-  planName?:string;
-  transactionStatus?:boolean;
+  partnerCode?: string;
+  planName?: string;
+  transactionStatus?: boolean;
+  planId?: string;
+  planExpired?: string;
+  planStartDate?: string;
+  transactionId?: string;
+  wallet?: number;
+  accounts?: string[];
 }
+
 export interface ITeams {
   _id?: string;
   branchName?: string;
