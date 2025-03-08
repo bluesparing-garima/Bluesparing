@@ -50,6 +50,12 @@ export interface ITdsType {
     createdOn: string;
     createdBy: string | null;
     updatedOn: string | null;
+    receiverPan?:string;
+    receiverIFSCCode?:string;
+    receiverAccountNumber?:string;
+    receiverBankName?:string;
+    receiverAccountCode?:string;
+    receiverName?:string;
 }
 
 

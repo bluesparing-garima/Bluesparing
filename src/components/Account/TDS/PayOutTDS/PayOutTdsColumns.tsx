@@ -34,6 +34,35 @@ const PayOutTdsColumns: MRT_ColumnDef<ITdsType>[] = [
     size: 150,
   },
   {
+    accessorKey: "receiverName",
+    header: "Receiver  Name",
+    size: 150,
+  },
+  {
+    accessorKey: "receiverPan",
+    header: "Receiver Pan No",
+    size: 150,
+  },
+  {
+    accessorKey: "receiverAccountNumber",
+    header: "Receiver Account Number",
+    size: 150,
+  },
+  {
+    accessorKey: "receiverIFSCCode",
+    header: "Receiver Bank IFSC Code",
+    size: 150,
+  }, {
+    accessorKey: "receiverBankName",
+    header: "Receiver Bank Name",
+    size: 150,
+  }
+  , {
+    accessorKey: "receiverAccountCode",
+    header: "Receiver  Account Code",
+    size: 150,
+  },
+  {
     accessorKey: "startDate",
     header: "Start Date",
     size: 150,
@@ -51,5 +80,15 @@ const PayOutTdsColumns: MRT_ColumnDef<ITdsType>[] = [
       return endDate ? dayjs(endDate).format(DAYJS_DISPLAY_FORMAT) : "-";
     },
   },
+  {
+    accessorKey: "distributedDate",
+    header: "Distributed Date",
+    size: 150,
+    Cell: ({ cell }) => {
+      const endDate = cell.getValue<string | Date | null>();
+      return endDate ? dayjs(endDate).format(DAYJS_DISPLAY_FORMAT) : "-";
+    },
+  }
+
 ];
 export default PayOutTdsColumns;
