@@ -56,6 +56,7 @@ import getPolicyByNumberService from "../../../api/Policies/GetPolicyByNumber/ge
 import dayjs from "dayjs";
 import toast, { Toaster } from "react-hot-toast";
 import UpgradePlanPopup from "../../UpdatePlan/UpgradeExistingPlan";
+import LoadingOverlay from "../../../utils/ui/LoadingOverlay";
 export interface AddPolicyFormProps {
   initialValues: IAddEditPolicyForm;
 }
@@ -109,6 +110,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
   const [netPremium, setNetPremium] = useState(Number(od) + Number(tp));
   const [proType, setProType] = useState(initialValues.productType || "");
   const [showUpgradePopup, setShowUpgradePopup] = useState(false);
+    const [progress, setProgress] = useState(0);
   useEffect(() => {
     setNetPremium(Number(od) + Number(tp));
   }, [od, tp]);
@@ -235,7 +237,9 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
     }
     return `${imagePath}${encodeURIComponent(file)}`; // API se aayi purani file
   };
-
+  const onProgress = (p: number) => {
+    setProgress(p)
+  }
   const calculateYearDifference = (
     startDate: string,
     endDate: string
@@ -433,7 +437,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
   const callAddPolicyAPI = async (policy: any) => {
     try {
       setIsLoading(true);
-      const newPolicy = await addPolicyService({ header, policy });
+      const newPolicy = await addPolicyService({ header, policy ,onProgress});
       if (newPolicy.status === "success") {
         const policyCount = userData?.policyCount || 0;
         if (policyCount <= 0) {
@@ -1750,6 +1754,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
           </CardContent>
         </Card>
         <Toaster position="bottom-center" reverseOrder={false} />
+        <LoadingOverlay loading={progress > 0} message={progress} />
       </React.Fragment>
     </>
   );
