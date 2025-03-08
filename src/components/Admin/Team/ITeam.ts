@@ -2,7 +2,7 @@ export interface ITeamForm {
   id?: string;
   branch?: any;
   role: any;
-  roleId?:string;
+  roleId?: string;
   userCode?: string;
   headRMId?: string;
   headRM?: string;
@@ -25,18 +25,18 @@ export interface ITeamForm {
   experience?: string;
   other?: string;
   //document?: any[];
-  joiningDate?:string,
+  joiningDate?: string;
   isActive?: boolean;
   createdBy?: string;
   updatedBy?: string;
-  planId?:string;
-  planName?:string;
-  branchId?:string;
-  branchName:string;
-  planExpired?:string;
-  planStartDate?:string;
-  transactionId?:string;
-  transactionStatus?:boolean;
+  planId?: string;
+  planName?: string;
+  branchId?: string;
+  branchName: string;
+  planExpired?: string;
+  planStartDate?: string;
+  transactionId?: string;
+  transactionStatus?: boolean;
 }
 
 export interface ITeamsVM {
@@ -86,6 +86,8 @@ export interface ITeamsVM {
   transactionId?: string;
   wallet?: number;
   accounts?: string[];
+  policyCount?: number; // Added policyCount
+  userLimit?: { [key: string]: number }; // Added userLimit
 }
 
 export interface ITeams {
@@ -120,20 +122,19 @@ export interface ITeams {
   experience?: string;
   other?: string;
   isActive?: boolean;
-  joiningDate?:string,
+  joiningDate?: string;
   createdBy?: string;
   createdOn?: string;
-  companyLogo?:string;
+  companyLogo?: string;
   updatedOn?: string;
   updatedBy?: string;
-  planName?:string;
-  partnerCode?:string;
-  transactionStatus?:boolean;
+  planName?: string;
+  partnerCode?: string;
+  transactionStatus?: boolean;
 }
 
-
 export interface IAppUser {
-  _id:string;
+  _id: string;
   name: string;
   email?: string;
   dateOfBirth?: Date;
