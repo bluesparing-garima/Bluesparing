@@ -377,13 +377,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
     return false;
   };
 
-
-
-
-
   const onSubmit = async (policyForm: any, form: any) => {
-
-
     const isIssueDateValid = dayjs(policyForm.issueDate).isValid();
     const isRegDateValid = dayjs(policyForm.registrationDate).isValid();
     const isEndDateValid = dayjs(policyForm.endDate).isValid();
@@ -711,25 +705,25 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       toast.error(errData.message);
     }
   };
-  const openFileInNewTab = (url: string, fileName: string) => {
-    const urlFileName = url.substring(url.lastIndexOf("/") + 1);
-    const fileExtension = urlFileName.split(".").pop()?.toLowerCase();
-    if (
-      fileExtension === "pdf" ||
-      fileExtension === "png" ||
-      fileExtension === "jpg" ||
-      fileExtension === "jpeg"
-    ) {
-      const a = document.createElement("a");
-      a.href = url;
-      a.target = "_blank";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    } else {
-      console.error("Unsupported file type:", fileExtension);
-    }
-  };
+  // const openFileInNewTab = (url: string, fileName: string) => {
+  //   const urlFileName = url.substring(url.lastIndexOf("/") + 1);
+  //   const fileExtension = urlFileName.split(".").pop()?.toLowerCase();
+  //   if (
+  //     fileExtension === "pdf" ||
+  //     fileExtension === "png" ||
+  //     fileExtension === "jpg" ||
+  //     fileExtension === "jpeg"
+  //   ) {
+  //     const a = document.createElement("a");
+  //     a.href = url;
+  //     a.target = "_blank";
+  //     document.body.appendChild(a);
+  //     a.click();
+  //     document.body.removeChild(a);
+  //   } else {
+  //     console.error("Unsupported file type:", fileExtension);
+  //   }
+  // };
 
   const getDocumentUrl = (file: any): string | undefined => {
     if (!file) return undefined; // null ki jagah undefined return karein
@@ -1867,7 +1861,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                               <Grid item lg={4} md={4} sm={4} xs={4}>
                                 {doc.file ? (
                                   <>
-                                    <Tooltip title={`${doc.file}`}>
+                                    <Tooltip title={typeof doc.file === "string" ? doc.file : "View Document"}>
                                       <IconButton
                                         color="primary"
                                         aria-label={`${doc.file}`}

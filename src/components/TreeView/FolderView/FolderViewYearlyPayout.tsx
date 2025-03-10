@@ -158,7 +158,7 @@ const FolderView: React.FC<{
           <PersonOutlineOutlinedIcon className="text-safekaroDarkBlue" />
           <ListItemText
             className="text-safekaroDarkBlue"
-            primary={`${partnerNode.partnerName} - ${partnerNode.partnerCode}  (₹${partnerNode.totalPayOutCommission})`}
+            primary={`${partnerNode.partnerName} - ${partnerNode.userCode}  (₹${partnerNode.totalPayOutCommission})`}
           />
           {open ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
@@ -182,7 +182,7 @@ const FolderView: React.FC<{
           <PersonOutlineOutlinedIcon className="text-safekaroDarkBlue" />
           <ListItemText
             className="text-safekaroDarkBlue"
-            primary={`${partnerNode.partnerName} - ${partnerNode.partnerCode}  (₹${partnerNode.totalPayOutAmount})`}
+            primary={`${partnerNode.partnerName} - ${partnerNode.userCode}  (₹${partnerNode.totalPayOutAmount})`}
           />
           {open ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
@@ -206,7 +206,7 @@ const FolderView: React.FC<{
           <PersonOutlineOutlinedIcon className="text-safekaroDarkBlue" />
           <ListItemText
             className="text-safekaroDarkBlue"
-            primary={`${partnerNode.partnerName} - ${partnerNode.partnerCode}  (₹${partnerNode.totalPartnerBalance})`}
+            primary={`${partnerNode.partnerName} - ${partnerNode.userCode}  (₹${partnerNode.totalPartnerBalance})`}
           />
           {open ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
