@@ -285,13 +285,12 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
   };
   const callAddTeamAPI = async (team: any) => {
     try {
-    
       setIsLoading(true);
       const userLimit = UserData?.userLimit || {};
       let newRole = selectedRole ? selectedRole.toLowerCase() : "";
       const maxLimit = userLimit?.[newRole] || 0;
-      if(newRole === 'relationship manager'){
-        newRole = 'rm';
+      if (newRole === "relationship manager") {
+        newRole = "rm";
       }
 
       // **User Limit Check पहले करो**
@@ -300,20 +299,19 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
         return;
       }
       const onProgress = (p: number) => {
-        setProgress(p)
-      }
+        setProgress(p);
+      };
       const newTeam = await addTeamService({ header, team, onProgress });
- 
-     
 
       if (newRole && UserData.userLimit[newRole] > 0) {
-        
-      
-        const updatedUserLimit = { ...UserData.userLimit, [newRole]: UserData.userLimit[newRole] - 1 };
+        const updatedUserLimit = {
+          ...UserData.userLimit,
+          [newRole]: UserData.userLimit[newRole] - 1,
+        };
 
         updateLocalStorage({ userLimit: updatedUserLimit });
-    }
-    
+      }
+
       navigateToTeams(`${newTeam.message}`);
     } catch (err: any) {
       const errObj = await err;
@@ -411,10 +409,15 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       console.error("Unsupported file type:", fileExtension);
     }
   };
-  const handleClickViewDocument = (file: any, docName: any) => {
-    const url = imagePath + file;
-    openFileInNewTab(url, docName);
+  
+  const getDocumentUrl = (file: any): string | undefined => {
+    if (!file) return undefined; // null ki jagah undefined return karein
+    if (file instanceof File) {
+      return URL.createObjectURL(file); // Naya upload hua file
+    }
+    return `${imagePath}${encodeURIComponent(file)}`; // API se aayi purani file
   };
+
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
       schema = schema();
@@ -901,15 +904,18 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                         )}
                       </Grid>
                       <Grid item lg={4} md={4} sm={4} xs={4}>
-                        {!isAdd && (
+                        {doc.file ? (
                           <>
-                            <Tooltip title={"View Document"}>
+                            <Tooltip title={typeof doc.file === "string" ? doc.file : "View Document"}>
                               <IconButton
                                 color="primary"
-                                aria-label={"View Document"}
+                                aria-label={`${doc.file}`}
                                 component="span"
                                 onClick={() =>
-                                  handleClickViewDocument(doc.file, doc.docName)
+                                  window.open(
+                                    getDocumentUrl(doc.file),
+                                    "_blank"
+                                  )
                                 }
                               >
                                 <svg
@@ -934,6 +940,8 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                               </IconButton>
                             </Tooltip>
                           </>
+                        ) : (
+                          <></>
                         )}
                         <span style={{ color: "red" }}>{errorMessage}</span>
                         {documents.length !== 1 && (

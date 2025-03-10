@@ -69,6 +69,7 @@ const NetPremium = () => {
       setIsPartner(2);
     }
   };
+  console.log('brokerNetPremium : ',brokerNetPremium)
   return (
     <div className="bg-blue-200 p-7 mt-3">
       <Paper elevation={3} style={{ padding: 20 }}>
@@ -131,7 +132,7 @@ const NetPremium = () => {
                             variant="body2"
                             className="text-sm text-gray-600 mb-2"
                           >
-                            {item.partnerName} ({item.partnerCode})
+                            {item.partnerName} ({item.userCode})
                           </Typography>
                           <Typography
                             variant="h5"
