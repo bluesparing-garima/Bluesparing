@@ -247,7 +247,7 @@ export const generateExcelForNetPremium = <T extends INetPremiumBroker | INetPre
             sheetData.push([
                 partner.partnerId,
                 partner.partnerName,
-                partner.partnerCode,
+                partner.userCode,
                 partner.netPremium,
             ]);
         });
@@ -282,7 +282,7 @@ export const generateExcelFinalPremium = <T extends IFinalNetPremiumBroker | IFi
             sheetData.push([
                 partner.partnerId,
                 partner.partnerName,
-                partner.partnerCode,
+                partner.userCode,
                 partner.finalPremium,
             ]);
         });
@@ -458,7 +458,7 @@ export const generatePartnerPaidExcel = (
             partnerSheetData.push([
                 partner.partnerId,
                 partner.partnerName,
-                partner.partnerCode,
+                partner.userCode,
                 partner.totalPayOutAmount
             ]);
         });
@@ -508,7 +508,7 @@ export const generatePartnerBalanceExcel = (
             partnerSheetData.push([
                 partner.partnerId,
                 partner.partnerName,
-                partner.partnerCode,
+                partner.userCode,
                 partner.totalPartnerBalance
             ]);
         });
@@ -558,7 +558,7 @@ export const generatePartnerPaymentExcel = (
             paymentSheetData.push([
                 payment.partnerId,
                 payment.partnerName,
-                payment.partnerCode,
+                payment.userCode,
                 payment.totalPayOutCommission
             ]);
         });

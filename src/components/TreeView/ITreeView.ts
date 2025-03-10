@@ -28,7 +28,7 @@ export interface BrokerReceivedPayInProps {
 export interface PartnerPayment {
     partnerId: string;
     partnerName: string;
-    partnerCode: string;
+    userCode: string;
     totalPayOutCommission: number;
 }
 export interface BrokerPayInLeftDistributedCompanyProps {
@@ -59,7 +59,7 @@ export interface FolderLikeStructureForPayInProps {
 export interface IPartnerView {
     partnerId: string;
     partnerName: string;
-    partnerCode: string;
+    userCode: string;
     totalPayOutCommission: number;
     children?: ICompanyView[];
 }
@@ -89,14 +89,14 @@ export interface ICompanyLeftDis {
 export interface IPartnerBalance {
     partnerId: string;
     partnerName: string;
-    partnerCode: string;
+    userCode: string;
     totalPartnerBalance: number;
 }
 
 export interface IPartnerPaid {
     partnerId: string;
     partnerName: string;
-    partnerCode: string;
+    userCode: string;
     totalPayOutAmount: string;
 }
 export interface TreeNodePayOut {
@@ -120,7 +120,7 @@ export interface IFolderLikeStructureForNetPremium {
 export interface INetPremiumPartner {
     partnerId: string;
     partnerName: string;
-    partnerCode: string;
+    userCode: string;
     netPremium: string;
 }
 
@@ -141,7 +141,7 @@ export interface INetPremiumBroker {
 export interface IFinalNetPremiumPartner {
     partnerId: string;
     partnerName: string;
-    partnerCode: string;
+    userCode: string;
     finalPremium: string;
 }
 

@@ -297,7 +297,7 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
   <div className="flex items-center justify-between bg-white px-2">
     <Link to="/profile" className="menu-hover text-black">
       <p className="md:text-[14px] text-[12px] font-medium">
-        {userData?.name} ({userData?.partnerCode})
+        {userData?.name} ({userData?.userCode})
       </p>
       <p className="text-[#737791] md:text-xs text-[10px]">
         {userData?.role}

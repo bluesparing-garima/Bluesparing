@@ -130,7 +130,7 @@ const FolderView: React.FC<{
           <PersonOutlineOutlinedIcon className="text-safekaroDarkBlue" />
           <ListItemText
             className="text-safekaroDarkBlue"
-            primary={`${partnerNode.partnerName} - ${partnerNode.partnerCode}  (₹${partnerNode.finalPremium})`}
+            primary={`${partnerNode.partnerName} - ${partnerNode.userCode}  (₹${partnerNode.finalPremium})`}
           />
           {open ? <ExpandLess /> : <ExpandMore />}
         </ListItem>

@@ -196,7 +196,7 @@ const MonthlyFilterPayOutBalance = () => {
                       variant="body2"
                       className="text-sm text-gray-600 mb-2"
                     >
-                      {item.partnerName} ({item.partnerCode})
+                      {item.partnerName} ({item.userCode})
                     </Typography>
                     <Typography
                       variant="h5"
