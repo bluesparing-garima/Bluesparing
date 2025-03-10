@@ -1666,7 +1666,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                               <Grid item lg={4} md={4} sm={4} xs={4}>
                                 {doc.file ? (
                                   <>
-                                    <Tooltip title={`${doc.file}`}>
+                                    <Tooltip title={typeof doc.file === "string" ? doc.file : "View Document"}>
                                       <IconButton
                                         color="primary"
                                         aria-label={`${doc.file}`}
