@@ -210,7 +210,7 @@ const HolidaysList: React.FC = () => {
                         {({ input, meta }) => (
                           <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
-                              disableFuture
+                            
                               label="Start Date"
                               inputFormat="DD/MM/YYYY"
                               value={input.value ? dayjs(input.value) : null}
@@ -240,7 +240,7 @@ const HolidaysList: React.FC = () => {
                         {({ input, meta }) => (
                           <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
-                              disableFuture
+                              
                               label="End Date"
                               inputFormat="DD/MM/YYYY"
                               value={input.value ? dayjs(input.value) : null}

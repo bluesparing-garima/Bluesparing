@@ -31,6 +31,9 @@ const MarkOutTime: React.FC<IMarkOutTimeProps> = ({ attendance ,setAttendance}) 
   };
   const handleOutTimeAttendance = async () => {
     try {
+      if(attendance?.outTime){
+        return;
+      }
       let attendanceData: IAddAttendanceProps = {
         employeeName: attendance?.employeeName || "",
         employeeId: attendance?.employeeId || "",
@@ -57,6 +60,9 @@ const MarkOutTime: React.FC<IMarkOutTimeProps> = ({ attendance ,setAttendance}) 
   };
 
   const IsInTimeExist = () => {
+    if(attendance && attendance.outTime){
+      return false;
+    }
     if (attendance && attendance.inTime && attendance.inTime !== "00:00") {
       return true;
     }

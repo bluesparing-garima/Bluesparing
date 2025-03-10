@@ -113,56 +113,7 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
       UserData?.role?.toLowerCase()
     );
   }, [UserData?.role]);
-  // eslint-disable-next-line
-  // const fetchNotification = useCallback(
-  //   debounce(async () => {
-  //     try {
-  //       const res = await GetNotificationByRoleService({
-  //         header,
-  //         role: accessNotification,
-  //         type: "success",
-  //         isView: false,
-  //       });
-  //       if (res.status === "success") {
-  //         const filterData = res.data.filter(
-  //           (ele: INotification) => ele.notificationFor === UserData?.profileId
-  //         );
-  //         setNotificationData(filterData);
-  //         const storeNotification = getNotifications(UserData?.profileId);
-  //         if (
-  //           storeNotification.length > 0 &&
-  //           filterData.length > storeNotification.length
-  //         ) {
-  //           const filterDataIds = new Set(
-  //             storeNotification.map((ele: INotification) => ele._id)
-  //           );
-  //           const extraElements = filterData.filter(
-  //             (ele: INotification) => !filterDataIds.has(ele._id)
-  //           );
-  //           storeNotifications(UserData?.profileId, filterData);
-  //           extraElements.forEach((ele: INotification) => {
-  //             handlePlay(ele.title || "");
-  //           });
-  //         }
-  //       }
-  //     } catch (error: any) {
-  //       toast.error(error.message);
-  //     }
-  //   }, 300),
-  //   [UserData?.profileId, accessNotification]
-  // );
-  // const fetchNotificationData = useCallback(() => {
-  //   if (isViewNotification()) {
-  //     fetchNotification();
-  //   }
-  // }, [fetchNotification, isViewNotification]);
-  // useEffect(() => {
-  //   if (isViewNotification()) {
-  //     fetchNotificationData();
-  //     const intervalId = setInterval(fetchNotificationData, 30000);
-  //     return () => clearInterval(intervalId);
-  //   }
-  // }, [fetchNotificationData, isViewNotification]);
+
   const fetchData = async () => {
     try {
       const now = dayjs().format("YYYY-MM-DD");
@@ -271,60 +222,51 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
           {userData?.name}
         </div>
         <div className="flex items-center justify-center gap-3">
-          {/* {isViewNotification() && (
-            <div className="cursor-pointer rounded-lg mr-3">
-              <NotificationBadge notificationData={notificationData || []} />
-            </div>
-          )} */}
 
-          {/* "Update Policy" Icon Button */}
-          {/* <IconButton onClick={() => navigate("/update-plan")} color="primary">
-          <UpgradeIcon />
-        </IconButton> */}
 
-<Tooltip title="Update Plan" arrow>
-    <PremiumButton onClick={() => navigate("/update-plan")}>
-      <RedDot />
-      <CrownImage src={crownIcon} alt="Crown" />
-    </PremiumButton>
-  </Tooltip>
+          <Tooltip title="Update Plan" arrow>
+            <PremiumButton onClick={() => navigate("/update-plan")}>
+              <RedDot />
+              <CrownImage src={crownIcon} alt="Crown" />
+            </PremiumButton>
+          </Tooltip>
 
-  <Avatar
-    className="md:w-[40px] md:h-[40px] w-[30px] h-[30px]"
-    alt={userData?.name}
-    src={`${imagePath}/${userData?.profileImage}`}
-  />
-  <div className="flex items-center justify-between bg-white px-2">
-    <Link to="/profile" className="menu-hover text-black">
-      <p className="md:text-[14px] text-[12px] font-medium">
-        {userData?.name} ({userData?.partnerCode})
-      </p>
-      <p className="text-[#737791] md:text-xs text-[10px]">
-        {userData?.role}
-        {userData?.role === "Partner" && (
-          <span className="text-safekaroDarkOrange"> ({userRank})</span>
-        )}
-      </p>
-    </Link>
-  </div>
-  <div className="self-start">
-    <Button
-      id="basic-button"
-      sx={{ color: "black" }}
-      onClick={handleClick}
-    >
-      <KeyboardArrowDownIcon />
-    </Button>
-    <Menu
-      id="basic-menu"
-      anchorEl={anchorEl}
-      open={open}
-      onClose={handleClose}
-    >
-      <Link to="/profile" onClick={handleClose}>
-        <MenuItem>Profile</MenuItem>
-      </Link>
-      {canMarkAttendance && (
+          <Avatar
+            className="md:w-[40px] md:h-[40px] w-[30px] h-[30px]"
+            alt={userData?.name}
+            src={`${imagePath}/${userData?.profileImage}`}
+          />
+          <div className="flex items-center justify-between bg-white px-2">
+            <Link to="/profile" className="menu-hover text-black">
+              <p className="md:text-[14px] text-[12px] font-medium">
+                {userData?.name} ({userData?.partnerCode})
+              </p>
+              <p className="text-[#737791] md:text-xs text-[10px]">
+                {userData?.role}
+                {userData?.role === "Partner" && (
+                  <span className="text-safekaroDarkOrange"> ({userRank})</span>
+                )}
+              </p>
+            </Link>
+          </div>
+          <div className="self-start">
+            <Button
+              id="basic-button"
+              sx={{ color: "black" }}
+              onClick={handleClick}
+            >
+              <KeyboardArrowDownIcon />
+            </Button>
+            <Menu
+              id="basic-menu"
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+            >
+              <Link to="/profile" onClick={handleClose}>
+                <MenuItem>Profile</MenuItem>
+              </Link>
+              {canMarkAttendance && (
                 <div>
                   <MenuItem onClick={handleClose}>
                     <MarkInTime
@@ -340,7 +282,7 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
                   </MenuItem>
                 </div>
               )}
-      {UserData?.role?.toLowerCase().trim() === "admin" && (
+              {UserData?.role?.toLowerCase().trim() === "admin" && (
                 <Link to="/upload-logo" onClick={handleClose}>
                   <MenuItem>Upload Logo</MenuItem>
                 </Link>
@@ -350,7 +292,7 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
                 <MenuItem>Logout</MenuItem>
               </Link>
             </Menu>
-  </div>
+          </div>
         </div>
       </div>
     </>

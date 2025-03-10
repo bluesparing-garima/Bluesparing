@@ -25,6 +25,9 @@ const MarkInTime: React.FC<IMarkInTimeProps> = ({
   };
   const handleInTimeAttendance = async () => {
     try {
+      if(attendance?.inTime){
+        return;
+      }
       let attendanceData: IAddAttendanceProps = {
         employeeName: attendance?.employeeName || "",
         employeeId: attendance?.employeeId || "",
@@ -48,12 +51,13 @@ const MarkInTime: React.FC<IMarkInTimeProps> = ({
   };
   return (
     <button
-      className={`${
-        !attendance
-          ? "text-gray-400 opacity-50 cursor-not-allowed"
-          : "text-[#243642] font-semibold cursor-pointer"
-      }`}
-      disabled={attendance ? false : true}
+    className={`${
+      !attendance?.inTime
+        ? "text-[#243642] font-semibold cursor-pointer": "text-gray-400 opacity-50 cursor-not-allowed"
+        
+    }`}
+    
+      disabled={!!attendance?.inTime}
       onClick={handleInTimeAttendance}
     >
       Mark In Time
