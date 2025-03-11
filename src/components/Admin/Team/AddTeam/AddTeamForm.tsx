@@ -289,11 +289,12 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       setIsLoading(true);
       const userLimit = UserData?.userLimit || {};
       let newRole = selectedRole ? selectedRole.toLowerCase() : "";
-      const maxLimit = userLimit?.[newRole] || 0;
+   
+   
       if(newRole === 'relationship manager'){
         newRole = 'rm';
       }
-
+      const maxLimit = userLimit?.[newRole] || 0;
       // **User Limit Check पहले करो**
       if (maxLimit <= 0) {
         setShowUpgradePopup(true); // **Upgrade Plan Popup दिखाओ**
