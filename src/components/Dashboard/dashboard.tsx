@@ -729,51 +729,6 @@ const Dashboard: React.FC = () => {
       Checkout
     </Button>
   </Box>
-
-
-    {/* Other Plans (Only Plans Bigger Than Selected One) */}
-    {/* {allPlans
-      ?.filter((plan) => plan.policyCount > UserData.policyCount)
-      .map((plan, index) => (
-        <Box
-          key={index}
-          sx={{
-            width: 350,
-            backgroundColor: "white",
-            boxShadow: 2,
-            borderRadius: 2,
-            padding: 2,
-          }}
-        > */}
-          {/* <Box sx={{ backgroundColor: "#027AAE", color: "white", py: 1, textAlign: "center" }}>
-            <Typography className="font-satoshi font-extrabold text-lg">{plan.planName}</Typography>
-          </Box>
-
-          <Box mt={2} display="flex" flexWrap="wrap" gap={2}>
-            {[
-              { label: "Plan Name", value: plan.planName },
-              { label: "Plan Start Date", value: plan.planStartDate },
-              { label: "Plan Expiry Date", value: plan.planExpired },
-              { label: "Policy Count", value: plan.policyCount },
-            ].map((item, index) => (
-              <Box key={index} width="calc(50% - 8px)">
-                <Typography className="font-satoshi">
-                  <span className="font-semibold text-[#e59411]">{item.label}:</span>{" "}
-                  <span className="font-medium">{item.value ? item.value.toString() : "N/A"}</span>
-                </Typography>
-              </Box>
-            ))}
-          </Box>
-
-          <Button
-            variant="contained"
-            sx={{ mt: 3, width: "100%", borderRadius: 1, backgroundColor: "#e59411" }}
-            className="font-satoshi"
-          >
-            Upgrade Plan
-          </Button>
-        </Box> */}
-      {/* ))} */}
   </div>
 )}
 
