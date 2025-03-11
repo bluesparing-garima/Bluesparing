@@ -142,9 +142,16 @@ const Checkout: FC = () => {
   ) => {
     try {
       const amount = getTotalAmount();
-      AddTransactionServices({
-        data: makeTransactionPayload(tId, oId, status, amount),
-      });
+      if (tId === 'free') {
+        AddTransactionServices({
+          data: makePayloadForFree(),
+        });
+      } else {
+
+        AddTransactionServices({
+          data: makeTransactionPayload(tId, oId, status, amount),
+        });
+      }
     } catch (error: any) {
       const err = await error;
       toast.error(err.message);
@@ -152,6 +159,33 @@ const Checkout: FC = () => {
   };
 
 
+
+  const makePayloadForFree = () => {
+    const newUserLimit: Record<string, number> = {};
+    for (let key in plan.userLimit) {
+      if (key.toLowerCase() === 'relationship manager') {
+        key = 'rm';
+      }
+      newUserLimit[key.toLowerCase()] = (plan.userLimit[key.toLowerCase()]);
+    }
+
+    const payload: AddTransactionProps = {
+      userId: userData?.profileId || user?._id || "",
+      transactionId: "free",
+      orderId: "free",
+      createdBy: userData?.name || user?.name || "Unknown",
+      transactionStatus: true,
+      planId: plan?._id || "",
+      planType: plan?.planName || "Unknown Plan",
+      planStartDate: CalculateCurrentDate(),
+      policyCount: Number(plan?.policyCount) || 1,
+      userLimit: newUserLimit ?? 0,
+      amount: 0,
+      planEndDate: calculateFreePlanEndDate()
+    };
+
+    return payload;
+  }
   const makeTransactionPayload = (
     pId: string,
     oId: string,
@@ -160,16 +194,16 @@ const Checkout: FC = () => {
   ): AddTransactionProps => {
     const newUserLimit: Record<string, number> = {};
     for (let key in plan.userLimit) {
-      if(key.toLowerCase()==='relationship manager'){
+      if (key.toLowerCase() === 'relationship manager') {
         key = 'rm';
       }
       newUserLimit[key.toLowerCase()] = (plan.userLimit[key.toLowerCase()] * selectedMonths);
     }
     for (let key in userData.userLimit) {
-      if(key.toLowerCase()==='relationship manager'){
+      if (key.toLowerCase() === 'relationship manager') {
         key = 'rm';
       }
-      newUserLimit[key.toLowerCase()] += userData.userLimit[key.toLowerCase()]||0;
+      newUserLimit[key.toLowerCase()] += userData.userLimit[key.toLowerCase()] || 0;
     }
     if (userData?.role) {
       const payload: AddTransactionProps = {
@@ -181,7 +215,7 @@ const Checkout: FC = () => {
         planId: plan._id,
         planType: plan.planName,
         planStartDate: CalculateCurrentDate(),
-        policyCount: ((Number(plan.policyCount) * selectedMonths) || 1)+userData.policyCount||0,
+        policyCount: ((Number(plan.policyCount) * selectedMonths) || 1) + userData.policyCount || 0,
         userLimit: newUserLimit,
         amount: amount || 0,
         planEndDate:
@@ -210,7 +244,7 @@ const Checkout: FC = () => {
       return payload;
     }
   };
-  
+
 
   const handleProceedPayment = async () => {
     if (!isCheckUserData()) {
