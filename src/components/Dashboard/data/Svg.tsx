@@ -92,11 +92,38 @@ export const AttendanceDataSvg = ({ isActive }: { isActive: boolean }) => {
     </>
   );
 };
+
+export const PlanDetailsDataSvg = ({ isActive }: { isActive: boolean }) => {
+  return (
+    <>
+      {/* <svg width="26"
+        height="27"
+        viewBox="0 0 26 27"
+        fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 0 1 .67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 1 1-.671-1.34l.041-.022ZM12 9a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clipRule="evenodd"
+  fill={`${isActive ? "white" : "#636566"}`} />
+</svg> */}
+      <svg
+        width="26"
+        height="27"
+        viewBox="0 0 26 27"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M12 9v3.75m0-10.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.75c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.75h-.152c-3.196 0-6.1-1.25-8.25-3.286Zm0 13.036h.008v.008H12v-.008Z"
+          fill={`${isActive ? "white" : "#636566"}`}
+        />
+      </svg>
+    </>
+  );
+};
+
 export const EmployeeSvg = ({ isActive }: { isActive: boolean }) => {
   return (
     <>
       <svg
-          fill={`${isActive ? "white" : "#636566"}`}
+        fill={`${isActive ? "white" : "#636566"}`}
         width="40"
         height="40"
         viewBox="0 0 100 100"

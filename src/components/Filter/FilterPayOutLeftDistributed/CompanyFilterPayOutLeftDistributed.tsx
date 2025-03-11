@@ -13,7 +13,7 @@ const CompanyFilterPayOutLeftDistributed = () => {
   const selectedCategory = location.state as string;
   const { partnerId } = useParams();
   const [totalAmount, setTotalAmount] = useState<number>(0);
-  const [selectedUserCode, setSelectedUserCode] = useState<string>();
+  const [selectedPartnerCode, setSelectedPartnerCode] = useState<string>();
   const [selectedPartnerName, setSelectedPartnerName] = useState<string>();
   const [companyDetails, setCompanyDetails] = useState<ICompanyLeftDis[]>([]);
   useEffect(() => {
@@ -32,7 +32,7 @@ const CompanyFilterPayOutLeftDistributed = () => {
       .then((partners) => {
         setCompanyDetails(partners.data);
         setTotalAmount(partners.totalAmount);
-        setSelectedUserCode(partners.userCode);
+        setSelectedPartnerCode(partners.partnerCode);
         setSelectedPartnerName(partners.partnerName);
       })
       .catch(async (error) => {
@@ -53,7 +53,7 @@ const CompanyFilterPayOutLeftDistributed = () => {
             >
               {title}{" "}
               <span className="text-addButton">
-                {selectedPartnerName} ({selectedUserCode})
+                {selectedPartnerName} ({selectedPartnerCode})
               </span>
             </Typography>
             <Tooltip title="download Excel">
