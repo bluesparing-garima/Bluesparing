@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import {
+  Box,
   Button,
   CardContent,
   CircularProgress,
@@ -34,11 +35,13 @@ import DashboardMenu from "../../utils/DashboardMenu";
 import {
   AttendanceDataSvg,
   MotorSvg,
+  PlanDetailsDataSvg,
   ViewAdminDataSvg,
   ViewChartSvg,
   ViewPartnerSvg,
 } from "./data/Svg";
 import Attendance from "../HR/Attendance/AttendanceRecord/Attendance";
+import PlanCard from "../UpdatePlan/PlanCard";
 interface CartButtonProps {
   onClick: () => void;
   tooltipTitle: string;
@@ -53,6 +56,7 @@ const Dashboard: React.FC = () => {
   const [thirdCart, setThirdCart] = useState(false);
   const [fourCart, setFourCart] = useState(false);
   const [fifthCart, setFifthCart] = useState(false);
+  const [sixthCart, setSixthCart] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [categoryEntries, setCategoryEntries] = useState([]);
   const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(0);
@@ -121,6 +125,7 @@ const Dashboard: React.FC = () => {
     setSecondCart(false);
     setThirdCart(false);
     setFourCart(false);
+    setSixthCart(false);
     setFifthCart(false);
   };
   const handleSecondCart = async () => {
@@ -129,6 +134,7 @@ const Dashboard: React.FC = () => {
     setSelectedcard("2");
     setThirdCart(false);
     setFourCart(false);
+    setSixthCart(false);
     setFifthCart(false);
   };
   const handleThirdCart = async () => {
@@ -137,6 +143,7 @@ const Dashboard: React.FC = () => {
     setThirdCart(true);
     setFourCart(false);
     setFifthCart(false);
+    setSixthCart(false);
     setSelectedcard("3");
   };
   const handleFourCart = async () => {
@@ -145,6 +152,7 @@ const Dashboard: React.FC = () => {
     setThirdCart(false);
     setFourCart(true);
     setFifthCart(false);
+    setSixthCart(false);
     setSelectedcard("4");
   };
   const handleFifthCart = async () => {
@@ -153,7 +161,17 @@ const Dashboard: React.FC = () => {
     setThirdCart(false);
     setFourCart(false);
     setFifthCart(true);
+    setSixthCart(false);
     setSelectedcard("5");
+  };
+  const handleSixthCart = async () => {
+    setFirstCart(false);
+    setSecondCart(false);
+    setThirdCart(false);
+    setFourCart(false);
+    setFifthCart(false);
+    setSixthCart(true);
+    setSelectedcard("6");
   };
   const handleCategoryCart = async (index: any, key?: any) => {
     setSelectedCategoryIndex(index);
@@ -196,6 +214,14 @@ const Dashboard: React.FC = () => {
                 tooltipTitle="Monthly Attendance "
                 iconPath={<AttendanceDataSvg isActive={selectedCard === "5"} />}
                 isSelected={fifthCart}
+              />
+              <CartButton
+                onClick={handleSixthCart}
+                tooltipTitle="Plan Details "
+                iconPath={
+                  <PlanDetailsDataSvg isActive={selectedCard === "6"} />
+                }
+                isSelected={sixthCart}
               />
             </div>
             <div className="flex md:mt-0 my-2 md:flex-row flex-col md:w-[60%] w-full justify-center items-center">
@@ -590,6 +616,167 @@ const Dashboard: React.FC = () => {
                             <Attendance />
                           </>
                         )}
+                        {sixthCart && (
+  <div className="bg-blue-200 md:p-7 p-2 flex justify-center items-center min-h-screen">
+  {/* Selected Plan Card */}
+  <Box
+    sx={{
+      width: "80vw",
+      height: "80vh",
+      backgroundColor: "white",
+      boxShadow: 5,
+      borderRadius: 4,
+      padding: 4,
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "space-between",
+      alignItems: "center",
+    }}
+  >
+    {/* Plan Header */}
+    <Box
+      sx={{
+        backgroundColor: "#e59411",
+        color: "white",
+        py: 2,
+        px: 4,
+        borderRadius: "12px",
+        textAlign: "center",
+        width: "100%",
+        boxShadow: 2,
+      }}
+    >
+      <Typography className="font-satoshi font-extrabold text-xl">
+        {UserData.planName?.toUpperCase() || "No Plan Name"}
+      </Typography>
+    </Box>
+
+    {/* Plan Details in Two-Column Layout */}
+    <Box
+      sx={{
+        display: "grid",
+        gridTemplateColumns: "repeat(2, 1fr)",
+        gap: 3,
+        width: "100%",
+        maxWidth: "600px",
+        padding: "20px",
+      }}
+    >
+      {[
+        { label: "Plan Name", value: UserData.planName },
+        { label: "Plan Start Date", value: UserData.planStartDate },
+        { label: "Plan Expiry Date", value: UserData.planExpired },
+        { label: "Policy Count", value: UserData.policyCount },
+      ].map((item, index) => (
+        <Box key={index} sx={{ background: "#f5f5f5", p: 2, borderRadius: "8px", boxShadow: 1 }}>
+          <Typography className="font-satoshi">
+            <span className="font-semibold text-[#027AAE]">{item.label}:</span>{" "}
+            <span className="font-medium">{item.value ? item.value.toString() : "N/A"}</span>
+          </Typography>
+        </Box>
+      ))}
+    </Box>
+
+    {/* User Limits Section */}
+    {UserData.userLimit && typeof UserData.userLimit === "object" && (
+      <Box
+        sx={{
+          background: "#f8f9fa",
+          width: "100%",
+          maxWidth: "600px",
+          padding: "15px",
+          borderRadius: "12px",
+          boxShadow: 2,
+        }}
+      >
+        <Typography variant="body1" fontWeight="bold" textAlign="center" mb={1}>
+          User Limits
+        </Typography>
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: "repeat(2, 1fr)",
+            gap: 2,
+          }}
+        >
+          {Object.entries(UserData.userLimit).map(([key, value]) => (
+            <Box key={key} sx={{ background: "white", p: 2, borderRadius: "8px", boxShadow: 1 }}>
+              <Typography className="font-satoshi">
+                <span className="font-semibold text-[#027AAE] capitalize">{key}:</span>{" "}
+                <span className="font-medium">{value || 0}</span>
+              </Typography>
+            </Box>
+          ))}
+        </Box>
+      </Box>
+    )}
+
+    {/* Checkout Button */}
+    <Button
+      variant="contained"
+      sx={{
+        mt: 3,
+        px: 5,
+        py: 1.5,
+        borderRadius: 2,
+        backgroundColor: "#027AAE",
+        fontSize: "1rem",
+        fontWeight: "bold",
+        boxShadow: 3,
+      }}
+      className="font-satoshi"
+    >
+      Checkout
+    </Button>
+  </Box>
+
+
+    {/* Other Plans (Only Plans Bigger Than Selected One) */}
+    {/* {allPlans
+      ?.filter((plan) => plan.policyCount > UserData.policyCount)
+      .map((plan, index) => (
+        <Box
+          key={index}
+          sx={{
+            width: 350,
+            backgroundColor: "white",
+            boxShadow: 2,
+            borderRadius: 2,
+            padding: 2,
+          }}
+        > */}
+          {/* <Box sx={{ backgroundColor: "#027AAE", color: "white", py: 1, textAlign: "center" }}>
+            <Typography className="font-satoshi font-extrabold text-lg">{plan.planName}</Typography>
+          </Box>
+
+          <Box mt={2} display="flex" flexWrap="wrap" gap={2}>
+            {[
+              { label: "Plan Name", value: plan.planName },
+              { label: "Plan Start Date", value: plan.planStartDate },
+              { label: "Plan Expiry Date", value: plan.planExpired },
+              { label: "Policy Count", value: plan.policyCount },
+            ].map((item, index) => (
+              <Box key={index} width="calc(50% - 8px)">
+                <Typography className="font-satoshi">
+                  <span className="font-semibold text-[#e59411]">{item.label}:</span>{" "}
+                  <span className="font-medium">{item.value ? item.value.toString() : "N/A"}</span>
+                </Typography>
+              </Box>
+            ))}
+          </Box>
+
+          <Button
+            variant="contained"
+            sx={{ mt: 3, width: "100%", borderRadius: 1, backgroundColor: "#e59411" }}
+            className="font-satoshi"
+          >
+            Upgrade Plan
+          </Button>
+        </Box> */}
+      {/* ))} */}
+  </div>
+)}
+
                       </>
                     ) : (
                       <Typography variant="h6">Loading...</Typography>
