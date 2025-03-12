@@ -197,7 +197,7 @@ const Checkout: FC = () => {
       if (key.toLowerCase() === 'relationship manager') {
         key = 'rm';
       }
-      newUserLimit[key.toLowerCase()] = (plan.userLimit[key.toLowerCase()] * selectedMonths);
+      newUserLimit[key.toLowerCase()] = (plan.userLimit[key.toLowerCase()] );
     }
     for (let key in userData.userLimit) {
       if (key.toLowerCase() === 'relationship manager') {
@@ -347,11 +347,13 @@ const Checkout: FC = () => {
             <span className="text-[#027AAE] font-semibold">
               Monthly Amount :
             </span>{" "}
+            {plan.planName.toLowerCase().trim() === "free" && <span className="line-through px-2">₹199</span>}
             <span className="text-sm font-semibold">₹{plan.monthlyAmount}</span>
           </Typography>
           <Typography className="font-satoshi my-3">
             <span className="text-[#027AAE] font-semibold">Policy Count :</span>{" "}
-            <span className="text-sm font-semibold">{plan.policyCount * selectedMonths + userData?.policyCount}</span>
+            
+            <span className="text-sm font-semibold">{(Number(plan?.policyCount) * Number(selectedMonths)) + (Number(userData?.policyCount) || 0)}</span>
           </Typography>
           {Object.keys(plan.userLimit).map((ele) => {
             return (
@@ -359,7 +361,7 @@ const Checkout: FC = () => {
                 <span className="font-semibold text-[#027AAE] capitalize ">
                   {ele.toLowerCase()} Limit:
                 </span>
-                <span className="font-medium"> {(plan.userLimit?.[ele] * selectedMonths) + userData.userLimit[ele]}</span>
+                <span className="font-medium"> {((Number(plan.userLimit?.[ele]) || 0) * (Number(selectedMonths) || 1)) + (Number(userData?.userLimit?.[ele]) || 0)                }</span>
               </Typography>
             );
           })}
