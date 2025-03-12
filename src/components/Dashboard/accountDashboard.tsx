@@ -1,7 +1,11 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Grid, TextField, Tooltip } from "@mui/material";
 import Typography from "@mui/material/Typography";
-import { SafeKaroUser, header } from "../../context/constant";
+import {
+  DAYJS_DISPLAY_FORMAT,
+  SafeKaroUser,
+  header,
+} from "../../context/constant";
 import { Account, IAccountData } from "./IDashboard";
 import MotorIcon from "../../assets/motor1.png";
 import NetPremiumIcon from "../../assets/netPremium.png";
@@ -25,6 +29,7 @@ import { accountGenerateExcel } from "../../utils/DashboardExcel";
 import {
   AttendanceDataSvg,
   MotorSvg,
+  PlanDetailsDataSvg,
   ViewAdminDataSvg,
   ViewPartnerSvg,
 } from "./data/Svg";
@@ -42,11 +47,13 @@ const AccountDashboard: React.FC = () => {
   const [secondCart, setSecondCart] = useState(false);
   const [thirdCart, setThirdCart] = useState(false);
   const [fourthCart, setFourthCart] = useState(false);
+  const [fifthCart, setFifthCart] = useState(false);
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
   const [selectedCard, setSelectedcard] = useState("1");
   const [employee, setEmployee] = useState<IEmployee | null>();
   const GetDashboardCount = useCallback((startDate, endDate) => {
+    console.log("first", UserData);
     getAccountDashboardService({
       header,
       startDate,
@@ -62,11 +69,14 @@ const AccountDashboard: React.FC = () => {
   }, []);
   const getAttendanceRecord = async () => {
     try {
-      const res = await GetAttendanceCountService({ header, eId: UserData.profileId });
+      const res = await GetAttendanceCountService({
+        header,
+        eId: UserData?.profileId,
+      });
       setEmployee(res.data);
-    } catch (error:any) {
+    } catch (error: any) {
       const err = await error;
-      toast.error(err.message)
+      toast.error(err.message);
     }
   };
   useEffect(() => {
@@ -90,7 +100,7 @@ const AccountDashboard: React.FC = () => {
     path?: string
   ) => {
     const formattedCount =
-      typeof count === "number" ? Math.round(count).toLocaleString() : "0";
+      typeof count === "number" ? Math.round(count).toLocaleString() : count;
     const content = (
       <div className="bg-white m-2 p-3 rounded-[10.33px] shadow-lg flex items-center justify-between transform transition-transform duration-200 hover:scale-105">
         <div>
@@ -107,7 +117,7 @@ const AccountDashboard: React.FC = () => {
             {formattedCount}
           </Typography>
         </div>
-        <img src={icon} alt={title} className="h-8 w-8" />
+        {icon && <img src={icon} alt={title} className="h-8 w-8" />}
       </div>
     );
     return (
@@ -130,6 +140,7 @@ const AccountDashboard: React.FC = () => {
     setSecondCart(false);
     setThirdCart(false);
     setFourthCart(false);
+    setFifthCart(false);
     setSelectedcard("1");
   };
   const handleSecondCart = async () => {
@@ -137,6 +148,7 @@ const AccountDashboard: React.FC = () => {
     setSecondCart(true);
     setThirdCart(false);
     setFourthCart(false);
+    setFifthCart(false);
     setSelectedcard("2");
   };
   const handleThirdCart = async () => {
@@ -144,6 +156,7 @@ const AccountDashboard: React.FC = () => {
     setSecondCart(false);
     setThirdCart(true);
     setFourthCart(false);
+    setFifthCart(false);
     setSelectedcard("3");
   };
   const handleFourthCart = async () => {
@@ -151,7 +164,16 @@ const AccountDashboard: React.FC = () => {
     setSecondCart(false);
     setThirdCart(false);
     setFourthCart(true);
+    setFifthCart(false);
     setSelectedcard("4");
+  };
+  const handleFifthCart = async () => {
+    setFirstCart(false);
+    setSecondCart(false);
+    setThirdCart(false);
+    setFourthCart(false);
+    setFifthCart(true);
+    setSelectedcard("5");
   };
   const handleDownloadPDF = () => {
     accountGeneratePDF(data);
@@ -159,6 +181,27 @@ const AccountDashboard: React.FC = () => {
   const handleDownloadExcel = () => {
     accountGenerateExcel(data);
   };
+
+  const planDetails = [
+    {
+      label: "Plan Name",
+      value: UserData?.planName,
+    },
+    {
+      label: "Plan Start Date",
+      value: dayjs(UserData?.planStartDate).format(DAYJS_DISPLAY_FORMAT),
+    },
+    {
+      label: "Plan Expiry Date",
+      value: dayjs(UserData?.planExpired).format(DAYJS_DISPLAY_FORMAT),
+    },
+    {
+      label: "Policy Count",
+      value: UserData?.policyCount,
+    },
+  ];
+
+  console.log(UserData);
   return (
     <div className="bg-blue-200 h-screen">
       <Grid container sx={{ margin: 1 }}>
@@ -187,6 +230,12 @@ const AccountDashboard: React.FC = () => {
               tooltipTitle="Monthly Attendance "
               iconPath={<AttendanceDataSvg isActive={selectedCard === "4"} />}
               isSelected={fourthCart}
+            />
+            <CartButton
+              onClick={handleFifthCart}
+              tooltipTitle="Plan Details "
+              iconPath={<PlanDetailsDataSvg isActive={selectedCard === "5"} />}
+              isSelected={fifthCart}
             />
           </div>
           <div className="flex w-full flex-wrap  justify-evenly items-center">
@@ -278,7 +327,7 @@ const AccountDashboard: React.FC = () => {
           </div>
         </div>
         <Grid item md={12}>
-          {UserData.role.toLowerCase() === "account" ? (
+          {UserData?.role.toLowerCase() === "account" ? (
             <>
               <Grid container spacing={2}>
                 <Grid item xs={12}>
@@ -339,73 +388,53 @@ const AccountDashboard: React.FC = () => {
                           ))}
                         </>
                       )}
-                      {secondCart && (
-                        <>
-                          {data.map((item, index) => (
-                            <div key={index}>
-                              <div className="bg-blue-200 md:p-7 p-2">
-                                <Grid container spacing={2}>
-                                  {item.totalAccounts &&
-                                    renderCountBox(
-                                      "Total Accounts",
-                                      item.totalAccounts,
-                                      TotalAccounts,
-                                      "/account"
-                                    )}
-                                  {item.totalAmount &&
-                                    renderCountBox(
-                                      "Total Amount",
-                                      item.totalAmount,
-                                      TotalAccounts,
-                                      "/account"
-                                    )}
-                                </Grid>
-                                <Grid container spacing={2}>
-                                  {item.accounts &&
-                                    item.accounts.map(
-                                      (account: Account, idx: number) =>
-                                        renderCountBox(
-                                          account.accountCode!,
-                                          account.amount,
-                                          Accounts,
-                                          "/account"
-                                        )
-                                    )}
-                                </Grid>
-                              </div>
-                            </div>
-                          ))}
-                        </>
-                      )}
-                      {thirdCart && (
+                      {fifthCart && (
                         <div className="bg-blue-200 md:p-7 p-2">
-                          <Grid container spacing={2}>
-                            <Grid item md={6}>
-                              <AdminCommissionChart />
-                            </Grid>
-                            <Grid item md={6}>
-                              <AdminPolicyChart />
-                            </Grid>
-                          </Grid>
-                        </div>
-                      )}
-                      {fourthCart && employee && (
-                        <>
-                          <Typography className="text-lg font-medium text-gray-800">
-                            Monthly Attendance Record
+                          <Typography
+                            variant="h5"
+                            className="text-lg font-bold text-gray-800"
+                          >
+                            Plan Details
                           </Typography>
-                          <AttendanceCard employee={employee} />
                           <Grid container>
-                            {data[0]?.monthlyHolidays?.holidays.map(
-                              (holiday: any, index: number) =>
-                                renderCountBox(
-                                  holiday.name.toUpperCase(),
-                                  dayjs(holiday.date).format("MM/DD/YYYY dddd"),
-                                  ""
-                                )
-                            )}
+                            {planDetails?.map((item, index) => (
+                              <React.Fragment key={index}>
+                                {renderCountBox(
+                                  item.label,
+                                  item.value || "N/A",
+                                  "",
+                                  `/update-plan`
+                                )}
+                              </React.Fragment>
+                            ))}
                           </Grid>
-                        </>
+
+                          {UserData?.userLimit &&
+                            typeof UserData?.userLimit === "object" && (
+                              <>
+                                <Typography
+                                  variant="h5"
+                                  className="text-lg font-bold text-gray-800 mt-4"
+                                >
+                                  User Limits
+                                </Typography>
+                                <Grid container>
+                                  {Object.entries(UserData?.userLimit).map(
+                                    ([key, value]) => (
+                                      <React.Fragment key={key}>
+                                        {renderCountBox(
+                                          key.toUpperCase(),
+                                          Number(value) || 0,
+                                          "",
+                                          `/update-plan`
+                                        )}
+                                      </React.Fragment>
+                                    )
+                                  )}
+                                </Grid>
+                              </>
+                            )}
+                        </div>
                       )}
                     </>
                   ) : (

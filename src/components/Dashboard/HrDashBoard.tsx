@@ -268,4 +268,4 @@ const HrDashBoard: React.FC = () => {
     </>
   );
 };
-export default HrDashBoard;
+export default HrDashBoard;
