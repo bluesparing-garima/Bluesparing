@@ -179,6 +179,26 @@ const Dashboard: React.FC = () => {
     setSixthCart(true);
     setSelectedcard("6");
   };
+
+  const planDetails = [
+    {
+      label: "Plan Name",
+      value: UserData.planName,
+    },
+    {
+      label: "Plan Start Date",
+      value: dayjs(UserData.planStartDate).format(DAYJS_DISPLAY_FORMAT),
+    },
+    {
+      label: "Plan Expiry Date",
+      value: dayjs(UserData.planExpired).format(DAYJS_DISPLAY_FORMAT),
+    },
+    {
+      label: "Policy Count",
+      value: UserData.policyCount,
+    },
+  ];
+
   const handleCategoryCart = async (index: any, key?: any) => {
     setSelectedCategoryIndex(index);
     setSelectedCategory(key);
@@ -631,28 +651,7 @@ const Dashboard: React.FC = () => {
                               Plan Details
                             </Typography>
                             <Grid container>
-                              {[
-                                {
-                                  label: "Plan Name",
-                                  value: UserData.planName,
-                                },
-                                {
-                                  label: "Plan Start Date",
-                                  value: dayjs(UserData.planStartDate).format(
-                                    DAYJS_DISPLAY_FORMAT
-                                  ),
-                                },
-                                {
-                                  label: "Plan Expiry Date",
-                                  value: dayjs(UserData.planExpired).format(
-                                    DAYJS_DISPLAY_FORMAT
-                                  ),
-                                },
-                                {
-                                  label: "Policy Count",
-                                  value: UserData.policyCount,
-                                },
-                              ].map((item, index) => (
+                              {planDetails.map((item, index) => (
                                 <React.Fragment key={index}>
                                   {renderCountBox(
                                     item.label,
