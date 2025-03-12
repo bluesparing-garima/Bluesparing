@@ -316,30 +316,22 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
     } else {
       policyForm.vehicleAge = null;
     }
-    policyForm.relationshipManagerId =
-      userData.role.toLowerCase() === "admin"
-        ? selectedRMId
-        : policyForm.policyCreatedBy === "Direct"
-          ? userData.headRMId
-          : selectedRMId;
-    policyForm.relationshipManagerName =
-      userData.role.toLowerCase() === "admin"
-        ? selectedRMName
-        : policyForm.policyCreatedBy === "Direct"
-          ? userData.headRM
-          : selectedRMName;
-    policyForm.partnerId =
-      userData.role.toLowerCase() === "admin"
-        ? selectedPartnerId
-        : policyForm.policyCreatedBy === "Direct"
-          ? userData.profileId
-          : selectedPartnerId;
-    policyForm.partnerName =
-      userData.role.toLowerCase() === "admin"
-        ? selectedPartnerName
-        : policyForm.policyCreatedBy === "Direct"
-          ? userData.name
-          : selectedPartnerName;
+
+
+    if (userData.role.toLowerCase() === "admin") {
+      policyForm.partnerId = selectedPartnerId;
+      policyForm.partnerName = selectedPartnerName;
+    } else if (policyForm.policyCreatedBy === "Direct") {
+      policyForm.partnerId = "Direct";
+      policyForm.partnerName = "Direct";
+    } else {
+      policyForm.partnerId = selectedPartnerId;
+      policyForm.partnerName = selectedPartnerName;
+    }
+    
+    policyForm.relationshipManagerId = selectedRMId;
+    policyForm.relationshipManagerName = selectedRMName;    
+
     policyForm.createdBy = userData.name;
     policyForm.vehicleNumber = policyForm.vehicleNumber.toUpperCase();
     policyForm.rto = policyForm.vehicleNumber.substring(0, 4);
@@ -458,7 +450,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   const onProgress = (p: number) => {
     setProgress(p)
   }
-  
+
   const callAddPolicyAPI = async (policy: any) => {
     try {
       setIsLoading(true);
@@ -1732,7 +1724,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                           </Grid>
                         )}
                       {selectedPolicyCreatedBy &&
-                        selectedPolicyCreatedBy === "Relationship Manager" && (
+                        selectedPolicyCreatedBy === "Direct" && (
                           <Grid item lg={4} md={4} sm={6} xs={12}>
                             <Field name="relationshipManagerName">
                               {({ input, meta }) => (
@@ -1744,7 +1736,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                                       getOptionLabel={(option) =>
                                         typeof option === "string"
                                           ? option
-                                          : `${option.fullName} - ${option.partnerId}` ||
+                                          : `${option.name} - ${option.userCode}` ||
                                           ""
                                       }
                                       value={
