@@ -41,7 +41,7 @@ import {
   ViewPartnerSvg,
 } from "./data/Svg";
 import Attendance from "../HR/Attendance/AttendanceRecord/Attendance";
-import PlanCard from "../UpdatePlan/PlanCard";
+
 interface CartButtonProps {
   onClick: () => void;
   tooltipTitle: string;
