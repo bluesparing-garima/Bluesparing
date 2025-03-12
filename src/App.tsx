@@ -71,7 +71,7 @@ function App() {
         currentUrl === "/signup" ||
         currentUrl === "/403" ||
         currentUrl === '/checkout' || 
-        (currentUrl === "/update-plan" && ( !userData?.transactionStatus)) ? (
+        (currentUrl === "/plan-details" && ( !userData?.transactionStatus)) ? (
           <> {content}</>
         ) : (
           <SidebarSwitcher userData={userData} content={content} />
