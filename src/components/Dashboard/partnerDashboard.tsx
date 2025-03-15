@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { CardContent, CircularProgress, Grid, TextField, Tooltip } from "@mui/material";
 import Typography from "@mui/material/Typography";
-import { SafeKaroUser, header } from "../../context/constant";
+import { DAYJS_DISPLAY_FORMAT, SafeKaroUser, header } from "../../context/constant";
 import { IPartnerData } from "./IDashboard";
 import BrokersIcon from "../../assets/broker.png";
 import FinalPremiumIcon from "../../assets/finalPremium.png";
@@ -27,9 +27,10 @@ import { partnerGeneratePDF } from "../../utils/DashboardPdf";
 import { partnerGenerateExcel } from "../../utils/DashboardExcel";
 import { CartButton } from "./dashboard";
 import SearchIcon from "@mui/icons-material/Search";
-import { MotorSvg, ViewAdminDataSvg, ViewPartnerSvg } from "./data/Svg";
+import { MotorSvg, PlanDetailsDataSvg, ViewAdminDataSvg, ViewPartnerSvg } from "./data/Svg";
 import { Toaster } from "react-hot-toast";
 import toast from "react-hot-toast";
+import dayjs from "dayjs";
 
 const PartnerDashboard: React.FC = () => {
   const [data, setData] = useState<IPartnerData[]>([]);
@@ -38,6 +39,7 @@ const PartnerDashboard: React.FC = () => {
   const [secondCart, setSecondCart] = useState(false);
   const[isLoading,setIsLoading] = useState(false)
   const [thirdCart, setThirdCart] = useState(false);
+  const [fourthCart, setFourthCart] = useState(false);
   const [selectedCard, setSelectedcard] = useState("1");
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
@@ -82,11 +84,11 @@ setIsLoading(true)
   }, [GetDashboardCount]);
   const renderCountBox = (
     title: string,
-    count: number,
+    count: number | string,
     icon: string,
     path?: string
   ) => {
-    const formattedCount = Math.round(count).toLocaleString();
+    const formattedCount = typeof count === "number" ? Math.round(count).toLocaleString() : count;
     const content = (
       <div className="bg-white m-2 p-3 rounded-[10.33px] shadow-lg flex items-center justify-between transform transition-transform duration-200 hover:scale-105">
         <div>
@@ -103,7 +105,7 @@ setIsLoading(true)
             {formattedCount}
           </Typography>
         </div>
-        <img src={icon} alt={title} className="h-8 w-8" />
+        {icon && <img src={icon} alt={title} className="h-8 w-8" />}
       </div>
     );
     return (
@@ -112,6 +114,28 @@ setIsLoading(true)
       </Grid>
     );
   };
+  const planDetails = [
+    {
+      label: "Plan Name",
+      value: UserData?.planName || "N/A",
+    },
+    {
+      label: "Plan Start Date",
+      value: UserData?.planStartDate
+        ? dayjs(UserData.planStartDate).format(DAYJS_DISPLAY_FORMAT)
+        : "N/A",
+    },
+    {
+      label: "Plan Expiry Date",
+      value: UserData?.planExpired
+        ? dayjs(UserData.planExpired).format(DAYJS_DISPLAY_FORMAT)
+        : "N/A",
+    },
+    {
+      label: "Policy Count",
+      value: UserData?.policyCount ?? "N/A",
+    },
+  ];
   const onSubmit = async (value: any) => {
     if (!value.startDate || !value.endDate) {
       
@@ -123,7 +147,7 @@ setIsLoading(true)
     // Convert input dates to Date objects
     const utcStartDate = new Date(value.startDate!);
     const utcEndDate = new Date(value.endDate!);
-  
+    
     // Validate if dates are valid
     if (isNaN(utcStartDate.getTime()) || isNaN(utcEndDate.getTime())) {
       toast.error("Invalid date selected. Please select valid dates.");
@@ -150,19 +174,29 @@ setIsLoading(true)
     setFirstCart(true);
     setSecondCart(false);
     setThirdCart(false);
+    setFourthCart(false);
     setSelectedcard("1");
   };
   const handleSecondCart = async () => {
     setFirstCart(false);
     setSecondCart(true);
     setThirdCart(false);
+    setFourthCart(false);
     setSelectedcard("2");
   };
   const handleThirdCart = async () => {
     setFirstCart(false);
     setSecondCart(false);
     setThirdCart(true);
+    setFourthCart(false);
     setSelectedcard("3");
+  };
+  const handleFourthCart = async () => {
+    setFirstCart(false);
+    setSecondCart(false);
+    setThirdCart(false);
+    setFourthCart(true);
+    setSelectedcard("4");
   };
   const handleDownloadPDF = () => {
     partnerGeneratePDF(data);
@@ -194,6 +228,12 @@ setIsLoading(true)
                 iconPath={<ViewAdminDataSvg isActive={selectedCard === "3"} />}
                 isSelected={thirdCart}
               />
+              <CartButton
+                            onClick={handleFourthCart}
+                            tooltipTitle="Plan Details "
+                            iconPath={<PlanDetailsDataSvg isActive={selectedCard === "4"} />}
+                            isSelected={fourthCart}
+                          />
             </div>
             <div className="flex w-full flex-wrap  justify-evenly items-center">
               <Form
@@ -429,6 +469,54 @@ setIsLoading(true)
                             </Grid>
                           </div>
                         )}
+                        {fourthCart && (
+                <div className="bg-blue-200 md:p-7 p-2">
+                  <Typography
+                    variant="h5"
+                    className="text-lg font-bold text-gray-800"
+                  >
+                    Plan Details
+                  </Typography>
+                  <Grid container>
+                    {planDetails.map((item, index) => (
+                      <React.Fragment key={index}>
+                        {renderCountBox(
+                          item.label,
+                          item.value,
+                          "",
+                          `/update-plan`
+                        )}
+                      </React.Fragment>
+                    ))}
+                  </Grid>
+
+                  {UserData?.userLimit &&
+                    typeof UserData.userLimit === "object" && (
+                      <>
+                        <Typography
+                          variant="h5"
+                          className="text-lg font-bold text-gray-800 mt-4"
+                        >
+                          User Limits
+                        </Typography>
+                        <Grid container>
+                          {Object.entries(UserData.userLimit).map(
+                            ([key, value]) => (
+                              <React.Fragment key={key}>
+                                {renderCountBox(
+                                  key.toUpperCase(),
+                                  Number(value) ?? 0,
+                                  "",
+                                  `/update-plan`
+                                )}
+                              </React.Fragment>
+                            )
+                          )}
+                        </Grid>
+                      </>
+                    )}
+                </div>
+              )}
                       </>
                     ) : (
                       <Typography variant="h6">Loading...</Typography>

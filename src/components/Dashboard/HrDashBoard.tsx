@@ -6,15 +6,23 @@ import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { Field, Form } from "react-final-form";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Link } from "react-router-dom";
-import { header, SafeKaroUser } from "../../context/constant";
+import {
+  DAYJS_DISPLAY_FORMAT,
+  header,
+  SafeKaroUser,
+} from "../../context/constant";
 import { endOfMonth, startOfMonth, format } from "date-fns";
 import GetHrDashboardServices from "../../api/HR/GetHrDashboard/GetHrDashboardServices";
 import dayjs from "dayjs";
-
+import { CartButton } from "./dashboard";
+import { PlanDetailsDataSvg, ViewChartSvg } from "./data/Svg";
 
 const HrDashBoard: React.FC = () => {
   const [data, setData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [firstCart, setFirstCart] = useState(true);
+  const [selectedCard, setSelectedcard] = useState("1");
+  const [secondCart, setSecondCart] = useState(false);
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
   useEffect(() => {
@@ -44,15 +52,48 @@ const HrDashBoard: React.FC = () => {
     const intervalId = setInterval(fetchData, 30000);
     return () => clearInterval(intervalId);
   }, []);
+
+  const handleFirstCart = async () => {
+    setFirstCart(true);
+    setSecondCart(false);
+    setSelectedcard("1");
+  };
+  const handleSecondCart = async () => {
+    setFirstCart(false);
+    setSecondCart(true);
+    setSelectedcard("2");
+  };
+
+  const planDetails = [
+    {
+      label: "Plan Name",
+      value: UserData?.planName || "N/A",
+    },
+    {
+      label: "Plan Start Date",
+      value: UserData?.planStartDate
+        ? dayjs(UserData.planStartDate).format(DAYJS_DISPLAY_FORMAT)
+        : "N/A",
+    },
+    {
+      label: "Plan Expiry Date",
+      value: UserData?.planExpired
+        ? dayjs(UserData.planExpired).format(DAYJS_DISPLAY_FORMAT)
+        : "N/A",
+    },
+    {
+      label: "Policy Count",
+      value: UserData?.policyCount ?? "N/A",
+    },
+  ];
+
   const renderCountBox = (
     title: string,
     count: number | string,
     path?: string
   ) => {
-    let formattedCount = count;
-    if (typeof count === "number") {
-      formattedCount = Math.round(count).toLocaleString();
-    }
+    const formattedCount =
+      typeof count === "number" ? Math.round(count).toLocaleString() : count;
     const content = (
       <div className="bg-white m-2 p-3 rounded-[10.33px] shadow-lg flex items-center justify-between transform transition-transform duration-200 hover:scale-105">
         <div>
@@ -108,6 +149,22 @@ const HrDashBoard: React.FC = () => {
           <CardContent>
             <Grid container>
               <div className="flex w-full items-center justify-end bg-blue-200 pr-1">
+                <div className="flex justify-center items-center">
+                  <CartButton
+                    onClick={handleFirstCart}
+                    tooltipTitle="View HR Data"
+                    iconPath={<ViewChartSvg isActive={selectedCard === "1"} />}
+                    isSelected={firstCart}
+                  />
+                  <CartButton
+                    onClick={handleSecondCart}
+                    tooltipTitle="Plan Details "
+                    iconPath={
+                      <PlanDetailsDataSvg isActive={selectedCard === "2"} />
+                    }
+                    isSelected={secondCart}
+                  />
+                </div>
                 <div className="flex w-full flex-wrap justify-end gap-x-4 items-center">
                   <Form
                     onSubmit={onSubmit}
@@ -184,80 +241,128 @@ const HrDashBoard: React.FC = () => {
                 </div>
               </div>
               <Grid item md={12}>
-                <Grid container>
-                  <Grid item xs={12}>
-                    <div>
-                      <div className="bg-blue-200 px-7 py-1">
-                        <Typography className="text-md font-medium text-gray-800 font-satoshi">
-                          Team Counts
-                        </Typography>
-                        <Grid container>
-                          {data?.roles &&
-                            Object.entries(data.roles).map(([key, value]) =>
-                              renderCountBox(
-                                key.toUpperCase(),
-                                Number(value) || 0,
-                                "/team"
-                              )
-                            )}
-                          {data &&
-                            renderCountBox(
-                              "Today Leave count",
-                              data.leaveCountToday || 0
-                            )}
-                          {data &&
-                            renderCountBox(
-                              "Today Present count",
-                              data.presentCountToday || 0
-                            )}
-                        </Grid>
-                      </div>
-                    </div>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <div>
-                      <div className="bg-blue-200 px-7 py-1">
-                        {data?.leaveDetailsToday &&
-                          data.leaveDetailsToday.length > 0 && (
-                            <>
-                              <Typography className="text-md font-medium text-gray-800 font-satoshi">
-                                Today Leave Details
-                              </Typography>
-                              <Grid container>
-                                {data.leaveDetailsToday.map(
-                                  (leave: any, index: number) =>
-                                    renderCountBox(
-                                      leave.employeeName.toUpperCase(),
-                                      leave.remarks
-                                    )
-                                )}
-                              </Grid>
-                            </>
-                          )}
-                      </div>
-                    </div>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <div>
-                      <div className="bg-blue-200 px-7 py-2">
-                        {data?.monthlyHolidays && (
-                          <Typography className="text-md font-medium text-gray-800">
-                            Monthly Holidays
+                {firstCart && (
+                  <Grid container>
+                    <Grid item xs={12}>
+                      <div>
+                        <div className="bg-blue-200 px-7 py-1">
+                          <Typography className="text-md font-medium text-gray-800 font-satoshi">
+                            Team Counts
                           </Typography>
-                        )}
-                        <Grid container>
-                          {data?.monthlyHolidays?.holidays.map(
-                            (holiday: any, index: number) =>
+                          <Grid container>
+                            {data?.roles &&
+                              Object.entries(data.roles).map(([key, value]) =>
+                                renderCountBox(
+                                  key.toUpperCase(),
+                                  Number(value) || 0,
+                                  "/team"
+                                )
+                              )}
+                            {data &&
                               renderCountBox(
-                                holiday.name.toUpperCase(),
-                                dayjs(holiday.date).format("MM/DD/YYYY dddd")
-                              )
-                          )}
-                        </Grid>
+                                "Today Leave count",
+                                data.leaveCountToday || 0
+                              )}
+                            {data &&
+                              renderCountBox(
+                                "Today Present count",
+                                data.presentCountToday || 0
+                              )}
+                          </Grid>
+                        </div>
                       </div>
-                    </div>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <div>
+                        <div className="bg-blue-200 px-7 py-1">
+                          {data?.leaveDetailsToday &&
+                            data.leaveDetailsToday.length > 0 && (
+                              <>
+                                <Typography className="text-md font-medium text-gray-800 font-satoshi">
+                                  Today Leave Details
+                                </Typography>
+                                <Grid container>
+                                  {data.leaveDetailsToday.map(
+                                    (leave: any, index: number) =>
+                                      renderCountBox(
+                                        leave.employeeName.toUpperCase(),
+                                        leave.remarks
+                                      )
+                                  )}
+                                </Grid>
+                              </>
+                            )}
+                        </div>
+                      </div>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <div>
+                        <div className="bg-blue-200 px-7 py-2">
+                          {data?.monthlyHolidays && (
+                            <Typography className="text-md font-medium text-gray-800">
+                              Monthly Holidays
+                            </Typography>
+                          )}
+                          <Grid container>
+                            {data?.monthlyHolidays?.holidays.map(
+                              (holiday: any, index: number) =>
+                                renderCountBox(
+                                  holiday.name.toUpperCase(),
+                                  dayjs(holiday.date).format("MM/DD/YYYY dddd")
+                                )
+                            )}
+                          </Grid>
+                        </div>
+                      </div>
+                    </Grid>
                   </Grid>
-                </Grid>
+                )}
+                {secondCart && (
+                  <div className="bg-blue-200 md:p-7 p-2">
+                    <Typography
+                      variant="h5"
+                      className="text-lg font-bold text-gray-800"
+                    >
+                      Plan Details
+                    </Typography>
+                    <Grid container>
+                      {planDetails.map((item, index) => (
+                        <React.Fragment key={index}>
+                          {renderCountBox(
+                            item.label,
+                            item.value || "N/A",
+                            `/update-plan`
+                          )}
+                        </React.Fragment>
+                      ))}
+                    </Grid>
+
+                    {UserData.userLimit &&
+                      typeof UserData.userLimit === "object" && (
+                        <>
+                          <Typography
+                            variant="h5"
+                            className="text-lg font-bold text-gray-800 mt-4"
+                          >
+                            User Limits
+                          </Typography>
+                          <Grid container>
+                            {Object.entries(UserData.userLimit).map(
+                              ([key, value]) => (
+                                <React.Fragment key={key}>
+                                  {renderCountBox(
+                                    key.toUpperCase(),
+                                    Number(value) || 0,
+                                    `/update-plan`
+                                  )}
+                                </React.Fragment>
+                              )
+                            )}
+                          </Grid>
+                        </>
+                      )}
+                  </div>
+                )}
               </Grid>
             </Grid>
           </CardContent>

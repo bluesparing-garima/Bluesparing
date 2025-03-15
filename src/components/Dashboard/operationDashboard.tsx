@@ -1,7 +1,10 @@
-
 import React, { useCallback, useEffect, useState } from "react";
-import { header, SafeKaroUser } from "../../context/constant";
-import {  Button, Grid, Tooltip as Tip } from "@mui/material";
+import {
+  DAYJS_DISPLAY_FORMAT,
+  header,
+  SafeKaroUser,
+} from "../../context/constant";
+import { Button, Grid, Tooltip as Tip } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import {
   Chart as ChartJS,
@@ -34,9 +37,10 @@ import { rmGeneratePDF as operationGeneratePdf } from "../../utils/DashboardPdf"
 import { IEmployee } from "../HR/Attendance/IAttendance";
 import GetAttendanceCountService from "../../api/Role/GetAttendanceCount/GetAttendanceCountService";
 import AttendanceCard from "../HR/Attendance/AttendanceRecord/AttendanceCard";
-import { AttendanceDataSvg, EmployeeSvg } from "./data/Svg";
+import { AttendanceDataSvg, EmployeeSvg, PlanDetailsDataSvg } from "./data/Svg";
 import { CartButton } from "./dashboard";
 import toast, { Toaster } from "react-hot-toast";
+import dayjs from "dayjs";
 
 ChartJS.register(
   CategoryScale,
@@ -55,11 +59,15 @@ const OperationDashboard: React.FC = () => {
   const [employee, setEmployee] = useState<IEmployee | null>();
   const [firstCart, setFirstCart] = useState(true);
   const [secondCart, setSecondCart] = useState(false);
+  const [thirdCart, setThirdCart] = useState(false);
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
   const [selectedCard, setSelectedcard] = useState("1");
   const GetDashboardCount = useCallback(() => {
-    getOperationDashboardService({ header, operationUserId: UserData.profileId })
+    getOperationDashboardService({
+      header,
+      operationUserId: UserData.profileId,
+    })
       .then((dashboardData) => {
         setIsVisible(true);
         setData(dashboardData.data);
@@ -72,12 +80,14 @@ const OperationDashboard: React.FC = () => {
 
   const getAttendanceRecord = async () => {
     try {
-      const res = await GetAttendanceCountService({ header, eId: UserData.profileId });
+      const res = await GetAttendanceCountService({
+        header,
+        eId: UserData.profileId,
+      });
       setEmployee(res.data);
-    } catch (error:any) {
-      const err= await error;
-      toast.error(err.message)
-      
+    } catch (error: any) {
+      const err = await error;
+      toast.error(err.message);
     }
   };
   const handleDownloadPDF = () => {
@@ -92,7 +102,7 @@ const OperationDashboard: React.FC = () => {
     getAttendanceRecord();
     const intervalId = setInterval(GetDashboardCount, 30000);
     return () => clearInterval(intervalId);
-     // eslint-disable-next-line 
+    // eslint-disable-next-line
   }, [GetDashboardCount]);
 
   const renderCountBox = (
@@ -102,7 +112,7 @@ const OperationDashboard: React.FC = () => {
     path?: string
   ) => {
     const formattedCount =
-      typeof count === "number" ? Math.round(count).toLocaleString() : "0";
+      typeof count === "number" ? Math.round(count).toLocaleString() : count;
 
     const content = (
       <div className="bg-white m-2 p-3 rounded-[10.33px] shadow-lg flex items-center justify-between transform transition-transform duration-200 hover:scale-105">
@@ -120,7 +130,7 @@ const OperationDashboard: React.FC = () => {
             {formattedCount}
           </Typography>
         </div>
-        <img src={icon} alt={title} className="h-8 w-8" />
+        {icon && <img src={icon} alt={title} className="h-8 w-8" />}
       </div>
     );
 
@@ -133,13 +143,45 @@ const OperationDashboard: React.FC = () => {
   const handleFirstCart = async () => {
     setFirstCart(true);
     setSelectedcard("1");
+    setThirdCart(false);
     setSecondCart(false);
   };
   const handleSecondCart = async () => {
     setFirstCart(false);
     setSecondCart(true);
+    setThirdCart(false);
     setSelectedcard("2");
   };
+  const handleThirdCart = async () => {
+    setFirstCart(false);
+    setSecondCart(false);
+    setThirdCart(true);
+    setSelectedcard("3");
+  };
+
+  const planDetails = [
+    {
+      label: "Plan Name",
+      value: UserData?.planName || "N/A",
+    },
+    {
+      label: "Plan Start Date",
+      value: UserData?.planStartDate
+        ? dayjs(UserData.planStartDate).format(DAYJS_DISPLAY_FORMAT)
+        : "N/A",
+    },
+    {
+      label: "Plan Expiry Date",
+      value: UserData?.planExpired
+        ? dayjs(UserData.planExpired).format(DAYJS_DISPLAY_FORMAT)
+        : "N/A",
+    },
+    {
+      label: "Policy Count",
+      value: UserData?.policyCount ?? "N/A",
+    },
+  ];
+
   return (
     <div className="bg-blue-200 h-screen">
       <Grid container>
@@ -156,6 +198,12 @@ const OperationDashboard: React.FC = () => {
               tooltipTitle="Monthly Attendance "
               iconPath={<AttendanceDataSvg isActive={selectedCard === "2"} />}
               isSelected={secondCart}
+            />
+            <CartButton
+              onClick={handleThirdCart}
+              tooltipTitle="Plan Details "
+              iconPath={<PlanDetailsDataSvg isActive={selectedCard === "3"} />}
+              isSelected={thirdCart}
             />
           </div>
           <div className="flex justify-center items-center gap-x-2">
@@ -266,6 +314,54 @@ const OperationDashboard: React.FC = () => {
                     </div>
                   </Grid>
                 </Grid>
+              )}
+              {thirdCart && (
+                <div className="bg-blue-200 md:p-7 p-2">
+                  <Typography
+                    variant="h5"
+                    className="text-lg font-bold text-gray-800"
+                  >
+                    Plan Details
+                  </Typography>
+                  <Grid container>
+                    {planDetails.map((item, index) => (
+                      <React.Fragment key={index}>
+                        {renderCountBox(
+                          item.label,
+                          item.value,
+                          "",
+                          `/update-plan`
+                        )}
+                      </React.Fragment>
+                    ))}
+                  </Grid>
+
+                  {UserData?.userLimit &&
+                    typeof UserData.userLimit === "object" && (
+                      <>
+                        <Typography
+                          variant="h5"
+                          className="text-lg font-bold text-gray-800 mt-4"
+                        >
+                          User Limits
+                        </Typography>
+                        <Grid container>
+                          {Object.entries(UserData.userLimit).map(
+                            ([key, value]) => (
+                              <React.Fragment key={key}>
+                                {renderCountBox(
+                                  key.toUpperCase(),
+                                  Number(value) ?? 0,
+                                  "",
+                                  `/update-plan`
+                                )}
+                              </React.Fragment>
+                            )
+                          )}
+                        </Grid>
+                      </>
+                    )}
+                </div>
               )}
             </>
           ) : (
