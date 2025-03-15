@@ -51,9 +51,8 @@ const PlanCard: FC<PlanCardProps> = ({ p }) => {
         </Typography>
       </Box>
       <Typography variant="h3" fontWeight="bold" mt={1}>
-  {p.planName.toLowerCase().trim() === "free" && <span className="line-through px-2">₹199</span>}
-  ₹{p.monthlyAmount} <span className="text-sm font-semibold capitalize">per month</span>
-</Typography>
+        ₹{p.monthlyAmount} <span className="text-sm font-semibold capitalize ">per month</span>
+      </Typography>
 
       <Box mt={1} textAlign="left">
         <Typography variant="body1" fontWeight="bold" gutterBottom>

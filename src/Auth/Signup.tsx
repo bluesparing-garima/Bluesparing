@@ -98,7 +98,7 @@ const Signup = () => {
           role: responseData.user.role,
         };
         storeInSessionStorage(SESSION_USER, data);
-        navigate("/plan-details");
+        navigate("/update-plan");
       } else {
         throw new Error("Failed to Register");
       }
