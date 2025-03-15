@@ -184,7 +184,7 @@ export const policyCreatedByAdmin = [{ label: "Partner", value: "Partner" },  { 
 
 export const policyCreatedBy = [
   { label: "Partner", value: "Partner" },
-    { label: "Direct", value: "Direct" },
+  {label:"Direct",value:"Direct"}
   // { label: "Relationship Manager", value: "Relationship Manager" },
 ];
 
