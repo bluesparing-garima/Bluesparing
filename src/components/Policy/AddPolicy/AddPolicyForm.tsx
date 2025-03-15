@@ -370,12 +370,14 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   };
 
   const onSubmit = async (policyForm: any, form: any) => {
+    console.log("policyForm", policyForm);
     const isIssueDateValid = dayjs(policyForm.issueDate).isValid();
     const isRegDateValid = dayjs(policyForm.registrationDate).isValid();
     const isEndDateValid = dayjs(policyForm.endDate).isValid();
     const isGcv = proType === "Goods Carrying Vehicle";
     const startDate = dayjs(policyForm.issueDate);
     const endDate = dayjs(policyForm.endDate);
+
     if (isGcv) {
       const w = policyForm.weight;
       if (w <= 0) {

@@ -13,6 +13,7 @@ const SafeKaroContext = createContext<SafeKaroContextType>({
   logout: () => {},
 });
 const initialUserState: SafeKaroUser = {
+  isFreePlanUsed: false,
   isLoggedIn: false,
   name: "",
   email: "",

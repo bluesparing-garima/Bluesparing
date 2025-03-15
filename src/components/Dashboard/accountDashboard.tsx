@@ -34,7 +34,7 @@ import { IEmployee } from "../HR/Attendance/IAttendance";
 import GetAttendanceCountService from "../../api/Role/GetAttendanceCount/GetAttendanceCountService";
 import AttendanceCard from "../HR/Attendance/AttendanceRecord/AttendanceCard";
 import dayjs from "dayjs";
-import toast from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 const AccountDashboard: React.FC = () => {
   const [data, setData] = useState<IAccountData[]>([]);
   const [isVisible, setIsVisible] = useState(false);
@@ -117,14 +117,41 @@ const AccountDashboard: React.FC = () => {
     );
   };
   const onSubmit = async (value: any) => {
-    const utcStartDate = new Date(value.startDate!);
+    // Check if both startDate and endDate are provided
+    // alert("on submit clicked")
+    if (!value.startDate || !value.endDate) {
+      toast.error("Both start date and end date are required.");
+      return;
+    }
+  
+    // Convert input dates to Date objects
+    const utcStartDate = new Date(value.startDate);
+    const utcEndDate = new Date(value.endDate);
+  
+    // Validate if dates are valid
+    if (isNaN(utcStartDate.getTime()) || isNaN(utcEndDate.getTime())) {
+      toast.error("Invalid date selected. Please select valid dates.");
+      return;
+    }
+  
+    // Ensure endDate is not before startDate
+    if (utcEndDate < utcStartDate) {
+      toast.error("End date cannot be before start date.");
+      return;
+    }
+  
+    // Format dates before passing them
     const formattedStartDate = format(utcStartDate, "yyyy-MM-dd'T'HH:mm:ss");
-    value.startDate = formattedStartDate;
-    const utcEndDate = new Date(value.endDate!);
     const formattedEndDate = format(utcEndDate, "yyyy-MM-dd'T'HH:mm:ss");
+  
+    // Assign formatted values
+    value.startDate = formattedStartDate;
     value.endDate = formattedEndDate;
+  
+    // Call API function
     GetDashboardCount(value.startDate, value.endDate);
   };
+  
   const handleFirstCart = async () => {
     setFirstCart(true);
     setSecondCart(false);
@@ -419,6 +446,7 @@ const AccountDashboard: React.FC = () => {
           )}
         </Grid>
       </Grid>
+      <Toaster position="bottom-center" reverseOrder={false} />
     </div>
   );
 };

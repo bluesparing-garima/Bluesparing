@@ -180,7 +180,7 @@ export const paymentModes = [
   { label: "Cash", value: "Cash" },
   { label: "Cheque", value: "Cheque" },
 ];
-export const policyCreatedByAdmin = [{ label: "Partner", value: "Partner" }];
+export const policyCreatedByAdmin = [{ label: "Partner", value: "Partner" },  { label: "Direct", value: "Direct" },];
 
 export const policyCreatedBy = [
   { label: "Partner", value: "Partner" },
