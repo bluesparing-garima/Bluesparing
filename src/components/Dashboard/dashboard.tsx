@@ -16,7 +16,11 @@ import {
 } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import getAdminDashboardService from "../../api/Dashboard/GetAdminDashboard/getAdminDashboardService";
-import { SafeKaroUser, header } from "../../context/constant";
+import {
+  DAYJS_DISPLAY_FORMAT,
+  SafeKaroUser,
+  header,
+} from "../../context/constant";
 import { IData } from "./IDashboard";
 import SearchIcon from "@mui/icons-material/Search";
 import AdminCommissionChart from "./Chart/AdminCommissionChart";
@@ -41,7 +45,8 @@ import {
   ViewPartnerSvg,
 } from "./data/Svg";
 import Attendance from "../HR/Attendance/AttendanceRecord/Attendance";
-
+import PlanCard from "../UpdatePlan/PlanCard";
+import dayjs from "dayjs";
 interface CartButtonProps {
   onClick: () => void;
   tooltipTitle: string;
@@ -64,6 +69,7 @@ const Dashboard: React.FC = () => {
   const [selectedCard, setSelectedcard] = useState("1");
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
+  console.log("first", UserData);
   const GetDashboardCount = useCallback((startDate, endDate) => {
     getAdminDashboardService({
       header,
@@ -173,6 +179,26 @@ const Dashboard: React.FC = () => {
     setSixthCart(true);
     setSelectedcard("6");
   };
+
+  const planDetails = [
+    {
+      label: "Plan Name",
+      value: UserData.planName,
+    },
+    {
+      label: "Plan Start Date",
+      value: dayjs(UserData.planStartDate).format(DAYJS_DISPLAY_FORMAT),
+    },
+    {
+      label: "Plan Expiry Date",
+      value: dayjs(UserData.planExpired).format(DAYJS_DISPLAY_FORMAT),
+    },
+    {
+      label: "Policy Count",
+      value: UserData.policyCount,
+    },
+  ];
+
   const handleCategoryCart = async (index: any, key?: any) => {
     setSelectedCategoryIndex(index);
     setSelectedCategory(key);
@@ -180,7 +206,7 @@ const Dashboard: React.FC = () => {
   const isValidIndex = (index: any) =>
     index >= 0 && index < categoryEntries.length;
   return (
-    <div className="bg-blue-200 h-[90vh] hide-scrollbar">
+    <div className="bg-blue-200 h-[90%] hide-scrollbar">
       <CardContent>
         <Grid>
           <div className="flex w-full items-center md:flex-row flex-col justify-center  md:justify-start bg-blue-200 md:pr-1">
@@ -225,7 +251,7 @@ const Dashboard: React.FC = () => {
               />
             </div>
             <div className="flex md:mt-0 my-2 md:flex-row flex-col md:w-[60%] w-full justify-center items-center">
-              <div className="md:w-[71%]">
+              <div className="md:w-[70%]">
                 <Form
                   onSubmit={onSubmit}
                   render={({ handleSubmit, submitting, errors, values }) => (
@@ -617,121 +643,53 @@ const Dashboard: React.FC = () => {
                           </>
                         )}
                         {sixthCart && (
-  <div className="bg-blue-200 md:p-7 p-2 flex justify-center items-center min-h-screen">
-  {/* Selected Plan Card */}
-  <Box
-    sx={{
-      width: "80vw",
-      height: "80vh",
-      backgroundColor: "white",
-      boxShadow: 5,
-      borderRadius: 4,
-      padding: 4,
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "space-between",
-      alignItems: "center",
-    }}
-  >
-    {/* Plan Header */}
-    <Box
-      sx={{
-        backgroundColor: "#e59411",
-        color: "white",
-        py: 2,
-        px: 4,
-        borderRadius: "12px",
-        textAlign: "center",
-        width: "100%",
-        boxShadow: 2,
-      }}
-    >
-      <Typography className="font-satoshi font-extrabold text-xl">
-        {UserData.planName?.toUpperCase() || "No Plan Name"}
-      </Typography>
-    </Box>
+                          <div className="bg-blue-200 md:p-7 p-2">
+                            <Typography
+                              variant="h5"
+                              className="text-lg font-bold text-gray-800"
+                            >
+                              Plan Details
+                            </Typography>
+                            <Grid container>
+                              {planDetails.map((item, index) => (
+                                <React.Fragment key={index}>
+                                  {renderCountBox(
+                                    item.label,
+                                    item.value || "N/A",
+                                    "",
+                                    `/update-plan`
+                                  )}
+                                </React.Fragment>
+                              ))}
+                            </Grid>
 
-    {/* Plan Details in Two-Column Layout */}
-    <Box
-      sx={{
-        display: "grid",
-        gridTemplateColumns: "repeat(2, 1fr)",
-        gap: 3,
-        width: "100%",
-        maxWidth: "600px",
-        padding: "20px",
-      }}
-    >
-      {[
-        { label: "Plan Name", value: UserData.planName },
-        { label: "Plan Start Date", value: UserData.planStartDate },
-        { label: "Plan Expiry Date", value: UserData.planExpired },
-        { label: "Policy Count", value: UserData.policyCount },
-      ].map((item, index) => (
-        <Box key={index} sx={{ background: "#f5f5f5", p: 2, borderRadius: "8px", boxShadow: 1 }}>
-          <Typography className="font-satoshi">
-            <span className="font-semibold text-[#027AAE]">{item.label}:</span>{" "}
-            <span className="font-medium">{item.value ? item.value.toString() : "N/A"}</span>
-          </Typography>
-        </Box>
-      ))}
-    </Box>
-
-    {/* User Limits Section */}
-    {UserData.userLimit && typeof UserData.userLimit === "object" && (
-      <Box
-        sx={{
-          background: "#f8f9fa",
-          width: "100%",
-          maxWidth: "600px",
-          padding: "15px",
-          borderRadius: "12px",
-          boxShadow: 2,
-        }}
-      >
-        <Typography variant="body1" fontWeight="bold" textAlign="center" mb={1}>
-          User Limits
-        </Typography>
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: "repeat(2, 1fr)",
-            gap: 2,
-          }}
-        >
-          {Object.entries(UserData.userLimit).map(([key, value]) => (
-            <Box key={key} sx={{ background: "white", p: 2, borderRadius: "8px", boxShadow: 1 }}>
-              <Typography className="font-satoshi">
-                <span className="font-semibold text-[#027AAE] capitalize">{key}:</span>{" "}
-                <span className="font-medium">{value || 0}</span>
-              </Typography>
-            </Box>
-          ))}
-        </Box>
-      </Box>
-    )}
-
-    {/* Checkout Button */}
-    <Button
-      variant="contained"
-      sx={{
-        mt: 3,
-        px: 5,
-        py: 1.5,
-        borderRadius: 2,
-        backgroundColor: "#027AAE",
-        fontSize: "1rem",
-        fontWeight: "bold",
-        boxShadow: 3,
-      }}
-      className="font-satoshi"
-    >
-      Checkout
-    </Button>
-  </Box>
-  </div>
-)}
-
+                            {UserData.userLimit &&
+                              typeof UserData.userLimit === "object" && (
+                                <>
+                                  <Typography
+                                    variant="h5"
+                                    className="text-lg font-bold text-gray-800 mt-4"
+                                  >
+                                    User Limits
+                                  </Typography>
+                                  <Grid container>
+                                    {Object.entries(UserData.userLimit).map(
+                                      ([key, value]) => (
+                                        <React.Fragment key={key}>
+                                          {renderCountBox(
+                                            key.toUpperCase(),
+                                            value || 0,
+                                            "",
+                                            `/update-plan`
+                                          )}
+                                        </React.Fragment>
+                                      )
+                                    )}
+                                  </Grid>
+                                </>
+                              )}
+                          </div>
+                        )}
                       </>
                     ) : (
                       <Typography variant="h6">Loading...</Typography>
