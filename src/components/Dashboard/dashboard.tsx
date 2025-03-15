@@ -225,7 +225,7 @@ const Dashboard: React.FC = () => {
               />
             </div>
             <div className="flex md:mt-0 my-2 md:flex-row flex-col md:w-[60%] w-full justify-center items-center">
-              <div className="md:w-[70%]">
+              <div className="md:w-[71%]">
                 <Form
                   onSubmit={onSubmit}
                   render={({ handleSubmit, submitting, errors, values }) => (
