@@ -649,6 +649,19 @@ const routes = [
     ],
   },
   {
+    path: "/plan-details",
+    children: [
+      {
+        path: "",
+        element: (
+          <SuspenseWrapper>
+            <UpdatePlan />
+          </SuspenseWrapper>
+        ),
+      },
+    ],
+  },
+  {
     path: "/checkout",
     children: [
       {
