@@ -44,6 +44,7 @@ export const headerForm: any = {
 };
 
 export type SafeKaroUser = {
+  isFreePlanUsed: boolean;
   isLoggedIn: boolean;
   name: string;
   email: string;
