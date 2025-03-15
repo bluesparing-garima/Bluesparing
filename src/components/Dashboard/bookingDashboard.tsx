@@ -1,16 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
-import {
-  DAYJS_DISPLAY_FORMAT,
-  header,
-  SafeKaroUser,
-} from "../../context/constant";
-import {
-  Button,
-  CircularProgress,
-  Grid,
-  TextField,
-  Tooltip as Tip,
-} from "@mui/material";
+import { header, SafeKaroUser } from "../../context/constant";
+import { Button, CircularProgress, Grid, TextField, Tooltip as Tip } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import SearchIcon from "@mui/icons-material/Search";
 import {
@@ -43,13 +33,12 @@ import { bookingGeneratePDF } from "../../utils/DashboardPdf";
 import GetAttendanceCountService from "../../api/Role/GetAttendanceCount/GetAttendanceCountService";
 import { IEmployee } from "../HR/Attendance/IAttendance";
 import AttendanceCard from "../HR/Attendance/AttendanceRecord/AttendanceCard";
-import { AttendanceDataSvg, EmployeeSvg, PlanDetailsDataSvg } from "./data/Svg";
+import { AttendanceDataSvg, EmployeeSvg } from "./data/Svg";
 import { CartButton } from "./dashboard";
 import { Field, Form } from "react-final-form";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import toast, { Toaster } from "react-hot-toast";
-import dayjs from "dayjs";
 ChartJS.register(
   CategoryScale,
   linear,
@@ -65,9 +54,8 @@ const BookingDashboard: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [firstCart, setFirstCart] = useState(true);
   const [selectedCard, setSelectedcard] = useState("1");
-  const [isLoading, setIsLoading] = useState(false);
+  const[isLoading,setIsLoading]=useState(false);
   const [secondCart, setSecondCart] = useState(false);
-  const [thirdCart, setThirdCart] = useState(false);
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
   const [employee, setEmployee] = useState<IEmployee | null>();
@@ -92,33 +80,22 @@ const BookingDashboard: React.FC = () => {
   );
   const getAttendanceRecord = async () => {
     try {
-      const res = await GetAttendanceCountService({
-        header,
-        eId: UserData.profileId,
-      });
+      const res = await GetAttendanceCountService({ header, eId: UserData.profileId });
       setEmployee(res.data);
-    } catch (error: any) {
-      const err = await error;
-      toast.error(err.message);
+    } catch (error:any) {
+      const err= await error;
+      toast.error(err.message)
     }
   };
   const handleFirstCart = async () => {
     setFirstCart(true);
     setSelectedcard("1");
     setSecondCart(false);
-    setThirdCart(false);
   };
   const handleSecondCart = async () => {
     setFirstCart(false);
     setSecondCart(true);
-    setThirdCart(false);
     setSelectedcard("2");
-  };
-  const handleThirdCart = async () => {
-    setFirstCart(false);
-    setSecondCart(false);
-    setThirdCart(true);
-    setSelectedcard("3");
   };
   useEffect(() => {
     const currentDate = new Date();
@@ -126,23 +103,22 @@ const BookingDashboard: React.FC = () => {
     const lastDayOfMonth = endOfMonth(currentDate);
     const formattedFirstDay = format(firstDayOfMonth, "yyyy-MM-dd");
     const formattedLastDay = format(lastDayOfMonth, "yyyy-MM-dd");
-    const fetchData = async () => {
-      try {
-        setIsLoading(true);
+    const fetchData = async() => {
+      try{
+        setIsLoading(true)
         await GetDashboardCount(formattedFirstDay, formattedLastDay);
-      } catch (error) {
+      }catch(error){
         console.error("Error fetching HR Dashboard data:", error);
-      } finally {
-        setIsLoading(false);
+      }finally{
+        setIsLoading(false)
       }
     };
     getAttendanceRecord();
     fetchData();
     const intervalId = setInterval(fetchData, 30000);
     return () => clearInterval(intervalId);
-    // eslint-disable-next-line
+     // eslint-disable-next-line 
   }, [GetDashboardCount]);
-
   const onSubmit = async (value: any) => {
     const utcStartDate = new Date(value.startDate!);
     const formattedStartDate = format(utcStartDate, "yyyy-MM-dd");
@@ -158,29 +134,6 @@ const BookingDashboard: React.FC = () => {
   const handleDownloadExcel = () => {
     bookingGenerateExcel(data);
   };
-  const planDetails = [
-    {
-      label: "Plan Name",
-      value: UserData?.planName || "N/A",
-    },
-    {
-      label: "Plan Start Date",
-      value: UserData?.planStartDate
-        ? dayjs(UserData.planStartDate).format(DAYJS_DISPLAY_FORMAT)
-        : "N/A",
-    },
-    {
-      label: "Plan Expiry Date",
-      value: UserData?.planExpired
-        ? dayjs(UserData.planExpired).format(DAYJS_DISPLAY_FORMAT)
-        : "N/A",
-    },
-    {
-      label: "Policy Count",
-      value: UserData?.policyCount ?? "N/A",
-    },
-  ];
-
   const renderCountBox = (
     title: string,
     count: number | string,
@@ -188,7 +141,7 @@ const BookingDashboard: React.FC = () => {
     path?: string
   ) => {
     const formattedCount =
-      typeof count === "number" ? Math.round(count).toLocaleString() : count;
+      typeof count === "number" ? Math.round(count).toLocaleString() : "0";
     const content = (
       <div className="bg-white m-2 p-3 rounded-[10.33px] shadow-lg flex items-center justify-between transform transition-transform duration-200 hover:scale-105">
         <div>
@@ -205,7 +158,7 @@ const BookingDashboard: React.FC = () => {
             {formattedCount}
           </Typography>
         </div>
-        {icon && <img src={icon} alt={title} className="h-8 w-8" />}
+        <img src={icon} alt={title} className="h-8 w-8" />
       </div>
     );
     return (
@@ -230,12 +183,6 @@ const BookingDashboard: React.FC = () => {
               tooltipTitle="Monthly Attendance "
               iconPath={<AttendanceDataSvg isActive={selectedCard === "2"} />}
               isSelected={secondCart}
-            />
-            <CartButton
-              onClick={handleThirdCart}
-              tooltipTitle="Plan Details "
-              iconPath={<PlanDetailsDataSvg isActive={selectedCard === "3"} />}
-              isSelected={thirdCart}
             />
           </div>
           <Form
@@ -299,14 +246,9 @@ const BookingDashboard: React.FC = () => {
                   </div>
                   <Button
                     className=" h-10  bg-[#30A9FF] shadow-sm rounded flex justify-center items-center text-white"
-                    type="submit"
-                    disabled={isLoading}
+                    type="submit" disabled={isLoading}
                   >
-                    {isLoading ? (
-                      <CircularProgress className="w-6 h-6" />
-                    ) : (
-                      <SearchIcon className="w-6 h-6" />
-                    )}
+                    {isLoading?<CircularProgress className="w-6 h-6" />:<SearchIcon className="w-6 h-6" />}
                   </Button>
                 </div>
               </form>
@@ -404,54 +346,6 @@ const BookingDashboard: React.FC = () => {
                     )}
                   </Grid>
                 </Grid>
-              )}
-              {thirdCart && (
-                <div className="bg-blue-200 md:p-7 p-2">
-                  <Typography
-                    variant="h5"
-                    className="text-lg font-bold text-gray-800"
-                  >
-                    Plan Details
-                  </Typography>
-                  <Grid container>
-                    {planDetails.map((item, index) => (
-                      <React.Fragment key={index}>
-                        {renderCountBox(
-                          item.label,
-                          item.value,
-                          "",
-                          `/update-plan`
-                        )}
-                      </React.Fragment>
-                    ))}
-                  </Grid>
-
-                  {UserData?.userLimit &&
-                    typeof UserData.userLimit === "object" && (
-                      <>
-                        <Typography
-                          variant="h5"
-                          className="text-lg font-bold text-gray-800 mt-4"
-                        >
-                          User Limits
-                        </Typography>
-                        <Grid container>
-                          {Object.entries(UserData.userLimit).map(
-                            ([key, value]) => (
-                              <React.Fragment key={key}>
-                                {renderCountBox(
-                                  key.toUpperCase(),
-                                  Number(value) ?? 0,
-                                  "",
-                                  `/update-plan`
-                                )}
-                              </React.Fragment>
-                            )
-                          )}
-                        </Grid>
-                      </>
-                    )}
-                </div>
               )}
             </>
           ) : (

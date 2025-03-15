@@ -454,18 +454,20 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   const callAddPolicyAPI = async (policy: any) => {
     try {
       setIsLoading(true);
-      const policyCount = userData?.policyCount || 0;
+      const newPolicy = await addPolicyService({ header, policy, onProgress });
+      if (newPolicy.status === "success") {
+        const policyCount = userData?.policyCount || 0;
 
         if (policyCount <= 0) {
           setShowUpgradePopup(true); //! **Upgrade Plan Popup दिखाओ**
           return;
         }
-      const newPolicy = await addPolicyService({ header, policy, onProgress });
-      if (newPolicy.status === "success") {
+
         if (userData.policyCount > 0) {
           const updatedPolicyCount = userData.policyCount - 1;
           updateLocalStorage({ policyCount: updatedPolicyCount });
         }
+
         // console.log("updatedPolicyCount",updatedPolicyCount);
         navigate(motorPolicyPath());
         return;
