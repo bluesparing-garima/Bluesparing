@@ -9,11 +9,7 @@ import {
 } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
-import {
-  DAYJS_DISPLAY_FORMAT,
-  SafeKaroUser,
-  header,
-} from "../../context/constant";
+import { SafeKaroUser, header } from "../../context/constant";
 import { IData } from "./IDashboard";
 import PictureAsPdfSharpIcon from "@mui/icons-material/PictureAsPdfSharp";
 import AdminCommissionChart from "./Chart/AdminCommissionChart";
@@ -31,7 +27,6 @@ import SearchIcon from "@mui/icons-material/Search";
 import {
   AttendanceDataSvg,
   MotorSvg,
-  PlanDetailsDataSvg,
   ViewAdminDataSvg,
   ViewChartSvg,
 } from "./data/Svg";
@@ -39,7 +34,6 @@ import AttendanceCard from "../HR/Attendance/AttendanceRecord/AttendanceCard";
 import GetAttendanceCountService from "../../api/Role/GetAttendanceCount/GetAttendanceCountService";
 import { IEmployee } from "../HR/Attendance/IAttendance";
 import toast from "react-hot-toast";
-import dayjs from "dayjs";
 const RMDashboard: React.FC = () => {
   const [data, setData] = useState<IData[]>([]);
   const [isVisible, setIsVisible] = useState(false);
@@ -52,7 +46,6 @@ const RMDashboard: React.FC = () => {
   const [categoryEntries, setCategoryEntries] = useState([]);
   const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(0);
   const [fourthCart, setFourthCart] = useState(false);
-  const [fifthCart, setFifthCart] = useState(false);
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
   const GetDashboardCount = useCallback(
@@ -155,8 +148,6 @@ const RMDashboard: React.FC = () => {
     setFirstCart(true);
     setThirdCart(false);
     setSecondCart(false);
-    setFourthCart(false);
-    setFifthCart(false);
     setSelectedcard("1");
   };
   const handleSecondCart = async () => {
@@ -164,7 +155,6 @@ const RMDashboard: React.FC = () => {
     setFirstCart(false);
     setThirdCart(false);
     setFourthCart(false);
-    setFifthCart(false);
     setSelectedcard("2");
   };
   const handleThirdCart = async () => {
@@ -173,7 +163,6 @@ const RMDashboard: React.FC = () => {
     setSecondCart(false);
     setFourthCart(false);
     setFourthCart(false);
-    setFifthCart(false);
     setSelectedcard("3");
   };
   const handleFourthCart = async () => {
@@ -181,40 +170,8 @@ const RMDashboard: React.FC = () => {
     setSecondCart(false);
     setThirdCart(false);
     setFourthCart(true);
-    setFifthCart(false);
     setSelectedcard("4");
   };
-  const handleFifthCart = async () => {
-    setFirstCart(false);
-    setThirdCart(false);
-    setSecondCart(false);
-    setFourthCart(false);
-    setFifthCart(true);
-    setSelectedcard("5");
-  };
-
-  const planDetails = [
-    {
-      label: "Plan Name",
-      value: UserData?.planName || "N/A",
-    },
-    {
-      label: "Plan Start Date",
-      value: UserData?.planStartDate
-        ? dayjs(UserData.planStartDate).format(DAYJS_DISPLAY_FORMAT)
-        : "N/A",
-    },
-    {
-      label: "Plan Expiry Date",
-      value: UserData?.planExpired
-        ? dayjs(UserData.planExpired).format(DAYJS_DISPLAY_FORMAT)
-        : "N/A",
-    },
-    {
-      label: "Policy Count",
-      value: UserData?.policyCount ?? "N/A",
-    },
-  ];
   const handleCategoryCart = async (index: any, key?: any) => {
     setSelectedCategoryIndex(index);
   };
@@ -256,14 +213,6 @@ const RMDashboard: React.FC = () => {
                 tooltipTitle="Monthly Attendance "
                 iconPath={<AttendanceDataSvg isActive={selectedCard === "4"} />}
                 isSelected={fourthCart}
-              />
-              <CartButton
-                onClick={handleFifthCart}
-                tooltipTitle="Plan Details "
-                iconPath={
-                  <PlanDetailsDataSvg isActive={selectedCard === "5"} />
-                }
-                isSelected={fifthCart}
               />
             </div>
             <div className="flex w-full flex-wrap  justify-evenly items-center">
@@ -513,54 +462,6 @@ const RMDashboard: React.FC = () => {
                           </Typography>
                           <AttendanceCard employee={employee} />
                         </>
-                      )}
-                      {fifthCart && (
-                        <div className="bg-blue-200 md:p-7 p-2">
-                          <Typography
-                            variant="h5"
-                            className="text-lg font-bold text-gray-800"
-                          >
-                            Plan Details
-                          </Typography>
-                          <Grid container>
-                            {planDetails.map((item, index) => (
-                              <React.Fragment key={index}>
-                                {renderCountBox(
-                                  item.label,
-                                  item.value,
-                                  "",
-                                  `/update-plan`
-                                )}
-                              </React.Fragment>
-                            ))}
-                          </Grid>
-
-                          {UserData?.userLimit &&
-                            typeof UserData.userLimit === "object" && (
-                              <>
-                                <Typography
-                                  variant="h5"
-                                  className="text-lg font-bold text-gray-800 mt-4"
-                                >
-                                  User Limits
-                                </Typography>
-                                <Grid container>
-                                  {Object.entries(UserData.userLimit).map(
-                                    ([key, value]) => (
-                                      <React.Fragment key={key}>
-                                        {renderCountBox(
-                                          key.toUpperCase(),
-                                          Number(value) ?? 0,
-                                          "",
-                                          `/update-plan`
-                                        )}
-                                      </React.Fragment>
-                                    )
-                                  )}
-                                </Grid>
-                              </>
-                            )}
-                        </div>
                       )}
                     </>
                   ) : (
