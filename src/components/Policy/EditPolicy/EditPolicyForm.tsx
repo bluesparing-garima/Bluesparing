@@ -110,7 +110,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
   const [netPremium, setNetPremium] = useState(Number(od) + Number(tp));
   const [proType, setProType] = useState(initialValues.productType || "");
   const [showUpgradePopup, setShowUpgradePopup] = useState(false);
-    const [progress, setProgress] = useState(0);
+  const [progress, setProgress] = useState(0);
   useEffect(() => {
     setNetPremium(Number(od) + Number(tp));
   }, [od, tp]);
@@ -231,7 +231,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
   };
 
   const getDocumentUrl = (file: any): string | undefined => {
-    if (!file) return undefined; 
+    if (!file) return undefined;
     if (file instanceof File) {
       return URL.createObjectURL(file); // Naya upload hua file
     }
@@ -298,21 +298,21 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
     } else {
       policyForm.vehicleAge = null;
     }
-      if (userData.role.toLowerCase() === "admin") {
-          policyForm.partnerId = selectedPartnerId;
-          policyForm.partnerName = selectedPartnerName;
-        } else if (policyForm.policyCreatedBy === "Direct") {
-          policyForm.partnerId = "Direct";
-          policyForm.partnerName = "Direct";
-        } else {
-          policyForm.partnerId = selectedPartnerId;
-          policyForm.partnerName = selectedPartnerName;
-        }
-        
-        policyForm.relationshipManagerId = selectedRMId;
-        policyForm.relationshipManagerName = selectedRMName;    
-    
-       policyForm.createdBy = userData.name;
+    if (userData.role.toLowerCase() === "admin") {
+      policyForm.partnerId = selectedPartnerId;
+      policyForm.partnerName = selectedPartnerName;
+    } else if (policyForm.policyCreatedBy === "Direct") {
+      policyForm.partnerId = "Direct";
+      policyForm.partnerName = "Direct";
+    } else {
+      policyForm.partnerId = selectedPartnerId;
+      policyForm.partnerName = selectedPartnerName;
+    }
+
+    policyForm.relationshipManagerId = selectedRMId;
+    policyForm.relationshipManagerName = selectedRMName;
+
+    policyForm.createdBy = userData.name;
     policyForm.vehicleNumber = policyForm.vehicleNumber.toUpperCase();
     policyForm.rto = policyForm.vehicleNumber.substring(0, 4);
     policyForm.policyCompletedBy = userData.profileId;
@@ -427,7 +427,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
   const callAddPolicyAPI = async (policy: any) => {
     try {
       setIsLoading(true);
-      const newPolicy = await addPolicyService({ header, policy ,onProgress});
+      const newPolicy = await addPolicyService({ header, policy, onProgress });
       if (newPolicy.status === "success") {
         const policyCount = userData?.policyCount || 0;
         if (policyCount <= 0) {
@@ -865,7 +865,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                                   typeof option === "string"
                                     ? option
                                     : `${option.brokerName} - ${option.brokerCode}` ||
-                                      ""
+                                    ""
                                 }
                                 options={brokers}
                                 onChange={(event, newValue) => {
@@ -1508,7 +1508,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                                         typeof option === "string"
                                           ? option
                                           : `${option.fullName} - ${option.partnerId}` ||
-                                            ""
+                                          ""
                                       }
                                       options={partners}
                                       onChange={(event, newValue) => {
@@ -1538,7 +1538,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                           </Grid>
                         )}
                       {selectedPolicyCreatedBy &&
-                       selectedPolicyCreatedBy === "Direct" && (
+                        selectedPolicyCreatedBy === "Direct" && (
                           <Grid item lg={4} md={4} sm={6} xs={12}>
                             <Field name="relationshipManagerName">
                               {({ input, meta }) => (
@@ -1551,13 +1551,13 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                                         typeof option === "string"
                                           ? option
                                           : `${option.name} - ${option.useCode}` ||
-                                            ""
+                                          ""
                                       }
                                       value={
                                         input.value !== undefined
                                           ? input.value
                                           : initialValues.relationshipManagerName ||
-                                            null
+                                          null
                                       }
                                       options={relationshipManagers}
                                       onChange={(event, newValue) => {
