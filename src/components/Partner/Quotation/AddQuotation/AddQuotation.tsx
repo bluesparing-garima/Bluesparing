@@ -9,6 +9,8 @@ import {
   FormControl,
   Autocomplete,
   Button,
+  IconButton,
+  Tooltip,
 } from "@mui/material";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { Field, Form } from "react-final-form";
@@ -32,6 +34,7 @@ import getQuotationByLeadIdService from "../../../../api/Quatotion/GetQuotationB
 import dayjs from "dayjs";
 import editLeadService from "../../../../api/Leads/EditLead/editLeadService";
 import toast, { Toaster } from "react-hot-toast";
+
 const AddQuotation = () => {
   const title = "Add Comment";
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
@@ -51,6 +54,7 @@ const AddQuotation = () => {
   const [viewQuotationDetails, setViewQuotationDetails] = useState<
     IQuotations[]
   >([]);
+
   useEffect(() => {
     if (!isAdd && leadId) {
       getQuotationByLeadIdService({ header, leadId })
@@ -63,6 +67,7 @@ const AddQuotation = () => {
         });
     }
   }, [isAdd, leadId]);
+
   useEffect(() => {
     if (!isAdd && leadId) {
       getLeadByIdService({ header, leadId })
@@ -132,8 +137,10 @@ const AddQuotation = () => {
         });
     }
   }, [isAdd, leadId]);
+
   const handleFileInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
+    index?: number
   ) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
@@ -143,9 +150,15 @@ const AddQuotation = () => {
       } else {
         setErrorMessage("");
         setImage(file);
+        if (index !== undefined) {
+          const updatedDocuments = [...documents];
+          updatedDocuments[index].file = URL.createObjectURL(file);
+          setDocuments(updatedDocuments);
+        }
       }
     }
   };
+
   const onSubmit = (quotationForm: any, form: any) => {
     quotationForm.relationshipManagerId = userData.headRMId;
     quotationForm.relationshipManagerName = userData.headRM;
@@ -187,6 +200,7 @@ const AddQuotation = () => {
     }
     callAddQuotationAPI(quotationForm, form);
   };
+
   const callAddQuotationAPI = async (quotationForm: any, form: any) => {
     const formData = new FormData();
     for (const [key, value] of Object.entries(quotationForm)) {
@@ -212,6 +226,7 @@ const AddQuotation = () => {
       setIsLoading(false);
     }
   };
+
   const callEditLeadAPI = async (leadForm: any, leadId: string) => {
     try {
       const newLead = await editLeadService({
@@ -226,6 +241,7 @@ const AddQuotation = () => {
       toast.error(err.message);
     }
   };
+
   const handleStatus = (
     id: string,
     status: string,
@@ -260,9 +276,40 @@ const AddQuotation = () => {
         break;
     }
   };
+
   const handleClickBooking = () => {
     navigate(bookingRequestNewPath(leadId!));
   };
+
+  const handleClickAddDocument = () => {
+    setDocuments([...documents, { docName: "", file: "" }]);
+  };
+
+  const handleClickDeleteDocument = (index: number) => {
+    const updatedDocuments = documents.filter((_, i) => i !== index);
+    setDocuments(updatedDocuments);
+  };
+
+  const handleChangeDocumentName = (newValue: any, index: number) => {
+    const updatedDocuments = [...documents];
+    updatedDocuments[index].docName = newValue.value;
+    setDocuments(updatedDocuments);
+  };
+
+  const documentTypes = [
+    { label: "RC Back", value: "rcBack" },
+    { label: "RC Front", value: "rcFront" },
+    { label: "Previous Policy", value: "previousPolicy" },
+    { label: "Survey", value: "survey" },
+    { label: "PUC", value: "puc" },
+    { label: "Fitness", value: "fitness" },
+    { label: "Proposal", value: "proposal" },
+    { label: "Current Policy", value: "currentPolicy" },
+    { label: "Other", value: "other" },
+  ];
+
+  const errors: any[] = [];
+
   return (
     <>
       <div className="bg-blue-200 md:p-7 p-2">
@@ -443,6 +490,17 @@ const AddQuotation = () => {
                           </Typography>
                         </Grid>
                       </Grid>
+                        <Grid item md={12} mt={2}>
+                                            <Button
+                                              variant="outlined"
+                                              onClick={handleClickAddDocument}
+                                            >
+                                              Add More Document
+                                            </Button>
+                                            <Typography variant="body1" gutterBottom mr={4}>
+                                              {"Image should be <= 4MB."}
+                                            </Typography>
+                                          </Grid>
                       <Grid item lg={4} md={4} sm={6} xs={12}>
                         <Field name="status">
                           {({ input, meta }) => (
