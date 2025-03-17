@@ -11,6 +11,7 @@ import {
   InputLabel,
   FormHelperText,
   OutlinedInput,
+  selectClasses,
 } from "@mui/material";
 import { FormControl, Autocomplete } from "@mui/material";
 import addTeamService from "../../../../api/Team/AddTeam/addTeamService";
@@ -292,10 +293,8 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
         newRole = "rm";
       }
       const maxLimit = userLimit.hasOwnProperty(newRole) ? userLimit[newRole] : 0;
-
-      // **User Limit Check पहले करो**
       if (maxLimit <= 0) {
-        setShowUpgradePopup(true); // **Upgrade Plan Popup दिखाओ**
+        setShowUpgradePopup(true);
         return;
       }
       const onProgress = (p: number) => {
@@ -505,6 +504,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       <UpgradePlanPopup
         open={showUpgradePopup}
         onClose={() => setShowUpgradePopup(false)}
+        msg={`${selectedRole} limit is exhausted please update your plan`}
       />
       <Form
         onSubmit={onSubmit}

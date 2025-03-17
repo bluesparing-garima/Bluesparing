@@ -23,7 +23,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { storeInSessionStorage } from "../utils/HandleStore";
 import generateFormData from "../utils/generateFromData";
 import { useEffect, useState } from "react";
-import { Cookie } from "@mui/icons-material";
+
 const Signup = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);

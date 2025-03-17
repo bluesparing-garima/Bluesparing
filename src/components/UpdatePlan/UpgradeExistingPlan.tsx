@@ -3,17 +3,18 @@ import { useNavigate } from "react-router-dom";
 
 interface UpgradePlanPopupProps {
   open: boolean;
+  msg?: string;
   onClose: () => void;
 }
 
-const UpgradePlanPopup: React.FC<UpgradePlanPopupProps> = ({ open, onClose }) => {
+const UpgradePlanPopup: React.FC<UpgradePlanPopupProps> = ({ open, onClose, msg }) => {
   const navigate = useNavigate();
 
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Upgrade Required</DialogTitle>
       <DialogContent>
-        <p>You have reached your policy limit. Please upgrade your plan to create more policies.</p>
+        <p> {msg || "You have reached your policy limit. Please upgrade your plan to create more policies"}.</p>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} color="secondary">Cancel</Button>

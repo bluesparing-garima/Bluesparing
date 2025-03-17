@@ -133,38 +133,30 @@ const GetMotorPolicies = () => {
     setPagination(p);
   }, []);
   const onSubmit = async (filterForm: any) => {
-    // Ensure both dates are provided
     if (!stDate || !eDate) {
       toast.error("Both start date and end date are required.")
-      // alert("Both start date and end date are required.");
       return;
     }
-  
-    // Convert input dates using dayjs
+
     const startDate = dayjs(stDate);
     const endDate = dayjs(eDate);
-  
-    // Validate if dates are valid
+
     if (!startDate.isValid() || !endDate.isValid()) {
       toast.error("Invalid date selected. Please select valid dates.");
-      // alert("Invalid date selected. Please select valid dates.");
       return;
     }
-  
-    // Ensure endDate is not before startDate
+
     if (endDate.isBefore(startDate)) {
       toast.error("End date cannot be before start date.")
-      // alert("End date cannot be before start date.");
       return;
     }
-  
-    // Format dates
+
     const newStartDate = startDate.format(DAY_FORMAT);
     const newEndDate = endDate.format(DAY_FORMAT);
-  
+
     try {
       const userRole = userData.role.toLowerCase();
-  
+
       if (userRole === "admin" || userRole === "account") {
         await GetPolicies(newStartDate, newEndDate);
       } else if (userRole === "booking") {
@@ -175,7 +167,6 @@ const GetMotorPolicies = () => {
     } catch (error) {
       console.error("Error fetching policies:", error);
       toast.error("Failed to fetch policies. Please try again.")
-      // alert("Failed to fetch policies. Please try again.");
     }
   };
   const GetPolicies = useCallback((startDate, endDate) => {
@@ -838,88 +829,88 @@ const GetMotorPolicies = () => {
     () =>
       motorPolicies?.map(
         (motorPolicy: IViewPolicy) =>
-          ({
-            id: motorPolicy._id,
-            policyId: motorPolicy.policyId,
-            fullName: motorPolicy.fullName,
-            productType: motorPolicy.productType,
-            emailId: motorPolicy.emailId,
-            weight: motorPolicy.weight,
-            broker: motorPolicy.broker,
-            brokerCode: motorPolicy.brokerCode,
-            policyType: motorPolicy.policyType,
-            caseType: motorPolicy.caseType,
-            category: motorPolicy.category,
-            subCategory: motorPolicy.subCategory,
-            companyName: motorPolicy.companyName,
-            make: motorPolicy.make,
-            model: motorPolicy.model,
-            fuelType: motorPolicy.fuelType,
-            rto: motorPolicy.rto,
-            vehicleNumber: motorPolicy.vehicleNumber,
-            seatingCapacity: motorPolicy.seatingCapacity,
-            vehicleAge: motorPolicy.vehicleAge,
-            ncb: motorPolicy.ncb,
-            policyNumber: motorPolicy.policyNumber,
-            phoneNumber: motorPolicy.phoneNumber,
-            mfgYear: motorPolicy.mfgYear,
-            registrationDate: dayjs(motorPolicy.registrationDate).format(
-              DAYJS_DISPLAY_FORMAT
-            ),
-            endDate: dayjs(motorPolicy.endDate).format(DAYJS_DISPLAY_FORMAT),
-            issueDate: dayjs(motorPolicy.issueDate).format(
-              DAYJS_DISPLAY_FORMAT
-            ),
-            tenure: motorPolicy.tenure,
-            idv: motorPolicy.idv,
-            od: motorPolicy.od,
-            tp: motorPolicy.tp,
-            netPremium: motorPolicy.netPremium,
-            finalPremium: parseInt(motorPolicy.finalPremium),
-            cc: motorPolicy.cc,
-            paymentMode: motorPolicy.paymentMode,
-            policyCreatedBy: motorPolicy.policyCreatedBy,
-            createdOn: dayjs(motorPolicy.createdOn).format(
-              DAYJS_DISPLAY_FORMAT
-            ),
-            paymentDetails: motorPolicy.paymentDetails,
-            policyStatus: motorPolicy.policyStatus,
-            partnerCode: motorPolicy.partnerCode,
-            partnerId: motorPolicy.partnerId,
-            partnerName: motorPolicy.partnerName,
-            relationshipManagerName: motorPolicy.relationshipManagerName,
-            relationshipManagerId: motorPolicy.relationshipManagerId,
-            rcFront: motorPolicy.rcFront,
-            rcBack: motorPolicy.rcBack,
-            previousPolicy: motorPolicy.previousPolicy,
-            policyCompletedByName: motorPolicy.policyCompletedByName,
-            policyCompletedByCode: motorPolicy.policyCompletedByCode,
-            survey: motorPolicy.survey,
-            puc: motorPolicy.puc,
-            fitness: motorPolicy.fitness,
-            proposal: motorPolicy.proposal,
-            currentPolicy: motorPolicy.currentPolicy,
-            payInPaymentStatus: motorPolicy.payInPaymentStatus,
-            payInODAmount: motorPolicy.payInODAmount,
-            payInODPercentage: motorPolicy.payInODPercentage,
-            payInTPPercentage: motorPolicy.payInTPPercentage,
-            payInTPAmount: motorPolicy.payInTPAmount,
-            payInBalance: motorPolicy.payInBalance,
-            payInCommission: motorPolicy.payInCommission,
-            payOutODPercentage: motorPolicy.payOutODPercentage,
-            payOutTPPercentage: motorPolicy.payOutTPPercentage,
-            payOutODAmount: motorPolicy.payOutODAmount,
-            payOutTPAmount: motorPolicy.payOutTPAmount,
-            payOutBalance: motorPolicy.payOutBalance,
-            payOutCommission: motorPolicy.payOutCommission,
-            payInAmount: motorPolicy.payInAmount,
-            payOutAmount: motorPolicy.payOutAmount,
-            payOutPaymentStatus: motorPolicy.payOutPaymentStatus,
-            other: motorPolicy.other,
-            isPublished: motorPolicy.isPublished || false,
-            policyRemarks: motorPolicy.policyRemarks || "",
-            isDispute: motorPolicy.isDispute,
-          } as unknown as IViewPolicy)
+        ({
+          id: motorPolicy._id,
+          policyId: motorPolicy.policyId,
+          fullName: motorPolicy.fullName,
+          productType: motorPolicy.productType,
+          emailId: motorPolicy.emailId,
+          weight: motorPolicy.weight,
+          broker: motorPolicy.broker,
+          brokerCode: motorPolicy.brokerCode,
+          policyType: motorPolicy.policyType,
+          caseType: motorPolicy.caseType,
+          category: motorPolicy.category,
+          subCategory: motorPolicy.subCategory,
+          companyName: motorPolicy.companyName,
+          make: motorPolicy.make,
+          model: motorPolicy.model,
+          fuelType: motorPolicy.fuelType,
+          rto: motorPolicy.rto,
+          vehicleNumber: motorPolicy.vehicleNumber,
+          seatingCapacity: motorPolicy.seatingCapacity,
+          vehicleAge: motorPolicy.vehicleAge,
+          ncb: motorPolicy.ncb,
+          policyNumber: motorPolicy.policyNumber,
+          phoneNumber: motorPolicy.phoneNumber,
+          mfgYear: motorPolicy.mfgYear,
+          registrationDate: dayjs(motorPolicy.registrationDate).format(
+            DAYJS_DISPLAY_FORMAT
+          ),
+          endDate: dayjs(motorPolicy.endDate).format(DAYJS_DISPLAY_FORMAT),
+          issueDate: dayjs(motorPolicy.issueDate).format(
+            DAYJS_DISPLAY_FORMAT
+          ),
+          tenure: motorPolicy.tenure,
+          idv: motorPolicy.idv,
+          od: motorPolicy.od,
+          tp: motorPolicy.tp,
+          netPremium: motorPolicy.netPremium,
+          finalPremium: parseInt(motorPolicy.finalPremium),
+          cc: motorPolicy.cc,
+          paymentMode: motorPolicy.paymentMode,
+          policyCreatedBy: motorPolicy.policyCreatedBy,
+          createdOn: dayjs(motorPolicy.createdOn).format(
+            DAYJS_DISPLAY_FORMAT
+          ),
+          paymentDetails: motorPolicy.paymentDetails,
+          policyStatus: motorPolicy.policyStatus,
+          partnerCode: motorPolicy.partnerCode,
+          partnerId: motorPolicy.partnerId,
+          partnerName: motorPolicy.partnerName,
+          relationshipManagerName: motorPolicy.relationshipManagerName,
+          relationshipManagerId: motorPolicy.relationshipManagerId,
+          rcFront: motorPolicy.rcFront,
+          rcBack: motorPolicy.rcBack,
+          previousPolicy: motorPolicy.previousPolicy,
+          policyCompletedByName: motorPolicy.policyCompletedByName,
+          policyCompletedByCode: motorPolicy.policyCompletedByCode,
+          survey: motorPolicy.survey,
+          puc: motorPolicy.puc,
+          fitness: motorPolicy.fitness,
+          proposal: motorPolicy.proposal,
+          currentPolicy: motorPolicy.currentPolicy,
+          payInPaymentStatus: motorPolicy.payInPaymentStatus,
+          payInODAmount: motorPolicy.payInODAmount,
+          payInODPercentage: motorPolicy.payInODPercentage,
+          payInTPPercentage: motorPolicy.payInTPPercentage,
+          payInTPAmount: motorPolicy.payInTPAmount,
+          payInBalance: motorPolicy.payInBalance,
+          payInCommission: motorPolicy.payInCommission,
+          payOutODPercentage: motorPolicy.payOutODPercentage,
+          payOutTPPercentage: motorPolicy.payOutTPPercentage,
+          payOutODAmount: motorPolicy.payOutODAmount,
+          payOutTPAmount: motorPolicy.payOutTPAmount,
+          payOutBalance: motorPolicy.payOutBalance,
+          payOutCommission: motorPolicy.payOutCommission,
+          payInAmount: motorPolicy.payInAmount,
+          payOutAmount: motorPolicy.payOutAmount,
+          payOutPaymentStatus: motorPolicy.payOutPaymentStatus,
+          other: motorPolicy.other,
+          isPublished: motorPolicy.isPublished || false,
+          policyRemarks: motorPolicy.policyRemarks || "",
+          isDispute: motorPolicy.isDispute,
+        } as unknown as IViewPolicy)
       ) ?? [],
     [motorPolicies]
   );
@@ -1118,6 +1109,33 @@ const GetMotorPolicies = () => {
       console.error("Unsupported file type:", fileExtension);
     }
   };
+  const isPaid = (row: any) => {
+    const result = [
+      "partnerName",
+      "payInODPercentage",
+      "payInTPPercentage",
+      "payOutTPPercentage",
+      "payOutODPercentage",
+      "brokerName",
+    ];
+  console.log(row)
+    let { payInPaymentStatus, payOutPaymentStatus } = row;
+    payInPaymentStatus = typeof payInPaymentStatus === "string" ? payInPaymentStatus.toLowerCase().trim() : "";
+    payOutPaymentStatus = typeof payOutPaymentStatus === "string" ? payOutPaymentStatus.toLowerCase().trim() : "";
+    payInPaymentStatus =  payInPaymentStatus==="partial" ?"paid":payInPaymentStatus;
+    payOutPaymentStatus =  payOutPaymentStatus==="partial" ?"paid":payOutPaymentStatus;
+    if (payInPaymentStatus === "paid" && payOutPaymentStatus === "paid") {
+      return ["partnerName","brokerName"];
+    } else if (payInPaymentStatus === "paid" && payOutPaymentStatus === "unpaid") {
+      return ["partnerName", "payOutTPPercentage", "payOutODPercentage","brokerName"];
+    } else if (payInPaymentStatus === "unpaid" && payOutPaymentStatus === "paid") {
+      return ["payInODPercentage", "payInTPPercentage", "brokerName","partnerName"];
+    } else {
+      return result;
+    }
+  };
+  
+
   const handleStartDateChange = (date: any, input: any) => {
     const newDate = dayjs(date).format(DAY_FORMAT);
     setStDate(newDate);
@@ -1443,8 +1461,8 @@ const GetMotorPolicies = () => {
                 <span className="text-grey-600 text-sm"> Motor Policies</span>
               </div>
               {userData.role.toLowerCase() === "admin" ||
-              userData.role.toLowerCase() === "booking" ||
-              userData.role.toLowerCase() === "account" ? (
+                userData.role.toLowerCase() === "booking" ||
+                userData.role.toLowerCase() === "account" ? (
                 <Button
                   type="button"
                   className="w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
@@ -1460,7 +1478,7 @@ const GetMotorPolicies = () => {
                 ""
               )}
             </div>
-            {}
+            { }
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
@@ -1473,7 +1491,7 @@ const GetMotorPolicies = () => {
               render={({ handleSubmit, submitting, errors, values }) => (
                 <form onSubmit={handleSubmit} noValidate>
                   <Grid container spacing={2}>
-                    {}
+                    { }
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Field name="startDate">
                         {({ input, meta }) => {
@@ -1485,7 +1503,7 @@ const GetMotorPolicies = () => {
                                 value={dayjs(stDate)}
                                 minDate={
                                   userData.role.toLowerCase().trim() ===
-                                  "partner"
+                                    "partner"
                                     ? new Date(2025, 0, 1)
                                     : undefined
                                 }
@@ -1520,7 +1538,7 @@ const GetMotorPolicies = () => {
                                 value={dayjs(eDate)}
                                 minDate={
                                   userData.role.toLowerCase().trim() ===
-                                  "partner"
+                                    "partner"
                                     ? new Date(2025, 0, 1)
                                     : undefined
                                 }
@@ -1580,14 +1598,7 @@ const GetMotorPolicies = () => {
               userData.role?.toLowerCase().trim() === "account"
             }
             muiTableBodyCellEditTextFieldProps={({ cell }) => {
-              const editableColumns = [
-                "partnerName",
-                "payInODPercentage",
-                "payInTPPercentage",
-                "payOutTPPercentage",
-                "payOutODPercentage",
-                "brokerName",
-              ];
+              const editableColumns = isPaid(cell.row.original) 
               const isEditable = editableColumns.includes(cell.column.id);
               if (cell.column.id === "partnerName") {
                 return {
@@ -1608,6 +1619,7 @@ const GetMotorPolicies = () => {
                         />
                       )}
                       onChange={(event, newValue) => {
+
                         handleSaveCell(cell, newValue);
                       }}
                       value={
@@ -1653,14 +1665,15 @@ const GetMotorPolicies = () => {
               }
               return isEditable
                 ? {
-                    onBlur: (event) => {
-                      const newValue = event.target.value;
-                      handleSaveCell(cell, newValue);
-                    },
-                  }
+                  onBlur: (event) => {
+
+                    const newValue = event.target.value;
+                    handleSaveCell(cell, newValue);
+                  },
+                }
                 : {
-                    disabled: true,
-                  };
+                  disabled: true,
+                };
             }}
             renderTopToolbarCustomActions={({ table }) => (
               <>
@@ -1681,68 +1694,68 @@ const GetMotorPolicies = () => {
                   {(userData.role.toLowerCase() === "admin" ||
                     userData.role.toLowerCase() === "account" ||
                     userData.role.toLowerCase() === "partner") && (
-                    <Tooltip title={"Policy Dispute"}>
-                      <IconButton
-                        color="primary"
-                        aria-label={"Dispute"}
-                        component="span"
-                        onClick={() => {
-                          savePaginationState(
-                            pagination,
-                            MOTOR_POLICY_STORAGE_KEY
-                          );
-                          navigate(`/policy/policy-dispute`, {
-                            state: row.original,
-                          });
-                        }}
-                      >
-                        {row.original.isDispute && (
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                            className="size-6"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.501 48.172 48.172 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
-                            />
-                          </svg>
-                        )}
-                        {row.original.isDispute === false && (
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                            className="size-6"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
-                            />
-                          </svg>
-                        )}
-                      </IconButton>
-                    </Tooltip>
-                  )}
+                      <Tooltip title={"Policy Dispute"}>
+                        <IconButton
+                          color="primary"
+                          aria-label={"Dispute"}
+                          component="span"
+                          onClick={() => {
+                            savePaginationState(
+                              pagination,
+                              MOTOR_POLICY_STORAGE_KEY
+                            );
+                            navigate(`/policy/policy-dispute`, {
+                              state: row.original,
+                            });
+                          }}
+                        >
+                          {row.original.isDispute && (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1.5}
+                              stroke="currentColor"
+                              className="size-6"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.501 48.172 48.172 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
+                              />
+                            </svg>
+                          )}
+                          {row.original.isDispute === false && (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1.5}
+                              stroke="currentColor"
+                              className="size-6"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
+                              />
+                            </svg>
+                          )}
+                        </IconButton>
+                      </Tooltip>
+                    )}
                   <MenuIconButton
                     row={row}
                     isAdmin={
                       userData.role.toLowerCase() === "admin" ||
-                      userData.role.toLowerCase() === "account" ||
-                      userData.role.toLowerCase().trim() === "booking"
+                        userData.role.toLowerCase() === "account" ||
+                        userData.role.toLowerCase().trim() === "booking"
                         ? true
                         : false
                     }
                     isAdminAction={
                       row.original.payInPaymentStatus! === "UnPaid" &&
-                      row.original.payOutPaymentStatus! === "UnPaid"
+                        row.original.payOutPaymentStatus! === "UnPaid"
                         ? true
                         : false
                     }
@@ -1750,14 +1763,14 @@ const GetMotorPolicies = () => {
                       (userData.role.toLowerCase() === "admin" ||
                         userData?.role?.toLowerCase().trim() === "booking" ||
                         userData?.role?.toLowerCase().trim() === "account") &&
-                      row.original.isPublished === false
+                        row.original.isPublished === false
                         ? () => handlePublishPolicy(row.original)
                         : undefined
                     }
                     addRemark={
                       userData?.role.toLowerCase() === "admin" ||
-                      userData?.role?.toLowerCase().trim() === "account" ||
-                      userData?.role.toLowerCase() === "partner"
+                        userData?.role?.toLowerCase().trim() === "account" ||
+                        userData?.role.toLowerCase() === "partner"
                         ? () => handleAddRemarks(row.original)
                         : undefined
                     }
@@ -1768,32 +1781,32 @@ const GetMotorPolicies = () => {
                     }
                     onAdminView={
                       userData.role.toLowerCase() === "admin" ||
-                      userData?.role?.toLowerCase().trim() === "account"
+                        userData?.role?.toLowerCase().trim() === "account"
                         ? () => handleClickViewAdminPolicy(row.original)
                         : undefined
                     }
                     onView={() => handleClickViewPolicy(row.original)}
                     onEditCommission={
                       userData.role.toLowerCase() === "admin" ||
-                      userData?.role?.toLowerCase().trim() === "account"
+                        userData?.role?.toLowerCase().trim() === "account"
                         ? () => handleClickPolicyEditCommission(row.original)
                         : undefined
                     }
                     onViewCommission={
                       userData.role.toLowerCase() === "admin" ||
-                      userData?.role?.toLowerCase().trim() === "account"
+                        userData?.role?.toLowerCase().trim() === "account"
                         ? () => handleClickViewPaymentDetails(row.original)
                         : undefined
                     }
                     onPayIn={
                       userData.role.toLowerCase() === "admin" ||
-                      userData?.role?.toLowerCase().trim() === "account"
+                        userData?.role?.toLowerCase().trim() === "account"
                         ? () => handleClickCalculatePayIn(row.original)
                         : undefined
                     }
                     onPayOut={
                       userData.role.toLowerCase() === "admin" ||
-                      userData?.role?.toLowerCase().trim() === "account"
+                        userData?.role?.toLowerCase().trim() === "account"
                         ? () => handleClickCalculatePayOut(row.original)
                         : undefined
                     }
