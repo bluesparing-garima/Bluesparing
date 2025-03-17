@@ -76,6 +76,7 @@ export type Header = {
 export const policyStatusPartner = [
   { label: "Changes Required", value: "Changes Required" },
   { label: "Payment Request", value: "Payment Request" },
+  { label: "Payment Done", value: "Payment Done" },
 ];
 export const policyStatusOperation = [
   { label: "Doc Pending", value: "Doc Pending" },

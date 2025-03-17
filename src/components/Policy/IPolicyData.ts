@@ -197,6 +197,7 @@ export const documentTypes = [
   { label: "Proposal", value: "proposal" },
   { label: "Current Policy", value: "currentPolicy" },
   { label: "Previous Policy", value: "previousPolicy" },
+  { label: "new Policy PDF", value: "new_policy_pdf" },
   { label: "Other", value: "other" },
 ];
 
