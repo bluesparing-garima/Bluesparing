@@ -137,7 +137,8 @@ const Signin = () => {
     if (debouncedEmail) {
       setShowOtpBox(true)
       sendOtpReq(debouncedEmail).then((data) => {
-        console.log(data)
+        navigate("client")
+      
       })
     }
   }, [debouncedEmail])
