@@ -23,6 +23,7 @@ import {
   imagePath,
   policyStatusPartner,
   policyStatusOperation,
+  ALLOWED_FILE_TYPES,
 } from "../../../../context/constant";
 import { ILeadForm, IQuotations } from "../../IPartner";
 import { convertILeadVMToILeadForm } from "../../../../api/Leads/convertILeadVMToILeadForm";
@@ -52,46 +53,11 @@ const AddQuotation = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [image, setImage] = useState<any>(null);
   const [documents, setDocuments] = useState<Document[]>([
-    { docName: "", file: "" },
+    { docName: "currentPolicy", file: "" },
   ]);
   const [viewQuotationDetails, setViewQuotationDetails] = useState<
     IQuotations[]
   >([]);
-
-  const handleChangeDocumentName = (newValue: any, index: any) => {
-    const updatedDocuments = documents.map((doc, i) =>
-      i === index ? { ...doc, docName: newValue?.value! } : doc
-    );
-    setDocuments(updatedDocuments);
-  };
-  const validateField = (index: number, name: string, value: string) => {
-    const newErrors = [...errors];
-    if (name === "docName" || name === "file") {
-      newErrors[index] = {
-        ...newErrors[index],
-        [name]: value === "" ? `${name} cannot be empty` : "",
-      };
-    }
-    setErrors(newErrors);
-  };
-  const validateDocument = (document: Document, index: number) => {
-    const isValidDocName = document.docName.trim() !== "";
-    const isValidFile = document.file !== undefined && document.file !== null;
-    validateField(index, "docName", document.docName);
-    validateField(index, "file", document.file);
-    return isValidDocName && isValidFile;
-  };
-
-  const handleClickAddDocument = () => {
-    setDocuments([...documents, { docName: "", file: "" }]);
-  };
-  const handleClickDeleteDocument = (index: any) => {
-    setDocuments((prevDocuments) =>
-      prevDocuments.filter((_, i) => i !== index)
-    );
-    const newErrors = errors.filter((_, i) => i !== index);
-    setErrors(newErrors);
-  };
 
   useEffect(() => {
     if (!isAdd && leadId) {
@@ -174,27 +140,86 @@ const AddQuotation = () => {
         });
     }
   }, [isAdd, leadId]);
-  const handleFileInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleFileInputChange = (event: any, index: any) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
+      const fileType = file.type;
       const fileSize = file.size;
-      if (fileSize > MAX_FILE_SIZE) {
-        setErrorMessage("Image is incorrect size.");
+      const newErrors = [...errors];
+      if (!ALLOWED_FILE_TYPES.includes(fileType)) {
+        newErrors[index] = {
+          ...newErrors[index],
+          file: "Invalid file type. Please upload an image or a PDF.",
+        };
+        setErrors(newErrors);
+      } else if (fileSize > MAX_FILE_SIZE) {
+        newErrors[index] = {
+          ...newErrors[index],
+          file: "File size exceeds the maximum limit",
+        };
+        setErrors(newErrors);
       } else {
         setErrorMessage("");
-        setImage(file);
+        const newDocuments = [...documents];
+        newDocuments[index] = { ...newDocuments[index], file: file };
+        setDocuments(newDocuments);
+        if (newErrors[index]) {
+          newErrors[index].file = "";
+        }
+        setErrors(newErrors);
       }
     }
   };
+
+  const validateDocument = (document: Document, index: number) => {
+    const isValidDocName = document.docName.trim() !== "";
+    const isValidFile = document.file;
+    validateField(index, "docName", document.docName);
+    validateField(index, "file", document.file);
+    return isValidDocName && isValidFile;
+  };
+
+  const validateField = (index: number, name: string, value: string) => {
+    const newErrors = [...errors];
+    if (name === "docName" || name === "file") {
+      newErrors[index] = {
+        ...newErrors[index],
+        [name]: value === "" ? `${name} cannot be empty` : "",
+      };
+    }
+    setErrors(newErrors);
+  };  
+
+  const handleChangeDocumentName = (newValue: any, index: any) => {
+    const updatedDocuments = documents.map((doc, i) =>
+      i === index ? { ...doc, docName: newValue?.value! } : doc
+    );
+    setDocuments(updatedDocuments);
+  };
+  
+  const handleClickAddDocument = () => {
+    setDocuments([...documents, { docName: "", file: "" }]);
+  };
+  const handleClickDeleteDocument = (index: any) => {
+    setDocuments((prevDocuments) =>
+      prevDocuments.filter((_, i) => i !== index)
+    );
+    const newErrors = errors.filter((_, i) => i !== index);
+    setErrors(newErrors);
+  };
+
   const onSubmit = (quotationForm: any, form: any) => {
+    console.log(quotationForm);
     quotationForm.relationshipManagerId = userData.headRMId;
     quotationForm.relationshipManagerName = userData.headRM;
     quotationForm.leadId = leadId;
     quotationForm.createdBy = userData.name;
     quotationForm.quotationImage = image;
     quotationForm.status = quotationForm.status.value;
+    documents?.forEach((ele)=>{
+      quotationForm[ele.docName] = ele.file
+    })
+    console.log('quotationForm',quotationForm)
     const editFrom = new FormData();
     editFrom.append("id", leadId!);
     editFrom.append("status", quotationForm.status);
@@ -227,33 +252,51 @@ const AddQuotation = () => {
         editLeadDetails?.timer
       );
     }
+    // console.log("Documents before append:", documents); // Debugging step
     callAddQuotationAPI(quotationForm, form);
   };
-  const callAddQuotationAPI = async (quotationForm: any, form: any) => {
+  
+  const callAddQuotationAPI = async (quotationForm: Record<string, any>, form: any) => {
     const formData = new FormData();
-    for (const [key, value] of Object.entries(quotationForm)) {
-      if (value instanceof File) {
-        formData.append(key, value);
-      } else {
-        formData.append(key, value as string);
-      }
-    }
+
+    // Append quotationForm fields
+    Object.entries(quotationForm).forEach(([key, value]) => {
+        if (value !== undefined) {
+            if (value instanceof File) {
+                formData.append(key, value);
+            } else {
+                formData.append(key, value as string);
+            }
+        }
+    });
+
+    // Append documents properly
+    // documents.forEach((doc, index) => {
+    //     if (doc.file) {
+    //         console.log(`Appending document ${index}:`, doc);
+    //         formData.append(`documents[${index}][docName]`, doc.docName);
+    //         formData.append(`documents[${index}][file]`, doc.file);
+    //     }
+    // });
+
     try {
-      setIsLoading(true);
-      const newQuotation = await addQuotationService({
-        header,
-        quotation: formData,
-      });
-      if (newQuotation.status === "success") {
-        navigate(leadsPath());
-      }
+        setIsLoading(true);
+        const newQuotation = await addQuotationService({
+            header,
+            quotation: formData,
+        });
+
+        if (newQuotation.status === "success") {
+            navigate(leadsPath());
+        }
     } catch (error: any) {
-      const err = await error;
-      toast.error(err.message);
+        const err = await error;
+        toast.error(err.message);
     } finally {
-      setIsLoading(false);
+        setIsLoading(false);
     }
-  };
+};
+
   const callEditLeadAPI = async (leadForm: any, leadId: string) => {
     try {
       const newLead = await editLeadService({
@@ -415,31 +458,40 @@ const AddQuotation = () => {
                           {"Documents"}
                         </Typography>
                         <Grid container>
-                          {documents.map((document, index) => (
-                            <Grid item md={4} key={index}>
-                              <Typography
-                                className="text-addButton"
-                                variant="subtitle1"
-                                component="h4"
-                              >
-                                {document.docName}
-                              </Typography>
-                              {document.file.endsWith(".pdf") ? (
-                                <embed
-                                  src={document.file}
-                                  type="application/pdf"
-                                  width="400"
-                                  height="400"
-                                />
-                              ) : (
-                                <img
-                                  src={document.file}
-                                  alt={document.docName}
-                                  style={{ maxWidth: "100%" }}
-                                />
-                              )}
-                            </Grid>
-                          ))}
+                          {documents.map((document, index) => {
+                            const fileURL =
+                              typeof document.file === "string"
+                                ? document.file
+                                : URL.createObjectURL(document.file);
+                            const isPDF = fileURL.endsWith(".pdf");
+
+                            return (
+                              <Grid item md={4} key={index}>
+                                <Typography
+                                  className="text-addButton"
+                                  variant="subtitle1"
+                                  component="h4"
+                                >
+                                  {document.docName}
+                                </Typography>
+
+                                {isPDF ? (
+                                  <embed
+                                    src={fileURL}
+                                    type="application/pdf"
+                                    width="400"
+                                    height="400"
+                                  />
+                                ) : (
+                                  <img
+                                    src={fileURL}
+                                    alt={document.docName}
+                                    style={{ maxWidth: "100%" }}
+                                  />
+                                )}
+                              </Grid>
+                            );
+                          })}
                         </Grid>
                       </Grid>
                       <Grid container mt={3}>
@@ -519,7 +571,7 @@ const AddQuotation = () => {
                           )}
                         </Field>
                       </Grid>
-                      <Grid item lg={4} md={4} sm={6} xs={12}>
+                      {/* <Grid item lg={4} md={4} sm={6} xs={12}>
                         <input
                           id={`file`}
                           type="file"
@@ -532,7 +584,7 @@ const AddQuotation = () => {
                           }}
                         />
                         <span style={{ color: "red" }}>{errorMessage}</span>
-                      </Grid>
+                      </Grid> */}
                       {/* new code added  */}
                       <Grid item md={12} mt={2}>
                         <Button
@@ -582,7 +634,9 @@ const AddQuotation = () => {
                                 <input
                                   id={`file ${index}`}
                                   type="file"
-                                  onChange={(e) => handleFileInputChange(e)}
+                                  onChange={(e) =>
+                                    handleFileInputChange(e, index)
+                                  }
                                   style={{
                                     border: "1px solid #c4c4c4",
                                     padding: "5px",
@@ -630,7 +684,7 @@ const AddQuotation = () => {
                         ))}
                       </Grid>
                       {/* \end{code} */}
-                      
+
                       <Grid item lg={12} md={12} sm={12} xs={12}>
                         <Field name="comments">
                           {({ input, meta }) => (
