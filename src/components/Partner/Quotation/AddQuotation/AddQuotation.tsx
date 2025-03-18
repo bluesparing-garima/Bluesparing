@@ -9,8 +9,6 @@ import {
   FormControl,
   Autocomplete,
   Button,
-  IconButton,
-  Tooltip,
 } from "@mui/material";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { Field, Form } from "react-final-form";
@@ -34,7 +32,6 @@ import getQuotationByLeadIdService from "../../../../api/Quatotion/GetQuotationB
 import dayjs from "dayjs";
 import editLeadService from "../../../../api/Leads/EditLead/editLeadService";
 import toast, { Toaster } from "react-hot-toast";
-
 const AddQuotation = () => {
   const title = "Add Comment";
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
@@ -54,7 +51,6 @@ const AddQuotation = () => {
   const [viewQuotationDetails, setViewQuotationDetails] = useState<
     IQuotations[]
   >([]);
-
   useEffect(() => {
     if (!isAdd && leadId) {
       getQuotationByLeadIdService({ header, leadId })
@@ -67,7 +63,6 @@ const AddQuotation = () => {
         });
     }
   }, [isAdd, leadId]);
-
   useEffect(() => {
     if (!isAdd && leadId) {
       getLeadByIdService({ header, leadId })
@@ -137,10 +132,8 @@ const AddQuotation = () => {
         });
     }
   }, [isAdd, leadId]);
-
   const handleFileInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    index?: number
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
@@ -150,17 +143,10 @@ const AddQuotation = () => {
       } else {
         setErrorMessage("");
         setImage(file);
-        if (index !== undefined) {
-          const updatedDocuments = [...documents];
-          updatedDocuments[index].file = URL.createObjectURL(file);
-          setDocuments(updatedDocuments);
-        }
       }
     }
   };
-
   const onSubmit = (quotationForm: any, form: any) => {
-    console.log("quotion form",quotationForm)
     quotationForm.relationshipManagerId = userData.headRMId;
     quotationForm.relationshipManagerName = userData.headRM;
     quotationForm.leadId = leadId;
@@ -201,7 +187,6 @@ const AddQuotation = () => {
     }
     callAddQuotationAPI(quotationForm, form);
   };
-
   const callAddQuotationAPI = async (quotationForm: any, form: any) => {
     const formData = new FormData();
     for (const [key, value] of Object.entries(quotationForm)) {
@@ -227,7 +212,6 @@ const AddQuotation = () => {
       setIsLoading(false);
     }
   };
-
   const callEditLeadAPI = async (leadForm: any, leadId: string) => {
     try {
       const newLead = await editLeadService({
@@ -242,7 +226,6 @@ const AddQuotation = () => {
       toast.error(err.message);
     }
   };
-
   const handleStatus = (
     id: string,
     status: string,
@@ -277,40 +260,9 @@ const AddQuotation = () => {
         break;
     }
   };
-
   const handleClickBooking = () => {
     navigate(bookingRequestNewPath(leadId!));
   };
-
-  const handleClickAddDocument = () => {
-    setDocuments([...documents, { docName: "", file: "" }]);
-  };
-
-  const handleClickDeleteDocument = (index: number) => {
-    const updatedDocuments = documents.filter((_, i) => i !== index);
-    setDocuments(updatedDocuments);
-  };
-
-  const handleChangeDocumentName = (newValue: any, index: number) => {
-    const updatedDocuments = [...documents];
-    updatedDocuments[index].docName = newValue.value;
-    setDocuments(updatedDocuments);
-  };
-
-  const documentTypes = [
-    { label: "RC Back", value: "rcBack" },
-    { label: "RC Front", value: "rcFront" },
-    { label: "Previous Policy", value: "previousPolicy" },
-    { label: "Survey", value: "survey" },
-    { label: "PUC", value: "puc" },
-    { label: "Fitness", value: "fitness" },
-    { label: "Proposal", value: "proposal" },
-    { label: "Current Policy", value: "currentPolicy" },
-    { label: "Other", value: "other" },
-  ];
-
-  const errors: any[] = [];
-
   return (
     <>
       <div className="bg-blue-200 md:p-7 p-2">
@@ -490,103 +442,6 @@ const AddQuotation = () => {
                             )}
                           </Typography>
                         </Grid>
-                      </Grid>
-                      <Grid item md={12} mt={2}>
-                        <Button
-                          variant="outlined"
-                          onClick={handleClickAddDocument}
-                        >
-                          Add More Document
-                        </Button>
-                        <Typography variant="body1" gutterBottom mr={4}>
-                          {"Image should be <= 4MB."}
-                        </Typography>
-                      </Grid>
-                      <Grid item md={12}>
-                        <Grid item lg={12} md={12} sm={12} xs={12}>
-                          <span style={{ color: "red" }}>{errorMessage}</span>
-                        </Grid>
-                        {documents.map((doc, index) => (
-                          <Grid item key={index} md={12} xs={12}>
-                            <Grid container spacing={2} mt={1}>
-                              <Grid item lg={4} md={4} sm={4} xs={12}>
-                                <Autocomplete
-                                  value={
-                                    documentTypes.find(
-                                      (option) => option.value === doc.docName
-                                    ) || null
-                                  }
-                                  onChange={(e, newValue) =>
-                                    handleChangeDocumentName(newValue!, index)
-                                  }
-                                  options={documentTypes}
-                                  renderInput={(params) => (
-                                    <TextField
-                                      {...params}
-                                      className="rounded-sm w-full"
-                                      size="small"
-                                      label="Select Document"
-                                      fullWidth
-                                      variant="outlined"
-                                    />
-                                  )}
-                                />
-                                {errors[index]?.docName && (
-                                  <span>{errors[index].docName}</span>
-                                )}
-                              </Grid>
-                              <Grid item lg={4} md={4} sm={4} xs={12}>
-                                <input
-                                  id={`file ${index}`}
-                                  type="file"
-                                  onChange={(e) =>
-                                    handleFileInputChange(e, index)
-                                  }
-                                  style={{
-                                    border: "1px solid #c4c4c4",
-                                    padding: "5px",
-                                    width: "100%",
-                                    borderRadius: "5px",
-                                  }}
-                                />
-                                {errors[index]?.file && (
-                                  <span style={{ color: "red" }}>
-                                    {errors[index].file}
-                                  </span>
-                                )}
-                              </Grid>
-                              <Grid item lg={4} md={4} sm={4} xs={4}>
-                                {documents.length !== 1 && (
-                                  <Tooltip title={"Delete Image"}>
-                                    <IconButton
-                                      color="primary"
-                                      aria-label={"Delete Image"}
-                                      component="span"
-                                      onClick={() =>
-                                        handleClickDeleteDocument(index)
-                                      }
-                                    >
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        strokeWidth="1.5"
-                                        stroke="currentColor"
-                                        className="size-6"
-                                      >
-                                        <path
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                          d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-                                        />
-                                      </svg>
-                                    </IconButton>
-                                  </Tooltip>
-                                )}
-                              </Grid>
-                            </Grid>
-                          </Grid>
-                        ))}
                       </Grid>
                       <Grid item lg={4} md={4} sm={6} xs={12}>
                         <Field name="status">
