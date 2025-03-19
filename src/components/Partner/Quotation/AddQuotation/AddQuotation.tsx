@@ -188,7 +188,7 @@ const AddQuotation = () => {
       };
     }
     setErrors(newErrors);
-  };  
+  };
 
   const handleChangeDocumentName = (newValue: any, index: any) => {
     const updatedDocuments = documents.map((doc, i) =>
@@ -196,7 +196,7 @@ const AddQuotation = () => {
     );
     setDocuments(updatedDocuments);
   };
-  
+
   const handleClickAddDocument = () => {
     setDocuments([...documents, { docName: "", file: "" }]);
   };
@@ -216,10 +216,10 @@ const AddQuotation = () => {
     quotationForm.createdBy = userData.name;
     quotationForm.quotationImage = image;
     quotationForm.status = quotationForm.status.value;
-    documents?.forEach((ele)=>{
-      quotationForm[ele.docName] = ele.file
-    })
-    console.log('quotationForm',quotationForm)
+    documents?.forEach((ele) => {
+      quotationForm[ele.docName] = ele.file;
+    });
+    console.log("quotationForm", quotationForm);
     const editFrom = new FormData();
     editFrom.append("id", leadId!);
     editFrom.append("status", quotationForm.status);
@@ -255,19 +255,22 @@ const AddQuotation = () => {
     // console.log("Documents before append:", documents); // Debugging step
     callAddQuotationAPI(quotationForm, form);
   };
-  
-  const callAddQuotationAPI = async (quotationForm: Record<string, any>, form: any) => {
+
+  const callAddQuotationAPI = async (
+    quotationForm: Record<string, any>,
+    form: any
+  ) => {
     const formData = new FormData();
 
     // Append quotationForm fields
     Object.entries(quotationForm).forEach(([key, value]) => {
-        if (value !== undefined) {
-            if (value instanceof File) {
-                formData.append(key, value);
-            } else {
-                formData.append(key, value as string);
-            }
+      if (value !== undefined) {
+        if (value instanceof File) {
+          formData.append(key, value);
+        } else {
+          formData.append(key, value as string);
         }
+      }
     });
 
     // Append documents properly
@@ -280,22 +283,22 @@ const AddQuotation = () => {
     // });
 
     try {
-        setIsLoading(true);
-        const newQuotation = await addQuotationService({
-            header,
-            quotation: formData,
-        });
+      setIsLoading(true);
+      const newQuotation = await addQuotationService({
+        header,
+        quotation: formData,
+      });
 
-        if (newQuotation.status === "success") {
-            navigate(leadsPath());
-        }
+      if (newQuotation.status === "success") {
+        navigate(leadsPath());
+      }
     } catch (error: any) {
-        const err = await error;
-        toast.error(err.message);
+      const err = await error;
+      toast.error(err.message);
     } finally {
-        setIsLoading(false);
+      setIsLoading(false);
     }
-};
+  };
 
   const callEditLeadAPI = async (leadForm: any, leadId: string) => {
     try {
