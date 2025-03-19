@@ -543,7 +543,15 @@ const routes = [
       },
     ],
   },
-
+  {
+    path: "/client",
+    children: [
+      {
+        path: "",
+        element: <Client />,
+      },
+    ],
+  },
   {
     path: "/signup",
     children: [
@@ -596,17 +604,7 @@ const routes = [
       },
     ],
   },
-  {
-    path: "client",
-    children: [
-      {
-        path: "",
-        element: (
-          <Client />
-        ),
-      },
-    ],
-  },
+
   {
     path: "/partners",
     children: [

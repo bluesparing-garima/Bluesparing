@@ -19,7 +19,7 @@ const Signin = () => {
   const mode = queryValue ? queryValue : "normal";
   const [email, setEmail] = useState("");
   const debouncedEmail = useDebounce(email, 1000);
-  const [showOtpBox, setShowOtpBox] = useState(false);
+  const [showOtpBox, setShowOtpBox] = useState(true);
   const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -51,6 +51,8 @@ const Signin = () => {
   const onSubmit = async (signInData: ISignIn) => {
     if (mode === 'client') {
       await verifyOtp(debouncedEmail, otp);
+
+    
     } else {
       try {
         setIsLoading(true);
@@ -127,7 +129,7 @@ const Signin = () => {
     try {
       const res = await VerifyOtpService(email, otp);
       if (res.status === "success") {
-        console.log(res)
+        navigate("client",{state:res.data});
       }
     } catch (error) {
       console.log(error)
@@ -137,7 +139,7 @@ const Signin = () => {
     if (debouncedEmail) {
       setShowOtpBox(true)
       sendOtpReq(debouncedEmail).then((data) => {
-        navigate("client")
+        // navigate("client")
       
       })
     }
@@ -305,11 +307,7 @@ const Signin = () => {
                                       onChange={handleEmail}
                                       className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-3 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                                     />
-                                    {/* {meta.error && meta.touched && (
-                                    <span className="text-safekaroDarkOrange">
-                                      {meta.error}
-                                    </span>
-                                  )} */}
+                                 
                                   </div>
                                 )}
                               </Field>
