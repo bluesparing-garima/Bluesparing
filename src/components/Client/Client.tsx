@@ -1,5 +1,7 @@
 import { Card, CardContent, Typography, Grid } from "@mui/material";
+import dayjs from "dayjs";
 import { useLocation } from "react-router-dom";
+import { DAYJS_DISPLAY_FORMAT } from "../../context/constant";
 
 const Client = () => {
   const loc = useLocation();
@@ -13,8 +15,12 @@ const Client = () => {
     { label: "Fuel Type", value: policy[0].fuelType },
     { label: "Owner Name", value: policy[0].fullName },
     {
-      label: "Contact",
-      value: `${policy[0].phoneNumber} / ${policy[0].emailId}`,
+      label: "Phone",
+      value: `${policy[0].phoneNumber}`,
+    },
+    {
+      label: "Email",
+      value: `${policy[0].emailId}`,
     },
     { label: "IDV", value: `₹${policy[0].idv}` },
     { label: "Premium", value: `₹${policy[0].finalPremium}` },
@@ -22,12 +28,12 @@ const Client = () => {
     { label: "CC", value: `${policy[0].cc}` },
     { label: "RTO Code", value: `${policy[0].rto}` },
     { label: "Company Name", value: `${policy[0].companyName}` },
-    { label: "Issue Date", value: `${policy[0].issueDate}` },
-    { label: "End Date", value: `${policy[0].endDate}` },
+    { label: "Issue Date", value: `${dayjs(policy[0].issueDate).format(DAYJS_DISPLAY_FORMAT)}` },
+    { label: "Policy Renew Date", value: `${dayjs(policy[0].endDate).format(DAYJS_DISPLAY_FORMAT)}` },
     { label: "NCB", value: `${policy[0].ncb}` },
     { label: "Tenure", value: `${policy[0].tenure}` },
-    { label: "Payment Mode", value: `${policy[0].paymentMode}` },
-    { label: "Payment Details", value: `${policy[0].paymentDetails}` },
+    // { label: "Payment Mode", value: `${policy[0].paymentMode}` },
+    // { label: "Payment Details", value: `${policy[0].paymentDetails}` },
   ];
 
   return (
@@ -47,10 +53,10 @@ const Client = () => {
                   variant="subtitle1"
                   className="font-semibold text-gray-700"
                 >
-                  {item.label}:
+                  {item.label.toLocaleUpperCase()}:
                 </Typography>
                 <Typography className="text-gray-700 text-md font-medium">
-                  {item.value}
+                  {item.value.toLocaleUpperCase()}
                 </Typography>
               </CardContent>
             </Card>
