@@ -9,6 +9,7 @@ import TransferMoney from "./components/Account/TransferMoney/TransferMoney";
 import Checkout from "./components/UpdatePlan/Checkout";
 import { elements } from "chart.js";
 import UploadPolicyPdf from "./components/Partner/Leads/UploadPolicyPdf";
+import Client from "./components/Client/Client";
 
 const Dashboard = lazy(() => import("./components/Dashboard/dashboard"));
 const PartnerDashboard = lazy(
@@ -542,7 +543,15 @@ const routes = [
       },
     ],
   },
-
+  {
+    path: "/client",
+    children: [
+      {
+        path: "",
+        element: <Client />,
+      },
+    ],
+  },
   {
     path: "/signup",
     children: [
@@ -595,6 +604,7 @@ const routes = [
       },
     ],
   },
+
   {
     path: "/partners",
     children: [

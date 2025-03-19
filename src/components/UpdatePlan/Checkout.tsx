@@ -121,10 +121,9 @@ const Checkout: FC = () => {
         razorpay_payment_id,
         razorpay_signature,
       });
-
+     
       if (response.success) {
-        handleTransaction(razorpay_payment_id, razorpay_order_id, true);
-        updateLocalStorage({ transactionStatus: true });
+        await handleTransaction(razorpay_payment_id, razorpay_order_id, true);
         handleNavigation();
       } else {
         toast.error("Payment verification failed");
@@ -140,6 +139,7 @@ const Checkout: FC = () => {
     oId: string,
     status: boolean
   ) => {
+  
     try {
       const amount = getTotalAmount();
       if (tId === 'free') {
@@ -147,7 +147,7 @@ const Checkout: FC = () => {
           data: makePayloadForFree(),
         });
       } else {
-
+       
         AddTransactionServices({
           data: makeTransactionPayload(tId, oId, status, amount),
         });
@@ -197,14 +197,17 @@ const Checkout: FC = () => {
       if (key.toLowerCase() === 'relationship manager') {
         key = 'rm';
       }
-      newUserLimit[key.toLowerCase()] = (plan.userLimit[key.toLowerCase()] );
+      newUserLimit[key.toLowerCase()] = (plan.userLimit[key.toLowerCase()]);
     }
-    for (let key in userData.userLimit) {
-      if (key.toLowerCase() === 'relationship manager') {
-        key = 'rm';
+    if(userData){
+      for (let key in userData.userLimit) {
+        if (key.toLowerCase() === 'relationship manager') {
+          key = 'rm';
+        }
+        newUserLimit[key.toLowerCase()] += userData.userLimit[key.toLowerCase()] || 0;
       }
-      newUserLimit[key.toLowerCase()] += userData.userLimit[key.toLowerCase()] || 0;
     }
+  
     if (userData?.role) {
       const payload: AddTransactionProps = {
         userId: userData.profileId,
@@ -352,7 +355,7 @@ const Checkout: FC = () => {
           </Typography>
           <Typography className="font-satoshi my-3">
             <span className="text-[#027AAE] font-semibold">Policy Count :</span>{" "}
-            
+
             <span className="text-sm font-semibold">{(Number(plan?.policyCount) * Number(selectedMonths)) + (Number(userData?.policyCount) || 0)}</span>
           </Typography>
           {Object.keys(plan.userLimit).map((ele) => {
@@ -361,7 +364,7 @@ const Checkout: FC = () => {
                 <span className="font-semibold text-[#027AAE] capitalize ">
                   {ele.toLowerCase()} Limit:
                 </span>
-                <span className="font-medium"> {((Number(plan.userLimit?.[ele]) || 0) * (Number(selectedMonths) || 1)) + (Number(userData?.userLimit?.[ele]) || 0)                }</span>
+                <span className="font-medium"> {((Number(plan.userLimit?.[ele]) || 0) * (Number(selectedMonths) || 1)) + (Number(userData?.userLimit?.[ele]) || 0)}</span>
               </Typography>
             );
           })}

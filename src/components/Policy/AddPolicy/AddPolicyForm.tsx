@@ -316,8 +316,6 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
     } else {
       policyForm.vehicleAge = null;
     }
-
-
     if (userData.role.toLowerCase() === "admin") {
       policyForm.partnerId = selectedPartnerId;
       policyForm.partnerName = selectedPartnerName;
@@ -328,10 +326,9 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       policyForm.partnerId = selectedPartnerId;
       policyForm.partnerName = selectedPartnerName;
     }
-    
-    policyForm.relationshipManagerId = selectedRMId;
-    policyForm.relationshipManagerName = selectedRMName;    
 
+    policyForm.relationshipManagerId = selectedRMId;
+    policyForm.relationshipManagerName = selectedRMName;
     policyForm.createdBy = userData.name;
     policyForm.vehicleNumber = policyForm.vehicleNumber.toUpperCase();
     policyForm.rto = policyForm.vehicleNumber.substring(0, 4);
@@ -456,20 +453,18 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   const callAddPolicyAPI = async (policy: any) => {
     try {
       setIsLoading(true);
+      const policyCount = userData?.policyCount || 0;
+
+      if (policyCount <= 0) {
+        setShowUpgradePopup(true); //! **Upgrade Plan Popup दिखाओ**
+        return;
+      }
       const newPolicy = await addPolicyService({ header, policy, onProgress });
       if (newPolicy.status === "success") {
-        const policyCount = userData?.policyCount || 0;
-
-        if (policyCount <= 0) {
-          setShowUpgradePopup(true); //! **Upgrade Plan Popup दिखाओ**
-          return;
-        }
-
         if (userData.policyCount > 0) {
           const updatedPolicyCount = userData.policyCount - 1;
           updateLocalStorage({ policyCount: updatedPolicyCount });
         }
-
         // console.log("updatedPolicyCount",updatedPolicyCount);
         navigate(motorPolicyPath());
         return;
@@ -926,6 +921,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                                         ? option
                                         : option.productSubType || ""
                                     }
+
                                     onChange={(event, newValue) =>
                                       input.onChange(
                                         newValue ? newValue.productSubType : ""

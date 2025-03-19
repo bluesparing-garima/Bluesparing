@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Document, imagePath } from "../../../context/constant";
+import { DAYJS_DISPLAY_FORMAT, Document, imagePath } from "../../../context/constant";
 import { MotorPolicyData } from "../IFilter";
 import { Button, Card, CardContent, Grid, Typography } from "@mui/material";
+import dayjs from "dayjs";
 interface FilterDataTableProps {
   policy: MotorPolicyData;
 }
@@ -428,7 +429,8 @@ const FilterDataTable: React.FC<FilterDataTableProps> = ({ policy }) => {
                 {"Registration Date"}
               </Typography>
               <Typography variant="body1" gutterBottom>
-                {policy?.registrationDate}
+                {dayjs(policy?.registrationDate).format(DAYJS_DISPLAY_FORMAT)}
+
               </Typography>
             </Grid>
             <Grid item xs={4}>
@@ -441,7 +443,7 @@ const FilterDataTable: React.FC<FilterDataTableProps> = ({ policy }) => {
                 {"End Date"}
               </Typography>
               <Typography variant="body1" gutterBottom>
-                {policy?.endDate}
+                {dayjs(policy?.endDate).format(DAYJS_DISPLAY_FORMAT)}
               </Typography>
             </Grid>
             <Grid item xs={4}>
@@ -454,7 +456,8 @@ const FilterDataTable: React.FC<FilterDataTableProps> = ({ policy }) => {
                 {"Issue Date"}
               </Typography>
               <Typography variant="body1" gutterBottom>
-                {policy?.issueDate}
+                {dayjs(policy?.issueDate).format(DAYJS_DISPLAY_FORMAT)}
+
               </Typography>
             </Grid>
           </Grid>
@@ -483,7 +486,9 @@ const FilterDataTable: React.FC<FilterDataTableProps> = ({ policy }) => {
                 {"Policy Created On"}
               </Typography>
               <Typography variant="body1" gutterBottom>
-                {policy?.createdOn}
+                {dayjs(policy?.createdOn).format(DAYJS_DISPLAY_FORMAT)}
+
+
               </Typography>
             </Grid>
             <Grid item xs={4}>
@@ -496,7 +501,9 @@ const FilterDataTable: React.FC<FilterDataTableProps> = ({ policy }) => {
                 {"Policy Updated On"}
               </Typography>
               <Typography variant="body1" gutterBottom>
-                {policy?.updatedOn}
+                {dayjs(policy?.updatedOn).format(DAYJS_DISPLAY_FORMAT)}
+
+
               </Typography>
             </Grid>
             <Grid item xs={4}>

@@ -6,16 +6,21 @@ import { SafeKaroUser } from "../../context/constant";
 
 const UpdatePlan = () => {
   const [subsData] = useSubscription();
- let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
- let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
+  let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
+  let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
 
- const freePlan = (plan:string)=>{
-  const currentPlan = plan.trim().toLowerCase();
-  if(currentPlan === "free" && UserData.isFreePlanUsed){
-    return false;
+  const freePlan = (plan: string) => {
+    const currentPlan = plan.trim().toLowerCase();
+    if (!UserData) {
+      return true;
+    } else {
+      if (currentPlan === "free" && UserData.isFreePlanUsed) {
+        return false;
+      }
+      return true;
+    }
+
   }
-  return true;
- }
   return (
     <div className="bg-blue-200 lg:p-5 h-screen  p-4">
       <h1 className="w-full text-center mb-4 text-2xl uppercase font-extrabold underline  text-[#213555]">

@@ -71,6 +71,7 @@ function App() {
         currentUrl === "/signup" ||
         currentUrl === "/403" ||
         currentUrl === '/checkout' || 
+        currentUrl==='/client'||
         (currentUrl === "/plan-details" && ( !userData?.transactionStatus)) ? (
           <> {content}</>
         ) : (
