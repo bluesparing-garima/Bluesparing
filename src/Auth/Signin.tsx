@@ -19,7 +19,7 @@ const Signin = () => {
   const mode = queryValue ? queryValue : "normal";
   const [email, setEmail] = useState("");
   const debouncedEmail = useDebounce(email, 1000);
-  const [showOtpBox, setShowOtpBox] = useState(true);
+  const [showOtpBox, setShowOtpBox] = useState(false);
   const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -135,15 +135,17 @@ const Signin = () => {
       console.log(error)
     }
   }
+
   useEffect(() => {
-    if (debouncedEmail) {
-      setShowOtpBox(true)
+    if (debouncedEmail && isValidEmail(debouncedEmail)) {
       sendOtpReq(debouncedEmail).then((data) => {
-        // navigate("client")
-      
-      })
+        setShowOtpBox(true); // OTP successfully send hone ke baad show karein
+      }).catch(() => {
+        setShowOtpBox(false); // Agar OTP request fail ho toh hide karein
+      });
     }
-  }, [debouncedEmail])
+  }, [debouncedEmail]);
+
   const handleOtp = (e: any) => {
     setOtp(e.target.value)
   }

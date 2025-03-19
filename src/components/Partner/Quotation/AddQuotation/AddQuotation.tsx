@@ -527,13 +527,15 @@ const AddQuotation = () => {
                                     </span>
                                     {quotation.comments}
                                   </Typography>
-                                  {quotation.quotationImage ? (
-                                    <FileDisplay
-                                      url={`${imagePath}${quotation.quotationImage}`}
-                                    />
-                                  ) : (
-                                    ""
-                                  )}
+                                  {
+                                   quotation.quotationImage?.map((item:any)=>{
+                                    const objKey = Object.keys(item)[0];
+                                    return (
+                                    <FileDisplay key={objKey}
+                                      url={`${imagePath}${item[objKey]}`}
+                                    />)
+                                   }) 
+                                  }
                                 </Grid>
                               )
                             )}
