@@ -1,15 +1,17 @@
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+
 declare module "jspdf" {
-    interface jsPDF {
-      autoTable: (options: any) => jsPDF;
-    }
+  interface jsPDF {
+    autoTable: (options: any) => jsPDF;
   }
+}
+
 interface InvoiceDetails {
   taxInvoiceDate: string;
   taxInvoiceNo: string;
   supplierDetails: {
-    name:string;
+    name: string;
     address: string;
     GSTIN: string;
   };
@@ -28,7 +30,7 @@ interface InvoiceDetails {
   price: number;
 }
 
-export const generateInvoicePDF = (invoiceDetails: InvoiceDetails) => {
+export const generateInvoicePDF = async (invoiceDetails: InvoiceDetails): Promise<Blob> => {
   const doc = new jsPDF();
 
   doc.setFontSize(18);
@@ -54,7 +56,7 @@ export const generateInvoicePDF = (invoiceDetails: InvoiceDetails) => {
     startY: finalY,
     head: [["Supplier Details", "Information"]],
     body: [
-        ["Name", invoiceDetails.supplierDetails.name],
+      ["Name", invoiceDetails.supplierDetails.name],
       ["Address", invoiceDetails.supplierDetails.address],
       ["GSTIN", invoiceDetails.supplierDetails.GSTIN],
     ],
@@ -102,5 +104,18 @@ export const generateInvoicePDF = (invoiceDetails: InvoiceDetails) => {
   // Signature Text
   doc.text("Signature", 14, finalY);
 
-  doc.save("invoice.pdf");
+  // Get the PDF as a Blob
+  const pdfBlob = doc.output("blob");
+
+  // Create a URL for the Blob and trigger the download
+  const url = URL.createObjectURL(pdfBlob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "invoice.pdf";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  return pdfBlob;
 };

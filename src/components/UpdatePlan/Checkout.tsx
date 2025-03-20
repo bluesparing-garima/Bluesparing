@@ -23,7 +23,7 @@ import AddTransactionServices from "../../api/Transaction/AddTranstion/AddTransa
 import { IVerifyResponsePayload } from "../../api/Razorpay/IRazorpay";
 import InitiatePaymentService from "../../api/Razorpay/InitiatePayment/InitiatePaymentService";
 import VerifyPaymentService from "../../api/Razorpay/VerifyPayment/VerifyPaymentService";
-import { generateInvoicePDF } from "./InvoiceGenerator";
+import { generateInvoicePDF } from "../../utils/InvoiceGenerator";
 interface CheckoutState {
   plan?: ISubscription;
   selectedPlan: "monthly" | "yearly";
