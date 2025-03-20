@@ -23,6 +23,7 @@ import AddTransactionServices from "../../api/Transaction/AddTranstion/AddTransa
 import { IVerifyResponsePayload } from "../../api/Razorpay/IRazorpay";
 import InitiatePaymentService from "../../api/Razorpay/InitiatePayment/InitiatePaymentService";
 import VerifyPaymentService from "../../api/Razorpay/VerifyPayment/VerifyPaymentService";
+import { generateInvoicePDF } from "./InvoiceGenerator";
 interface CheckoutState {
   plan?: ISubscription;
   selectedPlan: "monthly" | "yearly";
@@ -36,9 +37,6 @@ const Checkout: FC = () => {
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let userData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
   const [selectedMonths, setSelectedMonths] = useState<number>(1);
-
-
-
 
   if (!plan) {
     toast.error("No plan selected. Redirecting to plans page...");
@@ -64,7 +62,6 @@ const Checkout: FC = () => {
     }
     return 0;
   };
-
 
   const getDiscount = () => {
     const discountPercentage = getNearestDiscount(selectedMonths);
@@ -108,7 +105,6 @@ const Checkout: FC = () => {
     sessionStorage.clear();
     localStorage.clear();
     navigate("/");
-
   };
   const verifyPayment = async (
     razorpay_order_id: string,
@@ -121,8 +117,32 @@ const Checkout: FC = () => {
         razorpay_payment_id,
         razorpay_signature,
       });
-     
+  
       if (response.success) {
+        const invoiceDetails = {
+          taxInvoiceDate: new Date().toLocaleDateString(),
+          taxInvoiceNo: "INV123456",
+          supplierDetails: {
+            address: "Sample Supplier Address",
+            GSTIN: "GSTIN123456",
+          },
+          billTo: {
+            name: userData?.name || user?.name || "Sample User",
+            address: "Sample Address",
+            state: "Sample State",
+            email: userData?.email || user?.email || "sample@example.com",
+            mobileNo: userData?.phoneNumber || user?.phone || "1234567890",
+          },
+          paymentMethod: "Razorpay",
+          orderId: razorpay_order_id,
+          paymentReferenceId: razorpay_payment_id,
+          itemDescription: plan?.planName || "Sample Plan",
+          HSN: "HSN1234",
+          price: getAmount(),
+        };
+  
+        generateInvoicePDF(invoiceDetails);
+  
         await handleTransaction(razorpay_payment_id, razorpay_order_id, true);
         handleNavigation();
       } else {
@@ -139,7 +159,6 @@ const Checkout: FC = () => {
     oId: string,
     status: boolean
   ) => {
-  
     try {
       const amount = getTotalAmount();
       if (tId === 'free') {
@@ -147,7 +166,6 @@ const Checkout: FC = () => {
           data: makePayloadForFree(),
         });
       } else {
-       
         AddTransactionServices({
           data: makeTransactionPayload(tId, oId, status, amount),
         });
@@ -157,8 +175,6 @@ const Checkout: FC = () => {
       toast.error(err.message);
     }
   };
-
-
 
   const makePayloadForFree = () => {
     const newUserLimit: Record<string, number> = {};
@@ -247,7 +263,6 @@ const Checkout: FC = () => {
       return payload;
     }
   };
-
 
   const handleProceedPayment = async () => {
     if (!isCheckUserData()) {
