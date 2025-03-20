@@ -206,7 +206,7 @@ const Dashboard: React.FC = () => {
   const isValidIndex = (index: any) =>
     index >= 0 && index < categoryEntries.length;
   return (
-    <div className="bg-blue-200 h-[90%] hide-scrollbar">
+    <div className="bg-blue-200 h-full hide-scrollbar">
       <CardContent>
         <Grid>
           <div className="flex w-full items-center md:flex-row flex-col justify-center  md:justify-start bg-blue-200 md:pr-1">

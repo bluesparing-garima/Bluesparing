@@ -22,7 +22,7 @@ const UpdatePlan = () => {
 
   }
   return (
-    <div className="bg-blue-200 lg:p-5 h-screen  p-4">
+    <div className="bg-blue-200 lg:p-5 h-full hide-scrollbar p-4">
       <h1 className="w-full text-center mb-4 text-2xl uppercase font-extrabold underline  text-[#213555]">
         Choose your plan
       </h1>
