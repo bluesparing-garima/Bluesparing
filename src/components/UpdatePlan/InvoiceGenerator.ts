@@ -1,12 +1,10 @@
 import jsPDF from "jspdf";
 import "jspdf-autotable";
-
 declare module "jspdf" {
-  interface jsPDF {
-    autoTable: (options: any) => jsPDF;
+    interface jsPDF {
+      autoTable: (options: any) => jsPDF;
+    }
   }
-}
-
 interface InvoiceDetails {
   taxInvoiceDate: string;
   taxInvoiceNo: string;
@@ -35,31 +33,72 @@ export const generateInvoicePDF = (invoiceDetails: InvoiceDetails) => {
   doc.setFontSize(18);
   doc.text("Tax Invoice", 14, 22);
 
-  doc.setFontSize(12);
-  doc.text(`Tax Invoice Date: ${invoiceDetails.taxInvoiceDate}`, 14, 32);
-  doc.text(`Tax Invoice No: ${invoiceDetails.taxInvoiceNo}`, 14, 40);
-  doc.text(`Created: ${new Date().toLocaleDateString()}`, 14, 48);
+  let finalY = 30; // Initial position for the first table
 
-  doc.text("Supplier Details:", 14, 56);
-  doc.text(`Address: ${invoiceDetails.supplierDetails.address}`, 14, 64);
-  doc.text(`GSTIN: ${invoiceDetails.supplierDetails.GSTIN}`, 14, 72);
+  // Invoice Table
+  doc.autoTable({
+    startY: finalY,
+    head: [["Field", "Details"]],
+    body: [
+      ["Tax Invoice Date", invoiceDetails.taxInvoiceDate],
+      ["Tax Invoice No", invoiceDetails.taxInvoiceNo],
+      ["Created", new Date().toLocaleDateString()],
+    ],
+    theme: "grid",
+  });
+  finalY = (doc as any).lastAutoTable.finalY + 10;
 
-  doc.text("Bill To:", 14, 80);
-  doc.text(`Name: ${invoiceDetails.billTo.name}`, 14, 88);
-  doc.text(`Address: ${invoiceDetails.billTo.address}`, 14, 96);
-  doc.text(`State: ${invoiceDetails.billTo.state}`, 14, 104);
-  doc.text(`Email: ${invoiceDetails.billTo.email}`, 14, 112);
-  doc.text(`Mobile No: ${invoiceDetails.billTo.mobileNo}`, 14, 120);
+  // Supplier Details Table
+  doc.autoTable({
+    startY: finalY,
+    head: [["Supplier Details", "Information"]],
+    body: [
+      ["Address", invoiceDetails.supplierDetails.address],
+      ["GSTIN", invoiceDetails.supplierDetails.GSTIN],
+    ],
+    theme: "grid",
+  });
+  finalY = (doc as any).lastAutoTable.finalY + 10;
 
-  doc.text(`Payment Method: ${invoiceDetails.paymentMethod}`, 14, 128);
-  doc.text(`Order ID: ${invoiceDetails.orderId}`, 14, 136);
-  doc.text(`Payment Reference ID: ${invoiceDetails.paymentReferenceId}`, 14, 144);
+  // Bill To Table
+  doc.autoTable({
+    startY: finalY,
+    head: [["Bill To", "Information"]],
+    body: [
+      ["Name", invoiceDetails.billTo.name],
+      ["Address", invoiceDetails.billTo.address],
+      ["State", invoiceDetails.billTo.state],
+      ["Email", invoiceDetails.billTo.email],
+      ["Mobile No", invoiceDetails.billTo.mobileNo],
+    ],
+    theme: "grid",
+  });
+  finalY = (doc as any).lastAutoTable.finalY + 10;
 
-  doc.text("Item Description of Service:", 14, 152);
-  doc.text(`HSN: ${invoiceDetails.HSN}`, 14, 160);
-  doc.text(`Price: ₹${invoiceDetails.price}`, 14, 168);
+  // Payment Details Table
+  doc.autoTable({
+    startY: finalY,
+    head: [["Payment Details", "Information"]],
+    body: [
+      ["Payment Method", invoiceDetails.paymentMethod],
+      ["Order ID", invoiceDetails.orderId],
+      ["Payment Reference ID", invoiceDetails.paymentReferenceId],
+    ],
+    theme: "grid",
+  });
+  finalY = (doc as any).lastAutoTable.finalY + 10;
 
-  doc.text("Signature", 14, 176);
+  // Item Details Table
+  doc.autoTable({
+    startY: finalY,
+    head: [["Item Description", "HSN", "Price (INR)"]],
+    body: [[invoiceDetails.itemDescription, invoiceDetails.HSN, invoiceDetails.price.toFixed(2)]],
+    theme: "grid",
+  });
+  finalY = (doc as any).lastAutoTable.finalY + 20;
+
+  // Signature Text
+  doc.text("Signature", 14, finalY);
 
   doc.save("invoice.pdf");
 };

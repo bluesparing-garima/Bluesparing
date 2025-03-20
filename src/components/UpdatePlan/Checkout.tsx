@@ -123,7 +123,8 @@ const Checkout: FC = () => {
           taxInvoiceDate: new Date().toLocaleDateString(),
           taxInvoiceNo: "INV123456",
           supplierDetails: {
-            address: "Sample Supplier Address",
+            Name:"BlueSparing PVT Ltd",
+            address: "213,2nd Floor, Royal World, Sansar Chandra Rd, Pink City, Jaipur, Rajasthan 302001",
             GSTIN: "GSTIN123456",
           },
           billTo: {
