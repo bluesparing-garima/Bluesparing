@@ -123,7 +123,7 @@ const Checkout: FC = () => {
           taxInvoiceDate: new Date().toLocaleDateString(),
           taxInvoiceNo: "INV123456",
           supplierDetails: {
-            Name:"BlueSparing PVT Ltd",
+            name:"BlueSparing PVT Ltd",
             address: "213,2nd Floor, Royal World, Sansar Chandra Rd, Pink City, Jaipur, Rajasthan 302001",
             GSTIN: "GSTIN123456",
           },
@@ -138,7 +138,7 @@ const Checkout: FC = () => {
           orderId: razorpay_order_id,
           paymentReferenceId: razorpay_payment_id,
           itemDescription: plan?.planName || "Sample Plan",
-          HSN: "HSN1234",
+          HSN: "998316",
           price: getAmount(),
         };
   

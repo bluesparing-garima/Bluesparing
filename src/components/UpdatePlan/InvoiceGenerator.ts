@@ -9,6 +9,7 @@ interface InvoiceDetails {
   taxInvoiceDate: string;
   taxInvoiceNo: string;
   supplierDetails: {
+    name:string;
     address: string;
     GSTIN: string;
   };
@@ -53,6 +54,7 @@ export const generateInvoicePDF = (invoiceDetails: InvoiceDetails) => {
     startY: finalY,
     head: [["Supplier Details", "Information"]],
     body: [
+        ["Name", invoiceDetails.supplierDetails.name],
       ["Address", invoiceDetails.supplierDetails.address],
       ["GSTIN", invoiceDetails.supplierDetails.GSTIN],
     ],
