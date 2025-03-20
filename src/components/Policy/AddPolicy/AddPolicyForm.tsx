@@ -442,8 +442,6 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
         await bindValues(policyForm);
       }
     }
-
-
   };
 
   const onProgress = (p: number) => {
