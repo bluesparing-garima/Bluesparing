@@ -455,15 +455,9 @@ const Dashboard: React.FC = () => {
                                     </FormControl>
                                   </div>
                                   <Grid
-                                    container
-                                    sx={{
-                                      margin: 1,
-                                      paddingBottom: 2,
-                                      height: "70vh",
-                                      overflowY: "scroll",
-                                    }}
-                                    className="hide-scrollbar"
-                                  >
+            container
+            className="max-h-[70vh] overflow-y-auto hide-scrollbar p-2"
+          >
                                     {isValidIndex(selectedCategoryIndex) && (
                                       <Grid container>
                                         {Object.entries(
@@ -678,7 +672,7 @@ const Dashboard: React.FC = () => {
                                         <React.Fragment key={key}>
                                           {renderCountBox(
                                             key.toUpperCase(),
-                                            value || 0,
+                                            value==='Infinity'?"Unlimited":value || 0,
                                             "",
                                             `/update-plan`
                                           )}

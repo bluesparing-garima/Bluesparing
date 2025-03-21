@@ -19,6 +19,7 @@ import {
   SafeKaroUser,
   header,
   ALLOWED_FILE_TYPES,
+  addLeadDocumentsOptions,
 } from "../../../context/constant";
 import useGetCaseTypes from "../../../Hooks/CaseType/useGetCaseTypes";
 import useGetCompanies from "../../../Hooks/Company/useGetCompanies";
@@ -28,7 +29,6 @@ import { useNavigate } from "react-router-dom";
 import { FORM_ERROR, setIn } from "final-form";
 import * as yup from "yup";
 import addLeadsService from "../../../api/Leads/AddLead/addLeadsService";
-import { documentTypes, policyCreatedByAdmin } from "../../Policy/IPolicyData";
 import useGetPartners from "../../../Hooks/Partner/useGetPartners";
 import toast, { Toaster } from "react-hot-toast";
 export interface addLeadRequestFormProps {
@@ -371,7 +371,7 @@ const AddLeadFormCard = (props: addLeadRequestFormProps) => {
                                   {...input}
                                   getOptionLabel={(option) => option.label}
                                   value={input.value || null}
-                                  options={policyCreatedByAdmin}
+                                  options={[{ label: "Partner", value: "Partner" }]}
                                   onChange={(event, newValue) => {
                                     input.onChange(newValue);
                                     handleSelectPolicyCreatedBy(
@@ -472,14 +472,14 @@ const AddLeadFormCard = (props: addLeadRequestFormProps) => {
                             <Grid item lg={4} md={4} sm={4} xs={12}>
                               <Autocomplete
                                 value={
-                                  documentTypes.find(
+                                  addLeadDocumentsOptions.find(
                                     (option) => option.value === doc.docName
                                   ) || null
                                 }
                                 onChange={(e, newValue) =>
                                   handleChangeDocumentName(newValue!, index)
                                 }
-                                options={documentTypes}
+                                options={addLeadDocumentsOptions}
                                 renderInput={(params) => (
                                   <TextField
                                     {...params}

@@ -66,7 +66,7 @@ const Attendance: React.FC = () => {
     return `${percentage}%`;
   };
   return (
-    <Container className="bg-blue-200">
+    <Container className="bg-blue-200 h-[50vh]">
       {UserData.role.toLowerCase() === "hr" ||
       UserData.role.toLowerCase() === "admin" ? (
         <div className="bg-blue-200 h-screen">
@@ -149,7 +149,7 @@ const Attendance: React.FC = () => {
               ))}
             </div>
           </div>
-          <Grid container spacing={4} justifyContent="center" mx="auto">
+          <Grid>
             {employees?.map((employee) => {
               return <AttendanceCard employee={employee} />;
             })}
