@@ -24,6 +24,7 @@ import {
   policyStatusPartner,
   policyStatusOperation,
   ALLOWED_FILE_TYPES,
+  addLeadDocumentsOptions,
 } from "../../../../context/constant";
 import { ILeadForm, IQuotations } from "../../IPartner";
 import { convertILeadVMToILeadForm } from "../../../../api/Leads/convertILeadVMToILeadForm";
@@ -612,14 +613,14 @@ const AddQuotation = () => {
                               <Grid item lg={4} md={4} sm={4} xs={12}>
                                 <Autocomplete
                                   value={
-                                    documentTypes.find(
+                                    addLeadDocumentsOptions.find(
                                       (option) => option.value === doc.docName
                                     ) || null
                                   }
                                   onChange={(e, newValue) =>
                                     handleChangeDocumentName(newValue!, index)
                                   }
-                                  options={documentTypes}
+                                  options={addLeadDocumentsOptions}
                                   renderInput={(params) => (
                                     <TextField
                                       {...params}
