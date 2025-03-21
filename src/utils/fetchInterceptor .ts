@@ -72,7 +72,7 @@ const fetchInterceptor = async <T>(
 
     if (response.status === 401) {
       const newToken = await refreshTokenAPI();
-      const newHeaders = { ...headers, Authorization: `Bearer ${newToken}` }; // ✅ Fix
+      const newHeaders = { ...headers, Authorization: `Bearer ${newToken}` }; 
       return await fetch(url, { ...options, headers: newHeaders });
     }
 

@@ -443,7 +443,7 @@ sessionStorage.clear();
                     )}
                   />
                 </div>
-                <div className="my-3 border-b text-center">
+                {/* <div className="my-3 border-b text-center">
                   <div className="leading-none px-2 inline-block text-sm text-gray-600 tracking-wide font-medium bg-white transform translate-y-1/2">
                     <a
                       href="/#/update-plan"
@@ -452,7 +452,7 @@ sessionStorage.clear();
                       View Plans
                     </a>
                   </div>
-                </div>
+                </div> */}
                 <div className="my-4 border-b text-center">
                   <div className="leading-none px-2 inline-block text-sm text-gray-600 tracking-wide font-medium bg-white transform translate-y-1/2">
                     If you have already account{" "}

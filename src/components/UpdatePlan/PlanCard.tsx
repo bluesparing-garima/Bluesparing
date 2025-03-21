@@ -80,7 +80,7 @@ const PlanCard: FC<PlanCardProps> = ({ p }) => {
               <span className="font-semibold text-[#027AAE] capitalize ">
                 {ele.toLowerCase()} Limit:
               </span>
-              <span className="font-medium"> {p.userLimit?.[ele]}</span>
+              <span className="font-medium"> {p.userLimit?.[ele]==="Infinity"?"Unlimited":p.userLimit?.[ele]}</span>
             </Typography>
           );
         })}
