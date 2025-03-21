@@ -23,10 +23,38 @@ import AddTransactionServices from "../../api/Transaction/AddTranstion/AddTransa
 import { IVerifyResponsePayload } from "../../api/Razorpay/IRazorpay";
 import InitiatePaymentService from "../../api/Razorpay/InitiatePayment/InitiatePaymentService";
 import VerifyPaymentService from "../../api/Razorpay/VerifyPayment/VerifyPaymentService";
+import axios from 'axios';
+import { BASE_URL } from "../../utils/fetchInterceptor ";
 interface CheckoutState {
   plan?: ISubscription;
   selectedPlan: "monthly" | "yearly";
 }
+
+ // Make sure to import axios or your preferred HTTP client
+ const downloadInvoice = async (planName: string, userId: string) => {
+  try {
+    // Use the full URL for the request
+    const response = await axios.get(`${BASE_URL}/api/transaction/download-invoice`, {
+      params: { planName, userId },
+      responseType: 'blob', // Important for downloading files
+    });
+
+    // Create a URL for the blob and trigger a download
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `${planName}_invoice.pdf`); // Set the file name
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    // Optionally, you can revoke the object URL after the download
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Error downloading invoice:", error); // Log the error for debugging
+    toast.error("Error downloading invoice");
+  }
+};
 const Checkout: FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -125,7 +153,11 @@ const Checkout: FC = () => {
 
       if (response.success) {
         await handleTransaction(razorpay_payment_id, razorpay_order_id, true);
-        handleNavigation();
+        await new Promise(resolve => setTimeout(resolve, 1000)); 
+        
+        await downloadInvoice(plan.planName, userData?.profileId || user?._id || "");
+
+        // handleNavigation();
       } else {
         toast.error("Payment verification failed");
       }

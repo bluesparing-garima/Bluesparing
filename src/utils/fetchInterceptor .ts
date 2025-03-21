@@ -1,8 +1,8 @@
 import { refreshTokenAPI } from "../api/Token/RefreshTokenAPI";
 import { getAccessToken } from "../Hooks/Tokens/useToken";
 
-const BASE_URL = "https://iimapi.bluesparing.com";
-// const BASE_URL = "http://localhost:7000";
+// const BASE_URL = "https://iimapi.bluesparing.com";
+export const BASE_URL = "http://localhost:7000";
 
 export interface FetchOptions extends RequestInit {
   body?: string | FormData | null;
