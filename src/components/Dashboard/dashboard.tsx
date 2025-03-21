@@ -678,7 +678,7 @@ const Dashboard: React.FC = () => {
                                         <React.Fragment key={key}>
                                           {renderCountBox(
                                             key.toUpperCase(),
-                                            value || 0,
+                                            value==='Infinity'?"Unlimited":value || 0,
                                             "",
                                             `/update-plan`
                                           )}

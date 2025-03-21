@@ -352,7 +352,7 @@ const HrDashBoard: React.FC = () => {
                                 <React.Fragment key={key}>
                                   {renderCountBox(
                                     key.toUpperCase(),
-                                    Number(value) || 0,
+                                    value==='Infinity'?"Unlimited":Number(value) || 0,
                                     `/update-plan`
                                   )}
                                 </React.Fragment>
