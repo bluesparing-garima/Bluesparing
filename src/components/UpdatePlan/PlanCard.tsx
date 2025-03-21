@@ -101,55 +101,55 @@ const PlanCard: FC<PlanCardProps> = ({ p }) => {
     //   <Toaster position="bottom-center" reverseOrder={true} />
     // </Box>
 
-    <div className="w-full sm:w-[38vw] md:w-[28vw] md:ml-2 ml-5 lg:w-[21.5vw] mb-2 lg:ml-1 xl:w-[23.5vw] xl:ml-3 bg-white shadow-lg hover:shadow-2xl transition-all duration-300 rounded-2xl overflow-hidden border border-gray-200">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-yellow-500 to-orange-500 py-3 text-center text-white font-bold text-lg">
-        {p.planName.toUpperCase()}
-      </div>
+    <div className="w-[90%] max-w-[400px] sm:w-[40vw] md:w-[30vw] lg:w-[22vw] xl:w-[23vw] h-auto bg-white shadow-lg hover:shadow-2xl transition-all duration-300 rounded-2xl overflow-hidden border border-gray-200 flex flex-col justify-between m-auto">
+  {/* Header */}
+  <div className="bg-gradient-to-r from-yellow-500 to-orange-500 py-3 text-center text-white font-bold text-lg">
+    {p.planName.toUpperCase()}
+  </div>
 
-      {/* Price Section */}
-      <div className="text-center py-4">
-        <h2 className="text-3xl font-extrabold text-gray-800">
-          {p.planName.toLowerCase().trim() === "free" && (
-            <span className="line-through text-gray-400 text-xl mr-2">₹199</span>
-          )}
-          ₹{p.monthlyAmount}
-          <span className="text-sm font-semibold text-gray-500"> /month</span>
-        </h2>
-      </div>
+  {/* Price Section */}
+  <div className="text-center py-4">
+    <h2 className="text-3xl font-extrabold text-gray-800">
+      {p.planName.toLowerCase().trim() === "free" && (
+        <span className="line-through text-gray-400 text-xl mr-2">₹199</span>
+      )}
+      ₹{p.monthlyAmount}
+      <span className="text-sm font-semibold text-gray-500"> /month</span>
+    </h2>
+  </div>
 
-      {/* Features */}
-      <div className="px-6 py-3">
-        <h3 className="font-semibold text-lg text-gray-700 mb-2">Plan Features:</h3>
-        <div
-          className="text-sm text-gray-600 space-y-2 max-h-32 overflow-y-auto custom-scrollbar"
-          dangerouslySetInnerHTML={{ __html: p.planDetails }}
-        />
+  {/* Features */}
+  <div className="px-6 py-3">
+    <h3 className="font-semibold text-lg text-gray-700 mb-2">Plan Features:</h3>
+    <div
+      className="text-sm text-gray-600 space-y-2 max-h-[200px] overflow-y-auto custom-scrollbar"
+      dangerouslySetInnerHTML={{ __html: p.planDetails }}
+    />
+    <p className="mt-2 text-sm font-medium text-gray-700">
+      <span className="font-semibold text-blue-600">Policy Limit:</span> {p.policyCount}
+    </p>
+    {Object.keys(p.userLimit).map((ele) => (
+      <p key={ele} className="text-sm font-medium text-gray-700">
+        <span className="font-semibold text-blue-600">{ele.toLowerCase()} Limit:</span>{" "}
+        <span className="font-medium">
+          {parseFloat(p.userLimit?.[ele] as unknown as string) === Infinity ? "Unlimited" : p.userLimit?.[ele]}
+        </span>
+      </p>
+    ))}
+  </div>
 
-        <p className="mt-2 text-sm font-medium text-gray-700">
-          <span className="font-semibold text-blue-600">Policy Limit:</span> {p.policyCount}
-        </p>
+  {/* Checkout Button */}
+  <div className="p-4 mt-4">
+    <button
+      onClick={handleCheckout}
+      className="w-full bg-blue-500 hover:bg-blue-400 text-white font-semibold py-2 rounded-lg transition-all duration-300"
+    >
+      Checkout
+    </button>
+  </div>
 
-        {Object.keys(p.userLimit).map((ele) => (
-          <p key={ele} className="text-sm font-medium text-gray-700">
-            <span className="font-semibold text-blue-600">{ele.toLowerCase()} Limit:</span>{" "}
-            {p.userLimit?.[ele]}
-          </p>
-        ))}
-      </div>
-
-      {/* Checkout Button */}
-      <div className="p-4">
-        <button
-          onClick={handleCheckout}
-          className="w-full bg-blue-500 hover:bg-blue-400 text-white font-semibold py-2 rounded-lg transition-all duration-300"
-        >
-          Checkout
-        </button>
-      </div>
-
-      <Toaster position="bottom-center" reverseOrder={true} />
-    </div>
+  <Toaster position="bottom-center" reverseOrder={true} />
+</div>
   );
 };
 export default PlanCard;

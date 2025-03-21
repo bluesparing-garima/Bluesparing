@@ -22,16 +22,26 @@ const UpdatePlan = () => {
 
   }
   return (
-    <div className="bg-blue-200 lg:p-5 h-full hide-scrollbar p-4">
-      <h1 className="w-full text-center mb-4 text-2xl uppercase font-extrabold underline  text-[#213555]">
-        Choose your plan
-      </h1>
-      <Grid container spacing={2} gap={3} padding={2}>
-        {subsData.map((ele: any, index: number) => (
-          freePlan(ele.planName) ? <PlanCard key={`${ele.planName}${index}`} p={ele} /> : null
-        ))}
-      </Grid>
+    <div className="bg-gradient-to-b from-blue-200 to-blue-200 min-h-screen flex flex-col justify-center px-4 md:px-10 py-8">
+  {/* Title */}
+  <h1 className="text-center text-3xl font-satoshi sm:text-3xl font-semibold uppercase underline text-blue-900 mb-8">
+    Choose Your Plan
+  </h1>
+
+  {/* Plan Cards Grid */}
+  <div className="container mx-auto">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+      {subsData.map((ele: any, index: number) =>
+        freePlan(ele.planName) ? (
+          <div key={`${ele.planName}${index}`} className="flex justify-center">
+            <PlanCard p={ele} />
+          </div>
+        ) : null
+      )}
     </div>
+  </div>
+</div>
+
   );
 };
 
