@@ -50,7 +50,7 @@ const AddLeadFormCard = (props: addLeadRequestFormProps) => {
   let [companies] = useGetCompanies({ header: header });
   const [errorMessage, setErrorMessage] = useState("");
   const [selectedPolicyCreatedBy, setSelectedPolicyCreatedBy] = useState();
-  const[isLoading,setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedPartnerName, setSelectedPartnerName] = useState("");
   const [selectedPartnerId, setSelectedPartnerId] = useState("");
   const [selectedRMName, setSelectedRMName] = useState("");
@@ -183,12 +183,12 @@ const AddLeadFormCard = (props: addLeadRequestFormProps) => {
       } else {
         return { [FORM_ERROR]: `error` };
       }
-    } catch (err:any) {
+    } catch (err: any) {
       const errObj = await err;
       toast.error(errObj.message)
       setDocuments([{ docName: "", file: "" }]);
       return { [FORM_ERROR]: `error${errObj.message}` };
-    }finally{
+    } finally {
       setIsLoading(false)
     }
   };
@@ -371,7 +371,7 @@ const AddLeadFormCard = (props: addLeadRequestFormProps) => {
                                   {...input}
                                   getOptionLabel={(option) => option.label}
                                   value={input.value || null}
-                                  options={policyCreatedByAdmin}
+                                  options={[{ label: "Partner", value: "Partner" }]}
                                   onChange={(event, newValue) => {
                                     input.onChange(newValue);
                                     handleSelectPolicyCreatedBy(
@@ -557,7 +557,7 @@ const AddLeadFormCard = (props: addLeadRequestFormProps) => {
                         </div>
                       )}
                       <Button variant="contained" type="submit" disabled={isLoading}>
-                        {isLoading?'Submitting...':'submit'}
+                        {isLoading ? 'Submitting...' : 'submit'}
                       </Button>
                     </Grid>
                   </Grid>

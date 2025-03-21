@@ -52,7 +52,7 @@ const Signin = () => {
     if (mode === 'client') {
       await verifyOtp(debouncedEmail, otp);
 
-    
+
     } else {
       try {
         setIsLoading(true);
@@ -69,8 +69,13 @@ const Signin = () => {
           return;
         }
         if (responseData.status === "success") {
+          const userLimit = responseData.userLimit;
+          // const updateUserLimit = Object.keys(userLimit)?.map((ele) => {
+          //   return { [ele]: Number(userLimit[ele]) }
+          // })
+         
           let loginData: SafeKaroUser = {
-            ...responseData,
+            ...responseData, 
           };
           if (loginData.accessToken && loginData.refreshToken) {
             setTokens(loginData.accessToken!, loginData.refreshToken!);
@@ -129,7 +134,7 @@ const Signin = () => {
     try {
       const res = await VerifyOtpService(email, otp);
       if (res.status === "success") {
-        navigate("client",{state:res.data});
+        navigate("client", { state: res.data });
       }
     } catch (error) {
       console.log(error)
@@ -309,7 +314,7 @@ const Signin = () => {
                                       onChange={handleEmail}
                                       className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-3 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                                     />
-                                 
+
                                   </div>
                                 )}
                               </Field>

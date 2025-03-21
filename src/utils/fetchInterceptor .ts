@@ -1,8 +1,8 @@
 import { refreshTokenAPI } from "../api/Token/RefreshTokenAPI";
 import { getAccessToken } from "../Hooks/Tokens/useToken";
 
-// const BASE_URL = "https://iimapi.bluesparing.com";
-const BASE_URL = "http://localhost:7000";
+const BASE_URL = "https://iimapi.bluesparing.com";
+// const BASE_URL = "http://localhost:7000";
 
 export interface FetchOptions extends RequestInit {
   body?: string | FormData | null;
@@ -72,7 +72,7 @@ const fetchInterceptor = async <T>(
 
     if (response.status === 401) {
       const newToken = await refreshTokenAPI();
-      const newHeaders = { ...headers, Authorization: `Bearer ${newToken}` }; // ✅ Fix
+      const newHeaders = { ...headers, Authorization: `Bearer ${newToken}` }; 
       return await fetch(url, { ...options, headers: newHeaders });
     }
 

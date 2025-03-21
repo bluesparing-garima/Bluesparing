@@ -111,13 +111,16 @@ const Checkout: FC = () => {
     razorpay_payment_id: string,
     razorpay_signature: string
   ) => {
+    console.log(razorpay_order_id,razorpay_payment_id,razorpay_signature)
+    setTimeout(() => {
+      
+    }, 2000);
     try {
       const response = await VerifyPaymentService({
         razorpay_order_id,
         razorpay_payment_id,
         razorpay_signature,
       });
-  
       if (response.success) {
         const invoiceDetails = {
           taxInvoiceDate: new Date().toLocaleDateString(),
@@ -145,7 +148,7 @@ const Checkout: FC = () => {
         generateInvoicePDF(invoiceDetails);
   
         await handleTransaction(razorpay_payment_id, razorpay_order_id, true);
-        handleNavigation();
+        // handleNavigation();
       } else {
         toast.error("Payment verification failed");
       }
@@ -178,7 +181,7 @@ const Checkout: FC = () => {
   };
 
   const makePayloadForFree = () => {
-    const newUserLimit: Record<string, number> = {};
+    const newUserLimit: Record<string, number | string> = {};
     for (let key in plan.userLimit) {
       if (key.toLowerCase() === 'relationship manager') {
         key = 'rm';
@@ -209,22 +212,15 @@ const Checkout: FC = () => {
     status: boolean,
     amount: number
   ): AddTransactionProps => {
-    const newUserLimit: Record<string, number> = {};
+    const newUserLimit: Record<string, number | string> = {};
     for (let key in plan.userLimit) {
       if (key.toLowerCase() === 'relationship manager') {
         key = 'rm';
       }
       newUserLimit[key.toLowerCase()] = (plan.userLimit[key.toLowerCase()]);
     }
-    if(userData){
-      for (let key in userData.userLimit) {
-        if (key.toLowerCase() === 'relationship manager') {
-          key = 'rm';
-        }
-        newUserLimit[key.toLowerCase()] += userData.userLimit[key.toLowerCase()] || 0;
-      }
-    }
-  
+
+
     if (userData?.role) {
       const payload: AddTransactionProps = {
         userId: userData.profileId,
@@ -235,7 +231,7 @@ const Checkout: FC = () => {
         planId: plan._id,
         planType: plan.planName,
         planStartDate: CalculateCurrentDate(),
-        policyCount: ((Number(plan.policyCount) * selectedMonths) || 1) + userData.policyCount || 0,
+        policyCount: ((Number(plan.policyCount) * selectedMonths) || 1) + Number(userData.policyCount) || 0,
         userLimit: newUserLimit,
         amount: amount || 0,
         planEndDate:
@@ -265,6 +261,20 @@ const Checkout: FC = () => {
     }
   };
 
+  const calculateLimit = (ele: string) => {
+    const planLimit = Number(plan?.userLimit?.[ele]) || 0;
+    const months = Number(selectedMonths) || 1;
+
+
+    if (planLimit === Infinity ) {
+      return "unlimited";
+    }
+
+    return planLimit ;
+  };
+
+
+
   const handleProceedPayment = async () => {
     if (!isCheckUserData()) {
       navigate("/signup");
@@ -279,7 +289,7 @@ const Checkout: FC = () => {
       handleNavigation();
     } else {
       try {
-        const response = InitiatePaymentService({ amount });
+        const response = await InitiatePaymentService({ amount });
         const data = await response;
         if (data.success) {
           const { order_id } = data;
@@ -380,7 +390,7 @@ const Checkout: FC = () => {
                 <span className="font-semibold text-[#027AAE] capitalize ">
                   {ele.toLowerCase()} Limit:
                 </span>
-                <span className="font-medium"> {((Number(plan.userLimit?.[ele]) || 0) * (Number(selectedMonths) || 1)) + (Number(userData?.userLimit?.[ele]) || 0)}</span>
+                <span className="font-medium"> {calculateLimit(ele)}</span>
               </Typography>
             );
           })}

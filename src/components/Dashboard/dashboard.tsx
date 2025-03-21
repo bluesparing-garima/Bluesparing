@@ -69,7 +69,7 @@ const Dashboard: React.FC = () => {
   const [selectedCard, setSelectedcard] = useState("1");
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
-  console.log("first", UserData);
+
   const GetDashboardCount = useCallback((startDate, endDate) => {
     getAdminDashboardService({
       header,
