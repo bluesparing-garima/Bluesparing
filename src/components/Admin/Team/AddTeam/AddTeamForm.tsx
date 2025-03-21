@@ -301,13 +301,13 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
         setProgress(p);
       };
       const newTeam = await addTeamService({ header, team, onProgress });
-
-      if (newRole && UserData.userLimit[newRole] > 0) {
+      const updateKey = UserData.userLimit[newRole] === "Infinity" ? "Infinity" :Number(UserData.userLimit[newRole])-1;
+      if (newRole && Number(UserData.userLimit[newRole]) > 0) {
         const updatedUserLimit = {
           ...UserData.userLimit,
-          [newRole]: UserData.userLimit[newRole] - 1,
+          [newRole]: updateKey,
         };
-
+    
         updateLocalStorage({ userLimit: updatedUserLimit });
       }
 
@@ -408,7 +408,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       console.error("Unsupported file type:", fileExtension);
     }
   };
-  
+
   const getDocumentUrl = (file: any): string | undefined => {
     if (!file) return undefined; // null ki jagah undefined return karein
     if (file instanceof File) {
@@ -987,8 +987,8 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                   {isLoading
                     ? "Submitting..."
                     : isAdd
-                    ? "Add Team"
-                    : "Update Team"}
+                      ? "Add Team"
+                      : "Update Team"}
                 </Button>
               </Grid>
             </Grid>
