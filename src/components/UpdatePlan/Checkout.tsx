@@ -157,7 +157,7 @@ const Checkout: FC = () => {
         
         await downloadInvoice(plan.planName, userData?.profileId || user?._id || "");
 
-        // handleNavigation();
+        handleNavigation();
       } else {
         toast.error("Payment verification failed");
       }
