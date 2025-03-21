@@ -115,10 +115,7 @@ const Checkout: FC = () => {
     razorpay_payment_id: string,
     razorpay_signature: string
   ) => {
-    console.log(razorpay_order_id,razorpay_payment_id,razorpay_signature)
-    setTimeout(() => {
-      
-    }, 2000);
+  
     try {
       const response = await VerifyPaymentService({
         razorpay_order_id,
@@ -128,7 +125,7 @@ const Checkout: FC = () => {
 
       if (response.success) {
         await handleTransaction(razorpay_payment_id, razorpay_order_id, true);
-        // handleNavigation();
+        handleNavigation();
       } else {
         toast.error("Payment verification failed");
       }

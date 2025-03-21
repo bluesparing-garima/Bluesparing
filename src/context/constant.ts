@@ -7,7 +7,7 @@ export const DAY_FORMAT = "YYYY-MM-DD";
 export const DAYS_DB_DISPLAY_FORMAT_DATE_TYPE = "YYYY-MM-DDTHH:mm:ss.SSS[Z]";
 export const DAYJS_DISPLAY_FORMAT_TABLES = "MMM DD, YYYY";
 export const DAYJS_DISPLAY_FORMAT = "MMM DD YYYY";
-export const MAX_FILE_SIZE = 7* 1024 * 1024;
+export const MAX_FILE_SIZE = 7 * 1024 * 1024;
 
 export const ALLOWED_FILE_TYPES = [
   "image/jpeg",
@@ -56,16 +56,16 @@ export type SafeKaroUser = {
   idToken: string;
   partnerCode: string;
   refreshToken?: string;
-  companyLogo?:any;
-  planName?:string;
-  planId?:string;
-  roleId?:string;
-  policyCount?:number;
-  transactionStatus?:boolean;
-  planExpired?:string;
-  planStartDate?:string;
+  companyLogo?: any;
+  planName?: string;
+  planId?: string;
+  roleId?: string;
+  policyCount?: number;
+  transactionStatus?: boolean;
+  planExpired?: string;
+  planStartDate?: string;
   profileImage?: string;
-  transactionId?:string;
+  transactionId?: string;
 };
 export type Header = {
   "Content-Type": string;
@@ -105,3 +105,40 @@ export const MODEL_STORAGE_KEY = "paginationModel";
 export const SESSION_USER = "session_user";
 export const CURRENT_SUBSID = 'currentSubscriptionIds'
 export const CURRENT_ROLE_MENUS = 'currentRoleMenu'
+export const addLeadDocumentsOptions = [
+  { label: "RC Front", value: "rcFront" },
+  { label: "RC Back", value: "rcBack" },
+  { label: "Survey", value: "survey" },
+  { label: "Fitness", value: "fitness" },
+  { label: "Proposal", value: "proposal" },
+  { label: "Previous Policy", value: "previousPolicy" },
+  { label: "Quotation", value: "quotation" },
+  { label: "Front Adhar", value: "frontAdhar" },
+  { label: "Back Adhar", value: "backAdhar" },
+  { label: "Pan Card", value: "panCard" },
+];
+
+
+export const addPolicyDocumentsOptions = [
+  { label: "Previous Policy", value: "previousPolicy" },
+  { label: "Current Policy", value: "currentPolicy" },
+  { label: "Pan Card", value: "panCard" },
+  { label: " Adhar Card", value: "adharCard" },
+  { label: "RC Front", value: "rcFront" },
+  { label: "RC Back", value: "rcBack" },
+  { label: "Survey", value: "survey" },
+  { label: "GST", value: "gst" },
+  { label: "Other", value: "Other" },
+];
+
+export const addBookingReqDocumentsOptions = [
+  { label: "Previous Policy", value: "previousPolicy" },
+  { label: "Current Policy", value: "currentPolicy" },
+  { label: "Pan Card", value: "panCard" },
+  { label: " Adhar Card", value: "adharCard" },
+  { label: "RC Front", value: "rcFront" },
+  { label: "RC Back", value: "rcBack" },
+  { label: "Survey", value: "survey" },
+  { label: "GST", value: "gst" },
+  { label: "Other", value: "Other" },
+];

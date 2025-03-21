@@ -25,6 +25,7 @@ import {
   ALLOWED_FILE_TYPES,
   DAY_FORMAT,
   imagePath,
+  addPolicyDocumentsOptions,
 } from "../../../context/constant";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -40,7 +41,6 @@ import useGetBrokers from "../../../Hooks/Broker/useGetBrokers";
 import useGetCompanies from "../../../Hooks/Company/useGetCompanies";
 import useGetFuelTypes from "../../../Hooks/FuelType/useGetFuelTypes";
 import {
-  documentTypes,
   paymentModes,
   policyCreatedBy,
   policyCreatedByAdmin,
@@ -1610,14 +1610,14 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                               <Grid item lg={4} md={4} sm={4} xs={12}>
                                 <Autocomplete
                                   value={
-                                    documentTypes.find(
+                                    addPolicyDocumentsOptions.find(
                                       (option) => option.value === doc.docName
                                     ) || null
                                   }
                                   onChange={(e, newValue) =>
                                     handleChangeDocumentName(newValue!, index)
                                   }
-                                  options={documentTypes}
+                                  options={addPolicyDocumentsOptions}
                                   renderInput={(params) => (
                                     <TextField
                                       {...params}
