@@ -23,6 +23,7 @@ import AddTransactionServices from "../../api/Transaction/AddTranstion/AddTransa
 import { IVerifyResponsePayload } from "../../api/Razorpay/IRazorpay";
 import InitiatePaymentService from "../../api/Razorpay/InitiatePayment/InitiatePaymentService";
 import VerifyPaymentService from "../../api/Razorpay/VerifyPayment/VerifyPaymentService";
+import { generateInvoicePDF } from "../../utils/InvoiceGenerator";
 interface CheckoutState {
   plan?: ISubscription;
   selectedPlan: "monthly" | "yearly";
@@ -124,8 +125,33 @@ const Checkout: FC = () => {
       });
 
       if (response.success) {
+        const invoiceDetails = {
+          taxInvoiceDate: new Date().toLocaleDateString(),
+          taxInvoiceNo: "INV123456",
+          supplierDetails: {
+            name:"BlueSparing PVT Ltd",
+            address: "213,2nd Floor, Royal World, Sansar Chandra Rd, Pink City, Jaipur, Rajasthan 302001",
+            GSTIN: "GSTIN123456",
+          },
+          billTo: {
+            name: userData?.name || user?.name || "Sample User",
+            address: "Sample Address",
+            state: "Sample State",
+            email: userData?.email || user?.email || "sample@example.com",
+            mobileNo: userData?.phoneNumber || user?.phone || "1234567890",
+          },
+          paymentMethod: "Razorpay",
+          orderId: razorpay_order_id,
+          paymentReferenceId: razorpay_payment_id,
+          itemDescription: plan?.planName || "Sample Plan",
+          HSN: "998316",
+          price: getAmount(),
+        };
+
+        generateInvoicePDF(invoiceDetails);
+  
         await handleTransaction(razorpay_payment_id, razorpay_order_id, true);
-        handleNavigation();
+        // handleNavigation();
       } else {
         toast.error("Payment verification failed");
       }
