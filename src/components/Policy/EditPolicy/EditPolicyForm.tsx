@@ -165,6 +165,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
     }
     setDocuments(updatedDocuments);
     setSelectedBrokerId(initialValues.brokerId ?? "");
+    setPolicyType(initialValues.policyType??"");
     setSelectedPartnerId(initialValues.partnerId ?? "");
     setSelectedPartnerName(initialValues.partnerName ?? "");
     setSelectedRMId(initialValues.relationshipManagerId ?? "");
