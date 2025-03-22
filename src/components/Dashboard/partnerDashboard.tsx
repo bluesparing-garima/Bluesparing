@@ -37,7 +37,7 @@ const PartnerDashboard: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [firstCart, setFirstCart] = useState(true);
   const [secondCart, setSecondCart] = useState(false);
-  const [isLoading, setIsLoading] = useState(false)
+  const[isLoading,setIsLoading] = useState(false)
   const [thirdCart, setThirdCart] = useState(false);
   const [fourthCart, setFourthCart] = useState(false);
   const [selectedCard, setSelectedcard] = useState("1");
@@ -68,13 +68,13 @@ const PartnerDashboard: React.FC = () => {
     const lastDayOfMonth = endOfMonth(currentDate);
     const formattedFirstDay = format(firstDayOfMonth, "yyyy-MM-dd");
     const formattedLastDay = format(lastDayOfMonth, "yyyy-MM-dd");
-    const fetchData = async () => {
-      try {
-        setIsLoading(true)
-        GetDashboardCount(formattedFirstDay, formattedLastDay);
-      } catch (error) {
+    const fetchData = async() => {
+      try{
+setIsLoading(true)
+        await GetDashboardCount(formattedFirstDay, formattedLastDay);
+      }catch(error){
         console.error("Error fetching HR Dashboard data:", error);
-      } finally {
+      }finally{
         setIsLoading(false);
       }
     };
@@ -138,26 +138,34 @@ const PartnerDashboard: React.FC = () => {
   ];
   const onSubmit = async (value: any) => {
     if (!value.startDate || !value.endDate) {
-
+      
       toast.error("Both start date and end date are required");
-
+      
+      // alert("Both start date and end date are required.");
       return;
     }
+    // Convert input dates to Date objects
     const utcStartDate = new Date(value.startDate!);
     const utcEndDate = new Date(value.endDate!);
-
+    
+    // Validate if dates are valid
     if (isNaN(utcStartDate.getTime()) || isNaN(utcEndDate.getTime())) {
       toast.error("Invalid date selected. Please select valid dates.");
+      // alert("Invalid date selected. Please select valid dates.");
       return;
     }
-
+  
+    // Ensure endDate is not before startDate
     if (utcEndDate < utcStartDate) {
       toast.error("End date cannot be before start date.")
+      // alert("End date cannot be before start date.");
       return;
     }
-
+  
+    // Format dates before passing them
     const formattedStartDate = format(utcStartDate, "yyyy-MM-dd'T'HH:mm:ss");
     value.startDate = formattedStartDate;
+    // const utcEndDate = new Date(value.endDate!);
     const formattedEndDate = format(utcEndDate, "yyyy-MM-dd'T'HH:mm:ss");
     value.endDate = formattedEndDate;
     GetDashboardCount(value.startDate, value.endDate);
@@ -221,11 +229,11 @@ const PartnerDashboard: React.FC = () => {
                 isSelected={thirdCart}
               />
               <CartButton
-                onClick={handleFourthCart}
-                tooltipTitle="Plan Details "
-                iconPath={<PlanDetailsDataSvg isActive={selectedCard === "4"} />}
-                isSelected={fourthCart}
-              />
+                            onClick={handleFourthCart}
+                            tooltipTitle="Plan Details "
+                            iconPath={<PlanDetailsDataSvg isActive={selectedCard === "4"} />}
+                            isSelected={fourthCart}
+                          />
             </div>
             <div className="flex w-full flex-wrap  justify-evenly items-center">
               <Form
@@ -289,10 +297,10 @@ const PartnerDashboard: React.FC = () => {
                         className="md:w-10 md:h-10 h-4 w-4 bg-[#30A9FF] shadow-sm rounded flex justify-center items-center text-white"
                         type="submit" disabled={isLoading}
                       >
-                        {isLoading ? <CircularProgress
-                          className="md:w-6 md:h-6 h-3 w-3"
-                        /> :
-                          <SearchIcon className="md:w-6 md:h-6 h-3 w-3" />
+                        {isLoading ? <CircularProgress 
+                        className="md:w-6 md:h-6 h-3 w-3"
+                         />: 
+                        <SearchIcon className="md:w-6 md:h-6 h-3 w-3" />
                         }
                       </button>
                     </div>
@@ -300,21 +308,21 @@ const PartnerDashboard: React.FC = () => {
                 )}
               />
               <div className="flex justify-between items-center gap-x-2">
-
-                <button
-                  className="md:w-10 md:h-10 h-4 w-4 bg-[#0095FF] shadow-sm rounded flex justify-center items-center text-white"
-                  onClick={handleDownloadPDF} disabled={isLoading}
-                ><Tooltip title="Download PDF">
-                    {isLoading ? <CircularProgress className="md:w-6 md:h-6 h-3 w-3" /> : <PictureAsPdfSharpIcon className="md:w-6 md:h-6 h-3 w-3" />}
-                  </Tooltip>                      </button>
-
+                
+                  <button
+                    className="md:w-10 md:h-10 h-4 w-4 bg-[#0095FF] shadow-sm rounded flex justify-center items-center text-white"
+                    onClick={handleDownloadPDF} disabled={isLoading}
+                  ><Tooltip title="Download PDF">
+                    {isLoading?<CircularProgress className="md:w-6 md:h-6 h-3 w-3" />:<PictureAsPdfSharpIcon className="md:w-6 md:h-6 h-3 w-3" />}
+                    </Tooltip>                      </button>
+                
                 <Tooltip title="Download Excel">
                   <button
                     className="md:w-10 md:h-10 h-4 w-4 bg-[#3BDB03] shadow-sm rounded flex justify-center items-center text-white"
                     onClick={handleDownloadExcel}
                   >
-                    {isLoading ? <CircularProgress className="md:w-6 md:h-6 h-3 w-3" /> : <FileDownloadOutlinedIcon className="md:w-6 md:h-6 h-3 w-3" />}
-
+                    {isLoading?<CircularProgress className="md:w-6 md:h-6 h-3 w-3" />:<FileDownloadOutlinedIcon className="md:w-6 md:h-6 h-3 w-3" />}
+                    
                   </button>
                 </Tooltip>
               </div>
@@ -348,21 +356,21 @@ const PartnerDashboard: React.FC = () => {
                                     {renderCountBox(
                                       "Monthly PayOut",
                                       item.commissions?.[
-                                      "Monthly Commission"
+                                        "Monthly Commission"
                                       ] || 0,
                                       PayInCommissionIcon
                                     )}
                                     {renderCountBox(
                                       "Monthly Paid PayOut",
                                       item.commissions?.[
-                                      "Monthly Paid Amount"
+                                        "Monthly Paid Amount"
                                       ] || 0,
                                       PayOutCommissionIcon
                                     )}
                                     {renderCountBox(
                                       "Monthly UnPaid PayOut",
                                       item.commissions?.[
-                                      "Monthly UnPaid Amount"
+                                        "Monthly UnPaid Amount"
                                       ] || 0,
                                       FinalPremiumIcon
                                     )}
@@ -371,19 +379,19 @@ const PartnerDashboard: React.FC = () => {
                                     {renderCountBox(
                                       "Total PayOut",
                                       item.commissions?.["Total Commission"] ||
-                                      0,
+                                        0,
                                       PayOutCommissionIcon
                                     )}
                                     {renderCountBox(
                                       "Total Paid PayOut",
                                       item.commissions?.["Total Paid Amount"] ||
-                                      0,
+                                        0,
                                       PayOutCommissionIcon
                                     )}
                                     {renderCountBox(
                                       "Total UnPaid PayOut",
                                       item.commissions?.[
-                                      "Total UnPaid Amount"
+                                        "Total UnPaid Amount"
                                       ] || 0,
                                       FinalPremiumIcon
                                     )}
@@ -410,7 +418,7 @@ const PartnerDashboard: React.FC = () => {
                                     {renderCountBox(
                                       "Requested Booking",
                                       item.bookingRequests?.[
-                                      "Requested Booking"
+                                        "Requested Booking"
                                       ] || 0,
                                       RequestedBookingIcon,
                                       "/booking"
@@ -418,7 +426,7 @@ const PartnerDashboard: React.FC = () => {
                                     {renderCountBox(
                                       "Accepted Booking",
                                       item.bookingRequests?.[
-                                      "Accepted Booking"
+                                        "Accepted Booking"
                                       ] || 0,
                                       AcceptedBookingIcon,
                                       "/booking"
@@ -426,7 +434,7 @@ const PartnerDashboard: React.FC = () => {
                                     {renderCountBox(
                                       "Rejected Booking",
                                       item.bookingRequests?.[
-                                      "Rejected Booking"
+                                        "Rejected Booking"
                                       ] || 0,
                                       deleteIcon,
                                       "/booking/reject"
@@ -462,53 +470,53 @@ const PartnerDashboard: React.FC = () => {
                           </div>
                         )}
                         {fourthCart && (
-                          <div className="bg-blue-200 md:p-7 p-2">
-                            <Typography
-                              variant="h5"
-                              className="text-lg font-bold text-gray-800"
-                            >
-                              Plan Details
-                            </Typography>
-                            <Grid container>
-                              {planDetails.map((item, index) => (
-                                <React.Fragment key={index}>
-                                  {renderCountBox(
-                                    item.label,
-                                    item.value,
-                                    "",
-                                    `/update-plan`
-                                  )}
-                                </React.Fragment>
-                              ))}
-                            </Grid>
-
-                            {UserData?.userLimit &&
-                              typeof UserData.userLimit === "object" && (
-                                <>
-                                  <Typography
-                                    variant="h5"
-                                    className="text-lg font-bold text-gray-800 mt-4"
-                                  >
-                                    User Limits
-                                  </Typography>
-                                  <Grid container>
-                                    {Object.entries(UserData.userLimit).map(
-                                      ([key, value]) => (
-                                        <React.Fragment key={key}>
-                                          {renderCountBox(
-                                            key.toUpperCase(),
-                                            value === 'Infinity' ? "Unlimited" : Number(value) || 0,
-                                            "",
-                                            `/update-plan`
-                                          )}
-                                        </React.Fragment>
-                                      )
-                                    )}
-                                  </Grid>
-                                </>
-                              )}
-                          </div>
+                <div className="bg-blue-200 md:p-7 p-2">
+                  <Typography
+                    variant="h5"
+                    className="text-lg font-bold text-gray-800"
+                  >
+                    Plan Details
+                  </Typography>
+                  <Grid container>
+                    {planDetails.map((item, index) => (
+                      <React.Fragment key={index}>
+                        {renderCountBox(
+                          item.label,
+                          item.value,
+                          "",
+                          `/update-plan`
                         )}
+                      </React.Fragment>
+                    ))}
+                  </Grid>
+
+                  {UserData?.userLimit &&
+                    typeof UserData.userLimit === "object" && (
+                      <>
+                        <Typography
+                          variant="h5"
+                          className="text-lg font-bold text-gray-800 mt-4"
+                        >
+                          User Limits
+                        </Typography>
+                        <Grid container>
+                          {Object.entries(UserData.userLimit).map(
+                            ([key, value]) => (
+                              <React.Fragment key={key}>
+                                {renderCountBox(
+                                  key.toUpperCase(),
+                                  value==='Infinity'?"Unlimited":Number(value) || 0,
+                                  "",
+                                  `/update-plan`
+                                )}
+                              </React.Fragment>
+                            )
+                          )}
+                        </Grid>
+                      </>
+                    )}
+                </div>
+              )}
                       </>
                     ) : (
                       <Typography variant="h6">Loading...</Typography>

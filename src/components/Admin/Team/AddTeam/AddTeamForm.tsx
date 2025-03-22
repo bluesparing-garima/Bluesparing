@@ -293,7 +293,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
         newRole = "rm";
       }
       const maxLimit = userLimit.hasOwnProperty(newRole) ? userLimit[newRole] : 0;
-      if (Number(maxLimit) <= 0) {
+      if (maxLimit <= 0) {
         setShowUpgradePopup(true);
         return;
       }

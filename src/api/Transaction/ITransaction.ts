@@ -15,7 +15,7 @@ transactionStatus:boolean;
 amount:number,
 createdBy:string;
 policyCount:number;
-userLimit: Record<string, number|string>;
+userLimit: Record<string, number>;
 }
 export interface IAddTransaction{
     data:AddTransactionProps

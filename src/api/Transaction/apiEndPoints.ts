@@ -1,3 +1,3 @@
 export const addTransaction = ()=>{
-    return "/api/transaction/razorpay"
+    return "/api/transaction"
 }

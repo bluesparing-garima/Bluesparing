@@ -48,8 +48,8 @@ const PremiumButton = styled(IconButton)({
 // 👑 Styled Crown Icon
 const CrownImage = styled("img")({
   width: "25px",
-  filter: 'drop-shadow(0px 0px 3px gold)',
-  transition: 'transform 0.3s ease-in-out, filter 0.3s ease-in-out',
+  filter: "drop-shadow(0px 0px 3px gold)",
+  transition: "transform 0.3s ease-in-out, filter 0.3s ease-in-out",
 });
 
 // 🔴 Styled Red Dot
@@ -222,8 +222,6 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
           {userData?.name}
         </div>
         <div className="flex items-center justify-center gap-3">
-
-
           <Tooltip title="Update Plan" arrow>
             <PremiumButton onClick={() => navigate("/update-plan")}>
               <RedDot />
@@ -231,42 +229,42 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
             </PremiumButton>
           </Tooltip>
 
-  <Avatar
-    className="md:w-[40px] md:h-[40px] w-[30px] h-[30px]"
-    alt={userData?.name}
-    src={`${imagePath}/${userData?.profileImage}`}
-  />
-  <div className="flex items-center justify-between bg-white px-2">
-    <Link to="/profile" className="menu-hover text-black">
-      <p className="md:text-[14px] text-[12px] font-medium">
-        {userData?.name} ({userData?.userCode})
-      </p>
-      <p className="text-[#737791] md:text-xs text-[10px]">
-        {userData?.role}
-        {userData?.role === "Partner" && (
-          <span className="text-safekaroDarkOrange"> ({userRank})</span>
-        )}
-      </p>
-    </Link>
-  </div>
-  <div className="self-start">
-    <Button
-      id="basic-button"
-      sx={{ color: "black" }}
-      onClick={handleClick}
-    >
-      <KeyboardArrowDownIcon />
-    </Button>
-    <Menu
-      id="basic-menu"
-      anchorEl={anchorEl}
-      open={open}
-      onClose={handleClose}
-    >
-      <Link to="/profile" onClick={handleClose}>
-        <MenuItem>Profile</MenuItem>
-      </Link>
-      {canMarkAttendance && (
+          <Avatar
+            className="md:w-[40px] md:h-[40px] w-[30px] h-[30px]"
+            alt={userData?.name}
+            src={`${imagePath}/${userData?.profileImage}`}
+          />
+          <div className="flex items-center justify-between bg-white px-2">
+            <Link to="/profile" className="menu-hover text-black">
+              <p className="md:text-[14px] text-[12px] font-medium">
+                {userData?.name} ({userData?.userCode})
+              </p>
+              <p className="text-[#737791] md:text-xs text-[10px]">
+                {userData?.role}
+                {userData?.role === "Partner" && (
+                  <span className="text-safekaroDarkOrange"> ({userRank})</span>
+                )}
+              </p>
+            </Link>
+          </div>
+          <div className="self-start">
+            <Button
+              id="basic-button"
+              sx={{ color: "black" }}
+              onClick={handleClick}
+            >
+              <KeyboardArrowDownIcon />
+            </Button>
+            <Menu
+              id="basic-menu"
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+            >
+              <Link to="/profile" onClick={handleClose}>
+                <MenuItem>Profile</MenuItem>
+              </Link>
+              {canMarkAttendance && (
                 <div>
                   <MenuItem onClick={handleClose}>
                     <MarkInTime

@@ -3,7 +3,7 @@ export interface ISubscription {
     planName: string;
     monthlyAmount: number;
     policyCount: number;
-    userLimit: Record<string, number|string>;
+    userLimit: Record<string, number>;
     discount: Record<string, number>
     assignedMenu?: string[];
     assignedAccountMenu?:string[];

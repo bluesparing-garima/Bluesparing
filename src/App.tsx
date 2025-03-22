@@ -53,22 +53,9 @@ function App() {
       }
     });
   };
-  const isSetUserData = () => {
-    if (
-      currentUrl !== "/" &&
-      currentUrl !== "/signup" &&
-      currentUrl !== "/checkout" &&
-      currentUrl !== "/client" &&
-      currentUrl !== "/plan-details"
-    ) {
-      return true;
-    }
-
-    return false;
-  }
   useEffect(() => {
     handleSession(currentUrl);
-    if (isSetUserData()) {
+    if (currentUrl !== "/") {
       let storedTheme = localStorage.getItem("user");
       if (storedTheme) {
         let parsedUserData = JSON.parse(storedTheme) as SafeKaroUser;
@@ -77,15 +64,15 @@ function App() {
       }
     }
   }, [currentUrl]);
-
   return (
     <>
       <SafekaroProvider>
         {currentUrl === "/" ||
-          currentUrl === "/signup" ||
-          currentUrl === '/checkout' ||
-          currentUrl === '/client' ||
-          (currentUrl === "/plan-details") ? (
+        currentUrl === "/signup" ||
+        currentUrl === "/403" ||
+        currentUrl === '/checkout' || 
+        currentUrl==='/client'||
+        (currentUrl === "/plan-details" && ( !userData?.transactionStatus)) ? (
           <> {content}</>
         ) : (
           <SidebarSwitcher userData={userData} content={content} />

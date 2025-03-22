@@ -7,19 +7,16 @@ import { ISignIn } from "./IAuth";
 import { SafeKaroUser, header } from "../context/constant";
 import { setTokens } from "../Hooks/Tokens/useToken";
 import fetchInterceptor, { FetchOptions } from "../utils/fetchInterceptor ";
-
+import toast, { Toaster } from "react-hot-toast";
 import { useEffect, useState } from "react";
 import useDebounce from "../Hooks/Debounce/useDebounce";
 import SendOtpService from "../api/Client/SendOtp/SendOtpService";
 import VerifyOtpService from "../api/Client/VerifyOtp/VerifyOtpService";
-import OverlayError from "../utils/ui/OverlayError";
-import OverlayLoader from "../utils/ui/OverlayLoader";
 const Signin = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const queryValue = searchParams.get("mode");
   const mode = queryValue ? queryValue : "normal";
-  const [errMsg, setErrMsg] = useState("");
   const [email, setEmail] = useState("");
   const debouncedEmail = useDebounce(email, 1000);
   const [showOtpBox, setShowOtpBox] = useState(false);
@@ -37,9 +34,6 @@ const Signin = () => {
     return errors;
   };
 
-  const onClose = () => {
-    setErrMsg("")
-  }
   const isValidEmail = (email: string): boolean => {
     return emailRegex.test(email);
   };
@@ -57,10 +51,11 @@ const Signin = () => {
   const onSubmit = async (signInData: ISignIn) => {
     if (mode === 'client') {
       await verifyOtp(debouncedEmail, otp);
+
+    
     } else {
       try {
         setIsLoading(true);
-        setErrMsg("")
         const url = "/api/user/login";
         const options: FetchOptions = {
           headers: header,
@@ -68,8 +63,9 @@ const Signin = () => {
           body: JSON.stringify(signInData),
         };
         const responseData = await fetchInterceptor<any>(url, options);
+
         if (responseData.role.toLowerCase().trim() === "superadmin") {
-          setErrMsg("super admin can't login ")
+          toast.error("super admin can't login ");
           return;
         }
         if (responseData.status === "success") {
@@ -81,6 +77,7 @@ const Signin = () => {
           }
 
           localStorage.setItem("user", JSON.stringify(loginData));
+
           if (loginData.policyCount! <= 0) {
             navigate("/plan-exhausted");
             return;
@@ -97,12 +94,12 @@ const Signin = () => {
             return;
           }
           navigate(roleDashboardMapping[role] || roleDashboardMapping.default);
+        } else {
+          return { [FORM_ERROR]: `${responseData.message}` };
         }
       } catch (error: any) {
         const err = await error;
-      
-        setErrMsg(err.message)
-
+        toast.error(err.message);
       } finally {
         setIsLoading(false);
       }
@@ -118,42 +115,33 @@ const Signin = () => {
       return "invalid email format"
     }
     try {
-      setIsLoading(true)
-      setErrMsg("")
+
       const res = await SendOtpService(mailId);
       if (res.status === "success") {
         setShowOtpBox(true)
       }
-    } catch (error: any) {
-      const err = await error;
-      setErrMsg(err.message || "Error while sending otp!Please try Again")
-
-    } finally {
-      setIsLoading(false)
+    } catch (error) {
+      console.log(error)
     }
   }
 
   const verifyOtp = async (email: string, otp: string) => {
     try {
-      setIsLoading(true)
-      setErrMsg("")
       const res = await VerifyOtpService(email, otp);
       if (res.status === "success") {
-        navigate("client", { state: res.data });
+        navigate("client",{state:res.data});
       }
-    } catch (error: any) {
-      setErrMsg(error.message || "Error in verify Otp")
-    } finally {
-      setIsLoading(false)
+    } catch (error) {
+      console.log(error)
     }
   }
 
   useEffect(() => {
     if (debouncedEmail && isValidEmail(debouncedEmail)) {
       sendOtpReq(debouncedEmail).then((data) => {
-        setShowOtpBox(true);
+        setShowOtpBox(true); // OTP successfully send hone ke baad show karein
       }).catch(() => {
-        setShowOtpBox(false);
+        setShowOtpBox(false); // Agar OTP request fail ho toh hide karein
       });
     }
   }, [debouncedEmail]);
@@ -321,7 +309,7 @@ const Signin = () => {
                                       onChange={handleEmail}
                                       className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-3 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                                     />
-
+                                 
                                   </div>
                                 )}
                               </Field>
@@ -347,7 +335,11 @@ const Signin = () => {
                                         placeholder="Otp"
                                         className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-3 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                                       />
-
+                                      {/* {meta.error && meta.touched && (
+                                    <span className="text-safekaroDarkOrange">
+                                      {meta.error}
+                                    </span>
+                                  )} */}
                                     </div>
                                   )}
                                 </Field>
@@ -422,14 +414,8 @@ const Signin = () => {
             }}
           ></div>
         </div>
-        {
-          errMsg && <OverlayError title="Failed" onClose={onClose} msg={errMsg} />
-        }
-        {
-          isLoading && <OverlayLoader />
-        }
       </div>
-    
+      <Toaster position="bottom-center" reverseOrder={false} />
     </div>
   );
 };
