@@ -37,6 +37,9 @@ const Checkout: FC = () => {
   let userData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
   const [selectedMonths, setSelectedMonths] = useState<number>(1);
 
+
+
+
   if (!plan) {
     toast.error("No plan selected. Redirecting to plans page...");
     navigate("/plans");
@@ -61,6 +64,7 @@ const Checkout: FC = () => {
     }
     return 0;
   };
+
 
   const getDiscount = () => {
     const discountPercentage = getNearestDiscount(selectedMonths);
@@ -104,6 +108,7 @@ const Checkout: FC = () => {
     sessionStorage.clear();
     localStorage.clear();
     navigate("/");
+
   };
   const verifyPayment = async (
     razorpay_order_id: string,
@@ -135,13 +140,15 @@ const Checkout: FC = () => {
     oId: string,
     status: boolean
   ) => {
+
     try {
       const amount = getTotalAmount();
-      if (tId === "free") {
+      if (tId === 'free') {
         AddTransactionServices({
           data: makePayloadForFree(),
         });
       } else {
+
         AddTransactionServices({
           data: makeTransactionPayload(tId, oId, status, amount),
         });
@@ -152,13 +159,15 @@ const Checkout: FC = () => {
     }
   };
 
+
+
   const makePayloadForFree = () => {
-    const newUserLimit: Record<string, number> = {};
+    const newUserLimit: Record<string, number | string> = {};
     for (let key in plan.userLimit) {
-      if (key.toLowerCase() === "relationship manager") {
-        key = "rm";
+      if (key.toLowerCase() === 'relationship manager') {
+        key = 'rm';
       }
-      newUserLimit[key.toLowerCase()] = plan.userLimit[key.toLowerCase()];
+      newUserLimit[key.toLowerCase()] = (plan.userLimit[key.toLowerCase()]);
     }
 
     const payload: AddTransactionProps = {
@@ -173,33 +182,25 @@ const Checkout: FC = () => {
       policyCount: Number(plan?.policyCount) || 1,
       userLimit: newUserLimit ?? 0,
       amount: 0,
-      planEndDate: calculateFreePlanEndDate(),
+      planEndDate: calculateFreePlanEndDate()
     };
 
     return payload;
-  };
+  }
   const makeTransactionPayload = (
     pId: string,
     oId: string,
     status: boolean,
     amount: number
   ): AddTransactionProps => {
-    const newUserLimit: Record<string, number> = {};
+    const newUserLimit: Record<string, number | string> = {};
     for (let key in plan.userLimit) {
-      if (key.toLowerCase() === "relationship manager") {
-        key = "rm";
+      if (key.toLowerCase() === 'relationship manager') {
+        key = 'rm';
       }
-      newUserLimit[key.toLowerCase()] = plan.userLimit[key.toLowerCase()];
+      newUserLimit[key.toLowerCase()] = (plan.userLimit[key.toLowerCase()]);
     }
-    if (userData) {
-      for (let key in userData.userLimit) {
-        if (key.toLowerCase() === "relationship manager") {
-          key = "rm";
-        }
-        newUserLimit[key.toLowerCase()] +=
-          userData.userLimit[key.toLowerCase()] || 0;
-      }
-    }
+
 
     if (userData?.role) {
       const payload: AddTransactionProps = {
@@ -211,9 +212,7 @@ const Checkout: FC = () => {
         planId: plan._id,
         planType: plan.planName,
         planStartDate: CalculateCurrentDate(),
-        policyCount:
-          (Number(plan.policyCount) * selectedMonths || 1) +
-            userData.policyCount || 0,
+        policyCount: ((Number(plan.policyCount) * selectedMonths) || 1) + Number(userData.policyCount) || 0,
         userLimit: newUserLimit,
         amount: amount || 0,
         planEndDate:
@@ -243,6 +242,20 @@ const Checkout: FC = () => {
     }
   };
 
+  const calculateLimit = (ele: string) => {
+    const planLimit = Number(plan?.userLimit?.[ele]) || 0;
+    const months = Number(selectedMonths) || 1;
+
+
+    if (planLimit === Infinity ) {
+      return "unlimited";
+    }
+
+    return planLimit ;
+  };
+
+
+
   const handleProceedPayment = async () => {
     if (!isCheckUserData()) {
       navigate("/signup");
@@ -257,7 +270,7 @@ const Checkout: FC = () => {
       handleNavigation();
     } else {
       try {
-        const response = InitiatePaymentService({ amount });
+        const response = await InitiatePaymentService({ amount });
         const data = await response;
         if (data.success) {
           const { order_id } = data;
@@ -315,137 +328,129 @@ const Checkout: FC = () => {
     getMaxDiscountMonth();
 
   return (
-    <div className="w-full min-h-screen bg-blue-200 flex flex-col items-center p-3">
-    {/* Heading */}
-    <h1 className="w-full pt-6 sm:pt-10 text-center text-lg sm:text-xl uppercase font-semibold text-[#213555]">
-      Your Cart
-    </h1>
-  
-    {/* Offer Box */}
-    <div className="w-full max-w-5xl px-3 sm:px-6 py-3 sm:py-4 mt-4 rounded-xl bg-[#e59411] text-white text-center shadow-lg">
-      <h2 className="font-satoshi font-semibold text-sm sm:text-lg">
-        🔥 Hurry! Limited-Time Offer on {plan.planName} Plans! 🔥
-      </h2>
-      <p className="font-satoshi text-xs sm:text-md mt-1">
-        💰 Select {plan.planName} plan for {highestMonth}{" "}
-        {highestMonth > 1 ? "Months" : "Month"} to get {highestDiscount}% off
-      </p>
-    </div>
-  
-    {/* Checkout Section */}
-    <div className="flex flex-col lg:flex-row justify-center items-center gap-6 mt-6 w-full px-3 sm:px-6 max-w-6xl">
-      {/* Left Box - Checkout Details */}
-      <Box className="p-4 sm:p-6 w-full max-w-sm sm:max-w-md rounded-xl bg-white shadow-lg border border-gray-200">
-        <div className="bg-[#e59411] p-3 text-center text-white rounded-t-xl">
-          <Typography className="text-base sm:text-lg font-bold font-satoshi">
-            Checkout
-          </Typography>
-          <Typography className="text-xs sm:text-sm font-satoshi">
-            Selected Plan: ({plan.planName})
-          </Typography>
-        </div>
-  
-        <Typography className="font-satoshi mt-4 text-sm sm:text-base">
-          <span className="text-[#027AAE] font-semibold">Monthly Amount:</span>{" "}
-          {plan.planName.toLowerCase().trim() === "free" && (
-            <span className="line-through px-2 text-gray-500">₹199</span>
-          )}
-          <span className="font-semibold">₹{plan.monthlyAmount}</span>
-        </Typography>
-  
-        <Typography className="font-satoshi my-3 text-sm sm:text-base">
-          <span className="text-[#027AAE] font-semibold">Policy Count:</span>{" "}
-          <span className="font-semibold">
-            {Number(plan?.policyCount) * Number(selectedMonths) +
-              (Number(userData?.policyCount) || 0)}
-          </span>
-        </Typography>
-  
-        {Object.keys(plan.userLimit).map((ele) => (
-          <Typography key={ele} className="font-satoshi text-sm sm:text-base">
-            <span className="font-semibold text-[#027AAE] capitalize">
-              {ele.toLowerCase()} Limit:
-            </span>
-            <span className="font-medium">
-              {" "}
-              {(Number(plan.userLimit?.[ele]) || 0) *
-                (Number(selectedMonths) || 1) +
-                (Number(userData?.userLimit?.[ele]) || 0)}
-            </span>
-          </Typography>
-        ))}
-  
-        <Typography className="font-satoshi mt-4 text-sm sm:text-base">
-          <span className="text-[#027AAE] font-semibold">Duration:</span>
-          <Select
-            value={selectedMonths}
-            onChange={handleUpdateMonth}
-            displayEmpty
-            className="ml-2 w-32 sm:w-40 h-10 text-sm sm:text-base font-semibold"
-            IconComponent={KeyboardArrowDownIcon}
-          >
-            {[...Array(24)].map((_, index) => {
-              const month = index + 1;
-              return (
-                <MenuItem key={`${month}-month`} value={month}>
-                  {`${month} - Month`}
-                </MenuItem>
-              );
-            })}
-          </Select>
-        </Typography>
-      </Box>
-  
-      {/* Right Box - Payment Details */}
-      <Box className="p-4 sm:p-6 w-full max-w-sm sm:max-w-md rounded-xl bg-white shadow-lg border border-gray-200">
-        <div className="bg-[#e59411] p-3 text-center text-white rounded-t-xl">
-          <Typography className="text-base sm:text-lg font-semibold font-satoshi">
-            Selected Plan
-          </Typography>
-          <Typography className="text-xs sm:text-sm font-satoshi">
-            ({plan.planName})
-          </Typography>
-        </div>
-  
-        <Typography className="font-satoshi mt-4 text-sm sm:text-base">
-          <span className="text-[#027AAE] font-semibold">Amount:</span>{" "}
-          <span className="font-semibold">₹{getAmount()}</span>
-        </Typography>
-  
-        {getNearestDiscount(selectedMonths) > 0 && (
-          <Typography className="font-satoshi mt-3 text-sm sm:text-base">
-            <span className="text-[#027AAE] font-semibold">Discount:</span>{" "}
-            <span className="font-semibold">
-              ₹{getDiscount().toFixed(2)} ({getNearestDiscount(selectedMonths)}%)
-            </span>
-          </Typography>
-        )}
-  
-        <hr className="h-1 bg-gray-300 mt-3 rounded-full" />
-        <Typography className="font-satoshi mt-4 text-base sm:text-lg">
-          <span className="text-[#027AAE] font-semibold">Total:</span>{" "}
-          <span className="font-semibold">₹{getTotalAmount().toFixed(2)}</span>
-        </Typography>
-  
-        <Button
-          variant="contained"
-          className="w-full mt-5 py-2 text-sm sm:text-base font-semibold transform active:scale-95 transition-transform"
-          sx={{
-            borderRadius: 2,
-            backgroundColor: "#027AAE",
-            fontFamily: "satoshi",
-          }}
-          onClick={handleProceedPayment}
-        >
-          Proceed to Payment
-        </Button>
-  
-        <Toaster position="bottom-center" reverseOrder={false} />
-      </Box>
-    </div>
-  </div>
-  
+    <div className="w-full h-screen flex flex-col bg-blue-200 justify-center ">
+      { }
+      <h1 className="w-full mt-5 text-center text-2xl uppercase font-extrabold text-[#213555]">
+        Your Cart
+      </h1>
+      <div className="m-auto mt-5 pl-10 p-5 w-[73.5vw] rounded-xl bg-[#e59411] text-white shadow-[-4px_2px_10px_rgba(0,0,0,0.25)] ">
+        <h2 className="font-satoshi font-extrabold text-lg">
+          🔥 Hurry! Limited-Time Offer on {plan.planName} Plans! 🔥
+        </h2>
+        <p className="font-satoshi text-md">
+          💰 Select {plan.planName} plan for {highestMonth}{" "}
+          {highestMonth > 1 ? "Months" : "Month"} to get {highestDiscount}% off
+        </p>
+      </div>
 
+      <div className="flex justify-center mb-10 ">
+        <Box className="p-10 w-[500px] h-[400px] rounded-xl rounded-r-none bg-white shadow-[-4px_2px_10px_rgba(0,0,0,0.25)]">
+          <div className="bg-[#e59411] p-2 text-center text-white">
+            <Typography className="text-md font-extrabold font-satoshi">
+              Checkout{" "}
+            </Typography>
+            <Typography className="text-sm font-satoshi">
+              Selected Plan : ({plan.planName})
+            </Typography>
+          </div>
+          <Typography className="font-satoshi mt-5">
+            <span className="text-[#027AAE] font-semibold">
+              Monthly Amount :
+            </span>{" "}
+            {plan.planName.toLowerCase().trim() === "free" && <span className="line-through px-2">₹199</span>}
+            <span className="text-sm font-semibold">₹{plan.monthlyAmount}</span>
+          </Typography>
+          <Typography className="font-satoshi my-3">
+            <span className="text-[#027AAE] font-semibold">Policy Count :</span>{" "}
+
+            <span className="text-sm font-semibold">{(Number(plan?.policyCount) * Number(selectedMonths)) + (Number(userData?.policyCount) || 0)}</span>
+          </Typography>
+          {Object.keys(plan.userLimit).map((ele) => {
+            return (
+              <Typography key={ele} className="font-satoshi">
+                <span className="font-semibold text-[#027AAE] capitalize ">
+                  {ele.toLowerCase()} Limit:
+                </span>
+                <span className="font-medium"> {calculateLimit(ele)}</span>
+              </Typography>
+            );
+          })}
+          <Typography className="font-satoshi mt-3">
+            <span className="text-[#027AAE] font-semibold">Duration :</span>
+            <Select
+              value={selectedMonths}
+              onChange={handleUpdateMonth}
+              displayEmpty
+              sx={{
+                ml: 2,
+                width: 120,
+                height: 35,
+                fontFamily: "satoshi",
+                fontWeight: "500",
+              }}
+              IconComponent={KeyboardArrowDownIcon}
+            >
+              {[...Array(24)].map((_, index) => {
+                const month = index + 1;
+                return (
+                  <MenuItem key={`${month}-month`} value={month}>
+                    {`${month} - Month`}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </Typography>
+        </Box>
+        <Box className="p-10 w-[500px] h-[400px] rounded-xl rounded-l-none bg-white shadow-[6px_2px_15px_rgba(0,0,0,0.25)]">
+          <div className="bg-[#e59411] p-2 text-center text-white">
+            <Typography className="text-md font-semibold font-satoshi">
+              Selected Plan
+            </Typography>
+            <Typography className="text-sm font-satoshi">
+              ({plan.planName})
+            </Typography>
+          </div>
+          <Typography className="font-satoshi mt-5">
+            <span className="text-[#027AAE] font-semibold ">
+              Amount :
+            </span>{" "}
+            <span className="text-sm font-semibold">₹{getAmount()}</span>
+          </Typography>
+
+          {getNearestDiscount(selectedMonths) > 0 && (
+            <Typography className="font-satoshi mt-3">
+              <span className="text-[#027AAE] font-semibold">Discount :</span>{" "}
+              <span className="text-sm font-semibold">
+                ₹{getDiscount().toFixed(2)} (
+                {getNearestDiscount(selectedMonths)}%)
+              </span>
+            </Typography>
+          )}
+
+          <hr className="h-1 rounded mt-2" />
+          <Typography className="font-satoshi mt-3">
+            <span className="text-[#027AAE] font-semibold">Total :</span>{" "}
+            <span className="text-sm font-semibold">
+              ₹{getTotalAmount().toFixed(2)}
+            </span>
+          </Typography>
+          <Button
+            variant="contained"
+            className="transform active:scale-75 transition-transform"
+            sx={{
+              borderRadius: 1,
+              backgroundColor: "#027AAE",
+              fontFamily: "satoshi",
+              marginTop: "20px",
+            }}
+            onClick={handleProceedPayment}
+          >
+            Proceed to Payment
+          </Button>
+          <Toaster position="bottom-center" reverseOrder={false} />
+        </Box>
+      </div>
+    </div>
   );
 };
 export default Checkout;

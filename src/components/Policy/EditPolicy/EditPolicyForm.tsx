@@ -600,22 +600,6 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
       console.error("eror");
     }
   };
-
-  const predefinedOrder = [
-    "Two Wheeler",
-    "Private Car",
-    "Pccv up to 6 passenger",
-    "Pccv Above 6 passenger",
-    "Goods Carrying Vehicle",
-    "Miscellaneous",
-  ];
-
-  const sortedProducts = [...products].sort((a, b) => {
-    const nameA = a.productName || "";
-    const nameB = b.productName || "";
-    return predefinedOrder.indexOf(nameA) - predefinedOrder.indexOf(nameB);
-  });
-
   return (
     <>
       <UpgradePlanPopup
@@ -754,7 +738,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                                     ? input.value
                                     : initialValues.productType || null
                                 }
-                                options={sortedProducts}
+                                options={products}
                                 getOptionLabel={(option) =>
                                   typeof option === "string"
                                     ? option
