@@ -69,7 +69,7 @@ const Dashboard: React.FC = () => {
   const [selectedCard, setSelectedcard] = useState("1");
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
-
+  console.log("first", UserData);
   const GetDashboardCount = useCallback((startDate, endDate) => {
     getAdminDashboardService({
       header,
@@ -206,7 +206,7 @@ const Dashboard: React.FC = () => {
   const isValidIndex = (index: any) =>
     index >= 0 && index < categoryEntries.length;
   return (
-    <div className="bg-blue-200 h-[90%] hide-scrollbar">
+    <div className="bg-blue-200 h-[100%] scrollbar">
       <CardContent>
         <Grid>
           <div className="flex w-full items-center md:flex-row flex-col justify-center  md:justify-start bg-blue-200 md:pr-1">
@@ -362,7 +362,7 @@ const Dashboard: React.FC = () => {
                             {data.map((item, index) => (
                               <div key={index}>
                                 <div className="bg-blue-200 w-full">
-                                  <div className="md:flex hidden w-full justify-center items-center">
+                                  <div className="md:flex hidden w-full mt-4 justify-center items-center">
                                     {Object.entries(item.categories).map(
                                       ([category], catIndex) => (
                                         <Grid
@@ -455,15 +455,9 @@ const Dashboard: React.FC = () => {
                                     </FormControl>
                                   </div>
                                   <Grid
-                                    container
-                                    sx={{
-                                      margin: 1,
-                                      paddingBottom: 2,
-                                      height: "70vh",
-                                      overflowY: "scroll",
-                                    }}
-                                    className="hide-scrollbar"
-                                  >
+            container
+            className="h-[63vh] mb-2 overflow-y-auto scrollbar lg:scrollbar p-2 mt-5"
+          >
                                     {isValidIndex(selectedCategoryIndex) && (
                                       <Grid container>
                                         {Object.entries(

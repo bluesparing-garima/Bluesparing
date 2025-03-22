@@ -197,9 +197,7 @@ export const documentTypes = [
   { label: "Proposal", value: "proposal" },
   { label: "Current Policy", value: "currentPolicy" },
   { label: "Previous Policy", value: "previousPolicy" },
-  { label: "New Policy PDF", value: "new_policy_pdf" },
-  { label: "Adhar Card", value: "adhar_card" },
-  { label: "Pan Card", value: "pan_card" },
+  { label: "new Policy PDF", value: "new_policy_pdf" },
   { label: "Other", value: "other" },
 ];
 
