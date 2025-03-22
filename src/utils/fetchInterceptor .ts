@@ -1,9 +1,8 @@
 import { refreshTokenAPI } from "../api/Token/RefreshTokenAPI";
 import { getAccessToken } from "../Hooks/Tokens/useToken";
 
-const BASE_URL = "https://iimapi.bluesparing.com";
 // const BASE_URL = "http://localhost:7000";
-
+const BASE_URL = "https://iimapi.bluesparing.com"
 export interface FetchOptions extends RequestInit {
   body?: string | FormData | null;
 }
@@ -16,28 +15,25 @@ const fetchInterceptor = async <T>(
   const url = `${BASE_URL}${endpoint}`;
   const token = getAccessToken();
 
-  const defaultHeaders: Record<string, string> = {}; // ✅ Ensure a mutable object
+  const defaultHeaders: Record<string, string> = {};
   if (token) {
     defaultHeaders["Authorization"] = `Bearer ${token}`;
   }
   if (!(options.body instanceof FormData)) {
     defaultHeaders["Content-Type"] = "application/json";
   }
-  
+
   const headers: Record<string, string> = { ...defaultHeaders, ...(options.headers as Record<string, string>) };
 
-  // ✅ Handle File Upload via XMLHttpRequest
   if (options.body instanceof FormData) {
     return new Promise<T>((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.open(options.method || "POST", url, true);
 
-      // ✅ Set headers properly
       Object.entries(headers).forEach(([key, value]) => {
         xhr.setRequestHeader(key, value);
       });
 
-      // ✅ Track Upload Progress
       xhr.upload.onprogress = (event) => {
         if (event.lengthComputable && onProgress) {
           const percent = Math.round((event.loaded / event.total) * 100);
@@ -45,19 +41,23 @@ const fetchInterceptor = async <T>(
         }
       };
 
-      // ✅ Handle Response
       xhr.onload = () => {
-        if (xhr.status === 401) {
-          refreshTokenAPI().then((newToken) => {
-            const newHeaders = { ...headers, Authorization: `Bearer ${newToken}` }; // ✅ Fix
-            fetchInterceptor<T>(endpoint, { ...options, headers: newHeaders }, onProgress)
-              .then(resolve)
-              .catch(reject);
-          });
-        } else if (xhr.status >= 200 && xhr.status < 300) {
-          resolve(JSON.parse(xhr.responseText) as T);
-        } else {
-          reject(new Error(xhr.statusText));
+        try {
+          const responseJson = JSON.parse(xhr.responseText);
+          if (xhr.status === 401) {
+            refreshTokenAPI().then((newToken) => {
+              const newHeaders = { ...headers, Authorization: `Bearer ${newToken}` };
+              fetchInterceptor<T>(endpoint, { ...options, headers: newHeaders }, onProgress)
+                .then(resolve)
+                .catch(reject);
+            });
+          } else if (xhr.status >= 200 && xhr.status < 300) {
+            resolve(responseJson as T);
+          } else {
+            reject(new Error(responseJson.message || `Request failed with status ${xhr.status}`));
+          }
+        } catch (error) {
+          reject(new Error("Invalid JSON response"));
         }
       };
 
@@ -66,19 +66,28 @@ const fetchInterceptor = async <T>(
     });
   }
 
-  // ✅ Normal Fetch Request
   const makeRequest = async (options: FetchOptions): Promise<Response> => {
-    const response = await fetch(url, { ...options, headers });
+    let response = await fetch(url, { ...options, headers });
 
     if (response.status === 401) {
       const newToken = await refreshTokenAPI();
-      const newHeaders = { ...headers, Authorization: `Bearer ${newToken}` }; 
-      return await fetch(url, { ...options, headers: newHeaders });
+      const newHeaders = { ...headers, Authorization: `Bearer ${newToken}` };
+      response = await fetch(url, { ...options, headers: newHeaders });
     }
 
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(`${errorData.message}`);
+      let errorMessage = `Request failed with status ${response.status}`;
+    
+      try {
+        const errorData = await response.json();
+        if (errorData.message) {
+          errorMessage = errorData.message;
+        }
+      } catch (parseError) {
+        console.error("Error parsing JSON:", parseError);
+      }
+    
+      throw new Error(errorMessage);
     }
     return response;
   };
@@ -91,6 +100,7 @@ const fetchInterceptor = async <T>(
     throw error;
   }
 };
+
 
 
 export default fetchInterceptor;

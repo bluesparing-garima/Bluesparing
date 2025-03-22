@@ -19,14 +19,16 @@ import { header, SESSION_USER } from "../context/constant";
 import fetchInterceptor, { FetchOptions } from "../utils/fetchInterceptor ";
 import useSubscription from "../Hooks/Subscription/useSubscription";
 import useGetRoles from "../Hooks/Role/useGetRoles";
-import toast, { Toaster } from "react-hot-toast";
 import { storeInSessionStorage } from "../utils/HandleStore";
 import generateFormData from "../utils/generateFromData";
 import { useEffect, useState } from "react";
+import OverlayError from "../utils/ui/OverlayError";
+import OverlayLoader from "../utils/ui/OverlayLoader";
 
 const Signup = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [errMsg, setErrMsg] = useState("");
   const [subsData] = useSubscription();
   const [roles] = useGetRoles({ header });
   const findRoleIdByName = (name: string) => {
@@ -79,12 +81,14 @@ const Signup = () => {
     };
     try {
       setIsLoading(true);
+      setErrMsg("")
       const url = "/api/user/register";
       const options: FetchOptions = {
         method: "POST",
         body: generateFormData(payload),
       };
       const responseData = await fetchInterceptor<any>(url, options);
+
       if (responseData.user.role.toLowerCase().trim() === "partner") {
         navigate("/");
         return;
@@ -100,25 +104,26 @@ const Signup = () => {
         storeInSessionStorage(SESSION_USER, data);
         navigate("/plan-details");
       } else {
-        throw new Error("Failed to Register");
+        setErrMsg("Failed to Register");
+
       }
     } catch (error: any) {
       const err = await error;
-      toast.error(err.message);
+      setErrMsg(err.message || "Fail to signup")
     } finally {
       setIsLoading(false);
     }
     return { [FORM_ERROR]: "Sign up failed. Try again!" };
   };
-  useEffect(()=>{
-localStorage.clear();
-sessionStorage.clear();
-  },[])
+  useEffect(() => {
+    localStorage.clear();
+    sessionStorage.clear();
+  }, [])
   return (
     <>
       <div className="min-h-screen flex justify-center items-center bg-blue-400">
         <div className="max-w-[90vw] h-auto bg-white shadow sm:rounded-lg flex justify-center flex-1">
-        <div className="flex-1 bg-indigo-100 rounded-tl-lg rounded-bl-lg text-center hidden lg:flex">
+          <div className="flex-1 bg-indigo-100 rounded-tl-lg rounded-bl-lg text-center hidden lg:flex">
             <div
               className="m-12 xl:m-16 w-full bg-contain bg-center bg-no-repeat"
               style={{
@@ -412,38 +417,38 @@ sessionStorage.clear();
                             )}
                           </Grid>
                           <Grid item lg={12} md={12} sm={12} xs={12}>
-                          <Button
-                            type="submit"
-                            className="mt-2 tracking-wide font-semibold w-full bg-gradient-to-r from-[#E9762B] to-[#EDB65C] text-[#443627] transition-all  duration-300 px-4 py-3 rounded hover:from-[#EDB65C] hover:to-[#E9762B] active:scale-90 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
-                            disabled={isLoading}
-                          >
-                            {isLoading ? (
-                              "Submitting"
-                            ) : (
-                              <>
-                                <svg
-                                  className="w-6 h-6 -ml-2"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                >
-                                  <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
-                                  <circle cx="8.5" cy="7" r="4" />
-                                  <path d="M20 8v6M23 11h-6" />
-                                </svg>
-                                <span className="ml-3">Sign Up</span>
-                              </>
-                            )}
-                          </Button>
+                            <Button
+                              type="submit"
+                              className="mt-2 tracking-wide font-semibold w-full bg-gradient-to-r from-[#E9762B] to-[#EDB65C] text-[#443627] transition-all  duration-300 px-4 py-3 rounded hover:from-[#EDB65C] hover:to-[#E9762B] active:scale-90 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
+                              disabled={isLoading}
+                            >
+                              {isLoading ? (
+                                "Submitting"
+                              ) : (
+                                <>
+                                  <svg
+                                    className="w-6 h-6 -ml-2"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  >
+                                    <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                                    <circle cx="8.5" cy="7" r="4" />
+                                    <path d="M20 8v6M23 11h-6" />
+                                  </svg>
+                                  <span className="ml-3">Sign Up</span>
+                                </>
+                              )}
+                            </Button>
                           </Grid>
                         </Grid>
                       </form>
                     )}
                   />
                 </div>
-              
+
                 <div className="my-4 border-b text-center">
                   <div className="leading-none px-2 inline-block text-sm text-gray-600 tracking-wide font-medium bg-white transform translate-y-1/2">
                     If you have already account{" "}
@@ -456,8 +461,14 @@ sessionStorage.clear();
             </div>
           </div>
         </div>
+        {
+          errMsg && <OverlayError title="Error" onClose={() => setErrMsg("")} msg={errMsg} />
+        }
+        {
+          isLoading && <OverlayLoader />
+        }
       </div>
-      <Toaster position="bottom-center" reverseOrder={false} />
+
     </>
   );
 };
