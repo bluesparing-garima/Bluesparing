@@ -656,7 +656,7 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
                                     {...input}
                                     getOptionLabel={(option) => option.label}
                                     value={input.value || null}
-                                    options={policyCreatedByAdmin}
+                                    options={[{ label: "Partner", value: "Partner" }]}
                                     onChange={(event, newValue) => {
                                       input.onChange(newValue);
                                       handleSelectPolicyCreatedBy(
