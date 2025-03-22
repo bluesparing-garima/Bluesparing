@@ -111,7 +111,7 @@ const AttendanceCard: React.FC<AttendanceCardProps> = ({ employee }) => {
     // eslint-disable-next-line
   }, [employee]);
   return (
-    <Grid item xs={12} sm={6} md={4} lg={3}>
+    <Grid item xs={12} sm={6} md={4} lg={4}>
       <Link to={link} style={{ textDecoration: "none", position: "relative" }}>
         <Box
           sx={{
