@@ -348,6 +348,11 @@ const AddQuotation = () => {
         break;
     }
   };
+
+  const isUrl = (text: string) => {
+    const urlPattern = /^(https?:\/\/[^\s]+)$/;
+    return urlPattern.test(text);
+  };
   const handleClickBooking = () => {
     navigate(bookingRequestNewPath(leadId!));
   };
@@ -525,7 +530,16 @@ const AddQuotation = () => {
                                     <span className="text-safekaroDarkOrange">
                                       {`${quotation.partnerName}:`}
                                     </span>
-                                    {quotation.comments}
+                                    {
+                                      isUrl(quotation.comments)?(
+                                        <a href={quotation.comments} target="_blank" rel="noopener noreferrer">
+                                          {quotation.comments}
+                                        </a>
+                                      ) : (
+                                        <span>{quotation.comments}</span>
+                                      )
+                                    }
+                                   
                                   </Typography>
                                   {
                                    quotation.quotationImage?.map((item:any)=>{

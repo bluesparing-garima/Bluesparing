@@ -77,11 +77,14 @@ export const policyStatusPartner = [
   { label: "Changes Required", value: "Changes Required" },
   { label: "Payment Request", value: "Payment Request" },
   { label: "Payment Done", value: "Payment Done" },
+  { label: "Resend Link", value: "Resend Link" },
+  { label: "Request Policy PDF", value: "Request Policy Pdf" },
 ];
 export const policyStatusOperation = [
   { label: "Doc Pending", value: "Doc Pending" },
   { label: "Quotation Sent", value: "Quotation Sent" },
   { label: "Payment Link Sent", value: "Payment Pending" },
+  { label: "Again Payment Link Sent", value: "Payment Pending" },
   { label: "Payment Verified", value: "Payment Verified" },
   { label: "Sent Policy Pdf", value: "sent_Policy_pdf" },
 ];

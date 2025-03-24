@@ -43,7 +43,7 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({
       }, 1000);
     }
     return () => clearInterval(timer);
-     // eslint-disable-next-line
+    // eslint-disable-next-line
   }, [regDate]);
   const convertMillisecondsToTime = (msString: string) => {
     const ms = Number(msString);
@@ -73,8 +73,8 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({
       s !== "payment pending" &&
       s !== "requested" &&
       s !== "payment request" &&
-      s!=="doc pending" && 
-      s!=="changes required"&&
+      s !== "doc pending" &&
+      s !== "changes required" &&
       s !== ""
     ) {
       return true;
