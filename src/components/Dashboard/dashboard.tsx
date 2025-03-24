@@ -209,55 +209,83 @@ const Dashboard: React.FC = () => {
     <div className="bg-blue-200 h-[100%] scrollbar">
       <CardContent>
         <Grid>
-          <div className="flex w-full items-center md:flex-row flex-col justify-center  md:justify-start bg-blue-200 md:pr-1">
-            <div className="flex justify-start items-center md:w-[40%] w-full">
+          <div className="flex w-[100%] items-center lg:flex-row  md:flex-row flex-col sm:flex-row sm:items-center sm:w-[100%] md:w-[100%] justify-center md:flex-wrap md:justify-center bg-blue-200 md:pr-1 sm:justify-between lg:justify-between lg:w-[100%]">
+            <div className="flex justify-start lg:w-[30%] flex-wrap lg:flex-nowrap lg:justify-between items-center md:w-[100%] md:justify-around sm:w-[100%] md:items-center md:flex-nowrap sm:justify-start">
               <CartButton
                 onClick={handleFirstCart}
                 tooltipTitle="View Policy Data"
-                iconPath={<MotorSvg isActive={selectedCard === "1"} />}
+                iconPath={
+                  <MotorSvg
+                    isActive={selectedCard === "1"}
+                    className="w-5 h-5 md:w-6 md:h-6 lg:w-7 lg:h-7"
+                  />
+                }
                 isSelected={firstCart}
               />
               <CartButton
                 onClick={handleSecondCart}
                 tooltipTitle="View Partner Data"
-                iconPath={<ViewPartnerSvg isActive={selectedCard === "2"} />}
+                iconPath={
+                  <ViewPartnerSvg
+                    isActive={selectedCard === "2"}
+                    className="w-5 h-5 md:w-6 md:h-6 lg:w-7 lg:h-7"
+                  />
+                }
                 isSelected={secondCart}
               />
               <CartButton
                 onClick={handleThirdCart}
                 tooltipTitle="View Admin Data"
-                iconPath={<ViewChartSvg isActive={selectedCard === "3"} />}
+                iconPath={
+                  <ViewChartSvg
+                    isActive={selectedCard === "3"}
+                    className="w-5 h-5 md:w-6 md:h-6 lg:w-7 lg:h-7"
+                  />
+                }
                 isSelected={thirdCart}
               />
               <CartButton
                 onClick={handleFourCart}
                 tooltipTitle="View Chart "
-                iconPath={<ViewAdminDataSvg isActive={selectedCard === "4"} />}
+                iconPath={
+                  <ViewAdminDataSvg
+                    isActive={selectedCard === "4"}
+                    className="w-5 h-5 md:w-6 md:h-6 lg:w-7 lg:h-7"
+                  />
+                }
                 isSelected={fourCart}
               />
               <CartButton
                 onClick={handleFifthCart}
                 tooltipTitle="Monthly Attendance "
-                iconPath={<AttendanceDataSvg isActive={selectedCard === "5"} />}
+                iconPath={
+                  <AttendanceDataSvg
+                    isActive={selectedCard === "5"}
+                    className="w-5 h-5 md:w-6 md:h-6 lg:w-7 lg:h-7"
+                  />
+                }
                 isSelected={fifthCart}
               />
               <CartButton
                 onClick={handleSixthCart}
                 tooltipTitle="Plan Details "
                 iconPath={
-                  <PlanDetailsDataSvg isActive={selectedCard === "6"} />
+                  <PlanDetailsDataSvg
+                    isActive={selectedCard === "6"}
+                    className="w-5 h-5 md:w-6 md:h-6 lg:w-7 lg:h-7"
+                  />
                 }
                 isSelected={sixthCart}
               />
             </div>
-            <div className="flex md:mt-0 my-2 md:flex-row flex-col md:w-[60%] w-full justify-center items-center">
-              <div className="md:w-[70%]">
+            <div className="md:mt-0 md:flex-row flex sm:flex-row md:w-[100%] w-full justify-around items-center flex-nowrap sm:items-center sm:justify-center sm:w-[40%] py-2 lg:w-[40%] md:justify-between">
+              <div className="md:w-[60%] sm:w-[50%] w-[50%] lg:w-[100%]">
                 <Form
                   onSubmit={onSubmit}
                   render={({ handleSubmit, submitting, errors, values }) => (
                     <form onSubmit={handleSubmit} noValidate>
-                      <div className="flex w-full md:justify-around justify-start md:gap-x-0 gap-x-2  items-center  ">
-                        <div className="md:w-[35%] w-[40%]">
+                      <div className="flex w-full md:justify-around justify-start md:gap-x-0 gap-x-2 items-center sm:justify-start sm:items-center lg:w-[100%] md:w-[100%]">
+                        <div className="md:w-[35%] w-[40%] sm:w-[4vw] sm:h-[10%] lg:w-[42%]">
                           <Field name="startDate">
                             {({ input, meta }) => (
                               <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -283,7 +311,7 @@ const Dashboard: React.FC = () => {
                             )}
                           </Field>
                         </div>
-                        <div className="md:w-[35%] w-[40%]">
+                        <div className="md:w-[35%] w-[40%] sm:w-[4vw] sm:h-[10%] lg:w-[42%]">
                           <Field name="endDate">
                             {({ input, meta }) => (
                               <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -310,40 +338,40 @@ const Dashboard: React.FC = () => {
                           </Field>
                         </div>
                         <button
-                          className=" h-10 w-10 bg-[#30A9FF] shadow-sm rounded flex justify-center items-center text-white"
+                          className=" h-10 w-10 sm:w-8 sm:h-10 lg:w-8 lg:h-10 md:w-[10%] md:h-10 bg-[#30A9FF] shadow-sm rounded flex justify-center items-center text-white sm:justify-center sm:items-center"
                           type="submit"
                         >
-                          <SearchIcon className="w-6 h-6 " />
+                          <SearchIcon className="w-6 h-6 sm:w-5 sm:h-5" />
                         </button>
                       </div>
                     </form>
                   )}
                 />
               </div>
-              <div className="flex md:my-0 my-2  md:justify-between justify-start md:gap-x-0 gap-x-3 md:w-[25%] w-full items-center ">
+              <div className="flex md:my-0 md:gap-x-0 gap-x-3 md:w-[40%] w-[50%] items-center sm:w-[50%] sm:items-start lg:justify-around lg:w-[40%] md:justify-evenly justify-end">
                 <Tooltip title="Download PDF">
                   <button
-                    className="h-10 w-10 bg-[#0095FF] shadow-sm rounded flex justify-center items-center text-white"
+                    className="h-10 w-10 lg:h-10 lg:w-8 md:w-10 md:h-10 sm:w-8 sm:h-10 bg-[#0095FF] shadow-sm rounded flex justify-center items-center text-white"
                     onClick={handleDownloadPDF}
                   >
-                    <PictureAsPdfSharpIcon className=" h-6 w-6" />
+                    <PictureAsPdfSharpIcon className=" h-6 w-6 sm:w-5 sm:h-5" />
                   </button>
                 </Tooltip>
                 <Tooltip title="Download Excel">
                   <button
-                    className="h-10 w-10 bg-[#3BDB03] shadow-sm rounded flex justify-center items-center text-white"
+                    className="h-10 w-10 lg:h-10 lg:w-8 md:w-10 md:h-10 sm:w-8 sm:h-10 bg-[#3BDB03] shadow-sm rounded flex justify-center items-center text-white"
                     onClick={handleDownloadExcel}
                   >
-                    <FileDownloadOutlinedIcon className="w-6 h-6 " />
+                    <FileDownloadOutlinedIcon className="w-6 h-6 sm:w-5 sm:h-5" />
                   </button>
                 </Tooltip>
-                <button className=" h-10 w-10 bg-[#E79E28] shadow-sm rounded flex justify-center items-center text-white">
+                <button className=" h-10 w-10 lg:h-10 lg:w-8 md:w-10 md:h-10 sm:w-8 sm:h-10 bg-[#E79E28] shadow-sm rounded flex justify-center items-center text-white">
                   {isLoading ? (
-                    <CircularProgress className="w-6 h-6 " />
+                    <CircularProgress className="w-6 h-6 lg:h-10 lg:w-10 sm:w-5 sm:h-5" />
                   ) : (
                     <DashboardMenu
                       selectedCategory={selectedCategory}
-                      className="w-6 h-6 "
+                      className="w-6 h-6 lg:h-10 lg:w-10 sm:w-5 sm:h-5"
                     />
                   )}
                 </button>
@@ -361,8 +389,8 @@ const Dashboard: React.FC = () => {
                           <>
                             {data.map((item, index) => (
                               <div key={index}>
-                                <div className="bg-blue-200 w-full">
-                                  <div className="md:flex hidden w-full mt-4 justify-center items-center">
+                                <div className="bg-blue-200 sm:mt-4">
+                                  <div className="md:flex hidden w-[50%] lg:w-[100%] md:w-[100%] justify-center items-center">
                                     {Object.entries(item.categories).map(
                                       ([category], catIndex) => (
                                         <Grid
@@ -455,9 +483,9 @@ const Dashboard: React.FC = () => {
                                     </FormControl>
                                   </div>
                                   <Grid
-            container
-            className="h-[63vh] mb-2 overflow-y-auto scrollbar lg:scrollbar p-2 mt-5"
-          >
+                                    container
+                                    className="h-[63vh] mb-2 overflow-y-auto scrollbar lg:scrollbar p-2 mt-5"
+                                  >
                                     {isValidIndex(selectedCategoryIndex) && (
                                       <Grid container>
                                         {Object.entries(
@@ -672,7 +700,9 @@ const Dashboard: React.FC = () => {
                                         <React.Fragment key={key}>
                                           {renderCountBox(
                                             key.toUpperCase(),
-                                            value==='Infinity'?"Unlimited":value || 0,
+                                            value === "Infinity"
+                                              ? "Unlimited"
+                                              : value || 0,
                                             "",
                                             `/update-plan`
                                           )}

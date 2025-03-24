@@ -66,10 +66,10 @@ const Attendance: React.FC = () => {
     return `${percentage}%`;
   };
   return (
-    <Container className="bg-blue-200 h-[50vh]">
+    <Container className="bg-blue-200 h-screen">
       {UserData.role.toLowerCase() === "hr" ||
       UserData.role.toLowerCase() === "admin" ? (
-        <div className="bg-blue-200 h-screen">
+        <div className="bg-blue-200">
           <div className="bg-blue-200 w-full mt-1">
             <div className="flex md:hidden flex-col  my-2 w-1/2 justify-start items-start">
               <span className="text-sm font-semibold font-satoshi">

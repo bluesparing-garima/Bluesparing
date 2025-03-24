@@ -232,8 +232,8 @@ const AccountDashboard: React.FC = () => {
   return (
     <div className="bg-blue-200 h-screen">
       <Grid container sx={{ margin: 1 }}>
-        <div className="flex justify-between w-full m-2 items-center gap-x-2">
-          <div className="flex justify-start items-center w-[40%]">
+        <div className="flex justify-around w-[100%] m-2 items-center flex-row flex-wrap gap-x-2">
+          <div className="flex justify-start items-center w-[95%] flex-row flex-wrap">
             <CartButton
               onClick={handleFirstCart}
               tooltipTitle="View Policy Data"
@@ -265,12 +265,12 @@ const AccountDashboard: React.FC = () => {
               isSelected={fifthCart}
             />
           </div>
-          <div className="flex w-full flex-wrap  justify-evenly items-center">
+          <div className="flex w-[95%] justify-start mt-2 items-center">
             <Form
               onSubmit={onSubmit}
               render={({ handleSubmit, submitting, errors, values }) => (
                 <form onSubmit={handleSubmit} noValidate>
-                  <div className="flex w-1/2 md:w-full  items-center flex-1 gap-x-2 justify-between">
+                  <div className="flex w-[100%] md:w-full items-start flex-1 gap-x-2 justify-start">
                     <div className="w-[47%]">
                       <Field name="startDate">
                         {({ input, meta }) => (
@@ -324,30 +324,30 @@ const AccountDashboard: React.FC = () => {
                       </Field>
                     </div>
                     <button
-                      className="md:w-10 md:h-10 h-4 w-4 bg-[#30A9FF] shadow-sm rounded flex justify-center items-center text-white"
+                      className="md:w-10 md:h-10 h-10 w-10 bg-[#30A9FF] shadow-sm rounded flex justify-center items-center text-white"
                       type="submit"
                     >
-                      <SearchIcon className="md:w-6 md:h-6 h-3 w-3" />
+                      <SearchIcon className="md:w-6 md:h-6 h-5 w-5" />
                     </button>
                   </div>
                 </form>
               )}
             />
-            <div className="flex justify-between items-center gap-x-2">
+            <div className="flex w-[50%] justify-end items-center gap-x-2">
               <Tooltip title="Download PDF">
                 <button
-                  className="md:w-10 md:h-10 h-4 w-4 bg-[#0095FF] shadow-sm rounded flex justify-center items-center text-white"
+                  className="md:w-10 md:h-10 h-10 w-10 bg-[#0095FF] shadow-sm rounded flex justify-center items-center text-white"
                   onClick={handleDownloadPDF}
                 >
-                  <PictureAsPdfSharpIcon className="md:w-6 md:h-6 h-3 w-3" />
+                  <PictureAsPdfSharpIcon className="md:w-6 md:h-6 h-6 w-6" />
                 </button>
               </Tooltip>
               <Tooltip title="Download Excel">
                 <button
-                  className="md:w-10 md:h-10 h-4 w-4 bg-[#3BDB03] shadow-sm rounded flex justify-center items-center text-white"
+                  className="md:w-10 md:h-10 h-10 w-10 bg-[#3BDB03] shadow-sm rounded flex justify-center items-center text-white"
                   onClick={handleDownloadExcel}
                 >
-                  <FileDownloadOutlinedIcon className="md:w-6 md:h-6 h-3 w-3" />
+                  <FileDownloadOutlinedIcon className="md:w-6 md:h-6 h-6 w-6" />
                 </button>
               </Tooltip>
             </div>
