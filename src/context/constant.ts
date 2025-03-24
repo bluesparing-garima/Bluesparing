@@ -83,6 +83,7 @@ export const policyStatusOperation = [
   { label: "Quotation Sent", value: "Quotation Sent" },
   { label: "Payment Link Sent", value: "Payment Pending" },
   { label: "Payment Verified", value: "Payment Verified" },
+  { label: "Sent Policy Pdf", value: "sent_Policy_pdf" },
 ];
 export const ROLE_STORAGE_KEY = "paginationRole";
 export const MOTOR_POLICY_STORAGE_KEY = "paginationGetPolicy";
@@ -112,6 +113,7 @@ export const addLeadDocumentsOptions = [
   { label: "Fitness", value: "fitness" },
   { label: "Proposal", value: "proposal" },
   { label: "Previous Policy", value: "previousPolicy" },
+  { label: "Current Policy", value: "currentPolicy" },
   { label: "Quotation", value: "quotation" },
   { label: "Front Adhar", value: "frontAdhar" },
   { label: "Back Adhar", value: "backAdhar" },
