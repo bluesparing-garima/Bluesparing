@@ -230,7 +230,7 @@ const AccountDashboard: React.FC = () => {
 
   console.log(UserData);
   return (
-    <div className="bg-blue-200 h-screen">
+    <div className="bg-blue-200 h-full pb-5">
       <Grid container sx={{ margin: 1 }}>
         <div className="flex justify-around w-[100%] m-2 items-center flex-row flex-wrap gap-x-2">
           <div className="flex justify-start items-center w-[95%] flex-row flex-wrap">
