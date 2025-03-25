@@ -62,6 +62,7 @@ import { formatFilename } from "../../../utils/convertLocaleStringToNumber";
 import { updateLocalStorage } from "../../../utils/HandleStore";
 import UpgradePlanPopup from "../../UpdatePlan/UpgradeExistingPlan";
 import LoadingOverlay from "../../../utils/ui/LoadingOverlay";
+import getPolicyCountAPI from "../../../api/Policies/getPolicyCount/getPolicyCountAPI";
 export interface AddPolicyFormProps {
   initialValues: IAddEditPolicyForm;
 }
@@ -131,6 +132,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [showUpgradePopup, setShowUpgradePopup] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [policyCount, setPolicyCount] = useState<number>(userData.policyCount);
   useEffect(() => {
     if (!isAdd) {
       setOd(initialValues.od ?? 0);
@@ -451,19 +453,23 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   const callAddPolicyAPI = async (policy: any) => {
     try {
       setIsLoading(true);
-      const policyCount = userData?.policyCount || 0;
-
+  
       if (policyCount <= 0) {
         setShowUpgradePopup(true); //! **Upgrade Plan Popup दिखाओ**
         return;
       }
+  
       const newPolicy = await addPolicyService({ header, policy, onProgress });
+  
       if (newPolicy.status === "success") {
-        if (userData.policyCount > 0) {
-          const updatedPolicyCount = userData.policyCount - 1;
-          updateLocalStorage({ policyCount: updatedPolicyCount });
+        if (policyCount > 0) {
+          setPolicyCount((prevCount) => {
+            const updatedCount = prevCount - 1;
+            updateLocalStorage({ policyCount: updatedCount });
+            return updatedCount;
+          });
         }
-        // console.log("updatedPolicyCount",updatedPolicyCount);
+  
         navigate(motorPolicyPath());
         return;
       } else {
@@ -477,6 +483,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       setIsLoading(false);
     }
   };
+  
   const callEditPolicyAPI = async (policy: any, policyId: string) => {
     try {
       setIsLoading(true);
@@ -508,6 +515,36 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       prevDocuments.filter((_, i) => i !== index)
     );
   };
+
+  useEffect(() => {
+    const fetchPolicyCount = async () => {
+      setIsLoading(true); // ✅ Start loading
+      try {
+        const response = await getPolicyCountAPI({ userId: userData.profileId });
+         if(response?.remainingPolicyCount <=0 ){
+         setPolicyCount(response.remainingPolicyCount);
+          updateLocalStorage({ policyCount: policyCount })
+          setShowUpgradePopup(true);
+         }
+      } catch (err) {
+        setErrors((prevErrors) => [
+          ...prevErrors,
+          { docName: "Error", file: "Failed to fetch policy count" }, // ✅ Adding a new error entry
+        ]);
+      } finally {
+        setIsLoading(false); // ✅ Stop loading
+      }
+    };
+
+    if (userData.profileId) {
+      console.log("useEffect Triggered - userId:", userData.profileId); 
+      fetchPolicyCount();
+    }
+  }, [userData.profileId]);
+
+
+  console.log("Outside useEffect - Policy Count:", policyCount);
+
   useEffect(() => {
     if (isAdd) {
       setNetPremium(Number(od) + Number(tp));

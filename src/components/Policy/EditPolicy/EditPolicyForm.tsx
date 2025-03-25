@@ -57,6 +57,7 @@ import dayjs from "dayjs";
 import toast, { Toaster } from "react-hot-toast";
 import UpgradePlanPopup from "../../UpdatePlan/UpgradeExistingPlan";
 import LoadingOverlay from "../../../utils/ui/LoadingOverlay";
+import getPolicyCountAPI from "../../../api/Policies/getPolicyCount/getPolicyCountAPI";
 export interface AddPolicyFormProps {
   initialValues: IAddEditPolicyForm;
 }
@@ -113,6 +114,34 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
   const [proType, setProType] = useState(initialValues.productType || "");
   const [showUpgradePopup, setShowUpgradePopup] = useState(false);
   const [progress, setProgress] = useState(0);
+   const [policyCount, setPolicyCount] = useState<number>(userData.policyCount);
+
+     useEffect(() => {
+       const fetchPolicyCount = async () => {
+         setIsLoading(true); // ✅ Start loading
+         try {
+           const response = await getPolicyCountAPI({ userId: userData.profileId });
+            if(response?.remainingPolicyCount <=0 ){
+            setPolicyCount(response.remainingPolicyCount);
+             updateLocalStorage({ policyCount: policyCount })
+             setShowUpgradePopup(true);
+            }
+         } catch (err) {
+           setErrors((prevErrors) => [
+             ...prevErrors,
+             { docName: "Error", file: "Failed to fetch policy count" }, // ✅ Adding a new error entry
+           ]);
+         } finally {
+           setIsLoading(false); // ✅ Stop loading
+         }
+       };
+   
+       if (userData.profileId) {
+         console.log("useEffect Triggered - userId:", userData.profileId); 
+         fetchPolicyCount();
+       }
+     }, [userData.profileId]);
+   
   useEffect(() => {
     setNetPremium(Number(od) + Number(tp));
   }, [od, tp]);
@@ -431,21 +460,30 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
 
     // console.log("updatedPolicyCount",updatedPolicyCount);
   };
+  
 
   const callAddPolicyAPI = async (policy: any) => {
     try {
       setIsLoading(true);
+      
+      if (policyCount <= 0) {
+        setShowUpgradePopup(true); //! **Upgrade Plan Popup दिखाओ**
+        return;
+      }
       const newPolicy = await addPolicyService({ header, policy, onProgress });
       if (newPolicy.status === "success") {
-        const policyCount = userData?.policyCount || 0;
+      
         if (policyCount <= 0) {
           setShowUpgradePopup(true); //! **Upgrade Plan Popup दिखाओ**
           return;
         }
 
-        if (userData.policyCount > 0) {
-          const updatedPolicyCount = userData.policyCount - 1;
-          updateLocalStorage({ policyCount: updatedPolicyCount });
+        if (policyCount > 0) {
+        setPolicyCount((prevCount) => {
+                const updatedCount = prevCount - 1;
+                updateLocalStorage({ policyCount: updatedCount });
+                return updatedCount;
+              });
         }
         navigate(motorPolicyPath());
       } else {
