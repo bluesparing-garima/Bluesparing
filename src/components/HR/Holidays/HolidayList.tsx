@@ -149,8 +149,27 @@ const HolidaysList: React.FC = () => {
   });
   const validate = validateFormValues(validationSchema);
   const onSubmit = async (filterForm: any) => {
-    const startDate = dayjs(filterForm.startDate).format(DAY_FORMAT);
-    const endDate = dayjs(filterForm.endDate).format(DAY_FORMAT);
+    if (!filterForm.startDate || !filterForm.endDate) {
+      toast.error("Both start date and end date are required");
+      return;
+    }
+  
+    const utcStartDate = dayjs(filterForm.startDate);
+    const utcEndDate = dayjs(filterForm.endDate);
+  
+    if (!utcStartDate.isValid() || !utcEndDate.isValid()) {
+      toast.error("Invalid date selected. Please select valid dates.");
+      return;
+    }
+  
+    if (utcEndDate.isBefore(utcStartDate)) {
+      toast.error("End date cannot be before start date.");
+      return;
+    }
+  
+    const startDate = utcStartDate.format(DAY_FORMAT);
+    const endDate = utcEndDate.format(DAY_FORMAT);
+  
     try {
       const res = await GetHolidaysDateFilterService({
         header,
@@ -165,6 +184,7 @@ const HolidaysList: React.FC = () => {
       toast.error(err);
     }
   };
+  
   return (
     <>
       <div className="bg-blue-200 md:p-7 p-2">
