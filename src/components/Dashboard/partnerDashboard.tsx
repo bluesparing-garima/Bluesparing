@@ -96,7 +96,7 @@ const PartnerDashboard: React.FC = () => {
             variant="body2"
             className="text-sm text-gray-600 mb-2 font-satoshi"
           >
-            {title}
+            {title==='Policy Count' ? 'Remaining Policy Count' : title}
           </Typography>
           <Typography
             variant="h5"
