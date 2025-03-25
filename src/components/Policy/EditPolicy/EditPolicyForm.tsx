@@ -78,6 +78,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
     header: header,
     role: "Relationship Manager",
   });
+
   const [isLoading, setIsLoading] = useState(false);
   let [partners] = useGetPartners({ header: header, role: "partner" });
   let [caseTypes] = useGetCaseTypes({ header: header });
@@ -88,6 +89,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
   let [companies] = useGetCompanies({ header: header });
   let [products] = useGetProducts({ header: header, category: "motor" });
   let [productSubTypes] = useGetProductSubTypes({ header: header });
+  
   const [isVisibile, setIsVisibile] = useState(false);
   const [selectedBrokerId, setSelectedBrokerId] = useState("");
   const [selectedPartnerName, setSelectedPartnerName] = useState("");
@@ -163,12 +165,18 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
     if (initialValues.other) {
       updatedDocuments.push({ docName: "other", file: initialValues.other });
     }
+    const previousP = products.find((ele)=>ele.productName===initialValues.productType);
+    if(previousP){
+      setSelectedProduct(previousP)
+    }
     setDocuments(updatedDocuments);
     setSelectedBrokerId(initialValues.brokerId ?? "");
+    setPolicyType(initialValues.policyType??"");
     setSelectedPartnerId(initialValues.partnerId ?? "");
     setSelectedPartnerName(initialValues.partnerName ?? "");
     setSelectedRMId(initialValues.relationshipManagerId ?? "");
     setSelectedRMName(initialValues.relationshipManagerName ?? "");
+    // setSelectedProduct(initialValues.productType)
     setRMErrorMessage("");
     setProType(initialValues.productType);
     if (initialValues.policyCreatedBy) {

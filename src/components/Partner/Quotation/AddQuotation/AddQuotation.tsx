@@ -36,7 +36,6 @@ import getQuotationByLeadIdService from "../../../../api/Quatotion/GetQuotationB
 import dayjs from "dayjs";
 import editLeadService from "../../../../api/Leads/EditLead/editLeadService";
 import toast, { Toaster } from "react-hot-toast";
-import { documentTypes } from "../../../Policy/IPolicyData";
 const AddQuotation = () => {
   const title = "Add Comment";
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
@@ -349,6 +348,11 @@ const AddQuotation = () => {
         break;
     }
   };
+
+  const isUrl = (text: string) => {
+    const urlPattern = /^(https?:\/\/[^\s]+)$/;
+    return urlPattern.test(text);
+  };
   const handleClickBooking = () => {
     navigate(bookingRequestNewPath(leadId!));
   };
@@ -526,7 +530,16 @@ const AddQuotation = () => {
                                     <span className="text-safekaroDarkOrange">
                                       {`${quotation.partnerName}:`}
                                     </span>
-                                    {quotation.comments}
+                                    {
+                                      isUrl(quotation.comments)?(
+                                        <a href={quotation.comments} target="_blank" rel="noopener noreferrer">
+                                          {quotation.comments}
+                                        </a>
+                                      ) : (
+                                        <span>{quotation.comments}</span>
+                                      )
+                                    }
+                                   
                                   </Typography>
                                   {
                                    quotation.quotationImage?.map((item:any)=>{
@@ -577,21 +590,7 @@ const AddQuotation = () => {
                           )}
                         </Field>
                       </Grid>
-                      {/* <Grid item lg={4} md={4} sm={6} xs={12}>
-                        <input
-                          id={`file`}
-                          type="file"
-                          onChange={(e) => handleFileInputChange(e)}
-                          style={{
-                            border: "1px solid #c4c4c4",
-                            padding: "5px",
-                            width: "100%",
-                            borderRadius: "5px",
-                          }}
-                        />
-                        <span style={{ color: "red" }}>{errorMessage}</span>
-                      </Grid> */}
-                      {/* new code added  */}
+                     
                       <Grid item md={12} mt={2}>
                         <Button
                           variant="outlined"
