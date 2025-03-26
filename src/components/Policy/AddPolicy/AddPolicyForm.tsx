@@ -132,7 +132,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [showUpgradePopup, setShowUpgradePopup] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [policyCount, setPolicyCount] = useState<number>(userData.policyCount);
+  const [policyCount, setPolicyCount] = useState<number>(0);
   useEffect(() => {
     if (!isAdd) {
       setOd(initialValues.od ?? 0);
@@ -517,10 +517,13 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   };
 
   useEffect(() => {
+  
     const fetchPolicyCount = async () => {
+  
       setIsLoading(true); // ✅ Start loading
       try {
         const response = await getPolicyCountAPI({ userId: userData.profileId });
+        console.log("response",response)
          if(response?.remainingPolicyCount <=0 ){
          setPolicyCount(response.remainingPolicyCount);
           updateLocalStorage({ policyCount: policyCount })
@@ -537,13 +540,13 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
     };
 
     if (userData.profileId) {
+
       console.log("useEffect Triggered - userId:", userData.profileId); 
       fetchPolicyCount();
     }
   }, [userData.profileId]);
 
 
-  console.log("Outside useEffect - Policy Count:", policyCount);
 
   useEffect(() => {
     if (isAdd) {

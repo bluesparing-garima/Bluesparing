@@ -112,36 +112,11 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
   const [rmErrorMessage, setRMErrorMessage] = useState("");
   const [netPremium, setNetPremium] = useState(Number(od) + Number(tp));
   const [proType, setProType] = useState(initialValues.productType || "");
-  const [showUpgradePopup, setShowUpgradePopup] = useState(false);
+ const [showUpgradePopup, setShowUpgradePopup] = useState(false);
   const [progress, setProgress] = useState(0);
    const [policyCount, setPolicyCount] = useState<number>(userData.policyCount);
 
-     useEffect(() => {
-       const fetchPolicyCount = async () => {
-         setIsLoading(true); // ✅ Start loading
-         try {
-           const response = await getPolicyCountAPI({ userId: userData.profileId });
-            if(response?.remainingPolicyCount <=0 ){
-            setPolicyCount(response.remainingPolicyCount);
-             updateLocalStorage({ policyCount: policyCount })
-             setShowUpgradePopup(true);
-            }
-         } catch (err) {
-           setErrors((prevErrors) => [
-             ...prevErrors,
-             { docName: "Error", file: "Failed to fetch policy count" }, // ✅ Adding a new error entry
-           ]);
-         } finally {
-           setIsLoading(false); // ✅ Stop loading
-         }
-       };
-   
-       if (userData.profileId) {
-         console.log("useEffect Triggered - userId:", userData.profileId); 
-         fetchPolicyCount();
-       }
-     }, [userData.profileId]);
-   
+ 
   useEffect(() => {
     setNetPremium(Number(od) + Number(tp));
   }, [od, tp]);
@@ -235,6 +210,10 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
       setFilteredSubcategories(productSubTypes);
     }
   }, [selectedProduct, productSubTypes]);
+
+
+
+  console.log("Outside useEffect - Policy Count:", policyCount);
 
   const handleFileInputChange = (event: any, index: any) => {
     if (event.target.files && event.target.files[0]) {
@@ -511,6 +490,37 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
       prevDocuments.filter((_, i) => i !== index)
     );
   };
+  useEffect(() => {
+    const fetchPolicyCount = async () => {
+      setIsLoading(true); // ✅ Start loading
+      try {
+        const response = await getPolicyCountAPI({ userId: userData.profileId });
+         if(response?.remainingPolicyCount <=0 ){
+         setPolicyCount(response.remainingPolicyCount);
+       
+          updateLocalStorage({ policyCount: policyCount })
+          setShowUpgradePopup(true);
+         }
+      } catch (err) {
+        setErrors((prevErrors) => [
+          ...prevErrors,
+          { docName: "Error", file: "Failed to fetch policy count" }, // ✅ Adding a new error entry
+        ]);
+      } finally {
+        setIsLoading(false); // ✅ Stop loading
+      }
+    };
+
+    
+
+    if (userData.profileId) {
+   
+      console.log("useEffect Triggered - userId:", userData.profileId); 
+      fetchPolicyCount();
+    }
+  }, [userData.profileId]);
+
+
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
       schema = schema();

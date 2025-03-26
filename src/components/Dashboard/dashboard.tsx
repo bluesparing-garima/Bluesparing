@@ -612,7 +612,7 @@ const Dashboard: React.FC = () => {
                                               key.toUpperCase(),
                                               value || 0,
                                               "",
-                                              "/team"
+                                              `/team?role=${key}`
                                             )}
                                           </>
                                         )
