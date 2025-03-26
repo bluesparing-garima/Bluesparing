@@ -279,11 +279,17 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       }
     }
   };
+  
   const navigateToTeams = (message: string) => {
-    navigate(teamPath(), {
+    const storedTheme: any = localStorage.getItem("user");
+    const UserData = storedTheme ? JSON.parse(storedTheme) : null;
+    const userRole = UserData?.role || ""; // User ka role fetch karna
+  
+    navigate(teamPath(userRole), {
       state: message,
     });
   };
+  
   const callAddTeamAPI = async (team: any) => {
     try {
       setIsLoading(true);
@@ -292,7 +298,9 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       if (newRole === "relationship manager") {
         newRole = "rm";
       }
-      const maxLimit = userLimit.hasOwnProperty(newRole) ? userLimit[newRole] : 0;
+      const maxLimit = userLimit.hasOwnProperty(newRole)
+        ? userLimit[newRole]
+        : 0;
       if (Number(maxLimit) <= 0) {
         setShowUpgradePopup(true);
         return;
@@ -301,13 +309,16 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
         setProgress(p);
       };
       const newTeam = await addTeamService({ header, team, onProgress });
-      const updateKey = UserData.userLimit[newRole] === "Infinity" ? "Infinity" :Number(UserData.userLimit[newRole])-1;
+      const updateKey =
+        UserData.userLimit[newRole] === "Infinity"
+          ? "Infinity"
+          : Number(UserData.userLimit[newRole]) - 1;
       if (newRole && Number(UserData.userLimit[newRole]) > 0) {
         const updatedUserLimit = {
           ...UserData.userLimit,
           [newRole]: updateKey,
         };
-    
+
         updateLocalStorage({ userLimit: updatedUserLimit });
       }
 
@@ -788,63 +799,76 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                 </Field>
               </Grid>
               <Grid item lg={4} md={4} sm={6} xs={12}>
-  <Field name="dateOfBirth">
-    {({ input, meta }) => (
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DatePicker
-          disableFuture
-          label="Date of Birth"
-          value={input.value !== undefined ? input.value : initialValues?.dateOfBirth || null}
-          onChange={(date) => input.onChange(date)}
-          inputFormat="DD/MM/YYYY"
-          shouldDisableDate={(date) => {
-            const today = dayjs();
-            const minAgeDate = today.subtract(18, 'year');
-            return date.isAfter(minAgeDate); // Disable dates that make the user younger than 18
-          }}
-          renderInput={(params: any) => (
-            <TextField
-              variant="outlined"
-              size="small"
-              fullWidth
-              {...params}
-              inputProps={{ ...params.inputProps, readOnly: true }} // Prevent manual entry
-              error={meta.touched && !!meta.error}
-              helperText={meta.touched && meta.error}
-            />
-          )}
-        />
-      </LocalizationProvider>
-    )}
-  </Field>
-</Grid>
-<Grid item lg={4} md={4} sm={6} xs={12}>
-  <Field name="joiningDate">
-    {({ input, meta }) => (
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DatePicker
-          disableFuture
-          label="Joining Date"
-          value={input.value !== undefined ? input.value : initialValues?.joiningDate || null}
-          onChange={(date) => input.onChange(date)}
-          inputFormat="DD/MM/YYYY"
-          renderInput={(params: any) => (
-            <TextField
-              variant="outlined"
-              size="small"
-              fullWidth
-              {...params}
-              inputProps={{ ...params.inputProps, readOnly: true }} // Prevent manual entry
-              error={meta.touched && !!meta.error}
-              helperText={meta.touched && meta.error}
-            />
-          )}
-        />
-      </LocalizationProvider>
-    )}
-  </Field>
-</Grid>
-
+                <Field name="dateOfBirth">
+                  {({ input, meta }) => (
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DatePicker
+                        disableFuture
+                        label="Date of Birth"
+                        value={
+                          input.value !== undefined
+                            ? input.value
+                            : initialValues?.dateOfBirth || null
+                        }
+                        onChange={(date) => input.onChange(date)}
+                        inputFormat="DD/MM/YYYY"
+                        shouldDisableDate={(date) => {
+                          const today = dayjs();
+                          const minAgeDate = today.subtract(18, "year");
+                          return date.isAfter(minAgeDate); // Disable dates that make the user younger than 18
+                        }}
+                        renderInput={(params: any) => (
+                          <TextField
+                            variant="outlined"
+                            size="small"
+                            fullWidth
+                            {...params}
+                            inputProps={{
+                              ...params.inputProps,
+                              readOnly: true,
+                            }} // Prevent manual entry
+                            error={meta.touched && !!meta.error}
+                            helperText={meta.touched && meta.error}
+                          />
+                        )}
+                      />
+                    </LocalizationProvider>
+                  )}
+                </Field>
+              </Grid>
+              <Grid item lg={4} md={4} sm={6} xs={12}>
+                <Field name="joiningDate">
+                  {({ input, meta }) => (
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DatePicker
+                        disableFuture
+                        label="Joining Date"
+                        value={
+                          input.value !== undefined
+                            ? input.value
+                            : initialValues?.joiningDate || null
+                        }
+                        onChange={(date) => input.onChange(date)}
+                        inputFormat="DD/MM/YYYY"
+                        renderInput={(params: any) => (
+                          <TextField
+                            variant="outlined"
+                            size="small"
+                            fullWidth
+                            {...params}
+                            inputProps={{
+                              ...params.inputProps,
+                              readOnly: true,
+                            }} // Prevent manual entry
+                            error={meta.touched && !!meta.error}
+                            helperText={meta.touched && meta.error}
+                          />
+                        )}
+                      />
+                    </LocalizationProvider>
+                  )}
+                </Field>
+              </Grid>
 
               <Grid item md={12} mt={2}>
                 <Button variant="outlined" onClick={handleClickAddDocument}>
@@ -905,7 +929,13 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                       <Grid item lg={4} md={4} sm={4} xs={4}>
                         {doc.file ? (
                           <>
-                            <Tooltip title={typeof doc.file === "string" ? doc.file : "View Document"}>
+                            <Tooltip
+                              title={
+                                typeof doc.file === "string"
+                                  ? doc.file
+                                  : "View Document"
+                              }
+                            >
                               <IconButton
                                 color="primary"
                                 aria-label={`${doc.file}`}
@@ -986,8 +1016,8 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                   {isLoading
                     ? "Submitting..."
                     : isAdd
-                      ? "Add Team"
-                      : "Update Team"}
+                    ? "Add Team"
+                    : "Update Team"}
                 </Button>
               </Grid>
             </Grid>

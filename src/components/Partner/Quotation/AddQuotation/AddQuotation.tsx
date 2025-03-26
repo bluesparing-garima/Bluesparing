@@ -329,7 +329,7 @@ const AddQuotation = () => {
         editFrom.append("timer", diffInMilliseconds.toString());
         callEditLeadAPI(editFrom, id);
         break;
-      case "doc pending":
+      case "documents pending":
         editFrom.append("timer", Date.now().toString());
         callEditLeadAPI(editFrom, id);
         break;
@@ -347,6 +347,7 @@ const AddQuotation = () => {
       default:
         break;
     }
+    console.log(" status : ", status.toLocaleLowerCase())
   };
 
   const isUrl = (text: string) => {
