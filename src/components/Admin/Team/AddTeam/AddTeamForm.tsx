@@ -49,6 +49,7 @@ export interface addPolicyTypeFormProps {
   initialValues?: IAppUser;
 }
 const AddTeamForm = (props: addPolicyTypeFormProps) => {
+
   const [documents, setDocuments] = useState<Document[]>([
     { docName: "", file: "" },
   ]);
@@ -502,7 +503,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       .min(1, "salary must be at least 1 character"),
     branch: yup.object().required("Branch Name is required").nullable(),
   });
-
+  const allowedRoles = ["Account", "Booking", "HR", "Operation", "Partner", "Relationship Manager"];
   const validate = validateFormValues(validationSchema);
   return (
     <>
@@ -557,7 +558,8 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                   )}
                 </Field>
               </Grid>
-              <Grid item lg={4} md={4} sm={6} xs={12}>
+              {/* <Grid item lg={4} md={4} sm={6} xs={12}> */}
+              {/* <Grid item lg={4} md={4} sm={6} xs={12}>
                 <Field name="role">
                   {({ input, meta }) => (
                     <div>
@@ -596,7 +598,42 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                     </div>
                   )}
                 </Field>
-              </Grid>
+              </Grid> */}
+              <Grid item lg={3} md={4} sm={6} xs={12}>
+  <Field name="role">
+    {({ input, meta }) => (
+      <div>
+        <FormControl fullWidth size="small">
+          <Autocomplete
+            {...input}
+            id="role"
+            value={input.value !== undefined ? input.value : initialValues?.role || null}
+            getOptionLabel={(option) =>
+              typeof option === "string" ? option : option.roleName || ""
+            }
+            options={roles.filter(role => allowedRoles.includes(role.roleName ?? ""))}
+            onChange={(event, newValue) => {
+              input.onChange(newValue);
+              handleChangeRole(newValue?.roleName);
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                className="rounded-sm w-full"
+                size="small"
+                label="Select Role"
+                variant="outlined"
+                error={meta.touched && !!meta.error}
+                helperText={meta.touched && meta.error}
+              />
+            )}
+          />
+        </FormControl>
+      </div>
+    )}
+  </Field>
+</Grid>;
+
 
               {selectedRole !== "Relationship Manager" && (
                 <Grid item lg={4} md={4} sm={6} xs={12}>

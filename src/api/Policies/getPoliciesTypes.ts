@@ -1,4 +1,9 @@
 import { Header } from "../../Auth/IAuth";
+export interface getPolicyCountProps {
+  header?:Header,
+  policyCount?: any;
+  userId:string;
+}
 export interface GetMotorPoliciesPDFProps {
   header: Header;
   file: any;

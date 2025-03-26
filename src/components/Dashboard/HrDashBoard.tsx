@@ -255,7 +255,7 @@ const HrDashBoard: React.FC = () => {
                                 renderCountBox(
                                   key.toUpperCase(),
                                   Number(value) || 0,
-                                  "/team"
+                                  `/team?role=${key}`
                                 )
                               )}
                             {data &&
