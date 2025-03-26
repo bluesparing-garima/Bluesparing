@@ -95,6 +95,9 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   const [selectedBrokerId, setSelectedBrokerId] = useState("");
   const [selectedRMName, setSelectedRMName] = useState("");
   const [selectedRMId, setSelectedRMId] = useState("");
+  const [selectedCaseType, setSelectedCaseType] = useState(initialValues.caseType || "");
+
+
   const navigate = useNavigate();
   const [selectedPaymentMode, setSelectedPaymentMode] = useState();
   const [selectedPolicyCreatedBy, setSelectedPolicyCreatedBy] = useState<
@@ -147,7 +150,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       setCC(initialValues.cc ?? 0);
       setIdv(initialValues.idv ?? 0);
       setTenure(initialValues.tenure ?? 1);
-
+      setSelectedCaseType(initialValues.caseType ?? "")
       const updatedDocuments: Document[] = [];
       if (initialValues.rcBack) {
         updatedDocuments.push({
@@ -454,7 +457,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       const policyCount = userData?.policyCount || 0;
 
       if (policyCount <= 0) {
-        setShowUpgradePopup(true); //! **Upgrade Plan Popup दिखाओ**
+        setShowUpgradePopup(true);
         return;
       }
       const newPolicy = await addPolicyService({ header, policy, onProgress });
@@ -676,6 +679,9 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
     }
   };
   const validateVehicleNumber = async (e: any) => {
+    if (selectedCaseType.toLowerCase().trim() === 'new') {
+      return;
+    }
     const vehicleNumber = e.target.value;
     try {
       const res = await getVechicleNumberService({
@@ -844,6 +850,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                                   input.onChange(
                                     newValue ? newValue.caseType : ""
                                   );
+                                  setSelectedCaseType(newValue.caseType)
                                 }}
                                 renderInput={(params) => (
                                   <TextField
@@ -1939,7 +1946,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
         </Card>
       </React.Fragment>
       <Toaster position="bottom-center" reverseOrder={false} />
-      <LoadingOverlay loading={progress > 0} message={progress} />
+      <LoadingOverlay loading={progress > 0 && progress<100} message={progress} />
     </>
   );
 };
