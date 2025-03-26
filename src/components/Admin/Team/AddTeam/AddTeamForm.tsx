@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import {
   TextField,
   Button,
@@ -11,7 +11,6 @@ import {
   InputLabel,
   FormHelperText,
   OutlinedInput,
-  selectClasses,
 } from "@mui/material";
 import { FormControl, Autocomplete } from "@mui/material";
 import addTeamService from "../../../../api/Team/AddTeam/addTeamService";
@@ -40,12 +39,12 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import validateEmailService from "../../../../api/Team/ValidateEmail/validateEmailService";
 import { userDocumentList } from "../../../Policy/IPolicyData";
-import toast, { Toaster } from "react-hot-toast";
 import dayjs from "dayjs";
 import generateFormData from "../../../../utils/generateFromData";
 import UpgradePlanPopup from "../../../UpdatePlan/UpgradeExistingPlan";
 import LoadingOverlay from "../../../../utils/ui/LoadingOverlay";
-import { useSearchParams } from "react-router-dom";
+import OverlayError from "../../../../utils/ui/OverlayError";
+import OverlayLoader from "../../../../utils/ui/OverlayLoader";
 export interface addPolicyTypeFormProps {
   initialValues?: IAppUser;
 }
@@ -82,7 +81,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
   const [rmErrorMessage, setRMErrorMessage] = useState("");
   const [showUpgradePopup, setShowUpgradePopup] = useState(false);
   const [progress, setProgress] = useState(0);
-
+  const [errMsg, setErrMsg] = useState("");
   useEffect(() => {
     if (!isAdd) {
       const updatedDocuments: Document[] = [];
@@ -211,11 +210,11 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
     const { branch } = teamForm;
     const isDateOfBirth = dayjs(teamForm.dateOfBirth).isValid();
     if (!isJoiningDate) {
-      toast.error("Invalid Joining Date ,its MM/DD/YYYY from");
+      setErrMsg("Invalid Joining Date ,its MM/DD/YYYY from");
       return;
     }
     if (!isDateOfBirth) {
-      toast.error("Invalid  DOB, its MM/DD/YYYY from");
+      setErrMsg("Invalid  DOB, its MM/DD/YYYY from");
       return;
     }
     const formValid = documents.every((doc, index) =>
@@ -303,20 +302,20 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
         setProgress(p);
       };
       const newTeam = await addTeamService({ header, team, onProgress });
-      const updateKey = UserData.userLimit[newRole] === "Infinity" ? "Infinity" :Number(UserData.userLimit[newRole])-1;
+      const updateKey = UserData.userLimit[newRole] === "Infinity" ? "Infinity" : Number(UserData.userLimit[newRole]) - 1;
       if (newRole && Number(UserData.userLimit[newRole]) > 0) {
         const updatedUserLimit = {
           ...UserData.userLimit,
           [newRole]: updateKey,
         };
-    
+
         updateLocalStorage({ userLimit: updatedUserLimit });
       }
 
       navigateToTeams(`${newTeam.message}`);
     } catch (err: any) {
       const errObj = await err;
-      toast.error(errObj.message);
+      setErrMsg(errObj.message);
     } finally {
       setIsLoading(false);
     }
@@ -328,7 +327,8 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       navigateToTeams(`${newTeam.message}`);
     } catch (err: any) {
       const errObj = await err;
-      toast.error(errObj.message);
+     
+      setErrMsg(errObj.message);
     } finally {
       setIsLoading(false);
     }
@@ -410,6 +410,10 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       console.error("Unsupported file type:", fileExtension);
     }
   };
+
+  const onClose = () => {
+    setErrMsg("")
+  }
 
   const getDocumentUrl = (file: any): string | undefined => {
     if (!file) return undefined; // null ki jagah undefined return karein
@@ -826,62 +830,62 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                 </Field>
               </Grid>
               <Grid item lg={4} md={4} sm={6} xs={12}>
-  <Field name="dateOfBirth">
-    {({ input, meta }) => (
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DatePicker
-          disableFuture
-          label="Date of Birth"
-          value={input.value !== undefined ? input.value : initialValues?.dateOfBirth || null}
-          onChange={(date) => input.onChange(date)}
-          inputFormat="DD/MM/YYYY"
-          shouldDisableDate={(date) => {
-            const today = dayjs();
-            const minAgeDate = today.subtract(18, 'year');
-            return date.isAfter(minAgeDate); // Disable dates that make the user younger than 18
-          }}
-          renderInput={(params: any) => (
-            <TextField
-              variant="outlined"
-              size="small"
-              fullWidth
-              {...params}
-              inputProps={{ ...params.inputProps, readOnly: true }} // Prevent manual entry
-              error={meta.touched && !!meta.error}
-              helperText={meta.touched && meta.error}
-            />
-          )}
-        />
-      </LocalizationProvider>
-    )}
-  </Field>
-</Grid>
-<Grid item lg={4} md={4} sm={6} xs={12}>
-  <Field name="joiningDate">
-    {({ input, meta }) => (
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DatePicker
-          disableFuture
-          label="Joining Date"
-          value={input.value !== undefined ? input.value : initialValues?.joiningDate || null}
-          onChange={(date) => input.onChange(date)}
-          inputFormat="DD/MM/YYYY"
-          renderInput={(params: any) => (
-            <TextField
-              variant="outlined"
-              size="small"
-              fullWidth
-              {...params}
-              inputProps={{ ...params.inputProps, readOnly: true }} // Prevent manual entry
-              error={meta.touched && !!meta.error}
-              helperText={meta.touched && meta.error}
-            />
-          )}
-        />
-      </LocalizationProvider>
-    )}
-  </Field>
-</Grid>
+                <Field name="dateOfBirth">
+                  {({ input, meta }) => (
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DatePicker
+                        disableFuture
+                        label="Date of Birth"
+                        value={input.value !== undefined ? input.value : initialValues?.dateOfBirth || null}
+                        onChange={(date) => input.onChange(date)}
+                        inputFormat="DD/MM/YYYY"
+                        shouldDisableDate={(date) => {
+                          const today = dayjs();
+                          const minAgeDate = today.subtract(18, 'year');
+                          return date.isAfter(minAgeDate); // Disable dates that make the user younger than 18
+                        }}
+                        renderInput={(params: any) => (
+                          <TextField
+                            variant="outlined"
+                            size="small"
+                            fullWidth
+                            {...params}
+                            inputProps={{ ...params.inputProps, readOnly: true }} // Prevent manual entry
+                            error={meta.touched && !!meta.error}
+                            helperText={meta.touched && meta.error}
+                          />
+                        )}
+                      />
+                    </LocalizationProvider>
+                  )}
+                </Field>
+              </Grid>
+              <Grid item lg={4} md={4} sm={6} xs={12}>
+                <Field name="joiningDate">
+                  {({ input, meta }) => (
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DatePicker
+                        disableFuture
+                        label="Joining Date"
+                        value={input.value !== undefined ? input.value : initialValues?.joiningDate || null}
+                        onChange={(date) => input.onChange(date)}
+                        inputFormat="DD/MM/YYYY"
+                        renderInput={(params: any) => (
+                          <TextField
+                            variant="outlined"
+                            size="small"
+                            fullWidth
+                            {...params}
+                            inputProps={{ ...params.inputProps, readOnly: true }} // Prevent manual entry
+                            error={meta.touched && !!meta.error}
+                            helperText={meta.touched && meta.error}
+                          />
+                        )}
+                      />
+                    </LocalizationProvider>
+                  )}
+                </Field>
+              </Grid>
 
 
               <Grid item md={12} mt={2}>
@@ -889,7 +893,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                   Add More Document
                 </Button>
                 <Typography variant="body1" gutterBottom mr={4}>
-                  {"Image should be 100x100 pixels and must be <= 256KB."}
+                  {"Image or pdf should be <= 4MB."}
                 </Typography>
               </Grid>
               <Grid item md={12}>
@@ -1032,8 +1036,13 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
           </form>
         )}
       />
-      <Toaster position="bottom-center" reverseOrder={false} />
-      <LoadingOverlay loading={progress > 0} message={progress} />
+      {
+        errMsg && <OverlayError title="Failed" onClose={onClose} msg={errMsg} />
+      }
+      {
+        isLoading && <OverlayLoader />
+      }
+      <LoadingOverlay loading={progress > 0 && progress<100 } message={progress} />
     </>
   );
 };

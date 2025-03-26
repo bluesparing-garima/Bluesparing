@@ -58,6 +58,7 @@ import toast, { Toaster } from "react-hot-toast";
 import UpgradePlanPopup from "../../UpdatePlan/UpgradeExistingPlan";
 import LoadingOverlay from "../../../utils/ui/LoadingOverlay";
 import getPolicyCountAPI from "../../../api/Policies/getPolicyCount/getPolicyCountAPI";
+import getVechicleNumberService from "../../../api/Policies/GetVehicleNumber/getVechicleNumberService";
 export interface AddPolicyFormProps {
   initialValues: IAddEditPolicyForm;
 }
@@ -90,7 +91,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
   let [companies] = useGetCompanies({ header: header });
   let [products] = useGetProducts({ header: header, category: "motor" });
   let [productSubTypes] = useGetProductSubTypes({ header: header });
-  
+
   const [isVisibile, setIsVisibile] = useState(false);
   const [selectedBrokerId, setSelectedBrokerId] = useState("");
   const [selectedPartnerName, setSelectedPartnerName] = useState("");
@@ -102,10 +103,14 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
   const [selectedPolicyCreatedBy, setSelectedPolicyCreatedBy] =
     useState<string>();
   const [selectedProduct, setSelectedProduct] = useState<IProducts>();
+  const [vehicleErr, setVehicleErr] = useState("");
+  const [selectedCaseType, setSelectedCaseType] = useState(initialValues.caseType || "");
+
   const [selectedMake, setSelectedMake] = useState<IMakes>();
   const [filteredSubcategories, setFilteredSubcategories] = useState<
     IProductSubTypes[]
   >([]);
+
   const [filteredSubModels, setFilteredSubModels] = useState<IModels[]>([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [policyErrorMessage, setPolicyErrorMessage] = useState("");
@@ -169,17 +174,18 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
     if (initialValues.other) {
       updatedDocuments.push({ docName: "other", file: initialValues.other });
     }
-    const previousP = products.find((ele)=>ele.productName===initialValues.productType);
-    if(previousP){
+    const previousP = products.find((ele) => ele.productName === initialValues.productType);
+    if (previousP) {
       setSelectedProduct(previousP)
     }
     setDocuments(updatedDocuments);
     setSelectedBrokerId(initialValues.brokerId ?? "");
-    setPolicyType(initialValues.policyType??"");
+    setPolicyType(initialValues.policyType ?? "");
     setSelectedPartnerId(initialValues.partnerId ?? "");
     setSelectedPartnerName(initialValues.partnerName ?? "");
     setSelectedRMId(initialValues.relationshipManagerId ?? "");
     setSelectedRMName(initialValues.relationshipManagerName ?? "");
+    setSelectedCaseType(initialValues.caseType||"");
     // setSelectedProduct(initialValues.productType)
     setRMErrorMessage("");
     setProType(initialValues.productType);
@@ -440,6 +446,27 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
     // console.log("updatedPolicyCount",updatedPolicyCount);
   };
   
+
+  const validateVehicleNumber = async (e: any) => {
+    if (selectedCaseType.toLowerCase().trim() === 'new') {
+      return;
+    }
+    const vehicleNumber = e.target.value;
+    try {
+      const res = await getVechicleNumberService({
+        header,
+        vehicleNumber,
+      });
+      if (res.exist) {
+        setVehicleErr(`${vehicleNumber} is already exist`);
+      } else {
+        setVehicleErr("");
+      }
+    } catch (error: any) {
+      let errData = await error;
+      toast.error(errData.message);
+    }
+  };
 
   const callAddPolicyAPI = async (policy: any) => {
     try {
@@ -780,6 +807,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                                   input.onChange(
                                     newValue ? newValue.caseType : ""
                                   );
+                                  setSelectedCaseType(newValue.caseType)
                                 }}
                                 renderInput={(params) => (
                                   <TextField
@@ -1175,11 +1203,16 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                             label="Enter Vehicle Number"
                             variant="outlined"
                             className="rounded-sm w-full"
+                            onChangeCapture={validateVehicleNumber}
                             error={meta.touched && Boolean(meta.error)}
                             helperText={meta.touched && meta.error}
                           />
                         )}
+
                       </Field>
+                      {vehicleErr && (
+                        <div className="text-[red] text-sm">{vehicleErr}</div>
+                      )}
                     </Grid>
                     <Grid item lg={4} md={4} sm={6} xs={12}>
                       <Field name="ncb">
@@ -1816,7 +1849,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
           </CardContent>
         </Card>
         <Toaster position="bottom-center" reverseOrder={false} />
-        <LoadingOverlay loading={progress > 0} message={progress} />
+        <LoadingOverlay loading={progress > 0 && progress<100} message={progress} />
       </React.Fragment>
     </>
   );
