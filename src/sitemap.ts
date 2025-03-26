@@ -60,7 +60,12 @@ export const categoryPath = () => `/categories`;
 export const categoryAddPath = () => `/categories/add`;
 export const categoryEditPath = (categoryId: string) =>
   `/categories/${categoryId}/edit`;
-export const teamPath = () => `/team`;
+export const teamPath = (role?: string) => {
+  if (role === "Relationship Manager") {
+    return "/rm/rm_team";
+  }
+  return "/team";
+};
 export const teamAddPath = () => `/team/add`;
 export const teamEditPath = (teamId: string) => `/team/${teamId}/edit`;
 export const bookingRequestsPath = () => `/booking`;

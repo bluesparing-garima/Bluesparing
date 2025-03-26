@@ -48,6 +48,7 @@ const RmTeams = () => {
      // eslint-disable-next-line
   }, [GetTeams]);
   const navigate = useNavigate();
+  
   const handleAddTeamClick = () => {
     navigate(teamAddPath());
   };

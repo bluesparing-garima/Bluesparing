@@ -280,11 +280,17 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       }
     }
   };
+  
   const navigateToTeams = (message: string) => {
-    navigate(teamPath(), {
+    const storedTheme: any = localStorage.getItem("user");
+    const UserData = storedTheme ? JSON.parse(storedTheme) : null;
+    const userRole = UserData?.role || ""; // User ka role fetch karna
+  
+    navigate(teamPath(userRole), {
       state: message,
     });
   };
+  
   const callAddTeamAPI = async (team: any) => {
     try {
       setIsLoading(true);
@@ -293,7 +299,9 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       if (newRole === "relationship manager") {
         newRole = "rm";
       }
-      const maxLimit = userLimit.hasOwnProperty(newRole) ? userLimit[newRole] : 0;
+      const maxLimit = userLimit.hasOwnProperty(newRole)
+        ? userLimit[newRole]
+        : 0;
       if (Number(maxLimit) <= 0) {
         setShowUpgradePopup(true);
         return;
@@ -836,7 +844,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                       <DatePicker
                         disableFuture
                         label="Date of Birth"
-                        value={input.value !== undefined ? input.value : initialValues?.dateOfBirth || null}
+                                                value={input.value !== undefined ? input.value : initialValues?.dateOfBirth || null}
                         onChange={(date) => input.onChange(date)}
                         inputFormat="DD/MM/YYYY"
                         shouldDisableDate={(date) => {
@@ -947,7 +955,13 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                       <Grid item lg={4} md={4} sm={4} xs={4}>
                         {doc.file ? (
                           <>
-                            <Tooltip title={typeof doc.file === "string" ? doc.file : "View Document"}>
+                            <Tooltip
+                              title={
+                                typeof doc.file === "string"
+                                  ? doc.file
+                                  : "View Document"
+                              }
+                            >
                               <IconButton
                                 color="primary"
                                 aria-label={`${doc.file}`}
@@ -1028,8 +1042,8 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                   {isLoading
                     ? "Submitting..."
                     : isAdd
-                      ? "Add Team"
-                      : "Update Team"}
+                    ? "Add Team"
+                    : "Update Team"}
                 </Button>
               </Grid>
             </Grid>

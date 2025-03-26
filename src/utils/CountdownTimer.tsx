@@ -73,7 +73,7 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({
       s !== "payment pending" &&
       s !== "requested" &&
       s !== "payment request" &&
-      s !== "doc pending" &&
+      s !== "documents pending" &&
       s !== "changes required" &&
       s !== ""
     ) {

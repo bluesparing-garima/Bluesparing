@@ -843,7 +843,7 @@ const renderCountBox = (
           variant="body2"
           className="text-sm text-gray-600 mb-2 font-satoshi"
         >
-          {title}
+          {title==='Policy Count' ? 'Remaining Policy Count' : title}
         </Typography>
         <Typography variant="h5" className="text-base font-bold text-[#202224]">
           {count}
