@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import { TextField, Button, Grid } from "@mui/material";
 import addBranchService from "../../../../api/Branch/AddBranch/addBranchService";
 import editBranchService from "../../../../api/Branch/EditBranch/editBranchService";
@@ -9,7 +9,8 @@ import * as yup from "yup";
 import { ADD, header } from "../../../../context/constant";
 import { useLocation, useNavigate } from "react-router-dom";
 import { branchPath } from "../../../../sitemap";
-import toast, { Toaster } from "react-hot-toast";
+import OverlayLoader from "../../../../utils/ui/OverlayLoader";
+import OverlayError from "../../../../utils/ui/OverlayError";
 export interface addBranchFormProps {
   initialValues: IBranchForm;
 }
@@ -17,6 +18,7 @@ const AddBranchForm = (props: addBranchFormProps) => {
   const { initialValues } = props;
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [errMsg, setErrMsg] = useState("");
   const location = useLocation() as any;
   const pathName = location.pathname.split("/");
   const isAddEdit = pathName[pathName.length - 1] as string;
@@ -34,6 +36,10 @@ const AddBranchForm = (props: addBranchFormProps) => {
       return errors;
     }
   };
+
+  const onClose = () => {
+    setErrMsg("")
+  }
   const validationSchema = yup.object().shape({
     branchName: yup
       .string()
@@ -61,7 +67,7 @@ const AddBranchForm = (props: addBranchFormProps) => {
       navigateToBranches(`${newBranch.message}`);
     } catch (err: any) {
       const errObj = await err;
-      toast.error(errObj.message);
+      setErrMsg(errObj.message)
     } finally {
       setIsLoading(false);
     }
@@ -73,7 +79,7 @@ const AddBranchForm = (props: addBranchFormProps) => {
       navigateToBranches(`${newBranch.message}`);
     } catch (err: any) {
       const errObj = await err;
-      toast.error(errObj.message);
+      setErrMsg(errObj.message)
     } finally {
       setIsLoading(false);
     }
@@ -121,7 +127,13 @@ const AddBranchForm = (props: addBranchFormProps) => {
           </form>
         )}
       />
-      <Toaster position="bottom-center" reverseOrder={false} />
+        {
+          errMsg && <OverlayError title="Failed" onClose={onClose} msg={errMsg} />
+        }
+        {
+          isLoading && <OverlayLoader />
+        }
+      
     </>
   );
 };
