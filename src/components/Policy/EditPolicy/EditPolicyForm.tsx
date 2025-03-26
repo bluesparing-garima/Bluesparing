@@ -57,6 +57,8 @@ import dayjs from "dayjs";
 import toast, { Toaster } from "react-hot-toast";
 import UpgradePlanPopup from "../../UpdatePlan/UpgradeExistingPlan";
 import LoadingOverlay from "../../../utils/ui/LoadingOverlay";
+import getPolicyCountAPI from "../../../api/Policies/getPolicyCount/getPolicyCountAPI";
+import getVechicleNumberService from "../../../api/Policies/GetVehicleNumber/getVechicleNumberService";
 export interface AddPolicyFormProps {
   initialValues: IAddEditPolicyForm;
 }
@@ -89,7 +91,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
   let [companies] = useGetCompanies({ header: header });
   let [products] = useGetProducts({ header: header, category: "motor" });
   let [productSubTypes] = useGetProductSubTypes({ header: header });
-  
+
   const [isVisibile, setIsVisibile] = useState(false);
   const [selectedBrokerId, setSelectedBrokerId] = useState("");
   const [selectedPartnerName, setSelectedPartnerName] = useState("");
@@ -101,18 +103,25 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
   const [selectedPolicyCreatedBy, setSelectedPolicyCreatedBy] =
     useState<string>();
   const [selectedProduct, setSelectedProduct] = useState<IProducts>();
+  const [vehicleErr, setVehicleErr] = useState("");
+  const [selectedCaseType, setSelectedCaseType] = useState(initialValues.caseType || "");
+
   const [selectedMake, setSelectedMake] = useState<IMakes>();
   const [filteredSubcategories, setFilteredSubcategories] = useState<
     IProductSubTypes[]
   >([]);
+
   const [filteredSubModels, setFilteredSubModels] = useState<IModels[]>([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [policyErrorMessage, setPolicyErrorMessage] = useState("");
   const [rmErrorMessage, setRMErrorMessage] = useState("");
   const [netPremium, setNetPremium] = useState(Number(od) + Number(tp));
   const [proType, setProType] = useState(initialValues.productType || "");
-  const [showUpgradePopup, setShowUpgradePopup] = useState(false);
+ const [showUpgradePopup, setShowUpgradePopup] = useState(false);
   const [progress, setProgress] = useState(0);
+   const [policyCount, setPolicyCount] = useState<number>(userData.policyCount);
+
+ 
   useEffect(() => {
     setNetPremium(Number(od) + Number(tp));
   }, [od, tp]);
@@ -165,17 +174,18 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
     if (initialValues.other) {
       updatedDocuments.push({ docName: "other", file: initialValues.other });
     }
-    const previousP = products.find((ele)=>ele.productName===initialValues.productType);
-    if(previousP){
+    const previousP = products.find((ele) => ele.productName === initialValues.productType);
+    if (previousP) {
       setSelectedProduct(previousP)
     }
     setDocuments(updatedDocuments);
     setSelectedBrokerId(initialValues.brokerId ?? "");
-    setPolicyType(initialValues.policyType??"");
+    setPolicyType(initialValues.policyType ?? "");
     setSelectedPartnerId(initialValues.partnerId ?? "");
     setSelectedPartnerName(initialValues.partnerName ?? "");
     setSelectedRMId(initialValues.relationshipManagerId ?? "");
     setSelectedRMName(initialValues.relationshipManagerName ?? "");
+    setSelectedCaseType(initialValues.caseType||"");
     // setSelectedProduct(initialValues.productType)
     setRMErrorMessage("");
     setProType(initialValues.productType);
@@ -206,6 +216,10 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
       setFilteredSubcategories(productSubTypes);
     }
   }, [selectedProduct, productSubTypes]);
+
+
+
+  console.log("Outside useEffect - Policy Count:", policyCount);
 
   const handleFileInputChange = (event: any, index: any) => {
     if (event.target.files && event.target.files[0]) {
@@ -431,21 +445,51 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
 
     // console.log("updatedPolicyCount",updatedPolicyCount);
   };
+  
+
+  const validateVehicleNumber = async (e: any) => {
+    if (selectedCaseType.toLowerCase().trim() === 'new') {
+      return;
+    }
+    const vehicleNumber = e.target.value;
+    try {
+      const res = await getVechicleNumberService({
+        header,
+        vehicleNumber,
+      });
+      if (res.exist) {
+        setVehicleErr(`${vehicleNumber} is already exist`);
+      } else {
+        setVehicleErr("");
+      }
+    } catch (error: any) {
+      let errData = await error;
+      toast.error(errData.message);
+    }
+  };
 
   const callAddPolicyAPI = async (policy: any) => {
     try {
       setIsLoading(true);
+      
+      if (policyCount <= 0) {
+        setShowUpgradePopup(true); //! **Upgrade Plan Popup दिखाओ**
+        return;
+      }
       const newPolicy = await addPolicyService({ header, policy, onProgress });
       if (newPolicy.status === "success") {
-        const policyCount = userData?.policyCount || 0;
+      
         if (policyCount <= 0) {
           setShowUpgradePopup(true); //! **Upgrade Plan Popup दिखाओ**
           return;
         }
 
-        if (userData.policyCount > 0) {
-          const updatedPolicyCount = userData.policyCount - 1;
-          updateLocalStorage({ policyCount: updatedPolicyCount });
+        if (policyCount > 0) {
+        setPolicyCount((prevCount) => {
+                const updatedCount = prevCount - 1;
+                updateLocalStorage({ policyCount: updatedCount });
+                return updatedCount;
+              });
         }
         navigate(motorPolicyPath());
       } else {
@@ -473,6 +517,37 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
       prevDocuments.filter((_, i) => i !== index)
     );
   };
+  useEffect(() => {
+    const fetchPolicyCount = async () => {
+      setIsLoading(true); // ✅ Start loading
+      try {
+        const response = await getPolicyCountAPI({ userId: userData.profileId });
+         if(response?.remainingPolicyCount <=0 ){
+         setPolicyCount(response.remainingPolicyCount);
+       
+          updateLocalStorage({ policyCount: policyCount })
+          setShowUpgradePopup(true);
+         }
+      } catch (err) {
+        setErrors((prevErrors) => [
+          ...prevErrors,
+          { docName: "Error", file: "Failed to fetch policy count" }, // ✅ Adding a new error entry
+        ]);
+      } finally {
+        setIsLoading(false); // ✅ Stop loading
+      }
+    };
+
+    
+
+    if (userData.profileId) {
+   
+      console.log("useEffect Triggered - userId:", userData.profileId); 
+      fetchPolicyCount();
+    }
+  }, [userData.profileId]);
+
+
   const validateFormValues = (schema: any) => async (values: any) => {
     if (typeof schema === "function") {
       schema = schema();
@@ -732,6 +807,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                                   input.onChange(
                                     newValue ? newValue.caseType : ""
                                   );
+                                  setSelectedCaseType(newValue.caseType)
                                 }}
                                 renderInput={(params) => (
                                   <TextField
@@ -1127,11 +1203,16 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                             label="Enter Vehicle Number"
                             variant="outlined"
                             className="rounded-sm w-full"
+                            onChangeCapture={validateVehicleNumber}
                             error={meta.touched && Boolean(meta.error)}
                             helperText={meta.touched && meta.error}
                           />
                         )}
+
                       </Field>
+                      {vehicleErr && (
+                        <div className="text-[red] text-sm">{vehicleErr}</div>
+                      )}
                     </Grid>
                     <Grid item lg={4} md={4} sm={6} xs={12}>
                       <Field name="ncb">
@@ -1768,7 +1849,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
           </CardContent>
         </Card>
         <Toaster position="bottom-center" reverseOrder={false} />
-        <LoadingOverlay loading={progress > 0} message={progress} />
+        <LoadingOverlay loading={progress > 0 && progress<100} message={progress} />
       </React.Fragment>
     </>
   );

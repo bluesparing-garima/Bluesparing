@@ -62,6 +62,7 @@ import { formatFilename } from "../../../utils/convertLocaleStringToNumber";
 import { updateLocalStorage } from "../../../utils/HandleStore";
 import UpgradePlanPopup from "../../UpdatePlan/UpgradeExistingPlan";
 import LoadingOverlay from "../../../utils/ui/LoadingOverlay";
+import getPolicyCountAPI from "../../../api/Policies/getPolicyCount/getPolicyCountAPI";
 export interface AddPolicyFormProps {
   initialValues: IAddEditPolicyForm;
 }
@@ -95,6 +96,9 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   const [selectedBrokerId, setSelectedBrokerId] = useState("");
   const [selectedRMName, setSelectedRMName] = useState("");
   const [selectedRMId, setSelectedRMId] = useState("");
+  const [selectedCaseType, setSelectedCaseType] = useState(initialValues.caseType || "");
+
+
   const navigate = useNavigate();
   const [selectedPaymentMode, setSelectedPaymentMode] = useState();
   const [selectedPolicyCreatedBy, setSelectedPolicyCreatedBy] = useState<
@@ -131,6 +135,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [showUpgradePopup, setShowUpgradePopup] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [policyCount, setPolicyCount] = useState<number>(0);
   useEffect(() => {
     if (!isAdd) {
       setOd(initialValues.od ?? 0);
@@ -147,7 +152,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       setCC(initialValues.cc ?? 0);
       setIdv(initialValues.idv ?? 0);
       setTenure(initialValues.tenure ?? 1);
-
+      setSelectedCaseType(initialValues.caseType ?? "")
       const updatedDocuments: Document[] = [];
       if (initialValues.rcBack) {
         updatedDocuments.push({
@@ -451,19 +456,23 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   const callAddPolicyAPI = async (policy: any) => {
     try {
       setIsLoading(true);
-      const policyCount = userData?.policyCount || 0;
-
+  
       if (policyCount <= 0) {
-        setShowUpgradePopup(true); //! **Upgrade Plan Popup दिखाओ**
+        setShowUpgradePopup(true);
         return;
       }
+  
       const newPolicy = await addPolicyService({ header, policy, onProgress });
+  
       if (newPolicy.status === "success") {
-        if (userData.policyCount > 0) {
-          const updatedPolicyCount = userData.policyCount - 1;
-          updateLocalStorage({ policyCount: updatedPolicyCount });
+        if (policyCount > 0) {
+          setPolicyCount((prevCount) => {
+            const updatedCount = prevCount - 1;
+            updateLocalStorage({ policyCount: updatedCount });
+            return updatedCount;
+          });
         }
-        // console.log("updatedPolicyCount",updatedPolicyCount);
+  
         navigate(motorPolicyPath());
         return;
       } else {
@@ -477,6 +486,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       setIsLoading(false);
     }
   };
+  
   const callEditPolicyAPI = async (policy: any, policyId: string) => {
     try {
       setIsLoading(true);
@@ -508,6 +518,39 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       prevDocuments.filter((_, i) => i !== index)
     );
   };
+
+  useEffect(() => {
+  
+    const fetchPolicyCount = async () => {
+  
+      setIsLoading(true); // ✅ Start loading
+      try {
+        const response = await getPolicyCountAPI({ userId: userData.profileId });
+        console.log("response",response)
+         if(response?.remainingPolicyCount <=0 ){
+         setPolicyCount(response.remainingPolicyCount);
+          updateLocalStorage({ policyCount: policyCount })
+          setShowUpgradePopup(true);
+         }
+      } catch (err) {
+        setErrors((prevErrors) => [
+          ...prevErrors,
+          { docName: "Error", file: "Failed to fetch policy count" }, // ✅ Adding a new error entry
+        ]);
+      } finally {
+        setIsLoading(false); // ✅ Stop loading
+      }
+    };
+
+    if (userData.profileId) {
+
+      console.log("useEffect Triggered - userId:", userData.profileId); 
+      fetchPolicyCount();
+    }
+  }, [userData.profileId]);
+
+
+
   useEffect(() => {
     if (isAdd) {
       setNetPremium(Number(od) + Number(tp));
@@ -676,6 +719,9 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
     }
   };
   const validateVehicleNumber = async (e: any) => {
+    if (selectedCaseType.toLowerCase().trim() === 'new') {
+      return;
+    }
     const vehicleNumber = e.target.value;
     try {
       const res = await getVechicleNumberService({
@@ -844,6 +890,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                                   input.onChange(
                                     newValue ? newValue.caseType : ""
                                   );
+                                  setSelectedCaseType(newValue.caseType)
                                 }}
                                 renderInput={(params) => (
                                   <TextField
@@ -1939,7 +1986,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
         </Card>
       </React.Fragment>
       <Toaster position="bottom-center" reverseOrder={false} />
-      <LoadingOverlay loading={progress > 0} message={progress} />
+      <LoadingOverlay loading={progress > 0 && progress<100} message={progress} />
     </>
   );
 };

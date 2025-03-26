@@ -1,4 +1,6 @@
-
+export const getPolicyCountEndpoint =()=> {
+return ('/api/policy/motor/remaining-policy-count');
+}
 export const addPolicyEndpoint = () =>
   (`/api/policy/motor`);
 export const editPolicyEndpoint = (policyId: string) =>

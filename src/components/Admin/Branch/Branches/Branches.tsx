@@ -15,11 +15,12 @@ import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import getBranchesService from "../../../../api/Branch/GetBranches/getBranchesService";
 import editBranchService from "../../../../api/Branch/EditBranch/editBranchService";
 import { convertIBranchVMToIBranchForm } from "../../../../api/Branch/convertIBranchVMToIBranchForm";
-import toast, { Toaster } from "react-hot-toast";
 import {
   getPaginationState,
   savePaginationState,
 } from "../../../../utils/PaginationHandler";
+import OverlayError from "../../../../utils/ui/OverlayError";
+import OverlayLoader from "../../../../utils/ui/OverlayLoader";
 const Branches = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [branches, setBranches] = useState<IBranches[]>([]);
@@ -28,6 +29,7 @@ const Branches = () => {
     pageSize: 10,
   });
   const navigate = useNavigate();
+  const [errMsg, setErrMsg] = useState("");
   const handleAddBranchClick = () => {
     savePaginationState(pagination, BRANCH_STORAGE_KEY);
     navigate(branchAddPath());
@@ -40,18 +42,21 @@ const Branches = () => {
       })
       .catch(async (error) => {
         const err = await error;
-        toast.error(err.message);
+        setErrMsg(err.message);
       })
       .finally(() => {
         setIsLoading(false);
       });
   };
-
+  const onClose = () => {
+    setErrMsg("")
+  }
   useEffect(() => {
     GetBranches();
     const p = getPaginationState(BRANCH_STORAGE_KEY);
     setPagination(p);
   }, []);
+
 
   const forcedRenderCount = 0;
 
@@ -61,6 +66,10 @@ const Branches = () => {
         accessorKey: "branchName",
         header: "Branch Name",
         size: 200,
+        Cell: ({ cell }) => {
+          const value = cell.getValue<string>();
+          return <span className="capitalize">{value}</span>
+        },
       },
       {
         header: "Status",
@@ -118,7 +127,7 @@ const Branches = () => {
       })
       .catch(async (error: any) => {
         const err = await error;
-        toast.error(err.message);
+        setErrMsg(err.message)
       })
       .finally(() => {
         setIsLoading(false);
@@ -223,7 +232,13 @@ const Branches = () => {
             )}
           />
         </Paper>
-        <Toaster position="bottom-center" reverseOrder={false} />
+        {
+          errMsg && <OverlayError title="Failed" onClose={onClose} msg={errMsg} />
+        }
+        {
+          isLoading && <OverlayLoader />
+        }
+        
       </div>
     </>
   );
