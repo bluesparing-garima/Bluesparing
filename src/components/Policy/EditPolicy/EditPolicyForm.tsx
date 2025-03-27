@@ -91,7 +91,6 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
   let [companies] = useGetCompanies({ header: header });
   let [products] = useGetProducts({ header: header, category: "motor" });
   let [productSubTypes] = useGetProductSubTypes({ header: header });
-
   const [isVisibile, setIsVisibile] = useState(false);
   const [selectedBrokerId, setSelectedBrokerId] = useState("");
   const [selectedPartnerName, setSelectedPartnerName] = useState("");
@@ -117,11 +116,11 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
   const [rmErrorMessage, setRMErrorMessage] = useState("");
   const [netPremium, setNetPremium] = useState(Number(od) + Number(tp));
   const [proType, setProType] = useState(initialValues.productType || "");
- const [showUpgradePopup, setShowUpgradePopup] = useState(false);
+  const [showUpgradePopup, setShowUpgradePopup] = useState(false);
   const [progress, setProgress] = useState(0);
-   const [policyCount, setPolicyCount] = useState<number>(userData.policyCount);
+  const [policyCount, setPolicyCount] = useState<number>(userData.policyCount);
 
- 
+
   useEffect(() => {
     setNetPremium(Number(od) + Number(tp));
   }, [od, tp]);
@@ -185,7 +184,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
     setSelectedPartnerName(initialValues.partnerName ?? "");
     setSelectedRMId(initialValues.relationshipManagerId ?? "");
     setSelectedRMName(initialValues.relationshipManagerName ?? "");
-    setSelectedCaseType(initialValues.caseType||"");
+    setSelectedCaseType(initialValues.caseType || "");
     // setSelectedProduct(initialValues.productType)
     setRMErrorMessage("");
     setProType(initialValues.productType);
@@ -204,7 +203,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
   useEffect(() => {
     if (selectedProduct) {
       const ProductId = selectedProduct._id;
-      if (selectedProduct.productName === "Goods carrying vehicle") {
+      if (selectedProduct.productName?.toLowerCase().trim() === "goods carrying vehicle") {
         setIsVisibile(true);
       } else {
         setIsVisibile(false);
@@ -445,7 +444,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
 
     // console.log("updatedPolicyCount",updatedPolicyCount);
   };
-  
+
 
   const validateVehicleNumber = async (e: any) => {
     if (selectedCaseType.toLowerCase().trim() === 'new') {
@@ -471,25 +470,25 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
   const callAddPolicyAPI = async (policy: any) => {
     try {
       setIsLoading(true);
-      
+
       if (policyCount <= 0) {
         setShowUpgradePopup(true); //! **Upgrade Plan Popup दिखाओ**
         return;
       }
       const newPolicy = await addPolicyService({ header, policy, onProgress });
       if (newPolicy.status === "success") {
-      
+
         if (policyCount <= 0) {
           setShowUpgradePopup(true); //! **Upgrade Plan Popup दिखाओ**
           return;
         }
 
         if (policyCount > 0) {
-        setPolicyCount((prevCount) => {
-                const updatedCount = prevCount - 1;
-                updateLocalStorage({ policyCount: updatedCount });
-                return updatedCount;
-              });
+          setPolicyCount((prevCount) => {
+            const updatedCount = prevCount - 1;
+            updateLocalStorage({ policyCount: updatedCount });
+            return updatedCount;
+          });
         }
         navigate(motorPolicyPath());
       } else {
@@ -519,30 +518,30 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
   };
   useEffect(() => {
     const fetchPolicyCount = async () => {
-      setIsLoading(true); // ✅ Start loading
+      setIsLoading(true);
       try {
         const response = await getPolicyCountAPI({ userId: userData.profileId });
-         if(response?.remainingPolicyCount <=0 ){
-         setPolicyCount(response.remainingPolicyCount);
-       
+        if (response?.remainingPolicyCount <= 0) {
           updateLocalStorage({ policyCount: policyCount })
           setShowUpgradePopup(true);
-         }
+        }
+        setPolicyCount(response?.remainingPolicyCount);
+
       } catch (err) {
         setErrors((prevErrors) => [
           ...prevErrors,
-          { docName: "Error", file: "Failed to fetch policy count" }, // ✅ Adding a new error entry
+          { docName: "Error", file: "Failed to fetch policy count" }, 
         ]);
       } finally {
-        setIsLoading(false); // ✅ Stop loading
+        setIsLoading(false); 
       }
     };
 
-    
+
 
     if (userData.profileId) {
-   
-      console.log("useEffect Triggered - userId:", userData.profileId); 
+
+      console.log("useEffect Triggered - userId:", userData.profileId);
       fetchPolicyCount();
     }
   }, [userData.profileId]);
@@ -1612,7 +1611,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                                       getOptionLabel={(option) =>
                                         typeof option === "string"
                                           ? option
-                                          : `${option.fullName} - ${option.partnerId}` ||
+                                          : `${option.name} - ${option.userCode}` ||
                                           ""
                                       }
                                       options={partners}
@@ -1849,7 +1848,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
           </CardContent>
         </Card>
         <Toaster position="bottom-center" reverseOrder={false} />
-        <LoadingOverlay loading={progress > 0 && progress<100} message={progress} />
+        <LoadingOverlay loading={progress > 0 && progress < 100} message={progress} />
       </React.Fragment>
     </>
   );

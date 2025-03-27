@@ -372,7 +372,6 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   };
 
   const onSubmit = async (policyForm: any, form: any) => {
-    console.log("policyForm", policyForm);
     const isIssueDateValid = dayjs(policyForm.issueDate).isValid();
     const isRegDateValid = dayjs(policyForm.registrationDate).isValid();
     const isEndDateValid = dayjs(policyForm.endDate).isValid();
@@ -457,13 +456,12 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
     try {
       setIsLoading(true);
   
-      if (policyCount <= 0) {
+      if (policyCount<= 0) {
         setShowUpgradePopup(true);
         return;
       }
   
       const newPolicy = await addPolicyService({ header, policy, onProgress });
-  
       if (newPolicy.status === "success") {
         if (policyCount > 0) {
           setPolicyCount((prevCount) => {
@@ -518,33 +516,29 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       prevDocuments.filter((_, i) => i !== index)
     );
   };
-
+  const fetchPolicyCount = async () => {
+    setIsLoading(true);
+    try {
+      const response = await getPolicyCountAPI({ userId: userData.profileId });
+       if(response?.remainingPolicyCount <=0 ){
+      
+        updateLocalStorage({ policyCount: policyCount })
+        setShowUpgradePopup(true);
+       }
+       setPolicyCount(response.remainingPolicyCount);
+    } catch (err) {
+      setErrors((prevErrors) => [
+        ...prevErrors,
+        { docName: "Error", file: "Failed to fetch policy count" }, 
+      ]);
+    } finally {
+      setIsLoading(false); 
+    }
+  };
   useEffect(() => {
-  
-    const fetchPolicyCount = async () => {
-  
-      setIsLoading(true); // ✅ Start loading
-      try {
-        const response = await getPolicyCountAPI({ userId: userData.profileId });
-        console.log("response",response)
-         if(response?.remainingPolicyCount <=0 ){
-         setPolicyCount(response.remainingPolicyCount);
-          updateLocalStorage({ policyCount: policyCount })
-          setShowUpgradePopup(true);
-         }
-      } catch (err) {
-        setErrors((prevErrors) => [
-          ...prevErrors,
-          { docName: "Error", file: "Failed to fetch policy count" }, // ✅ Adding a new error entry
-        ]);
-      } finally {
-        setIsLoading(false); // ✅ Stop loading
-      }
-    };
+   
 
     if (userData.profileId) {
-
-      console.log("useEffect Triggered - userId:", userData.profileId); 
       fetchPolicyCount();
     }
   }, [userData.profileId]);
@@ -738,25 +732,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       toast.error(errData.message);
     }
   };
-  // const openFileInNewTab = (url: string, fileName: string) => {
-  //   const urlFileName = url.substring(url.lastIndexOf("/") + 1);
-  //   const fileExtension = urlFileName.split(".").pop()?.toLowerCase();
-  //   if (
-  //     fileExtension === "pdf" ||
-  //     fileExtension === "png" ||
-  //     fileExtension === "jpg" ||
-  //     fileExtension === "jpeg"
-  //   ) {
-  //     const a = document.createElement("a");
-  //     a.href = url;
-  //     a.target = "_blank";
-  //     document.body.appendChild(a);
-  //     a.click();
-  //     document.body.removeChild(a);
-  //   } else {
-  //     console.error("Unsupported file type:", fileExtension);
-  //   }
-  // };
+
 
   const getDocumentUrl = (file: any): string | undefined => {
     if (!file) return undefined; // null ki jagah undefined return karein
@@ -1744,7 +1720,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                                       options={partners}
                                       onChange={(event, newValue) => {
                                         input.onChange(
-                                          newValue ? newValue.fullName : ""
+                                          newValue ? `${newValue.name}-${newValue.userCode}`  : ""
                                         );
                                         handleSelectPartnerChange(newValue);
                                       }}
