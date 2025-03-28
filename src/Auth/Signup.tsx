@@ -1,5 +1,5 @@
 import logo from "../assets/login_logo.png";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Form, Field } from "react-final-form";
 import { FORM_ERROR } from "final-form";
 import { FormProps, ISignUp } from "./IAuth";
@@ -25,12 +25,17 @@ import { useEffect, useState } from "react";
 import OverlayError from "../utils/ui/OverlayError";
 import OverlayLoader from "../utils/ui/OverlayLoader";
 
+
 const Signup = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  
   const [errMsg, setErrMsg] = useState("");
   const [subsData] = useSubscription();
-  const [roles] = useGetRoles({ header });
+  const [roles] = useGetRoles({ header })
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const findRoleIdByName = (name: string) => {
     const temp = name.toLowerCase();
     const roleObj = roles.find((ele) => ele.roleName?.toLowerCase() === temp);
@@ -58,6 +63,20 @@ const Signup = () => {
     }
 
     return errors;
+  };
+  useEffect(() => {
+    // Check if user accepted terms from localStorage
+    if (localStorage.getItem("termsAccepted") === "true") {
+      setTermsAccepted(true);
+    }
+  }, []);
+
+  const handleSignup = () => {
+    if (!termsAccepted) {
+      alert("You must accept the Terms and Conditions to sign up.");
+      return;
+    }
+    console.log("Signing up with:", email, password);
   };
   const onSubmit = async (signUpData: FormProps) => {
     const { plans, companyLogo, profileImage, gender } = signUpData;
@@ -418,32 +437,53 @@ const Signup = () => {
                             )}
                           </Grid>
                           <Grid item lg={12} md={12} sm={12} xs={12}>
-                            <Button
-                              type="submit"
-                              className="mt-2 tracking-wide font-semibold w-full bg-gradient-to-r from-[#E9762B] to-[#EDB65C] text-[#443627] transition-all  duration-300 px-4 py-3 rounded hover:from-[#EDB65C] hover:to-[#E9762B] active:scale-90 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
-                              disabled={isLoading}
-                            >
-                              {isLoading ? (
-                                "Submitting"
-                              ) : (
-                                <>
-                                  <svg
-                                    className="w-6 h-6 -ml-2"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                  >
-                                    <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
-                                    <circle cx="8.5" cy="7" r="4" />
-                                    <path d="M20 8v6M23 11h-6" />
-                                  </svg>
-                                  <span className="ml-3">Sign Up</span>
-                                </>
-                              )}
-                            </Button>
-                          </Grid>
+  {/* Terms and Conditions Checkbox */}
+  <div className="flex items-center mb-2">
+    <input
+      type="checkbox"
+      id="termsCheckbox"
+      checked={termsAccepted}
+      onChange={(e) => setTermsAccepted(e.target.checked)}
+      className="w-4 h-4 mr-2 cursor-pointer"
+    />
+    <label htmlFor="termsCheckbox" className="text-sm text-[#443627]">
+      I agree to the{" "}
+      <Link to="/terms" className="text-[#E9762B] underline">
+        Terms and Conditions
+      </Link>
+    </label>
+  </div>
+
+  {/* Signup Button */}
+  <Button
+    type="submit"
+    className={`mt-2 tracking-wide font-semibold w-full bg-gradient-to-r from-[#E9762B] to-[#EDB65C] text-[#443627] transition-all duration-300 px-4 py-3 rounded hover:from-[#EDB65C] hover:to-[#E9762B] active:scale-90 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none ${
+      !termsAccepted ? "opacity-50 cursor-not-allowed" : ""
+    }`}
+    disabled={isLoading || !termsAccepted}
+  >
+    {isLoading ? (
+      "Submitting"
+    ) : (
+      <>
+        <svg
+          className="w-6 h-6 -ml-2"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+          <circle cx="8.5" cy="7" r="4" />
+          <path d="M20 8v6M23 11h-6" />
+        </svg>
+        <span className="ml-3">Sign Up</span>
+      </>
+    )}
+  </Button>
+</Grid>
+
                         </Grid>
                       </form>
                     )}
