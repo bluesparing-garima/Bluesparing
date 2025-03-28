@@ -1570,7 +1570,7 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
                                       options={partners}
                                       onChange={(event, newValue) => {
                                         input.onChange(
-                                          newValue ? newValue.fullName : ""
+                                          newValue ?`${ newValue.name }-${ newValue.userCode}`: ""
                                         );
                                         handleSelectPartnerChange(newValue);
                                       }}
