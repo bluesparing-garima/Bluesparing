@@ -62,6 +62,7 @@ import { formatFilename } from "../../../utils/convertLocaleStringToNumber";
 import { updateLocalStorage } from "../../../utils/HandleStore";
 import UpgradePlanPopup from "../../UpdatePlan/UpgradeExistingPlan";
 import LoadingOverlay from "../../../utils/ui/LoadingOverlay";
+import getPolicyCountAPI from "../../../api/Policies/getPolicyCount/getPolicyCountAPI";
 export interface AddPolicyFormProps {
   initialValues: IAddEditPolicyForm;
 }
@@ -134,6 +135,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [showUpgradePopup, setShowUpgradePopup] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [policyCount, setPolicyCount] = useState<number>(0);
   useEffect(() => {
     if (!isAdd) {
       setOd(initialValues.od ?? 0);
@@ -370,7 +372,6 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   };
 
   const onSubmit = async (policyForm: any, form: any) => {
-    console.log("policyForm", policyForm);
     const isIssueDateValid = dayjs(policyForm.issueDate).isValid();
     const isRegDateValid = dayjs(policyForm.registrationDate).isValid();
     const isEndDateValid = dayjs(policyForm.endDate).isValid();
@@ -454,19 +455,22 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   const callAddPolicyAPI = async (policy: any) => {
     try {
       setIsLoading(true);
-      const policyCount = userData?.policyCount || 0;
-
-      if (policyCount <= 0) {
+  
+      if (policyCount<= 0) {
         setShowUpgradePopup(true);
         return;
       }
+  
       const newPolicy = await addPolicyService({ header, policy, onProgress });
       if (newPolicy.status === "success") {
-        if (userData.policyCount > 0) {
-          const updatedPolicyCount = userData.policyCount - 1;
-          updateLocalStorage({ policyCount: updatedPolicyCount });
+        if (policyCount > 0) {
+          setPolicyCount((prevCount) => {
+            const updatedCount = prevCount - 1;
+            updateLocalStorage({ policyCount: updatedCount });
+            return updatedCount;
+          });
         }
-        // console.log("updatedPolicyCount",updatedPolicyCount);
+  
         navigate(motorPolicyPath());
         return;
       } else {
@@ -480,6 +484,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       setIsLoading(false);
     }
   };
+  
   const callEditPolicyAPI = async (policy: any, policyId: string) => {
     try {
       setIsLoading(true);
@@ -511,6 +516,35 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       prevDocuments.filter((_, i) => i !== index)
     );
   };
+  const fetchPolicyCount = async () => {
+    setIsLoading(true);
+    try {
+      const response = await getPolicyCountAPI({ userId: userData.profileId });
+       if(response?.remainingPolicyCount <=0 ){
+      
+        updateLocalStorage({ policyCount: policyCount })
+        setShowUpgradePopup(true);
+       }
+       setPolicyCount(response.remainingPolicyCount);
+    } catch (err) {
+      setErrors((prevErrors) => [
+        ...prevErrors,
+        { docName: "Error", file: "Failed to fetch policy count" }, 
+      ]);
+    } finally {
+      setIsLoading(false); 
+    }
+  };
+  useEffect(() => {
+   
+
+    if (userData.profileId) {
+      fetchPolicyCount();
+    }
+  }, [userData.profileId]);
+
+
+
   useEffect(() => {
     if (isAdd) {
       setNetPremium(Number(od) + Number(tp));
@@ -698,25 +732,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       toast.error(errData.message);
     }
   };
-  // const openFileInNewTab = (url: string, fileName: string) => {
-  //   const urlFileName = url.substring(url.lastIndexOf("/") + 1);
-  //   const fileExtension = urlFileName.split(".").pop()?.toLowerCase();
-  //   if (
-  //     fileExtension === "pdf" ||
-  //     fileExtension === "png" ||
-  //     fileExtension === "jpg" ||
-  //     fileExtension === "jpeg"
-  //   ) {
-  //     const a = document.createElement("a");
-  //     a.href = url;
-  //     a.target = "_blank";
-  //     document.body.appendChild(a);
-  //     a.click();
-  //     document.body.removeChild(a);
-  //   } else {
-  //     console.error("Unsupported file type:", fileExtension);
-  //   }
-  // };
+
 
   const getDocumentUrl = (file: any): string | undefined => {
     if (!file) return undefined; // null ki jagah undefined return karein
@@ -1704,7 +1720,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                                       options={partners}
                                       onChange={(event, newValue) => {
                                         input.onChange(
-                                          newValue ? `${newValue.name }-${newValue.userCode }`: ""
+                                          newValue ? `${newValue.name}-${newValue.userCode}`  : ""
                                         );
                                         handleSelectPartnerChange(newValue);
                                       }}

@@ -17,7 +17,11 @@ import { convertITeamVMToITeamForm } from "../../../../api/Team/convertITeamVMTo
 import editTeamService from "../../../../api/Team/EditTeam/editTeamService";
 import GetRmTeamService from "../../../../api/Team/GetRmTeam/GetRmTeamService";
 import toast, { Toaster } from "react-hot-toast";
+import { useSearchParams } from "react-router-dom";
 const RmTeams = () => {
+  const [searchParams] = useSearchParams();
+   const queryValue = searchParams.get("role");
+
   const [isLoading, setIsLoading] = useState(false);
   const [teams, setTeams] = useState<ITeams[]>([]);
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
@@ -26,7 +30,11 @@ const RmTeams = () => {
     (headRMId: string) =>
       GetRmTeamService({ header, headRMId })
         .then((teamDetails) => {
-          setTeams(teamDetails.data);
+          const newTeamData = teamDetails.data.filter((ele: any) => {
+            return validateFunc(ele.role);
+          });
+
+          setTeams(newTeamData);
         })
         .catch(async(error) => {
           const err = await error
@@ -40,6 +48,7 @@ const RmTeams = () => {
      // eslint-disable-next-line
   }, [GetTeams]);
   const navigate = useNavigate();
+  
   const handleAddTeamClick = () => {
     navigate(teamAddPath());
   };
@@ -136,6 +145,16 @@ const RmTeams = () => {
   const updateLoading = useCallback(async () => {
     setIsLoading(false);
   }, []);
+   
+  const validateFunc = (role : string)=>{
+    if(queryValue){
+
+     return role.toLowerCase() !== "superadmin" && (queryValue?.toLowerCase() === role.toLowerCase() );
+    }else{
+     return role.toLowerCase() !== "superadmin" ;
+    }
+}
+
   useEffect(() => {
     updateLoading();
   }, [updateLoading]);

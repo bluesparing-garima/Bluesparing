@@ -101,7 +101,7 @@ const HrDashBoard: React.FC = () => {
             variant="body2"
             className="text-sm text-gray-600 mb-2 font-satoshi"
           >
-            {title}
+            {title==='Policy Count' ? 'Remaining Policy Count' : title}
           </Typography>
           <Typography
             variant="h5"
@@ -255,7 +255,7 @@ const HrDashBoard: React.FC = () => {
                                 renderCountBox(
                                   key.toUpperCase(),
                                   Number(value) || 0,
-                                  "/team"
+                                  `/team?role=${key}`
                                 )
                               )}
                             {data &&

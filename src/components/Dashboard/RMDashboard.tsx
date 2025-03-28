@@ -40,6 +40,8 @@ import GetAttendanceCountService from "../../api/Role/GetAttendanceCount/GetAtte
 import { IEmployee } from "../HR/Attendance/IAttendance";
 import toast from "react-hot-toast";
 import dayjs from "dayjs";
+import { Link } from "react-router-dom";
+
 const RMDashboard: React.FC = () => {
   const [data, setData] = useState<IData[]>([]);
   const [isVisible, setIsVisible] = useState(false);
@@ -125,7 +127,7 @@ const RMDashboard: React.FC = () => {
             variant="body2"
             className="text-sm text-gray-600 mb-2 font-satoshi"
           >
-            {title}
+            {title==='Policy Count' ? 'Remaining Policy Count' : title}
           </Typography>
           <Typography
             variant="h5"
@@ -138,7 +140,13 @@ const RMDashboard: React.FC = () => {
     );
     return (
       <Grid item xs={12} sm={6} md={4} lg={3}>
-        {content}
+       {link ? (
+            <Link to={link} >
+              {content}
+            </Link>
+          ) : (
+            content
+          )}
       </Grid>
     );
   };
@@ -459,7 +467,7 @@ const RMDashboard: React.FC = () => {
                                             key.toUpperCase(),
                                             value || 0,
                                             "",
-                                            "/team"
+                                            `/team?role=${key}`
                                           )}
                                         </>
                                       )

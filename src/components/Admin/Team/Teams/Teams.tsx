@@ -22,6 +22,7 @@ import {
   savePaginationState,
 } from "../../../../utils/PaginationHandler";
 import generateFormData from "../../../../utils/generateFromData";
+import { useSearchParams } from "react-router-dom";
 import OverlayError from "../../../../utils/ui/OverlayError";
 import OverlayLoader from "../../../../utils/ui/OverlayLoader";
 
@@ -35,6 +36,8 @@ const Teams = () => {
     pageIndex: 0,
     pageSize: 10,
   });
+   const [searchParams] = useSearchParams();
+   const queryValue = searchParams.get("role");
 
   const onClose = () => {
     setErrMsg("")
@@ -43,12 +46,21 @@ const Teams = () => {
     const p = getPaginationState(TEAM_STORAGE_KEY);
     setPagination(p);
   }, []);
+
+  const validateFunc = (role : string)=>{
+         if(queryValue){
+
+          return role.toLowerCase() !== "superadmin" && (queryValue?.toLowerCase() === role.toLowerCase() );
+         }else{
+          return role.toLowerCase() !== "superadmin" ;
+         }
+  }
   const GetTeams = useCallback(
     () =>
       getTeamService({ header })
         .then((teamDetails) => {
           const newTeamData = teamDetails.data.filter((ele: any) => {
-            return ele.role.toLowerCase() !== "superadmin";
+            return validateFunc(ele.role);
           });
           setTeams(newTeamData);
         })
@@ -119,6 +131,8 @@ const Teams = () => {
     ],
     []
   );
+
+
 
   const parsedData = useMemo(() => {
     const filteredTeams =

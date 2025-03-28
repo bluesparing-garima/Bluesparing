@@ -49,6 +49,7 @@ export interface addPolicyTypeFormProps {
   initialValues?: IAppUser;
 }
 const AddTeamForm = (props: addPolicyTypeFormProps) => {
+
   const [documents, setDocuments] = useState<Document[]>([
     { docName: "", file: "" },
   ]);
@@ -279,11 +280,17 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       }
     }
   };
+  
   const navigateToTeams = (message: string) => {
-    navigate(teamPath(), {
+    const storedTheme: any = localStorage.getItem("user");
+    const UserData = storedTheme ? JSON.parse(storedTheme) : null;
+    const userRole = UserData?.role || ""; // User ka role fetch karna
+  
+    navigate(teamPath(userRole), {
       state: message,
     });
   };
+  
   const callAddTeamAPI = async (team: any) => {
     try {
       setIsLoading(true);
@@ -292,7 +299,9 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       if (newRole === "relationship manager") {
         newRole = "rm";
       }
-      const maxLimit = userLimit.hasOwnProperty(newRole) ? userLimit[newRole] : 0;
+      const maxLimit = userLimit.hasOwnProperty(newRole)
+        ? userLimit[newRole]
+        : 0;
       if (Number(maxLimit) <= 0) {
         setShowUpgradePopup(true);
         return;
@@ -502,7 +511,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       .min(1, "salary must be at least 1 character"),
     branch: yup.object().required("Branch Name is required").nullable(),
   });
-
+  const allowedRoles = ["Account", "Booking", "HR", "Operation", "Partner", "Relationship Manager"];
   const validate = validateFormValues(validationSchema);
   return (
     <>
@@ -557,7 +566,8 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                   )}
                 </Field>
               </Grid>
-              <Grid item lg={4} md={4} sm={6} xs={12}>
+              {/* <Grid item lg={4} md={4} sm={6} xs={12}> */}
+              {/* <Grid item lg={4} md={4} sm={6} xs={12}>
                 <Field name="role">
                   {({ input, meta }) => (
                     <div>
@@ -596,7 +606,42 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                     </div>
                   )}
                 </Field>
-              </Grid>
+              </Grid> */}
+              <Grid item lg={3} md={4} sm={6} xs={12}>
+  <Field name="role">
+    {({ input, meta }) => (
+      <div>
+        <FormControl fullWidth size="small">
+          <Autocomplete
+            {...input}
+            id="role"
+            value={input.value !== undefined ? input.value : initialValues?.role || null}
+            getOptionLabel={(option) =>
+              typeof option === "string" ? option : option.roleName || ""
+            }
+            options={roles.filter(role => allowedRoles.includes(role.roleName ?? ""))}
+            onChange={(event, newValue) => {
+              input.onChange(newValue);
+              handleChangeRole(newValue?.roleName);
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                className="rounded-sm w-full"
+                size="small"
+                label="Select Role"
+                variant="outlined"
+                error={meta.touched && !!meta.error}
+                helperText={meta.touched && meta.error}
+              />
+            )}
+          />
+        </FormControl>
+      </div>
+    )}
+  </Field>
+</Grid>;
+
 
               {selectedRole !== "Relationship Manager" && (
                 <Grid item lg={4} md={4} sm={6} xs={12}>
@@ -799,7 +844,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                       <DatePicker
                         disableFuture
                         label="Date of Birth"
-                        value={input.value !== undefined ? input.value : initialValues?.dateOfBirth || null}
+                                                value={input.value !== undefined ? input.value : initialValues?.dateOfBirth || null}
                         onChange={(date) => input.onChange(date)}
                         inputFormat="DD/MM/YYYY"
                         shouldDisableDate={(date) => {
@@ -910,7 +955,13 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                       <Grid item lg={4} md={4} sm={4} xs={4}>
                         {doc.file ? (
                           <>
-                            <Tooltip title={typeof doc.file === "string" ? doc.file : "View Document"}>
+                            <Tooltip
+                              title={
+                                typeof doc.file === "string"
+                                  ? doc.file
+                                  : "View Document"
+                              }
+                            >
                               <IconButton
                                 color="primary"
                                 aria-label={`${doc.file}`}
@@ -991,8 +1042,8 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                   {isLoading
                     ? "Submitting..."
                     : isAdd
-                      ? "Add Team"
-                      : "Update Team"}
+                    ? "Add Team"
+                    : "Update Team"}
                 </Button>
               </Grid>
             </Grid>
