@@ -16,7 +16,7 @@ const useGetRMList = ({ header, role }: GetRMListProps) => {
           setRMList(apiResponse.data!);
         })
         .catch((res) => {
-          console.error(res.status);
+          throw new Error(res.status);
         });
     }
   }, [header,role, isLoading]);

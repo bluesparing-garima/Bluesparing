@@ -4,7 +4,7 @@ export const storeNotifications = (key: string, notifications: INotification[]) 
         const serializedData = JSON.stringify(notifications);
         localStorage.setItem(key, serializedData);
     } catch (error) {
-        console.error("Error storing notifications:", error);
+        throw error
     }
 };
 export const getNotifications = (key: string): INotification[] => {
@@ -12,7 +12,7 @@ export const getNotifications = (key: string): INotification[] => {
         const serializedData = localStorage.getItem(key);
         return serializedData ? JSON.parse(serializedData) : [];
     } catch (error) {
-        console.error("Error retrieving notifications:", error);
+        throw error
         return [];
     }
 };

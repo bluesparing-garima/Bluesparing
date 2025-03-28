@@ -74,7 +74,7 @@ const RMDashboard: React.FC = () => {
           setCategoryEntries(entries);
         })
         .catch((error: any) => {
-          console.error("Error fetching dashboard data", error);
+          throw error
           setIsVisible(true);
         });
     },
@@ -109,7 +109,7 @@ const RMDashboard: React.FC = () => {
           UserData.profileId
         );
       } catch (error) {
-        console.error("Error fetching HR Dashboard data:", error);
+        throw error
       } finally {
         setIsLoading(false);
       }

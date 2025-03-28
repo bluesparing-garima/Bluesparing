@@ -21,7 +21,7 @@ const useGetProductSubTypes = ({ header }: GetProductSubTypeProps) => {
           setProductSubTypes(productSubList);
         })
         .catch((res) => {
-          console.error(res.status);
+          throw new Error(res.status);
         });
     }
   }, [header, isLoading]);

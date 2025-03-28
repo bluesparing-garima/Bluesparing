@@ -18,7 +18,7 @@ const useGetFuelTypes = ({ header }: GetFuelTypeProps) => {
           setFuelType(fuelTypes);
         })
         .catch((res) => {
-          console.error(res.status);
+          throw new Error(res.status);
         });
     }
   }, [header, isLoading]);

@@ -415,7 +415,6 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       a.click();
       document.body.removeChild(a);
     } else {
-      console.error("Unsupported file type:", fileExtension);
     }
   };
 

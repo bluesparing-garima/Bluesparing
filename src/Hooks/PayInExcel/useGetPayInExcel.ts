@@ -16,7 +16,7 @@ const useGetPayInExcel = ({ header }: GetPayInExcelProps) => {
           setPayInExcel(apiResponse.data!);
         })
         .catch((res) => {
-          console.error(res.status);
+          throw new Error(res.status);
         });
     }
   }, [header, isLoading]);

@@ -16,7 +16,7 @@ const useGetTeams = ({ header }: GetTeamProps) => {
           setTeams(apiResponse.data!);
         })
         .catch((res) => {
-          console.error(res.status);
+          throw new Error(res.status);
         });
     }
   }, [header, isLoading]);

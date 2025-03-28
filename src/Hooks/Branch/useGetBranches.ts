@@ -19,7 +19,7 @@ const useGetBranches = ({ header }: GetBranchProps) => {
           setBranches(branches);
         })
         .catch((res) => {
-          console.error(res.status);
+          throw new Error(res.status);
         });
     }
   }, [header, isLoading]);

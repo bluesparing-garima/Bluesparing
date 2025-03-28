@@ -165,7 +165,6 @@ const GetMotorPolicies = () => {
         await GetPoliciesById(newStartDate, newEndDate);
       }
     } catch (error) {
-      console.error("Error fetching policies:", error);
       toast.error("Failed to fetch policies. Please try again.")
     }
   };
@@ -1104,9 +1103,8 @@ const GetMotorPolicies = () => {
           a.click();
           document.body.removeChild(a);
         })
-        .catch((error) => console.error("Error downloading file:", error));
+        .catch((error) => {throw error});
     } else {
-      console.error("Unsupported file type:", fileExtension);
     }
   };
   const isPaid = (row: any) => {
@@ -1118,8 +1116,7 @@ const GetMotorPolicies = () => {
       "payOutODPercentage",
       "brokerName",
     ];
-  console.log(row)
-    let { payInPaymentStatus, payOutPaymentStatus } = row;
+  let { payInPaymentStatus, payOutPaymentStatus } = row;
     payInPaymentStatus = typeof payInPaymentStatus === "string" ? payInPaymentStatus.toLowerCase().trim() : "";
     payOutPaymentStatus = typeof payOutPaymentStatus === "string" ? payOutPaymentStatus.toLowerCase().trim() : "";
     payInPaymentStatus =  payInPaymentStatus==="partial" ?"paid":payInPaymentStatus;

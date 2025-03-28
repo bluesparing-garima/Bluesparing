@@ -74,7 +74,7 @@ const OperationDashboard: React.FC = () => {
       })
       .catch((error) => {
         setIsVisible(true);
-        console.error("Failed to fetch product details", error);
+        throw error;
       });
   }, [UserData.profileId]);
 

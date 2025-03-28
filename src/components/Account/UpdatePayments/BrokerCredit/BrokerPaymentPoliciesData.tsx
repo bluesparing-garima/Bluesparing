@@ -131,7 +131,6 @@ function BrokerPaymentPoliciesData({
     });
     setCurrLeftDisAmount(leftAmount);
     setCurrPaidAmount(totalPaidAmount);
-    // eslint-disable-next-line
   }, [updatePolicies, brokerEnterAmount]);
   useEffect(() => {
     const partialData = policiesData.filter((p) => {
@@ -147,7 +146,6 @@ function BrokerPaymentPoliciesData({
       data.push(dataObj);
     });
     setPartialPaidList([...data]);
-    // eslint-disable-next-line
   }, []);
   function deepCopyIViewPolicyArray(policies: IViewPolicy[]): IViewPolicy[] {
     return policies.map((policy) => deepCopyIViewPolicy(policy));
@@ -321,7 +319,6 @@ function BrokerPaymentPoliciesData({
         p.policyNumber!
       );
     });
-    // eslint-disable-next-line
   }, [partialPaidList]);
   function addKeyValueToObjects<T extends Record<string, any>>(
     policyData: T[],

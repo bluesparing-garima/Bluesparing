@@ -709,7 +709,6 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
         setPolicyErrorMessage("");
       }
     } catch {
-      console.error("error");
     }
   };
   const validateVehicleNumber = async (e: any) => {

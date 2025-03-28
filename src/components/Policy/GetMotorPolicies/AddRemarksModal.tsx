@@ -26,7 +26,6 @@ const AddRemarksModal: React.FC<AddRemarksModalProps> = ({
       await AddRemarksService({ policyRemarks: data.remarks, policyId });
       handleClose();
     } catch (error) {
-      console.log(error);
     } finally {
       setIsLoading(false);
     }

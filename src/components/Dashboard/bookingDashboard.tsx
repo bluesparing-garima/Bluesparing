@@ -85,7 +85,6 @@ const BookingDashboard: React.FC = () => {
         })
         .catch((error) => {
           setIsVisible(true);
-          console.error("Failed to fetch product details", error);
         });
     },
     [UserData.profileId]
@@ -131,7 +130,6 @@ const BookingDashboard: React.FC = () => {
         setIsLoading(true);
         await GetDashboardCount(formattedFirstDay, formattedLastDay);
       } catch (error) {
-        console.error("Error fetching HR Dashboard data:", error);
       } finally {
         setIsLoading(false);
       }

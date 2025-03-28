@@ -171,8 +171,6 @@ const CaseTypes = () => {
             state={{ isLoading, pagination }}
             columns={columns}
             data={parsedData}
-            // enableRowActions
-            // positionActionsColumn="last"
             onPaginationChange={setPagination}
             autoResetPageIndex={false}
             renderRowActions={({ row }) => (

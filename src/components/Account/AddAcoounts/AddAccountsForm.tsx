@@ -34,10 +34,8 @@ const AddAccountsForm = (props: addAccountFormProps) => {
   const isAdd = isAddEdit === ADD;
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let userData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
-  // const [roles] = useGetRoles({ header });
   let [partners] = useGetPartners({ header: header, role: "partner" });
   const [isLoading,setIsLoading] = useState(false);
-  // const [selectRoleData, setSelectRoleData] = useState();
   const onSubmit = (accountForm: IAccountForm, form: any) => {
     let accountHolderName = accountForm.accountHolderName!.toUpperCase();
     let bankName = accountForm.bankName!.substring(0, 3);
@@ -137,21 +135,6 @@ const AddAccountsForm = (props: addAccountFormProps) => {
     IFSCCode: yup.string().required("IFSC Code is required").nullable(),
   });
   const addValidate = validateFormValues(validationSchema);
-
-  // const handleSelectRole = (val: any) => {
-  //   setSelectedRole(val);
-  // };
-
-  // useEffect(() => {
-  //   if (selectedRole) {
-  //     const role = selectedRole.roleName?.toLowerCase().trim();
-  //     getPartnersService({ header, role })
-  //       .then((res) => {
-  //         setSelectRoleData(res.data);
-  //       })
-  //       .catch((err) => {});
-  //   }
-  // }, [selectedRole]);
   return (
     <>
       <React.Fragment>

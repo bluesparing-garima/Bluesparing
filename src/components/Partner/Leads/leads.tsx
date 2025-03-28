@@ -228,9 +228,8 @@ const Leads = () => {
           a.click();
           document.body.removeChild(a);
         })
-        .catch((error) => console.error("Error downloading file:", error));
+        .catch((error) => {throw error});
     } else {
-      console.error("Unsupported file type:", fileExtension);
     }
   };
 

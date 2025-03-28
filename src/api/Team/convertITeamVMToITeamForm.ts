@@ -33,11 +33,7 @@ export const convertITeamVMToITeamForm = (team: ITeamsVM): ITeamForm => {
     other: team.other!,
     updatedBy: team.updatedBy!,
     createdBy: team.createdBy!,
-    // points: team.points
-    //   ? convertLocaleStringToNumber(team.points!)
-    //   : 0,
     isActive: !!team.isActive,
-    // createdOn: dayjs(team?.createdOn).format(DAYJS_DISPLAY_FORMAT),
   };
   return teamForm;
 };
