@@ -149,7 +149,7 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
             setUserRank(rankData.rank);
           })
           .catch((error) => {
-            console.error(error);
+            throw error;
           });
       }
     }

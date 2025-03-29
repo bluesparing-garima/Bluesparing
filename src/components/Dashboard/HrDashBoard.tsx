@@ -43,7 +43,6 @@ const HrDashBoard: React.FC = () => {
           setData(response.data);
         }
       } catch (error) {
-        console.error("Error fetching HR Dashboard data:", error);
       }
     };
     if (UserData.role.toLowerCase() === "hr") {
@@ -137,7 +136,7 @@ const HrDashBoard: React.FC = () => {
         setData(response.data);
       }
     } catch (error) {
-      console.error("Error fetching HR Dashboard data:", error);
+      throw error;
     } finally {
       setIsLoading(false);
     }

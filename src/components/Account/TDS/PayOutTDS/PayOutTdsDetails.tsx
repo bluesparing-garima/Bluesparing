@@ -30,8 +30,6 @@ const PayOutTdsDetails: FC<PolicyTdsPayOutProps> = ({
   );
 
   
-  console.log('policy : ', updatePolicies);
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);

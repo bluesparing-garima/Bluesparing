@@ -43,7 +43,6 @@ const ExcelPayIn = () => {
           .catch(async (error) => {
             const err = await error;
             toast.error(err.message);
-            console.error("Failed to fetch PayIN Excel details", error);
           });
       } catch (error: any) {
         const err = await error;

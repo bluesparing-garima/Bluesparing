@@ -16,7 +16,7 @@ const useGetMotorPolicies = ({ header }: GetMotorPoliciesProps) => {
           setMotorPolicyTypes(apiResponse.data!);
         })
         .catch((res) => {
-          console.error(res.status);
+          throw new Error(res.status);
         });
     }
   }, [header, isLoading]);

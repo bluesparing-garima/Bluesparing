@@ -147,7 +147,6 @@ function PartnerPaymentPoliciesData({
     });
     setCurrLeftDisAmount(leftAmount);
     setCurrPaidAmount(totalPaidAmount);
-    // eslint-disable-next-line
   }, [updatePolicies, partnerAmount]);
   useEffect(() => {
     const partialData = policiesData.filter((p) => {
@@ -163,7 +162,6 @@ function PartnerPaymentPoliciesData({
       data.push(dataObj);
     });
     setPartialPaidList([...data]);
-    // eslint-disable-next-line
   }, []);
   function deepCopyIViewPolicyArray(policies: IViewPolicy[]): IViewPolicy[] {
     return policies.map((policy) => deepCopyIViewPolicy(policy));
@@ -464,7 +462,6 @@ function PartnerPaymentPoliciesData({
           const tCode = resData.data.transactionCode;
           addAccountManageService(payLoadForAccountManage(tCode));
         }
-        // await new Promise((resolve) => setTimeout(resolve, 1000));
         if (Number(tdsPercentage) > 0) {
           await toast.promise(
             AddCreditDebitService(

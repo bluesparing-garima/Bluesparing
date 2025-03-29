@@ -73,7 +73,7 @@ const EditPolicyFormCard = () => {
           // setEditPolicyDetails(bookingDetails.data);
         })
         .catch((error) => {
-          console.error("Failed to fetch bookingRequest details", error);
+          throw error
         });
     }
   }, [isAdd, bookingRequestId]);

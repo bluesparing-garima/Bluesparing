@@ -57,7 +57,7 @@ const PartnerDashboard: React.FC = () => {
         })
         .catch((error) => {
           setIsVisible(false);
-          console.error("Failed to fetch product details", error);
+          throw error;
         });
     },
     [UserData.profileId]
@@ -73,7 +73,7 @@ const PartnerDashboard: React.FC = () => {
         setIsLoading(true)
         GetDashboardCount(formattedFirstDay, formattedLastDay);
       } catch (error) {
-        console.error("Error fetching HR Dashboard data:", error);
+        throw error
       } finally {
         setIsLoading(false);
       }

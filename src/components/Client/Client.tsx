@@ -6,7 +6,6 @@ import { DAYJS_DISPLAY_FORMAT } from "../../context/constant";
 const Client = () => {
   const loc = useLocation();
   let policy = loc.state as any;
-  console.log(policy);
 
   const details = [
     { label: "Policy Number", value: policy[0].policyNumber },

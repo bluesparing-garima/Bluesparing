@@ -20,7 +20,7 @@ const useGetPartners = ({ header, role }: GetPartnerProps) => {
           setPartners(partners);
         })
         .catch((res) => {
-          console.error(res.status);
+          throw new Error(res.status);
         });
     }
   }, [header, role, isLoading]);

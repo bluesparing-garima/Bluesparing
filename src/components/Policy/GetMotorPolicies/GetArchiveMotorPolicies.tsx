@@ -54,7 +54,7 @@ const GetArchiveMotorPolicies = () => {
         .catch(async (error: any) => {
           const err = await error;
           toast.error(err.message);
-          console.error("Failed to fetch polices details", error);
+          throw error
         }),
     []
   );

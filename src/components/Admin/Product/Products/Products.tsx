@@ -44,7 +44,6 @@ const Products = () => {
         .catch(async (error) => {
           const err = await error;
           toast.error(err.message);
-          console.error("Failed to fetch product details", error);
         }),
     []
   );

@@ -18,15 +18,7 @@ const deleteBrokerService = async ({
     return brokers;
 
   } catch (error) {
-    if (error instanceof Error) {
-      console.error(
-        ` ${error.message}`
-      );
-    } else {
-      console.error('An unknown error occurred', error);
-    }
-    throw error;
-  }
+    throw error;  }
 
 };
 

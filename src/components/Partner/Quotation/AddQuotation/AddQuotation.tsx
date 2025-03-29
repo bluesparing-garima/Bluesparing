@@ -209,7 +209,6 @@ const AddQuotation = () => {
   };
 
   const onSubmit = (quotationForm: any, form: any) => {
-    console.log(quotationForm);
     quotationForm.relationshipManagerId = userData.headRMId;
     quotationForm.relationshipManagerName = userData.headRM;
     quotationForm.leadId = leadId;
@@ -219,7 +218,6 @@ const AddQuotation = () => {
     documents?.forEach((ele) => {
       quotationForm[ele.docName] = ele.file;
     });
-    console.log("quotationForm", quotationForm);
     const editFrom = new FormData();
     editFrom.append("id", leadId!);
     editFrom.append("status", quotationForm.status);
@@ -252,7 +250,6 @@ const AddQuotation = () => {
         editLeadDetails?.timer
       );
     }
-    // console.log("Documents before append:", documents); // Debugging step
     callAddQuotationAPI(quotationForm, form);
   };
 
@@ -272,17 +269,7 @@ const AddQuotation = () => {
         }
       }
     });
-
-    // Append documents properly
-    // documents.forEach((doc, index) => {
-    //     if (doc.file) {
-    //         console.log(`Appending document ${index}:`, doc);
-    //         formData.append(`documents[${index}][docName]`, doc.docName);
-    //         formData.append(`documents[${index}][file]`, doc.file);
-    //     }
-    // });
-
-    try {
+try {
       setIsLoading(true);
       const newQuotation = await addQuotationService({
         header,
@@ -347,7 +334,6 @@ const AddQuotation = () => {
       default:
         break;
     }
-    console.log(" status : ", status.toLocaleLowerCase())
   };
 
   const isUrl = (text: string) => {

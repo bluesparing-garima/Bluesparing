@@ -20,7 +20,7 @@ const useGetCompanies = ({ header }: GetCompanyProps) => {
           setCompanies(companies);
         })
         .catch((res) => {
-          console.error(res.status);
+          throw new Error(res.status);
         });
     }
   }, [header, isLoading]);
