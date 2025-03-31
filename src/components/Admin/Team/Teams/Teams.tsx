@@ -25,6 +25,7 @@ import generateFormData from "../../../../utils/generateFromData";
 import { useSearchParams } from "react-router-dom";
 import OverlayError from "../../../../utils/ui/OverlayError";
 import OverlayLoader from "../../../../utils/ui/OverlayLoader";
+import deleteTeamService from "../../../../api/Team/DeleteTeam/deleteTeamService";
 
 const Teams = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -230,6 +231,22 @@ const Teams = () => {
       downloadFile(`${imagePath}/${team?.other!}`, "other");
     }
   };
+  const handleClickDeleteTeam = (team: IAppUser) => {
+    setIsLoading(true); // Indicate loading state before making request
+  
+        deleteTeamService({teamId: team._id })
+      .then(() => {
+        GetTeams();
+      })
+      .catch((error) => {
+        console.error("Error deleting team:", error);
+        setErrMsg("Failed to delete team. Please try again.");
+      })
+      .finally(() => {
+        setIsLoading(false); // Reset loading state
+      });
+  };
+  
   return (
     <>
       <div className="bg-blue-200 h-screen md:p-7 p-2 ">
@@ -376,9 +393,9 @@ const Teams = () => {
                     color="primary"
                     aria-label={"Delete Team"}
                     component="span"
-                    // onClick={() =>
-                    //   handleClickDeleteTeam(row.original as ITeamsVM)
-                    // }
+                    onClick={() =>
+                      handleClickDeleteTeam(row.original as IAppUser)
+                    }
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
