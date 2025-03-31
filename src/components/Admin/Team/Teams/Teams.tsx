@@ -37,6 +37,17 @@ const Teams = () => {
     pageIndex: 0,
     pageSize: 10,
   });
+
+  const [userLimit, setUserLimit] = useState(() => {
+    return UserData?.userLimit});
+
+    useEffect(() => {
+      // Update user limit in localStorage whenever it changes
+      if (UserData) {
+        UserData.userLimit = userLimit;
+        localStorage.setItem("user", JSON.stringify(UserData));
+      }
+    }, [userLimit]);
    const [searchParams] = useSearchParams();
    const queryValue = searchParams.get("role");
 
@@ -232,10 +243,22 @@ const Teams = () => {
     }
   };
   const handleClickDeleteTeam = (team: IAppUser) => {
-    setIsLoading(true); // Indicate loading state before making request
-  
-        deleteTeamService({teamId: team._id })
+    setIsLoading(true);
+
+    deleteTeamService({ teamId: team._id })
       .then(() => {
+        GetTeams();
+
+        setUserLimit((prevLimit:any) => {
+          const roleKey = team.role?.toLowerCase(); // Get role key
+          if (!roleKey || !(roleKey in prevLimit)) return prevLimit; // Ensure role exists in userLimit
+          
+          return {
+            ...prevLimit,
+            [roleKey]: prevLimit[roleKey] + 1, // Increase limit by 1
+          };
+        });
+  
         GetTeams();
       })
       .catch((error) => {
@@ -243,7 +266,7 @@ const Teams = () => {
         setErrMsg("Failed to delete team. Please try again.");
       })
       .finally(() => {
-        setIsLoading(false); // Reset loading state
+        setIsLoading(false);
       });
   };
   
