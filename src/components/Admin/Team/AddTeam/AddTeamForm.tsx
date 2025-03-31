@@ -232,7 +232,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
         teamForm.planExpired = UserData.planExpired;
         teamForm.planStartDate = UserData.planStartDate;
         teamForm.transactionId = UserData.transactionId;
-        teamForm.transactionStatus = UserData.transactionStatus;
+        teamForm.transactionStatus = UserData.transactionStatus;  
         documents.forEach((doc: Document) => {
           if (doc.file && doc.docName) {
             teamForm[doc.docName as keyof typeof teamForm] = doc.file;
@@ -415,7 +415,6 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       a.click();
       document.body.removeChild(a);
     } else {
-      console.error("Unsupported file type:", fileExtension);
     }
   };
 
@@ -504,8 +503,8 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       .matches(/^\d{6}$/, "Pincode must be exactly 6 digits")
       .required("Pincode is required")
       .min(1, "Pincode must be at least 1 character")
-      .max(6, "Pincode must be exactly 6 digits"),
-    salary: yup
+      .max(6, "Pincode must be exactly 6 digits"), 
+      salary: yup
       .string()
       .required("salary is required")
       .min(1, "salary must be at least 1 character"),
@@ -566,84 +565,34 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                   )}
                 </Field>
               </Grid>
-              {/* <Grid item lg={4} md={4} sm={6} xs={12}> */}
-              {/* <Grid item lg={4} md={4} sm={6} xs={12}>
-                <Field name="role">
-                  {({ input, meta }) => (
-                    <div>
-                      <FormControl fullWidth size="small">
-                        <Autocomplete
-                          {...input}
-                          id="role"
-                          value={
-                            input.value !== undefined
-                              ? input.value
-                              : initialValues?.role || null
-                          }
-                          getOptionLabel={(option) =>
-                            typeof option === "string"
-                              ? option
-                              : `${option.roleName}` || ""
-                          }
-                          options={roles}
-                          onChange={(event, newValue) => {
-                            input.onChange(newValue);
-                            handleChangeRole(newValue.roleName);
-                          }}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              className="rounded-sm w-full"
-                              size="small"
-                              label="Select Role"
-                              variant="outlined"
-                              error={meta.touched && !!meta.error}
-                              helperText={meta.touched && meta.error}
-                            />
-                          )}
-                        />
-                      </FormControl>
-                    </div>
-                  )}
-                </Field>
-              </Grid> */}
-              <Grid item lg={3} md={4} sm={6} xs={12}>
+              <Grid item lg={4} md={4} sm={6} xs={12}>
   <Field name="role">
     {({ input, meta }) => (
       <div>
         <FormControl fullWidth size="small">
-          <Autocomplete
-            {...input}
-            id="role"
-            value={input.value !== undefined ? input.value : initialValues?.role || null}
-            getOptionLabel={(option) =>
-              typeof option === "string" ? option : option.roleName || ""
-            }
-            options={roles.filter(role => allowedRoles.includes(role.roleName ?? ""))}
-            onChange={(event, newValue) => {
-              input.onChange(newValue);
-              handleChangeRole(newValue?.roleName);
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                className="rounded-sm w-full"
-                size="small"
-                label="Select Role"
-                variant="outlined"
-                error={meta.touched && !!meta.error}
-                helperText={meta.touched && meta.error}
-              />
-            )}
-          />
+        <Autocomplete
+  id="role"
+  value={roles.find(role => role.roleName === (selectedRole ?? "")) || null}
+  options={roles.filter(role => allowedRoles.includes(role.roleName ?? ""))}
+  getOptionLabel={(option) => option?.roleName ?? ""}
+  onChange={(event, newValue) => {
+    if (newValue?.roleName) {
+      setSelectedRole(newValue.roleName);
+      handleChangeRole(newValue.roleName);
+    } else {
+      setSelectedRole(""); // Default empty string
+    }
+  }}  
+  renderInput={(params) => (
+    <TextField {...params} label="Role" variant="outlined" fullWidth size="small" />
+  )}
+/>
         </FormControl>
       </div>
     )}
   </Field>
-</Grid>;
-
-
-              {selectedRole !== "Relationship Manager" && (
+</Grid>
+       {selectedRole !== "Relationship Manager" && (
                 <Grid item lg={4} md={4} sm={6} xs={12}>
                   <Field name="headRM">
                     {({ input, meta }) => (

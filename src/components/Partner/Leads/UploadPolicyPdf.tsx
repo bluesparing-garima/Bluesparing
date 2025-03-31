@@ -19,7 +19,6 @@ const UploadPolicyPdf = () => {
     const navigate = useNavigate();
     const onSubmit = async (data: UploadProps) => {
         if (!propsData?.policyNumber || !propsData?.leadId || !data.policyPdf) {
-            console.error("Missing required fields");
             return;
         }
 
@@ -34,7 +33,7 @@ const UploadPolicyPdf = () => {
                 navigate("/lead");
             }
         } catch (error) {
-            console.error("Upload failed", error);
+            throw error
         }
     };
 

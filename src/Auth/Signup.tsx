@@ -61,7 +61,6 @@ const Signup = () => {
   };
   const onSubmit = async (signUpData: FormProps) => {
     const { plans, companyLogo, profileImage, gender } = signUpData;
-    // console.log("6848",findRoleIdByName("Admin"))
     let payload: ISignUp = {
       name: signUpData.name,
       email: signUpData.email,

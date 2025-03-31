@@ -21,7 +21,7 @@ const useGetCaseTypes = ({ header }: GetCaseTypeProps) => {
           setCaseType(caseTypes);
         })
         .catch((res) => {
-          console.error(res.status);
+          throw new Error(res.status);
         });
     }
   }, [header, isLoading]);

@@ -76,7 +76,7 @@ const ViewPolicy = () => {
           setDocuments(updatedDocuments);
         })
         .catch((error) => {
-          console.error("Failed to fetch Policy details", error);
+          throw error
         });
     }
   }, [policyId]);
@@ -100,9 +100,8 @@ const ViewPolicy = () => {
           a.click();
           document.body.removeChild(a);
         })
-        .catch((error) => console.error("Error downloading file:", error));
+        .catch((error) => {throw error});
     } else {
-      console.error("Unsupported file type:", fileExtension);
     }
   };
   const handleClickDownloadDocuments = async () => {

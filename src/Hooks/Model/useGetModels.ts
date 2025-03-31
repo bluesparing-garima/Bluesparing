@@ -19,7 +19,7 @@ const useGetModels = ({ header }: GetModelProps) => {
           setModels(models);
         })
         .catch((res) => {
-          console.error(res.status);
+          throw new Error(res.status);
         });
     }
   }, [header, isLoading]);

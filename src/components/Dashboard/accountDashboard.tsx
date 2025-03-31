@@ -53,7 +53,6 @@ const AccountDashboard: React.FC = () => {
   const [selectedCard, setSelectedcard] = useState("1");
   const [employee, setEmployee] = useState<IEmployee | null>();
   const GetDashboardCount = useCallback((startDate, endDate) => {
-    console.log("first", UserData);
     getAccountDashboardService({
       header,
       startDate,
@@ -228,7 +227,6 @@ const AccountDashboard: React.FC = () => {
     },
   ];
 
-  console.log(UserData);
   return (
     <div className="bg-blue-200 h-full pb-5">
       <Grid container sx={{ margin: 1 }}>

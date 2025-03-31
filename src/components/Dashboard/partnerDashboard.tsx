@@ -57,7 +57,7 @@ const PartnerDashboard: React.FC = () => {
         })
         .catch((error) => {
           setIsVisible(false);
-          console.error("Failed to fetch product details", error);
+          throw error;
         });
     },
     [UserData.profileId]
@@ -73,7 +73,7 @@ const PartnerDashboard: React.FC = () => {
         setIsLoading(true)
         GetDashboardCount(formattedFirstDay, formattedLastDay);
       } catch (error) {
-        console.error("Error fetching HR Dashboard data:", error);
+        throw error
       } finally {
         setIsLoading(false);
       }
@@ -90,13 +90,13 @@ const PartnerDashboard: React.FC = () => {
   ) => {
     const formattedCount = typeof count === "number" ? Math.round(count).toLocaleString() : count;
     const content = (
-      <div className="bg-white m-2 p-3 rounded-[10.33px] shadow-lg flex items-center justify-between transform transition-transform duration-200 hover:scale-105">
+      <div style={{ boxShadow: '6.08px 6.08px 30.41px 0px #F2DDD480' }} className="bg-white m-2 p-3 rounded-lg shadow-lg flex items-center justify-between transform transition-transform duration-200 hover:scale-105">
         <div>
           <Typography
             variant="body2"
-            className="text-sm text-gray-600 mb-2 font-satoshi"
+            className="text-sm text-[#595959] mb-2 font-satoshi font-medium"
           >
-            {title==='Policy Count' ? 'Remaining Policy Count' : title}
+            {title === 'Policy Count' ? 'Remaining Policy Count' : title}
           </Typography>
           <Typography
             variant="h5"
@@ -197,11 +197,11 @@ const PartnerDashboard: React.FC = () => {
     partnerGenerateExcel(data);
   };
   return (
-    <div className="bg-blue-200 h-screen">
+    <div className=" h-screen ">
       <CardContent>
         <Grid container>
-          <div className="flex w-full items-center justify-start bg-blue-200 ">
-            <div className="flex justify-start items-center w-[40%]">
+          <div className="flex w-full items-center flex-col gap-2 md:gap-0 md:flex-row justify-start">
+            <div className="flex md:justify-start justify-center gap-x-8  lg:gap-x-6 md:gap-x-3 items-center w-[40%]">
               <CartButton
                 onClick={handleFirstCart}
                 tooltipTitle="View Policy Data"
@@ -227,12 +227,12 @@ const PartnerDashboard: React.FC = () => {
                 isSelected={fourthCart}
               />
             </div>
-            <div className="flex w-full flex-wrap  justify-evenly items-center">
+            <div className="flex w-full md:flex-wrap  justify-center md:justify-end gap-x-2 items-center">
               <Form
                 onSubmit={onSubmit}
                 render={({ handleSubmit, submitting, errors, values }) => (
                   <form onSubmit={handleSubmit} noValidate>
-                    <div className="flex w-1/2 md:w-full  items-center flex-1 gap-x-2 justify-between">
+                    <div className="flex w-3/4  md:w-full  items-center flex-1 gap-x-2 md:gap-x-3 lg:gap-x-4  justify-between">
                       <div className="w-[47%]">
                         <Field name="startDate">
                           {({ input, meta }) => (
@@ -286,41 +286,42 @@ const PartnerDashboard: React.FC = () => {
                         </Field>
                       </div>
                       <button
-                        className="md:w-10 md:h-10 h-4 w-4 bg-[#30A9FF] shadow-sm rounded flex justify-center items-center text-white"
+                        className="md:w-10 md:h-10 h-4 w-4 bg-white   rounded-full flex justify-center items-center text-black shadow-lg"
                         type="submit" disabled={isLoading}
                       >
                         {isLoading ? <CircularProgress
-                          className="md:w-6 md:h-6 h-3 w-3"
+                          className="h-6 w-6"
                         /> :
-                          <SearchIcon className="md:w-6 md:h-6 h-3 w-3" />
+                          <SearchIcon className=" h-6 w-6" />
                         }
                       </button>
                     </div>
                   </form>
                 )}
               />
-              <div className="flex justify-between items-center gap-x-2">
+            
+              <button
+                className="md:w-10 md:h-10 h-4 w-4 bg-white  rounded-full flex justify-center items-center text-black shadow-lg"
+                onClick={handleDownloadPDF} disabled={isLoading}
+              ><Tooltip title="Download PDF">
+                  {isLoading ? <CircularProgress className="h-6 w-6" /> : <PictureAsPdfSharpIcon className="h-6 w-6" />}
+                </Tooltip>                      </button>
 
+              <Tooltip title="Download Excel">
                 <button
-                  className="md:w-10 md:h-10 h-4 w-4 bg-[#0095FF] shadow-sm rounded flex justify-center items-center text-white"
-                  onClick={handleDownloadPDF} disabled={isLoading}
-                ><Tooltip title="Download PDF">
-                    {isLoading ? <CircularProgress className="md:w-6 md:h-6 h-3 w-3" /> : <PictureAsPdfSharpIcon className="md:w-6 md:h-6 h-3 w-3" />}
-                  </Tooltip>                      </button>
+                  className="h-6 w-6 bg-white  rounded-full flex justify-center items-center text-black shadow-lg"
+                  onClick={handleDownloadExcel}
+                >
+                  {isLoading ? <CircularProgress className="h-6 w-6" /> : <FileDownloadOutlinedIcon className="h-6 w-6" />}
 
-                <Tooltip title="Download Excel">
-                  <button
-                    className="md:w-10 md:h-10 h-4 w-4 bg-[#3BDB03] shadow-sm rounded flex justify-center items-center text-white"
-                    onClick={handleDownloadExcel}
-                  >
-                    {isLoading ? <CircularProgress className="md:w-6 md:h-6 h-3 w-3" /> : <FileDownloadOutlinedIcon className="md:w-6 md:h-6 h-3 w-3" />}
+                </button>
+              </Tooltip>
+         
+            
 
-                  </button>
-                </Tooltip>
-              </div>
             </div>
           </div>
-          <Grid item md={12}>
+          <Grid item md={12} marginTop={5}>
             {UserData.role.toLowerCase() === "partner" ? (
               <>
                 <Grid container spacing={2}>
@@ -331,7 +332,7 @@ const PartnerDashboard: React.FC = () => {
                           <>
                             {data.map((item, index) => (
                               <div key={index}>
-                                <div className="bg-blue-200 md:p-7 p-2">
+                                <div className=" md:p-7 p-2">
                                   <Grid container spacing={2}>
                                     {renderCountBox(
                                       "Balance",
@@ -397,7 +398,7 @@ const PartnerDashboard: React.FC = () => {
                           <>
                             {data.map((item, index) => (
                               <div key={index}>
-                                <div className="bg-blue-200 md:p-7 p-2">
+                                <div className=" md:p-7 p-2">
                                   <Grid container spacing={2}>
                                     {renderCountBox(
                                       "Motor",
@@ -446,7 +447,7 @@ const PartnerDashboard: React.FC = () => {
                           </>
                         )}
                         {thirdCart && (
-                          <div className="bg-blue-200 md:p-7 p-2">
+                          <div className=" md:p-7 p-2">
                             <Grid container spacing={2}>
                               <Grid item md={6}>
                                 <PayOutCommissionChart
@@ -462,7 +463,7 @@ const PartnerDashboard: React.FC = () => {
                           </div>
                         )}
                         {fourthCart && (
-                          <div className="bg-blue-200 md:p-7 p-2">
+                          <div className=" md:p-7 p-2">
                             <Typography
                               variant="h5"
                               className="text-lg font-bold text-gray-800"

@@ -16,12 +16,11 @@ const AddPolicyFormCard = () => {
     if (!isAdd && policyId) {
       getPolicyByIdService({ header, policyId })
         .then((policyDetails) => {
-          // const leadVMToLeadForm = convertILeadVMToILeadForm(policyDetails.data);
           setEditPolicyDetails(policyDetails.data);
         
         })
         .catch((error) => {
-          console.error("Failed to fetch Lead details", error);
+          throw error
         });
     }
   }, [isAdd, policyId]);

@@ -9,7 +9,7 @@ export const getPaginationState = (STORAGE_KEY:string): IPaginationProps => {
         return JSON.parse(savedState);
       }
     } catch (error) {
-      console.error("Failed to retrieve pagination state:", error);
+      throw error
     }
     return { pageIndex: 0, pageSize: 5 };
   };
@@ -17,6 +17,6 @@ export const getPaginationState = (STORAGE_KEY:string): IPaginationProps => {
     try {
       sessionStorage.setItem(STORAGE_KEY, JSON.stringify(pagination));
     } catch (error) {
-      console.error("Failed to save pagination state:", error);
+      throw error
     }
   };

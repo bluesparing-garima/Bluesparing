@@ -88,7 +88,7 @@ const EditLead = () => {
         .catch(async (error: any) => {
           const err = await error;
           toast.error(err.message);
-          console.error("Failed to fetch Lead details", error);
+          throw error
         });
     }
   }, [isAdd, leadId]);

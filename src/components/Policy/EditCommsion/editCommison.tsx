@@ -22,7 +22,7 @@ const EditCommison = () => {
           setPolicyDetails(policyDetails.data);
         })
         .catch((error) => {
-          console.error("Failed to fetch Policy details", error);
+          throw error
         });
     }
   }, [policyId]);

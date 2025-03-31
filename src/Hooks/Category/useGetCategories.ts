@@ -20,7 +20,7 @@ const useGetCategories = ({ header }: GetCategoryProps) => {
           setCategories(categories);
         })
         .catch((res) => {
-          console.error(res.status);
+          throw new Error(res.status);
         });
     }
   }, [header, isLoading]);

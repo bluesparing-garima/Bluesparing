@@ -53,7 +53,6 @@ interface CheckoutState {
     // Revoke the object URL after the download
     window.URL.revokeObjectURL(url);
   } catch (error) {
-    console.error("Error downloading invoice:", error);
     toast.error("Error downloading invoice");
   }
 };

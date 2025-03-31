@@ -218,8 +218,6 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
 
 
 
-  console.log("Outside useEffect - Policy Count:", policyCount);
-
   const handleFileInputChange = (event: any, index: any) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
@@ -442,7 +440,6 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
       }
     }
 
-    // console.log("updatedPolicyCount",updatedPolicyCount);
   };
 
 
@@ -541,7 +538,6 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
 
     if (userData.profileId) {
 
-      console.log("useEffect Triggered - userId:", userData.profileId);
       fetchPolicyCount();
     }
   }, [userData.profileId]);
@@ -679,7 +675,6 @@ const EditPolicyForm = (props: AddPolicyFormProps) => {
         setPolicyErrorMessage("");
       }
     } catch {
-      console.error("eror");
     }
   };
 

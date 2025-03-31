@@ -69,7 +69,6 @@ const Dashboard: React.FC = () => {
   const [selectedCard, setSelectedcard] = useState("1");
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
-  console.log("first", UserData);
   const GetDashboardCount = useCallback((startDate, endDate) => {
     getAdminDashboardService({
       header,
@@ -106,7 +105,6 @@ const Dashboard: React.FC = () => {
         setIsLoading(true);
         await GetDashboardCount(formattedFirstDay, formattedLastDay);
       } catch (error) {
-        console.error("Error fetching HR Dashboard data:", error);
       } finally {
         setIsLoading(false);
       }
@@ -742,12 +740,12 @@ export const CartButton: React.FC<CartButtonProps> = ({
   const buttonSize = isSmallScreen ? "small" : "medium";
   return (
     <div
-      className={`p-1 md:p-2 ${
-        isSelected ? "bg-[#E59411] shadow-md" : ""
-      } rounded`}
+      className={`flex w-10 h-10 justify-center items-center ${
+        isSelected ? "bg-[#F15729] " : "bg-white border"
+      } rounded-full shadow-lg m-1`}
     >
       <Tooltip title={tooltipTitle} arrow>
-        <Button size={buttonSize} type="button" onClick={onClick}>
+        <Button  className="w-full h-full" type="button" onClick={onClick}>
           {iconPath}
         </Button>
       </Tooltip>

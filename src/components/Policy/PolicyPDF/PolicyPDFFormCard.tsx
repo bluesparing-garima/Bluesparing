@@ -80,10 +80,10 @@ const PolicyPDFFormCard = () => {
             }
           })
           .catch((error) => {
-            console.error("Failed to fetch Policy PDF details", error);
+            throw error
           });
       } catch (error) {
-        console.error("Error uploading file:", error);
+        throw error
       }finally{
         setIsLoading(false)
       }

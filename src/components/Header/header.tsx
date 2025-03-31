@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { header, imagePath, SafeKaroUser } from "../../context/constant";
-import NotificationBadge from "../../utils/NotificationBadge";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Avatar,
@@ -71,7 +70,7 @@ interface HeaderProps {
 
 const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
   const [userData, setUserData] = useState<any>();
-  const [userRank, setUserRank] = useState<any>();
+  const [userRank, setUserRank] = useState("");
   const storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   const UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
   const [attendance, setAttendance] = useState<IAttendance | null>();
@@ -146,10 +145,10 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
         getRankBadgeDetailsService({ header, partnerId: newData.profileId })
           .then((dashboardData) => {
             const rankData = dashboardData.data;
-            setUserRank(rankData.rank);
+            setUserRank(rankData?.rank);
           })
           .catch((error) => {
-            console.error(error);
+           toast.error(error.message||"")
           });
       }
     }
@@ -242,7 +241,7 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
               <p className="text-[#737791] md:text-xs text-[10px]">
                 {userData?.role}
                 {userData?.role === "Partner" && (
-                  <span className="text-safekaroDarkOrange"> ({userRank})</span>
+                  <span className="text-safekaroDarkOrange"> ({userRank||""})</span>
                 )}
               </p>
             </Link>
@@ -293,6 +292,7 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
           </div>
         </div>
       </div>
+      <hr className="my-2" />
     </>
   );
 });

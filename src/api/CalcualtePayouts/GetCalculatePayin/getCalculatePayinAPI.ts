@@ -13,7 +13,6 @@ const getCalculatePayinAPI = async (props: GetCalculateTypeProps) => {
     props.weight!,
     props.ncb!,
     props.rto!,
-    // props.insuredType!,
     props.caseType!,
     props.make!,
     props.model!,

@@ -16,7 +16,7 @@ const useGetSubsById = (id:string) => {
           setSubsData(subscriptions);
         })
         .catch((res) => {
-          console.error(res.status);
+          throw new Error(res.status);
         });
     }
   }, [header, isLoading]);

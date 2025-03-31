@@ -63,7 +63,7 @@ const AdminCommisionChart = () => {
     } catch (error:any) {
       const err = await error
       toast.error(err.message)
-      console.error("Error fetching data:", error);
+      throw error
     }
   };
 

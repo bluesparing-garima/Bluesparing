@@ -33,7 +33,6 @@ const FilterPartnerNetPremium = () => {
     })
       .then((partners) => {
         setCompanyDetails(partners.data);
-        console.log(partners);
         setTotalAmount(partners.totalAmount);
         setSelectedPartnerCode(partners.partnerCode);
         setSelectedPartnerName(partners.partnerName);

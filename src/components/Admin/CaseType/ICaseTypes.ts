@@ -1,5 +1,3 @@
-// ICaseType.ts
-
 export interface ICaseTypeForm {
   id?: string;
   isActive?:boolean;

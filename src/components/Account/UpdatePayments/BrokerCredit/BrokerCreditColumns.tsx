@@ -1,4 +1,3 @@
-import React from "react"; // Ensure React is imported
 import { MRT_ColumnDef } from "material-react-table";
 import { IViewPolicy } from "../../../Policy/IPolicy";
 import dayjs from "dayjs"; // Import dayjs for date formatting
