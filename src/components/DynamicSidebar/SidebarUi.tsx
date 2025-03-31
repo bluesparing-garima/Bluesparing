@@ -79,8 +79,8 @@ const SidebarUi: FC<SidebarProps> = ({
             className={`flex items-center px-2 py-1 text-[15px] cursor-pointer rounded-lg
               ${
                 isActive
-                  ? "bg-safekaroDarkOrange text-white"
-                  : "text-black hover:bg-safekaroDarkOrange hover:text-white"
+                  ? "bg-[#F2DDD4] text-[#F15729] font-semibold"
+                  : "text-black hover:bg-[#F2DDD4] font-semibold hover:text-[#F15729]"
               }
             `}
             onClick={() => {
@@ -129,11 +129,11 @@ const SidebarUi: FC<SidebarProps> = ({
     <div
       className={`${
         isSidebarOpen ? "left-0" : "-left-60"
-      } md:translate-x-0 sticky top-0 z-20 md:flex flex-col w-60 bg-white h-screen shadow-lg border-r-2 border-[#FEF9F3] transition-transform delay-150 duration-200`}
+      } md:translate-x-0 sticky top-0 z-20 md:flex flex-col w-60 bg-white h-screen border-r transition-transform delay-150 duration-200`}
     >
       <Link
         to={generateDashBoardLink()}
-        className="flex items-center justify-center h-16 mt-1 bg-white"
+        className="flex items-center justify-center border-none outline-none h-16 mt-1 bg-white"
       >
         <picture className="mb-1 flex flex-col justify-center items-center">
           <img

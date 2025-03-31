@@ -177,7 +177,7 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
 
   return (
     <>
-      <div className="flex items-center justify-between bg-white py-2 px-2">
+      <div className="flex items-center justify-between bg-white py-2 px-2 border-b">
         <div className="mx-2 md:hidden">
           {isSidebarOpen ? (
             <div onClick={handleSidebar}>

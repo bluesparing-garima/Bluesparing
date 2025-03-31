@@ -738,15 +738,39 @@ export const CartButton: React.FC<CartButtonProps> = ({
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const buttonSize = isSmallScreen ? "small" : "medium";
+
   return (
     <div
-      className={`p-1 md:p-2 ${
-        isSelected ? "bg-[#E59411] shadow-md" : ""
-      } rounded`}
+      className={`w-10 h-10 flex justify-center items-center rounded-full transition duration-200 
+        ${
+          isSelected
+            ? "bg-[#F15729] shadow-sm"
+            : "border border-gray-300 hover:bg-gray-200"
+        }
+      `}
     >
       <Tooltip title={tooltipTitle} arrow>
-        <Button size={buttonSize} type="button" onClick={onClick}>
-          {iconPath}
+        <Button
+          size={buttonSize}
+          type="button"
+          onClick={onClick}
+          disableRipple
+          disableElevation
+          sx={{
+            minWidth: 0,
+            width: "100%", // Button ko full width dene ke liye
+            height: "100%", // Button ko full height dene ke liye
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "transparent",
+            "&:hover": { backgroundColor: "transparent" },
+            "&:focus": { outline: "none" },
+          }}
+        >
+          <span className="h-full w-full flex justify-center items-center">
+            {iconPath}
+          </span>
         </Button>
       </Tooltip>
     </div>
@@ -841,7 +865,7 @@ const renderCountBox = (
           variant="body2"
           className="text-sm text-gray-600 mb-2 font-satoshi"
         >
-          {title==='Policy Count' ? 'Remaining Policy Count' : title}
+          {title === "Policy Count" ? "Remaining Policy Count" : title}
         </Typography>
         <Typography variant="h5" className="text-base font-bold text-[#202224]">
           {count}
