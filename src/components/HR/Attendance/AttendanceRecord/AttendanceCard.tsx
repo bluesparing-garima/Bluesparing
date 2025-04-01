@@ -5,6 +5,9 @@ import {
   Grid,
   Box,
   IconButton,
+  Badge,
+  Card,
+  CardContent,
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -13,7 +16,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { IEmployee } from "../IAttendance";
 import AvTimerIcon from "@mui/icons-material/AvTimer";
 import dayjs from "dayjs";
-import duration from "dayjs/plugin/duration"; 
+import duration from "dayjs/plugin/duration";
 dayjs.extend(duration);
 interface AttendanceCardProps {
   employee: IEmployee;
@@ -111,106 +114,114 @@ const AttendanceCard: React.FC<AttendanceCardProps> = ({ employee }) => {
     // eslint-disable-next-line
   }, [employee]);
   return (
-    <Grid item xs={12} sm={6} md={4} lg={4}>
-      <Link to={link} style={{ textDecoration: "none", position: "relative" }}>
-        <Box
-          sx={{
-            ...ui,
-            borderRadius: "12px",
-            padding: "20px",
-            boxShadow: "0 6px 18px rgba(0, 0, 0, 0.1)",
-            transition: "transform 0.3s ease, box-shadow 0.3s ease",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "space-between",
-            ":hover": {
-              transform: "scale(1.05)",
-              boxShadow: "0 8px 20px rgba(0, 0, 0, 0.15)",
-            },
-          }}
+    <>
+        <Link
+          to={link}
+          style={{ textDecoration: "none", position: "relative" }}
         >
-          {/* Avatar and Name */}
           <Box
-            display="flex"
-            alignItems="center"
-            justifyContent="space-between"
-            width="100%"
-            mb={2}
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: "auto",
+              padding:'20px 0'
+            }}
           >
-            {avatarContent}
-            <Typography
-              variant="body2"
+            <Badge
+              color="primary"
+              badgeContent={timePassed}
+              overlap="circular"
               sx={{
-                ml: 2,
-                fontSize: "1.1rem",
-                fontWeight: "bold",
-                color: ui.color,
+                "& .MuiBadge-dot": {
+                  height: "12px",
+                  width: "12px",
+                  borderRadius: "50%",
+                },
               }}
             >
-              {employee.employeeName?.toUpperCase()}
-            </Typography>
-          </Box>
+              <Card
+                sx={{
+                  ...ui,
+                  padding: "20px",
+                  borderRadius: 3,
+                  boxShadow: "0 0 20px 10px #F2DDD4",
+                  color: "black",
+                  border: "none",
+                  background: "#fff",
+                  transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                  position: "relative",
+                  "&:hover": {
+                    transform: "scale(1.02)",
+                    boxShadow: "0 0 30px 15px #F2DDD4",
+                  },
+                }}
+                className="sm:w-[50vw]"
+              >
+                <CardContent>
+                  <div className="flex items-center mb-4">
+                    {avatarContent}
+                    <Typography
+                      variant="h5"
+                      className="ml-2"
+                      sx={{ color: "#F15729" }}
+                    >
+                      {employee.employeeName?.toUpperCase()}
+                    </Typography>
+                  </div>
 
-          {/* Status Icons */}
-          <Box display="flex" justifyContent="space-around" width="100%" mt={2}>
-            <Box display="flex" flexDirection="column" alignItems="center">
-              <CancelIcon className="text-red-500" fontSize="large" />
-              <Typography variant="body1" fontWeight="bold">
-                {employee.leave}
-              </Typography>
-              <Typography variant="caption" color="textSecondary">
-                Leave
-              </Typography>
-            </Box>
-            <Box display="flex" flexDirection="column" alignItems="center">
-              <AccessAlarmIcon className="text-yellow-500" fontSize="large" />
-              <Typography variant="body1" fontWeight="bold">
-                {employee.halfDay}
-              </Typography>
-              <Typography variant="caption" color="textSecondary">
-                Half Day
-              </Typography>
-            </Box>
-            <Box display="flex" flexDirection="column" alignItems="center">
-              <CheckCircleIcon className="text-green-500" fontSize="large" />
-              <Typography variant="body1" fontWeight="bold">
-                {employee.present}
-              </Typography>
-              <Typography variant="caption" color="textSecondary">
-                Present
-              </Typography>
-            </Box>
-          </Box>
+                  {/* Status Icons */}
+                  <div className="flex justify-around mt-4">
+                    <div className="flex flex-col items-center">
+                      <CancelIcon className="text-red-500" fontSize="large" />
+                      <Typography variant="h6">{employee.leave}</Typography>
+                      <Typography variant="caption">Leave</Typography>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <AccessAlarmIcon
+                        className="text-yellow-500"
+                        fontSize="large"
+                      />
+                      <Typography variant="h6">{employee.halfDay}</Typography>
+                      <Typography variant="caption">Half Day</Typography>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <CheckCircleIcon
+                        className="text-green-500"
+                        fontSize="large"
+                      />
+                      <Typography variant="h6">{employee.present}</Typography>
+                      <Typography variant="caption">Present</Typography>
+                    </div>
+                  </div>
 
-          {/* Today's Attendance */}
-          <Typography
-            variant="body2"
-            mt={2}
-            color={ui.color}
-            fontWeight="medium"
-          >
-            Today -{" "}
-            {employee.todaysAttendance === "Default"
-              ? "No Record"
-              : employee.todaysAttendance}
-          </Typography>
-        </Box>
-        <IconButton
-          sx={{
-            position: "absolute",
-            bottom: 0,
-            right: 0,
-            color: `{${getRowStyle(employee.todaysAttendance)}}`,
-            fontWeight: "medium",
-            fontSize: "12px",
-          }}
-        >
-          <AvTimerIcon />
-          {timePassed}
-        </IconButton>
-      </Link>
-    </Grid>
+                  <Typography variant="body1" sx={{ mt: 4, color: "#F15729" }}>
+                    Today -{" "}
+                    <strong>
+                      {employee.todaysAttendance === "Default"
+                        ? "No Record"
+                        : employee.todaysAttendance}
+                    </strong>
+                  </Typography>
+                  <IconButton
+                    sx={{
+                      position: "absolute",
+                      bottom: 0,
+                      right: 0,
+                      color: `{${getRowStyle(employee.todaysAttendance)}}`,
+                      fontWeight: "medium",
+                      fontSize: "12px",
+                    }}
+                  >
+                    <AvTimerIcon />
+                    {timePassed}
+                  </IconButton>
+                </CardContent>
+              </Card>
+            </Badge>
+          </Box>
+        </Link>
+    </>
   );
 };
 

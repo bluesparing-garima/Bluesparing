@@ -57,7 +57,7 @@ const MarkAttendance = () => {
   }
   return (
     <>
-      <div className="bg-blue-200 px-2 h-[90vh]">
+      <div className="bg-white">
         <MarkAttendanceCard
           employee={employee}
           attendance={attendance}

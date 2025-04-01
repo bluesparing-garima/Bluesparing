@@ -188,7 +188,7 @@ const BookingDashboard: React.FC = () => {
     const formattedCount =
       typeof count === "number" ? Math.round(count).toLocaleString() : count;
     const content = (
-      <div className="bg-white m-2 p-3 mt-5 rounded-[10.33px] shadow-[0_0_20px_2px_#F2DDD4] flex items-center justify-between transform transition-transform duration-200 hover:scale-105">
+      <div className="bg-white m-2 p-3 mt-8 rounded-[10.33px] shadow-[0_0_10px_2px_#F2DDD4] flex items-center justify-between transform transition-transform duration-200 hover:scale-105">
         <div>
           <Typography
             variant="body2"
@@ -296,7 +296,7 @@ const BookingDashboard: React.FC = () => {
                     </Field>
                   </div>
                   <Button
-                    className="w-10 h-10 flex justify-center items-center rounded-full border-gray-300 hover:bg-gray-200 transition duration-200"
+                    className="w-10 h-10 flex justify-center items-center rounded-full shadow-[0_0_5px_1px_#F2DDD4] border-gray-100 hover:bg-gray-200 transition duration-200"
                     disableRipple
                     disableElevation
                     sx={{
@@ -327,7 +327,7 @@ const BookingDashboard: React.FC = () => {
           <div className="flex justify-center items-center gap-x-2">
             <Tip title="Download PDF">
               <Button
-                className="w-10 h-10 flex justify-center items-center rounded-full border-gray-300 hover:bg-gray-200 transition duration-200"
+                className="w-10 h-10 flex justify-center items-center rounded-full shadow-[0_0_5px_1px_#F2DDD4] border-gray-100 hover:bg-gray-200 transition duration-200"
                 disableRipple
                 disableElevation
                 sx={{
@@ -349,7 +349,7 @@ const BookingDashboard: React.FC = () => {
             </Tip>
             <Tip title="Download Excel">
               <Button
-                className="w-10 h-10 flex justify-center items-center rounded-full border-gray-300 hover:bg-gray-200 transition duration-200"
+                className="w-10 h-10 flex justify-center items-center rounded-full shadow-[0_0_5px_1px_#F2DDD4] border-gray-100 hover:bg-gray-200 transition duration-200"
                 disableRipple
                 disableElevation
                 sx={{
@@ -436,7 +436,7 @@ const BookingDashboard: React.FC = () => {
                 ))}
               {secondCart && (
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6} md={8} lg={9}>
+                  <Grid item xs={12} sm={6} md={8} lg={12} sx={{marginTop : '50px'}}>
                     {employee && (
                       <>
                         <AttendanceCard employee={employee} />
@@ -446,7 +446,7 @@ const BookingDashboard: React.FC = () => {
                 </Grid>
               )}
               {thirdCart && (
-                <div className="bg-blue-200 md:p-7 p-2">
+                <div className="md:p-7 p-2">
                   <Typography
                     variant="h5"
                     className="text-lg font-bold text-gray-800"
