@@ -838,36 +838,36 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                 </Field>
               </Grid>
               <Grid item lg={4} md={4} sm={6} xs={12}>
-                <Field name="dateOfBirth">
-                  {({ input, meta }) => (
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DatePicker
-                        disableFuture
-                        label="Date of Birth"
-                                                value={input.value !== undefined ? input.value : initialValues?.dateOfBirth || null}
-                        onChange={(date) => input.onChange(date)}
-                        inputFormat="DD/MM/YYYY"
-                        shouldDisableDate={(date) => {
-                          const today = dayjs();
-                          const minAgeDate = today.subtract(18, 'year');
-                          return date.isAfter(minAgeDate); // Disable dates that make the user younger than 18
-                        }}
-                        renderInput={(params: any) => (
-                          <TextField
-                            variant="outlined"
-                            size="small"
-                            fullWidth
-                            {...params}
-                            inputProps={{ ...params.inputProps, readOnly: true }} // Prevent manual entry
-                            error={meta.touched && !!meta.error}
-                            helperText={meta.touched && meta.error}
-                          />
-                        )}
-                      />
-                    </LocalizationProvider>
-                  )}
-                </Field>
-              </Grid>
+  <Field name="dateOfBirth">
+    {({ input, meta }) => (
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <DatePicker
+          disableFuture
+          label="Date of Birth"
+          defaultCalendarMonth={dayjs().subtract(18, "year")} // Opens at a date 18 years ago
+          value={input.value || null}
+          onChange={(date) => input.onChange(date)}
+          shouldDisableDate={(date) => {
+            const minAgeDate = dayjs().subtract(18, "year");
+            return date.isAfter(minAgeDate); // Disable dates that make the user younger than 18
+          }}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              variant="outlined"
+              size="small"
+              fullWidth
+              inputProps={{ ...params.inputProps, readOnly: true }} // Prevent manual entry
+              error={meta.touched && !!meta.error}
+              helperText={meta.touched && meta.error}
+            />
+          )}
+        />
+      </LocalizationProvider>
+    )}
+  </Field>
+</Grid>
+
               <Grid item lg={4} md={4} sm={6} xs={12}>
                 <Field name="joiningDate">
                   {({ input, meta }) => (
