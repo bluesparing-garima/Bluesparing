@@ -26,6 +26,9 @@ import { useSearchParams } from "react-router-dom";
 import OverlayError from "../../../../utils/ui/OverlayError";
 import OverlayLoader from "../../../../utils/ui/OverlayLoader";
 import deleteTeamService from "../../../../api/Team/DeleteTeam/deleteTeamService";
+import useLocalStorage from "../../../../Hooks/LocalStorage/useLocalStorage";
+import { updateLocalStorage } from "../../../../utils/HandleStore";
+import getPolicyCountAPI from "../../../../api/Policies/getPolicyCount/getPolicyCountAPI";
 
 const Teams = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -55,6 +58,8 @@ const Teams = () => {
     setErrMsg("")
   }
   useEffect(() => {
+
+  
     const p = getPaginationState(TEAM_STORAGE_KEY);
     setPagination(p);
   }, []);
@@ -244,20 +249,28 @@ const Teams = () => {
   };
   const handleClickDeleteTeam = (team: IAppUser) => {
     setIsLoading(true);
+    
+    deleteTeamService({ teamId: team._id})
+      .then(async() => {
+        // GetTeams();
 
-    deleteTeamService({ teamId: team._id })
-      .then(() => {
-        GetTeams();
+        // setUserLimit((prevLimit:any) => {
+        //   let roleKey = team.role?.toLowerCase().trim(); // Get role key
+        //   if (!roleKey || !(roleKey in prevLimit)) return prevLimit; // Ensure role exists in userLimit
+        //   if(roleKey === "relationship manager" || roleKey === "rm" ){
+        //     roleKey = 'rm';
+        //   }
+        //   return {
+        //     ...prevLimit,
+        //     [roleKey]: prevLimit[roleKey] + 1, // Increase limit by 1
+        //   };
+        // });
+        const response = await getPolicyCountAPI({ userId: UserData.profileId });
+   
+        const updatedUserLimit = response?.userLimit;
 
-        setUserLimit((prevLimit:any) => {
-          const roleKey = team.role?.toLowerCase(); // Get role key
-          if (!roleKey || !(roleKey in prevLimit)) return prevLimit; // Ensure role exists in userLimit
-          
-          return {
-            ...prevLimit,
-            [roleKey]: prevLimit[roleKey] + 1, // Increase limit by 1
-          };
-        });
+        setUserLimit({...updatedUserLimit})
+
   
         GetTeams();
       })

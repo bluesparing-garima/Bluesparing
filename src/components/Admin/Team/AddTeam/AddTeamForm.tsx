@@ -45,6 +45,7 @@ import UpgradePlanPopup from "../../../UpdatePlan/UpgradeExistingPlan";
 import LoadingOverlay from "../../../../utils/ui/LoadingOverlay";
 import OverlayError from "../../../../utils/ui/OverlayError";
 import OverlayLoader from "../../../../utils/ui/OverlayLoader";
+import getPolicyCountAPI from "../../../../api/Policies/getPolicyCount/getPolicyCountAPI";
 export interface addPolicyTypeFormProps {
   initialValues?: IAppUser;
 }
@@ -332,6 +333,9 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
     try {
       setIsLoading(true);
       const newTeam = await editTeamService({ header, team, teamId });
+          const response = await getPolicyCountAPI({ userId: UserData.profileId });
+          console.log("response",response);
+              updateLocalStorage({userLimit :response?.userLimit});
       navigateToTeams(`${newTeam.message}`);
     } catch (err: any) {
       const errObj = await err;
