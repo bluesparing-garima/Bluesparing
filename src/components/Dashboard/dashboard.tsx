@@ -741,7 +741,7 @@ export const CartButton: React.FC<CartButtonProps> = ({
 
   return (
     <div
-      className={`w-10 h-10 flex justify-center items-center rounded-full shadow-[0_0_5px_2px_#F2DDD4] transition duration-200 
+      className={`w-10 h-10 md:w-9 md:h-9 flex justify-center items-center rounded-full shadow-[0_0_5px_2px_#F2DDD4] transition duration-200 
         ${
           isSelected
             ? "bg-[#F15729] shadow-sm"

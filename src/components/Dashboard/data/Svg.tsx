@@ -73,7 +73,7 @@ export const AttendanceDataSvg = ({ isActive,className }: { isActive: boolean; c
         viewBox="0 0 26 27"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className={`w-5 h-5 md:w-7 md:h-7 lg:w-5 lg:h-5 ${className}`}
+        className={`w-5 h-5 md:w-5 md:h-5 lg:w-5 lg:h-5 ${className}`}
       >
         <path
           d="M7 11c-1.1 0-2-.9-2-2V8c0-1.1.9-2 2-2s2 .9 2 2v1c0 1.1-.9 2-2 2zm-2 6.993L9 18c.55 0 1-.45 1-1v-2c0-1.65-1.35-3-3-3s-3 1.35-3 3v2c0 .552.448.993 1 .993zM19 18h-6c-.553 0-1-.447-1-1s.447-1 1-1h6c.553 0 1 .447 1 1s-.447 1-1 1zm0-4h-6c-.553 0-1-.448-1-1s.447-1 1-1h6c.553 0 1 .448 1 1s-.447 1-1 1zm0-4h-6c-.553 0-1-.448-1-1s.447-1 1-1h6c.553 0 1 .448 1 1s-.447 1-1 1z"
@@ -95,7 +95,7 @@ export const PlanDetailsDataSvg = ({ isActive,className }: { isActive: boolean; 
         viewBox="0 0 26 27"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className={`w-5 h-5 md:w-7 md:h-7 ${className}`}
+        className={`w-5 h-5 md:w-5 md:h-5 ${className}`}
       >
         <path
           d="M12 9v3.75m0-10.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.75c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.75h-.152c-3.196 0-6.1-1.25-8.25-3.286Zm0 13.036h.008v.008H12v-.008Z"
@@ -113,7 +113,7 @@ export const EmployeeSvg = ({ isActive,className }: { isActive: boolean; classNa
         fill={`${isActive ? "white" : "#636566"}`}
         viewBox="0 0 100 100"
         xmlns="http://www.w3.org/2000/svg"
-        className={`w-5 h-5 md:w-7 md:h-7 ${className}`}
+        className={`w-5 h-5 md:w-5 md:h-5 ${className}`}
       >
         <circle cx="63.3" cy="47.6" r="10.7" />
         <path d="M63.6,60.3h-.8A16.43,16.43,0,0,0,46.7,74.2c0,.7.2,2.4,2.7,2.4H76.6c2.5,0,2.7-1.5,2.7-2.4A15.65,15.65,0,0,0,63.6,60.3Z" />

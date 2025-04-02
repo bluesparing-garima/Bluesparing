@@ -215,10 +215,10 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
             </div>
           )}
         </div>
-        <div className="md:flex hidden md:text-xl font-medium font-satoshi content-start">
+        <div className="md:flex sm:justify-start md:w-[35%] sm:w-[45%] md:text-md sm:text-sm font-medium font-satoshi content-start">
           Welcome Back, {userData?.name}
         </div>
-        <div className="flex md:hidden text-sm font-medium font-satoshi content-start">
+        <div className="flex md:hidden sm:hidden text-sm font-medium font-satoshi content-start">
           {userData?.name}
         </div>
         <div className="flex items-center justify-center gap-3">
@@ -234,9 +234,9 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
             alt={userData?.name}
             src={`${imagePath}/${userData?.profileImage}`}
           />
-          <div className="flex items-center justify-between bg-white px-2">
+          <div className="flex items-center justify-between bg-white">
             <Link to="/profile" className="menu-hover text-black">
-              <p className="md:text-[14px] text-[12px] font-medium">
+              <p className="md:text-[12px] sm:text-[9.5px] text-[12px] font-medium">
                 {userData?.name} ({userData?.userCode})
               </p>
               <p className="text-[#737791] md:text-xs text-[10px]">

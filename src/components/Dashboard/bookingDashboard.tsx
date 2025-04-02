@@ -214,10 +214,10 @@ const BookingDashboard: React.FC = () => {
   };
   return (
     // <div className="bg-[#F2DDD4] h-full p-2">
-    <div className="bg-blue-50 h-full pl-5 pr-5 pt-2">
+    <div className="bg-blue-50 min-h-screen pl-5 pr-5 pt-2">
       <Grid container>
-        <div className="flex justify-between w-full m-2 items-center gap-x-2 flex-wrap gap-3 md:gap-0 ">
-          <div className="flex justify-between items-center md:w-[20%] border lg:w-[15%]">
+        <div className="flex justify-between w-full m-2 items-center gap-x-2 gap-3 md:gap-0">
+          <div className="flex justify-between items-center lg:w-[10%] lg:gap-x-5 md:w-[22%] md:gap-x-2  sm:w-[30%]">
             <CartButton
               onClick={handleFirstCart}
               tooltipTitle="View Booking Data"
@@ -241,8 +241,8 @@ const BookingDashboard: React.FC = () => {
             onSubmit={onSubmit}
             render={({ handleSubmit, submitting, errors, values }) => (
               <form onSubmit={handleSubmit} noValidate>
-                <div className="flex w-[100%] items-center flex-1 gap-x-2 justify-end">
-                  <div className="lg:w-[30%] md:w-[20%]">
+                <div className="flex w-[100%] items-center flex-1 gap-x-2 justify-center">
+                  <div className="lg:w-[30%] md:w-[30%] sm:w-[25%]">
                     <Field name="startDate">
                       {({ input, meta }) => (
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -269,7 +269,7 @@ const BookingDashboard: React.FC = () => {
                       )}
                     </Field>
                   </div>
-                  <div className="w-[30%]">
+                  <div className="lg:w-[30%] md:w-[30%] sm:w-[25%]">
                     <Field name="endDate">
                       {({ input, meta }) => (
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -297,7 +297,7 @@ const BookingDashboard: React.FC = () => {
                     </Field>
                   </div>
                   <Button
-                    className="w-10 h-10 flex justify-center items-center rounded-full shadow-[0_0_5px_1px_#F2DDD4] border-gray-100 hover:bg-gray-200 transition duration-200"
+                    className="w-10 h-10 md:w-9 md:h-9 flex justify-center items-center rounded-full shadow-[0_0_5px_1px_#F2DDD4] border-gray-100 hover:bg-gray-200 transition duration-200"
                     disableRipple
                     disableElevation
                     sx={{
@@ -318,17 +318,17 @@ const BookingDashboard: React.FC = () => {
                     {isLoading ? (
                       <CircularProgress className="w-6 h-6" />
                     ) : (
-                      <SearchIcon className="w-6 h-6" />
+                      <SearchIcon className="w-6 h-6 md:w-5 md:h-5" />
                     )}
                   </Button>
                 </div>
               </form>
             )}
           />
-          <div className="flex justify-center items-center gap-x-2">
+          <div className="flex justify-between items-center gap-x-2 sm:gap-x-5">
             <Tip title="Download PDF">
               <Button
-                className="w-10 h-10 flex justify-center items-center rounded-full shadow-[0_0_5px_1px_#F2DDD4] border-gray-100 hover:bg-gray-200 transition duration-200"
+                className="w-10 h-10 flex justify-center md:w-9 md:h-9 items-center rounded-full shadow-[0_0_5px_1px_#F2DDD4] border-gray-100 hover:bg-gray-200 transition duration-200"
                 disableRipple
                 disableElevation
                 sx={{
@@ -345,12 +345,12 @@ const BookingDashboard: React.FC = () => {
                 }}
                 onClick={handleDownloadPDF}
               >
-                <PictureAsPdfSharpIcon className="w-6 h-6 text-red-500" />
+                <PictureAsPdfSharpIcon className="w-6 h-6 md:w-5 md:h-5 text-red-500" />
               </Button>
             </Tip>
             <Tip title="Download Excel">
               <Button
-                className="w-10 h-10 flex justify-center items-center rounded-full shadow-[0_0_5px_1px_#F2DDD4] border-gray-100 hover:bg-gray-200 transition duration-200"
+                className="w-10 h-10 flex justify-center items-center md:w-9 md:h-9 rounded-full shadow-[0_0_5px_1px_#F2DDD4] border-gray-100 hover:bg-gray-200 transition duration-200"
                 disableRipple
                 disableElevation
                 sx={{
@@ -367,7 +367,7 @@ const BookingDashboard: React.FC = () => {
                 }}
                 onClick={handleDownloadExcel}
               >
-                <FileDownloadOutlinedIcon className="w-6 h-6 text-green-700" />
+                <FileDownloadOutlinedIcon className="w-6 h-6 md:w-5 md:h-5 text-green-700" />
               </Button>
             </Tip>
           </div>
@@ -378,7 +378,7 @@ const BookingDashboard: React.FC = () => {
               {data &&
                 firstCart &&
                 data.map((item: IBookingData, index: number) => (
-                  <div key={index}>
+                  <div key={index} className="pb-20">
                     <Grid container spacing={2}>
                       {renderCountBox(
                         "Motor",
