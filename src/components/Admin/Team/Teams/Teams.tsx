@@ -275,6 +275,7 @@ const Teams = () => {
         //     [roleKey]: prevLimit[roleKey] + 1, // Increase limit by 1
         //   };
         // });
+        console.log("Team",team);
         const response = await getPolicyCountAPI({
           userId: UserData.profileId,
         });

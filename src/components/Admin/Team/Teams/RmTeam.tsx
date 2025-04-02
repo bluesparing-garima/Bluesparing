@@ -27,17 +27,13 @@ const RmTeams = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [teams, setTeams] = useState<ITeams[]>([]);
   
-  const [userLimit, setUserLimit] = useState(() => {
-    return userData?.userLimit});
-    useEffect(() => {
-      // Update user limit in localStorage whenever it changes
-      if (userData) {
-        userData.userLimit = userLimit;
-        localStorage.setItem("user", JSON.stringify(userData));
-      }
-    }, [userLimit]);
+
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let userData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
+
+  const [userLimit, setUserLimit] = useState(() => {
+    return userData?.userLimit});
+  
   const GetTeams = useCallback(
     (headRMId: string) =>
       GetRmTeamService({ header, headRMId })
@@ -54,6 +50,13 @@ const RmTeams = () => {
         }),
     []
   );
+  useEffect(() => {
+    // Update user limit in localStorage whenever it changes
+    if (userData) {
+      userData.userLimit = userLimit;
+      localStorage.setItem("user", JSON.stringify(userData));
+    }
+  }, [userLimit]);
   useEffect(() => {
     const rmId = userData.profileId;
     GetTeams(rmId);
@@ -263,40 +266,26 @@ const RmTeams = () => {
   const handleClickDeleteTeam = (team: ITeamsVM) => {
     setIsLoading(true);
     
-    deleteTeamService({ teamId: team.id})
-      .then(async() => {
-        // GetTeams();
-
-        // setUserLimit((prevLimit:any) => {
-        //   let roleKey = team.role?.toLowerCase().trim(); // Get role key
-        //   if (!roleKey || !(roleKey in prevLimit)) return prevLimit; // Ensure role exists in userLimit
-        //   if(roleKey === "relationship manager" || roleKey === "rm" ){
-        //     roleKey = 'rm';
-        //   }
-        //   return {
-        //     ...prevLimit,
-        //     [roleKey]: prevLimit[roleKey] + 1, // Increase limit by 1
-        //   };
-        // });
+    deleteTeamService({ teamId: team.id })
+      .then(async () => {
         const rmId = userData.profileId; // Ensure `rmId` is passed correctly
-   
         const response = await getPolicyCountAPI({ userId: rmId });
-   
         const updatedUserLimit = response?.userLimit;
 
-        setUserLimit({...updatedUserLimit})
+        setUserLimit({ ...updatedUserLimit });
 
-  
-        GetTeams(rmId);
+        await GetTeams(rmId);
+
+       
       })
       .catch((error) => {
         console.error("Error deleting team:", error);
-        // setErrMsg("Failed to delete team. Please try again.");
       })
       .finally(() => {
         setIsLoading(false);
       });
-  };
+};
+
   const [open, setOpen] = useState<boolean>(false);
   const [teamToDelete, setTeamToDelete] = useState<ITeamsVM  | null>(null);
 
