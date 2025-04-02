@@ -27,7 +27,6 @@ import {
 import crownIcon from "../../assets/pl.png";
 import { styled, keyframes } from "@mui/system"; // Styled System MUI से
 
-// 🔴 Blinking Red Dot Animation
 const blink = keyframes`
   0% { opacity: 1; transform: scale(1); box-shadow: 0 0 8px red; }
   100% { opacity: 0.9; transform: scale(1.2); box-shadow: 0 0 2px red; }
