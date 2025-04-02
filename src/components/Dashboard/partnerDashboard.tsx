@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { CardContent, CircularProgress, Grid, TextField, Tooltip } from "@mui/material";
+import { Box, Button, CardContent, CircularProgress, Grid, TextField, Tooltip } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import { DAYJS_DISPLAY_FORMAT, SafeKaroUser, header } from "../../context/constant";
 import { IPartnerData } from "./IDashboard";
@@ -31,6 +31,7 @@ import { MotorSvg, PlanDetailsDataSvg, ViewAdminDataSvg, ViewPartnerSvg } from "
 import { Toaster } from "react-hot-toast";
 import toast from "react-hot-toast";
 import dayjs from "dayjs";
+import SwipeableTemporaryDrawer from "../../utils/ui/SwipeableTemporaryDrawer";
 
 const PartnerDashboard: React.FC = () => {
   const [data, setData] = useState<IPartnerData[]>([]);
@@ -41,6 +42,7 @@ const PartnerDashboard: React.FC = () => {
   const [thirdCart, setThirdCart] = useState(false);
   const [fourthCart, setFourthCart] = useState(false);
   const [selectedCard, setSelectedcard] = useState("1");
+  const [open, setOpen] = useState(false);
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
   const GetDashboardCount = useCallback(
@@ -90,13 +92,13 @@ const PartnerDashboard: React.FC = () => {
   ) => {
     const formattedCount = typeof count === "number" ? Math.round(count).toLocaleString() : count;
     const content = (
-      <div className="bg-white m-2 p-3 rounded-[10.33px] shadow-lg flex items-center justify-between transform transition-transform duration-200 hover:scale-105">
+      <div style={{ boxShadow: '6.08px 6.08px 30.41px 0px #F2DDD480' }} className="bg-white m-2 p-3 rounded-lg shadow-lg flex items-center justify-between transform transition-transform duration-200 hover:scale-105">
         <div>
           <Typography
             variant="body2"
-            className="text-sm text-gray-600 mb-2 font-satoshi"
+            className="text-sm text-[#595959] mb-2 font-satoshi font-medium"
           >
-            {title==='Policy Count' ? 'Remaining Policy Count' : title}
+            {title === 'Policy Count' ? 'Remaining Policy Count' : title}
           </Typography>
           <Typography
             variant="h5"
@@ -161,6 +163,7 @@ const PartnerDashboard: React.FC = () => {
     const formattedEndDate = format(utcEndDate, "yyyy-MM-dd'T'HH:mm:ss");
     value.endDate = formattedEndDate;
     GetDashboardCount(value.startDate, value.endDate);
+    setOpen(false)
   };
   const handleFirstCart = async () => {
     setFirstCart(true);
@@ -196,12 +199,17 @@ const PartnerDashboard: React.FC = () => {
   const handleDownloadExcel = () => {
     partnerGenerateExcel(data);
   };
+
+
+  const openDateFilter = () => {
+    setOpen(!open)
+  }
   return (
-    <div className="bg-blue-200 h-screen">
+    <div className=" h-screen ">
       <CardContent>
         <Grid container>
-          <div className="flex w-full items-center justify-start bg-blue-200 ">
-            <div className="flex justify-start items-center w-[40%]">
+          <div className="flex w-full items-center flex-col gap-2 md:gap-0 md:flex-row justify-start">
+            <div className="flex md:justify-start justify-center gap-x-3  lg:gap-x-8 items-center w-[40%]">
               <CartButton
                 onClick={handleFirstCart}
                 tooltipTitle="View Policy Data"
@@ -226,13 +234,50 @@ const PartnerDashboard: React.FC = () => {
                 iconPath={<PlanDetailsDataSvg isActive={selectedCard === "4"} />}
                 isSelected={fourthCart}
               />
+
+              <div
+                className={`flex w-8 h-8 md:w-10 md:h-10 lg:hidden justify-center items-center  rounded-full shadow-lg m-1`}
+              >
+                <Tooltip title="Date Filter" arrow>
+                  <Button className="w-full h-full text-black" type="button" onClick={openDateFilter}>
+                    <svg width="24"
+                      height="24" xmlns="http://www.w3.org/2000/svg" fill="#00000" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
+                    </svg>
+                  </Button>
+                </Tooltip>
+              </div>
+
+              <div
+                className={`flex w-8 h-8 md:w-10 md:h-10 lg:hidden justify-center items-center  rounded-full shadow-lg m-1`}
+              >
+                <Button className="w-full h-full text-black" type="button" onClick={handleDownloadPDF} disabled={isLoading}>
+                  <Tooltip title="Download PDF">
+                    {isLoading ? <CircularProgress className="h-6 w-6" /> : <PictureAsPdfSharpIcon className="h-6 w-6" />}
+                  </Tooltip>
+                </Button>
+              </div>
+
+              <div
+                className={`flex w-8 h-8 md:w-10 md:h-10 lg:hidden justify-center items-center  rounded-full shadow-lg m-1`}
+              >
+                <Button className="w-full h-full text-black" type="button" onClick={handleDownloadExcel} disabled={isLoading}>
+                  <Tooltip title="Download Excel">
+                    {isLoading ? <CircularProgress className="h-6 w-6" /> : <FileDownloadOutlinedIcon className="h-6 w-6" />}
+
+                  </Tooltip>
+                </Button>
+              </div>
+
+
             </div>
-            <div className="flex w-full flex-wrap  justify-evenly items-center">
+            <hr className="h-1 w-full rounded-lg bg-[#F15729] md:hidden  " />
+            <div className="md:flex hidden w-full md:flex-wrap  justify-center md:justify-end gap-x-2 items-center">
               <Form
                 onSubmit={onSubmit}
                 render={({ handleSubmit, submitting, errors, values }) => (
                   <form onSubmit={handleSubmit} noValidate>
-                    <div className="flex w-1/2 md:w-full  items-center flex-1 gap-x-2 justify-between">
+                    <div className="flex w-3/4  md:w-full  items-center flex-1 gap-x-2 md:gap-x-3 lg:gap-x-4  justify-between">
                       <div className="w-[47%]">
                         <Field name="startDate">
                           {({ input, meta }) => (
@@ -286,41 +331,42 @@ const PartnerDashboard: React.FC = () => {
                         </Field>
                       </div>
                       <button
-                        className="md:w-10 md:h-10 h-4 w-4 bg-[#30A9FF] shadow-sm rounded flex justify-center items-center text-white"
+                        className="md:w-10 md:h-10 h-4 w-4 bg-white   rounded-full flex justify-center items-center text-black shadow-lg"
                         type="submit" disabled={isLoading}
                       >
                         {isLoading ? <CircularProgress
-                          className="md:w-6 md:h-6 h-3 w-3"
+                          className="h-6 w-6"
                         /> :
-                          <SearchIcon className="md:w-6 md:h-6 h-3 w-3" />
+                          <SearchIcon className=" h-6 w-6" />
                         }
                       </button>
                     </div>
                   </form>
                 )}
               />
-              <div className="flex justify-between items-center gap-x-2">
 
+              <button
+                className="md:w-10 md:h-10 h-4 w-4 bg-white  rounded-full flex justify-center items-center text-black shadow-lg"
+                onClick={handleDownloadPDF} disabled={isLoading}
+              ><Tooltip title="Download PDF">
+                  {isLoading ? <CircularProgress className="h-6 w-6" /> : <PictureAsPdfSharpIcon className="h-6 w-6" />}
+                </Tooltip>                      </button>
+
+              <Tooltip title="Download Excel">
                 <button
-                  className="md:w-10 md:h-10 h-4 w-4 bg-[#0095FF] shadow-sm rounded flex justify-center items-center text-white"
-                  onClick={handleDownloadPDF} disabled={isLoading}
-                ><Tooltip title="Download PDF">
-                    {isLoading ? <CircularProgress className="md:w-6 md:h-6 h-3 w-3" /> : <PictureAsPdfSharpIcon className="md:w-6 md:h-6 h-3 w-3" />}
-                  </Tooltip>                      </button>
+                  className="h-6 w-6 bg-white  rounded-full flex justify-center items-center text-black shadow-lg"
+                  onClick={handleDownloadExcel}
+                >
+                  {isLoading ? <CircularProgress className="h-6 w-6" /> : <FileDownloadOutlinedIcon className="h-6 w-6" />}
 
-                <Tooltip title="Download Excel">
-                  <button
-                    className="md:w-10 md:h-10 h-4 w-4 bg-[#3BDB03] shadow-sm rounded flex justify-center items-center text-white"
-                    onClick={handleDownloadExcel}
-                  >
-                    {isLoading ? <CircularProgress className="md:w-6 md:h-6 h-3 w-3" /> : <FileDownloadOutlinedIcon className="md:w-6 md:h-6 h-3 w-3" />}
+                </button>
+              </Tooltip>
 
-                  </button>
-                </Tooltip>
-              </div>
+
+
             </div>
           </div>
-          <Grid item md={12}>
+          <Grid item md={12} marginTop={5}>
             {UserData.role.toLowerCase() === "partner" ? (
               <>
                 <Grid container spacing={2}>
@@ -331,7 +377,7 @@ const PartnerDashboard: React.FC = () => {
                           <>
                             {data.map((item, index) => (
                               <div key={index}>
-                                <div className="bg-blue-200 md:p-7 p-2">
+                                <div className=" md:p-7 p-2">
                                   <Grid container spacing={2}>
                                     {renderCountBox(
                                       "Balance",
@@ -397,7 +443,7 @@ const PartnerDashboard: React.FC = () => {
                           <>
                             {data.map((item, index) => (
                               <div key={index}>
-                                <div className="bg-blue-200 md:p-7 p-2">
+                                <div className=" md:p-7 p-2">
                                   <Grid container spacing={2}>
                                     {renderCountBox(
                                       "Motor",
@@ -446,7 +492,7 @@ const PartnerDashboard: React.FC = () => {
                           </>
                         )}
                         {thirdCart && (
-                          <div className="bg-blue-200 md:p-7 p-2">
+                          <div className=" md:p-7 p-2">
                             <Grid container spacing={2}>
                               <Grid item md={6}>
                                 <PayOutCommissionChart
@@ -462,7 +508,7 @@ const PartnerDashboard: React.FC = () => {
                           </div>
                         )}
                         {fourthCart && (
-                          <div className="bg-blue-200 md:p-7 p-2">
+                          <div className=" md:p-7 p-2">
                             <Typography
                               variant="h5"
                               className="text-lg font-bold text-gray-800"
@@ -523,6 +569,79 @@ const PartnerDashboard: React.FC = () => {
         </Grid>
       </CardContent>
       <Toaster position="bottom-center" reverseOrder={false} />
+      <SwipeableTemporaryDrawer open={open} setOpen={setOpen}>
+      <Box height={300} display="flex" justifyContent="space-between" alignItems="center" gap={5}>
+
+      <Form
+            onSubmit={onSubmit}
+            render={({ handleSubmit, submitting }) => (
+              <form onSubmit={handleSubmit} className="w-full max-w-lg bg-white p-6 rounded-xl shadow-2xl border border-gray-200">
+                <div className="flex flex-col md:flex-row gap-6 items-center justify-center " >
+                  <Field name="startDate"  style={{ boxShadow: '6.08px 6.08px 30.41px 0px #F2DDD480' }}>
+                    {({ input, meta }) => (
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                          disableFuture
+                           inputFormat="DD/MM/YYYY"
+                          value={input.value || null}
+                          onChange={(date) => input.onChange(date)}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="Start Date"
+                              variant="outlined"
+                              size="small"
+                              fullWidth
+                              className="bg-white rounded-md"
+                              error={meta.touched && !!meta.error}
+                              helperText={meta.touched && meta.error}
+                            />
+                          )}
+                        />
+                      </LocalizationProvider>
+                    )}
+                  </Field>
+
+                  <Field name="endDate"  style={{ boxShadow: '6.08px 6.08px 30.41px 0px #F2DDD480' }}>
+                    {({ input, meta }) => (
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                          disableFuture
+                             inputFormat="DD/MM/YYYY"
+                          value={input.value || null}
+                          onChange={(date) => input.onChange(date)}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="End Date"
+                              variant="outlined"
+                              size="small"
+                              fullWidth
+                              className="bg-white rounded-md"
+                              error={meta.touched && !!meta.error}
+                              helperText={meta.touched && meta.error}
+                            />
+                          )}
+                        />
+                      </LocalizationProvider>
+                    )}
+                  </Field>
+                </div>
+                <div className="mt-6 flex justify-center">
+                  <button
+                    type="submit"
+                    className="flex items-center justify-center px-5 py-3 bg-blue-600 text-white font-medium rounded-lg shadow-lg hover:bg-blue-700 disabled:opacity-50 transition duration-300 ease-in-out"
+                    disabled={submitting}
+                  >
+                    {submitting ? <CircularProgress size={24} className="text-white" /> : <SearchIcon className="mr-2" />}
+                    <span>Search</span>
+                  </button>
+                </div>
+              </form>
+            )}
+          />
+        </Box>
+      </SwipeableTemporaryDrawer>
     </div>
   );
 };
