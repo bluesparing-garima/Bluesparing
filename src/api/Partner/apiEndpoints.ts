@@ -10,12 +10,12 @@ export const debitHistoryPartnerEndpoint = (
   partnerId: string
 ) =>
  (
-    `/api/debit/date-range/${partnerId}?startDate=${startDate}&endDate=${endDate}`
+    `/api/debits/date-range/${partnerId}?startDate=${startDate}&endDate=${endDate}`
   );
 export const transactionHistoryPartnerEndpoint = (
   transactionCode: string,
   partnerId: string
 ) =>
  (
-    `/api/debit/transaction?partnerId=${partnerId}&transactionCode=${transactionCode}`
+    `/api/debits/transaction?partnerId=${partnerId}&transactionCode=${transactionCode}`
   );
