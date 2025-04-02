@@ -741,36 +741,13 @@ export const CartButton: React.FC<CartButtonProps> = ({
 
   return (
     <div
-      className={`w-10 h-10 flex justify-center items-center rounded-full transition duration-200 
-        ${
-          isSelected
-            ? "bg-[#F15729] shadow-sm"
-            : "border border-gray-300 hover:bg-gray-200"
-        }
-      `}
+      className={`flex w-8 h-8 md:w-10 md:h-10 justify-center items-center ${
+        isSelected ? "bg-[#F15729] " : "bg-white border"
+      } rounded-full shadow-lg m-1`}
     >
       <Tooltip title={tooltipTitle} arrow>
-        <Button
-          size={buttonSize}
-          type="button"
-          onClick={onClick}
-          disableRipple
-          disableElevation
-          sx={{
-            minWidth: 0,
-            width: "100%", // Button ko full width dene ke liye
-            height: "100%", // Button ko full height dene ke liye
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "transparent",
-            "&:hover": { backgroundColor: "transparent" },
-            "&:focus": { outline: "none" },
-          }}
-        >
-          <span className="h-full w-full flex justify-center items-center">
-            {iconPath}
-          </span>
+        <Button  className="w-full h-full" type="button" onClick={onClick}>
+          {iconPath}
         </Button>
       </Tooltip>
     </div>
