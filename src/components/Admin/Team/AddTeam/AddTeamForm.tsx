@@ -611,7 +611,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                   )}
                 </Field>
               </Grid> */}
-              <Grid item lg={3} md={4} sm={6} xs={12}>
+              <Grid item lg={4} md={4} sm={6} xs={12}>
   <Field name="role">
     {({ input, meta }) => (
       <div>
@@ -644,7 +644,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       </div>
     )}
   </Field>
-</Grid>;
+</Grid>
 
 
               {selectedRole !== "Relationship Manager" && (
