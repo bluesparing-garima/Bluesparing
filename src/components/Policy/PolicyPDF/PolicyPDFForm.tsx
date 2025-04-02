@@ -291,7 +291,6 @@ const PolicyPDFForm = (props: AddPolicyFormProps) => {
 
   
   const onProgress = (p:number)=>{
-    console.log(p);
   }
   const callAddPolicyAPI = async (policy: any) => {
     try {
@@ -324,7 +323,6 @@ const PolicyPDFForm = (props: AddPolicyFormProps) => {
         setPolicyErrorMessage("");
       }
     } catch {
-      console.error("error");
     }
   };
 
@@ -449,7 +447,6 @@ const PolicyPDFForm = (props: AddPolicyFormProps) => {
         setPolicyErrorMessage("");
       }
     } catch {
-      console.error("error");
     }
   };
 

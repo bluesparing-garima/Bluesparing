@@ -32,7 +32,6 @@ const FilterPartnerFinalPremium = () => {
       category: selectedCategory,
     })
       .then((partners) => {
-        console.log(partners);
         setCompanyDetails(partners.data);
         setTotalAmount(partners.totalAmount);
         setSelectedPartnerCode(partners.partnerCode);

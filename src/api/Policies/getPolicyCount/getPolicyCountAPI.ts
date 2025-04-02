@@ -1,5 +1,4 @@
 import fetchInterceptor,{FetchOptions} from "../../../utils/fetchInterceptor ";
-// import fetchInterceptor, { FetchOptions } from "../../../utils/fetchInterceptor";
 import { getPolicyCountEndpoint as endpoint } from "../apiEndpoints";
 import { getPolicyCountProps } from "../getPoliciesTypes";
 type PolicyCountResponse = {

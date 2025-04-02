@@ -22,13 +22,11 @@ const Accounts = () => {
     getAccountService({ header })
       .then((accountsDetails) => {
         const adminAccount = accountsDetails.data.filter((ele:any)=>ele.roleName?.toLowerCase()==='admin')
-        console.log("Filtered Data:", adminAccount);
         setAccounts(adminAccount || []);
       })
       .catch(async (error) => {
         const err = await error;
         toast.error(err.message);
-        console.error("Failed to fetch account details", error);
       });
   }, []);
   

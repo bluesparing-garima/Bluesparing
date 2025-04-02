@@ -69,7 +69,6 @@ const Dashboard: React.FC = () => {
   const [selectedCard, setSelectedcard] = useState("1");
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
-  console.log("first", UserData);
   const GetDashboardCount = useCallback((startDate, endDate) => {
     getAdminDashboardService({
       header,
@@ -106,7 +105,6 @@ const Dashboard: React.FC = () => {
         setIsLoading(true);
         await GetDashboardCount(formattedFirstDay, formattedLastDay);
       } catch (error) {
-        console.error("Error fetching HR Dashboard data:", error);
       } finally {
         setIsLoading(false);
       }
@@ -740,14 +738,15 @@ export const CartButton: React.FC<CartButtonProps> = ({
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const buttonSize = isSmallScreen ? "small" : "medium";
+
   return (
     <div
-      className={`p-1 md:p-2 ${
-        isSelected ? "bg-[#E59411] shadow-md" : ""
-      } rounded`}
+      className={`flex w-8 h-8 md:w-10 md:h-10 justify-center items-center ${
+        isSelected ? "bg-[#F15729] " : "bg-white border"
+      } rounded-full shadow-lg m-1`}
     >
       <Tooltip title={tooltipTitle} arrow>
-        <Button size={buttonSize} type="button" onClick={onClick}>
+        <Button  className="w-full h-full" type="button" onClick={onClick}>
           {iconPath}
         </Button>
       </Tooltip>
@@ -843,7 +842,7 @@ const renderCountBox = (
           variant="body2"
           className="text-sm text-gray-600 mb-2 font-satoshi"
         >
-          {title==='Policy Count' ? 'Remaining Policy Count' : title}
+          {title === "Policy Count" ? "Remaining Policy Count" : title}
         </Typography>
         <Typography variant="h5" className="text-base font-bold text-[#202224]">
           {count}

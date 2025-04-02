@@ -19,7 +19,7 @@ const useGetNewsCategories = ({ header }: GetNewsCategoryProps) => {
           setCategories(categories);
         })
         .catch((res) => {
-          console.error(res.status);
+          throw new Error(res.status);
         });
     }
   }, [header, isLoading]);

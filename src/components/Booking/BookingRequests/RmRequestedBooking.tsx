@@ -185,9 +185,8 @@ const RmRequestedBooking = () => {
           a.click();
           document.body.removeChild(a);
         })
-        .catch((error) => console.error("Error downloading file:", error));
+        .catch((error) => {throw error});
     } else {
-      console.error("Unsupported file type:", fileExtension);
     }
   };
   const handleClickDownloadDocument = (booking: IBookingRequestsVM) => {

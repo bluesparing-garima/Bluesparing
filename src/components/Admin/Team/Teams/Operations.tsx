@@ -25,7 +25,7 @@ const Operations = () => {
           setTeams(teamDetails.data);
         })
         .catch((error) => {
-          console.error("Failed to fetch Operations details", error);
+          throw error
         }),
     []
   );
@@ -177,10 +177,8 @@ const Operations = () => {
           a.click();
           document.body.removeChild(a);
         })
-        .catch((error) => console.error("Error downloading file:", error));
-    } else {
-      console.error("Unsupported file type:", fileExtension);
-    }
+        .catch((error) => {throw error});
+    } else {}
   };
   const handleClickDownloadDocument = (team: ITeamsVM) => {
     if (team.image) {

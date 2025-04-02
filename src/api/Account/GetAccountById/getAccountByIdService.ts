@@ -17,13 +17,6 @@ const getAccountByIdService = async ({
     const accounts = convertIAccountToIAccountVM(resData.data);
     return accounts;
   } catch (error) {
-    if (error instanceof Error) {
-      console.error(
-        ` ${error.message}`
-      );
-    } else {
-      console.error('An unknown error occurred', error);
-    }
     throw error;
   }
 

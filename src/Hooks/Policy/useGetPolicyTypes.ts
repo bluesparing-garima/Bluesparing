@@ -21,7 +21,7 @@ const useGetPolicyTypes = ({ header }: GetPolicyTypeProps) => {
           setPolicyTypes(policies);
         })
         .catch((res) => {
-          console.error(res.status);
+          throw new Error(res.status);
         });
     }
   }, [header, isLoading]);

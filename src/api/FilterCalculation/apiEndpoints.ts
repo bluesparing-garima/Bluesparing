@@ -11,7 +11,6 @@ export const getFilterPoliciesEndpoint = (
   rto: string,
   broker: string,
   seatingCapacity: number,
-  //insuredType: string,
   caseType: string,
   make: string,
   model: string,

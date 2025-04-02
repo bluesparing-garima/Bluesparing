@@ -76,11 +76,10 @@ const SidebarUi: FC<SidebarProps> = ({
       return (
         <li key={item.id} className="relative bg-white scroll-hidden">
           <div
-            className={`flex items-center px-2 py-1 text-[15px] cursor-pointer rounded-lg
-              ${
-                isActive
-                  ? "bg-safekaroDarkOrange text-white"
-                  : "text-black hover:bg-safekaroDarkOrange hover:text-white"
+            className={`flex items-center px-2 py-2 text-lg cursor-pointer rounded-lg
+               ${isActive
+                ? "shadow-custom-sb  text-[#F15729] font-bold bg-[#F2DDD499]"
+                : "text-black  "
               }
             `}
             onClick={() => {
@@ -109,9 +108,8 @@ const SidebarUi: FC<SidebarProps> = ({
             <span className="text-sm">{item.label}</span>
             {item.subMenu && item.subMenu.length > 0 && (
               <i
-                className={`fas fa-chevron-${
-                  openSubMenus.includes(item.id) ? "up" : "down"
-                } text-sm text-gray-400 ml-auto`}
+                className={`fas fa-chevron-${openSubMenus.includes(item.id) ? "up" : "down"
+                  } text-sm text-gray-400 ml-auto`}
               />
             )}
           </div>
@@ -127,13 +125,12 @@ const SidebarUi: FC<SidebarProps> = ({
 
   return (
     <div
-      className={`${
-        isSidebarOpen ? "left-0" : "-left-60"
-      } md:translate-x-0 sticky top-0 z-20 md:flex flex-col w-60 bg-white h-screen shadow-lg border-r-2 border-[#FEF9F3] transition-transform delay-150 duration-200`}
+      className={`${isSidebarOpen ? "left-0" : "-left-60"
+        } md:translate-x-0 sticky top-0 z-20 md:flex flex-col w-60 bg-white h-screen border-l-2 border-r-2 border-[#FEF9F3] transition-transform delay-150 duration-200`}
     >
       <Link
         to={generateDashBoardLink()}
-        className="flex items-center justify-center h-16 mt-1 bg-white"
+        className="flex items-center justify-center border-none outline-none h-16 mt-1 bg-white"
       >
         <picture className="mb-1 flex flex-col justify-center items-center">
           <img
@@ -144,7 +141,7 @@ const SidebarUi: FC<SidebarProps> = ({
             }
             className="w-36 h-12 mx-auto"
             alt="Company Logo"
-            onError={(e) => (e.currentTarget.src = logo)} // Agar image load fail ho toh default logo dikhaye
+            onError={(e) => (e.currentTarget.src = logo)}
           />
         </picture>
       </Link>
@@ -169,7 +166,9 @@ const SidebarUi: FC<SidebarProps> = ({
       <div className="flex-1 py-7 overflow-y-auto scrollbar">
         <ul className="space-y-2 ml-1 mr-1">{renderMenuItems(menuItems)}</ul>
       </div>
+   
     </div>
+    
   );
 };
 

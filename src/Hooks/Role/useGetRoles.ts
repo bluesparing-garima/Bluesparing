@@ -16,7 +16,7 @@ const useGetRoles = ({ header }: GetRoleProps) => {
           setRoles(apiResponse.data!);
         })
         .catch((res) => {
-          console.error(res.status);
+          throw new Error(res.status);
         });
     }
   }, [header, isLoading]);

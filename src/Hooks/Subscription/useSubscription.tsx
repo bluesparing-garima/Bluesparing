@@ -18,7 +18,7 @@ const useSubscription = () => {
           setSubsData(subscriptions);
         })
         .catch((res) => {
-          console.error(res.status);
+          throw new Error(res.status);
         });
     }
     // eslint-disable-next-line

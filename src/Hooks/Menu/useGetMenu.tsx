@@ -18,7 +18,7 @@ const useGetMenuByRoleId = (roleId:string) => {
           setMenuData(menu);
         })
         .catch((res) => {
-          console.error(res.status);
+          throw new Error(res.status);
         });
     }
   }, [header, isLoading]);

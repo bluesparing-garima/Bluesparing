@@ -16,7 +16,7 @@ const useGetAccountByRole = ({ header,partnerId,role }: GetAccountByRoleProps) =
           setAccounts(apiResponse.data);
         })
         .catch((res) => {
-          console.error(res.status);
+          throw new Error(res.status);
         });
     }
   }, [header, isLoading]);

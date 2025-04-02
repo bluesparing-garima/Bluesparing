@@ -94,7 +94,7 @@ const Teams = () => {
           setTeams(newTeamData);
         })
         .catch((error) => {
-          console.error("Failed to fetch product details", error);
+          throw error;
         }),
     []
   );
@@ -223,9 +223,8 @@ const Teams = () => {
           a.click();
           document.body.removeChild(a);
         })
-        .catch((error) => console.error("Error downloading file:", error));
+        .catch((error) => {throw error});
     } else {
-      console.error("Unsupported file type:", fileExtension);
     }
   };
   const handleClickDownloadDocument = (team: IAppUser) => {

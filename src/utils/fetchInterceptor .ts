@@ -1,8 +1,8 @@
 import { refreshTokenAPI } from "../api/Token/RefreshTokenAPI";
 import { getAccessToken } from "../Hooks/Tokens/useToken";
 
-export const BASE_URL = "http://localhost:7000";
-// export const BASE_URL = "https://iimapi.bluesparing.com"
+// export const BASE_URL = "http://localhost:7000";
+export const BASE_URL = "https://iimapi.bluesparing.com"
 export interface FetchOptions extends RequestInit {
   body?: string | FormData | null;
 }
@@ -84,7 +84,7 @@ const fetchInterceptor = async <T>(
           errorMessage = errorData.message;
         }
       } catch (parseError) {
-        console.error("Error parsing JSON:", parseError);
+         throw parseError;
       }
     
       throw new Error(errorMessage);
@@ -96,8 +96,7 @@ const fetchInterceptor = async <T>(
     const response = await makeRequest(options);
     return (await response.json()) as T;
   } catch (error) {
-    console.error("Fetch error:", error);
-    throw error;
+    throw error
   }
 };
 
