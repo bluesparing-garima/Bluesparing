@@ -23,7 +23,7 @@ export const ViewPartnerSvg = ({ isActive, className }: { isActive: boolean; cla
         viewBox="0 0 30 28"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-      width="24"
+        width="24"
         height="24"
       >
         <path
@@ -59,7 +59,7 @@ export const ViewAdminDataSvg = ({ isActive, className }: { isActive: boolean; c
         viewBox="0 0 26 27"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-      width="24"
+        width="24"
         height="24"
       >
         <path
@@ -77,7 +77,7 @@ export const AttendanceDataSvg = ({ isActive, className }: { isActive: boolean; 
         viewBox="0 0 26 27"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-         width="24"
+        width="24"
         height="24"
       >
         <path
@@ -118,7 +118,7 @@ export const EmployeeSvg = ({ isActive, className }: { isActive: boolean; classN
   return (
     <>
       <svg
-       width="24"
+        width="24"
         height="24"
         fill={`${isActive ? "white" : "#636566"}`}
         viewBox="0 0 100 100"
@@ -131,3 +131,18 @@ export const EmployeeSvg = ({ isActive, className }: { isActive: boolean; classN
     </>
   );
 };
+
+
+export const DateFilterSvg = ({ isActive, className }: { isActive: boolean; className?: string }) => {
+  return (
+    <>
+      <svg width="24"
+        height="24" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
+      </svg>
+
+    </>
+  );
+};
+
+

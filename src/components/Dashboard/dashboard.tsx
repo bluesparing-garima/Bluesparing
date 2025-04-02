@@ -740,7 +740,7 @@ export const CartButton: React.FC<CartButtonProps> = ({
   const buttonSize = isSmallScreen ? "small" : "medium";
   return (
     <div
-      className={`flex w-10 h-10 justify-center items-center ${
+      className={`flex w-8 h-8 md:w-10 md:h-10 justify-center items-center ${
         isSelected ? "bg-[#F15729] " : "bg-white border"
       } rounded-full shadow-lg m-1`}
     >
