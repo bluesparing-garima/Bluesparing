@@ -738,6 +738,7 @@ export const CartButton: React.FC<CartButtonProps> = ({
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const buttonSize = isSmallScreen ? "small" : "medium";
+
   return (
     <div
       className={`flex w-8 h-8 md:w-10 md:h-10 justify-center items-center ${
@@ -841,7 +842,7 @@ const renderCountBox = (
           variant="body2"
           className="text-sm text-gray-600 mb-2 font-satoshi"
         >
-          {title==='Policy Count' ? 'Remaining Policy Count' : title}
+          {title === "Policy Count" ? "Remaining Policy Count" : title}
         </Typography>
         <Typography variant="h5" className="text-base font-bold text-[#202224]">
           {count}

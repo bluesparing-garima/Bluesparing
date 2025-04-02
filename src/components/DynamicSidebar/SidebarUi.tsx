@@ -130,7 +130,7 @@ const SidebarUi: FC<SidebarProps> = ({
     >
       <Link
         to={generateDashBoardLink()}
-        className="flex items-center justify-center h-16 mt-1 bg-white"
+        className="flex items-center justify-center border-none outline-none h-16 mt-1 bg-white"
       >
         <picture className="mb-1 flex flex-col justify-center items-center">
           <img

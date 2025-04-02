@@ -188,13 +188,13 @@ const BookingDashboard: React.FC = () => {
     const formattedCount =
       typeof count === "number" ? Math.round(count).toLocaleString() : count;
     const content = (
-      <div className="bg-white m-2 p-3 rounded-[10.33px] shadow-lg flex items-center justify-between transform transition-transform duration-200 hover:scale-105">
+      <div className="bg-white m-2 p-3 mt-5 rounded-[10.33px] shadow-[0_0_20px_2px_#F2DDD4] flex items-center justify-between transform transition-transform duration-200 hover:scale-105">
         <div>
           <Typography
             variant="body2"
             className="text-sm text-gray-600 mb-2 font-satoshi"
           >
-            {title==='Policy Count' ? 'Remaining Policy Count' : title}
+            {title === "Policy Count" ? "Remaining Policy Count" : title}
           </Typography>
           <Typography
             variant="h5"
@@ -213,10 +213,10 @@ const BookingDashboard: React.FC = () => {
     );
   };
   return (
-    <div className="bg-blue-200 h-screen p-2">
+    <div className="bg-white h-full p-2">
       <Grid container>
         <div className="flex justify-between w-full m-2 items-center gap-x-2 flex-wrap gap-3 md:gap-0 ">
-          <div className="flex justify-center items-center">
+          <div className="flex justify-evenly items-center w-[12%]">
             <CartButton
               onClick={handleFirstCart}
               tooltipTitle="View Booking Data"
@@ -296,7 +296,21 @@ const BookingDashboard: React.FC = () => {
                     </Field>
                   </div>
                   <Button
-                    className=" h-10  bg-[#30A9FF] shadow-sm rounded flex justify-center items-center text-white"
+                    className="w-10 h-10 flex justify-center items-center rounded-full border-gray-300 hover:bg-gray-200 transition duration-200"
+                    disableRipple
+                    disableElevation
+                    sx={{
+                      minWidth: 0,
+                      width: "100%", // Button ko full width dene ke liye
+                      height: "100%", // Button ko full height dene ke liye
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      border: "1px solid #D1D5DB",
+                      backgroundColor: "transparent",
+                      "&:hover": { backgroundColor: "transparent" },
+                      "&:focus": { outline: "none" },
+                    }}
                     type="submit"
                     disabled={isLoading}
                   >
@@ -313,18 +327,46 @@ const BookingDashboard: React.FC = () => {
           <div className="flex justify-center items-center gap-x-2">
             <Tip title="Download PDF">
               <Button
-                className=" h-10  bg-[#0095FF] shadow-sm rounded flex justify-center items-center text-white"
+                className="w-10 h-10 flex justify-center items-center rounded-full border-gray-300 hover:bg-gray-200 transition duration-200"
+                disableRipple
+                disableElevation
+                sx={{
+                  minWidth: 0,
+                  width: "100%", // Button ko full width dene ke liye
+                  height: "100%", // Button ko full height dene ke liye
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  border: "1px solid #D1D5DB",
+                  backgroundColor: "transparent",
+                  "&:hover": { backgroundColor: "transparent" },
+                  "&:focus": { outline: "none" },
+                }}
                 onClick={handleDownloadPDF}
               >
-                <PictureAsPdfSharpIcon className="w-6 h-6 " />
+                <PictureAsPdfSharpIcon className="w-6 h-6 text-red-500" />
               </Button>
             </Tip>
             <Tip title="Download Excel">
               <Button
-                className=" h-10  bg-[#3BDB03] shadow-sm rounded flex justify-center items-center text-white"
+                className="w-10 h-10 flex justify-center items-center rounded-full border-gray-300 hover:bg-gray-200 transition duration-200"
+                disableRipple
+                disableElevation
+                sx={{
+                  minWidth: 0,
+                  width: "100%", // Button ko full width dene ke liye
+                  height: "100%", // Button ko full height dene ke liye
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  border: "1px solid #D1D5DB",
+                  backgroundColor: "transparent",
+                  "&:hover": { backgroundColor: "transparent" },
+                  "&:focus": { outline: "none" },
+                }}
                 onClick={handleDownloadExcel}
               >
-                <FileDownloadOutlinedIcon className="w-6 h-6 " />
+                <FileDownloadOutlinedIcon className="w-6 h-6 text-green-700" />
               </Button>
             </Tip>
           </div>
@@ -439,7 +481,9 @@ const BookingDashboard: React.FC = () => {
                               <React.Fragment key={key}>
                                 {renderCountBox(
                                   key.toUpperCase(),
-                                  value==='Infinity'?"Unlimited":Number(value) || 0,
+                                  value === "Infinity"
+                                    ? "Unlimited"
+                                    : Number(value) || 0,
                                   "",
                                   `/update-plan`
                                 )}
