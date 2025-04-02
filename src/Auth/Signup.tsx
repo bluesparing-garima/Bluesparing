@@ -1,11 +1,12 @@
 import logo from "../assets/login_logo.png";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Form, Field } from "react-final-form";
 import { FORM_ERROR } from "final-form";
 import { FormProps, ISignUp } from "./IAuth";
 import {
   Autocomplete,
   Button,
+  Dialog,
   FormControl,
   FormHelperText,
   FormLabel,
@@ -25,12 +26,20 @@ import { useEffect, useState } from "react";
 import OverlayError from "../utils/ui/OverlayError";
 import OverlayLoader from "../utils/ui/OverlayLoader";
 
+
 const Signup = () => {
   const navigate = useNavigate();
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  
   const [errMsg, setErrMsg] = useState("");
   const [subsData] = useSubscription();
-  const [roles] = useGetRoles({ header });
+  const [roles] = useGetRoles({ header })
+  // const [termsAccepted, setTermsAccepted] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const findRoleIdByName = (name: string) => {
     const temp = name.toLowerCase();
     const roleObj = roles.find((ele) => ele.roleName?.toLowerCase() === temp);
@@ -58,6 +67,20 @@ const Signup = () => {
     }
 
     return errors;
+  };
+  useEffect(() => {
+    // Check if user accepted terms from localStorage
+    if (localStorage.getItem("termsAccepted") === "true") {
+      setTermsAccepted(true);
+    }
+  }, []);
+
+  const handleSignup = () => {
+    if (!termsAccepted) {
+      alert("You must accept the Terms and Conditions to sign up.");
+      return;
+    }
+    console.log("Signing up with:", email, password);
   };
   const onSubmit = async (signUpData: FormProps) => {
     const { plans, companyLogo, profileImage, gender } = signUpData;
@@ -417,32 +440,100 @@ const Signup = () => {
                             )}
                           </Grid>
                           <Grid item lg={12} md={12} sm={12} xs={12}>
-                            <Button
-                              type="submit"
-                              className="mt-2 tracking-wide font-semibold w-full bg-gradient-to-r from-[#E9762B] to-[#EDB65C] text-[#443627] transition-all  duration-300 px-4 py-3 rounded hover:from-[#EDB65C] hover:to-[#E9762B] active:scale-90 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
-                              disabled={isLoading}
-                            >
-                              {isLoading ? (
-                                "Submitting"
-                              ) : (
-                                <>
-                                  <svg
-                                    className="w-6 h-6 -ml-2"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                  >
-                                    <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
-                                    <circle cx="8.5" cy="7" r="4" />
-                                    <path d="M20 8v6M23 11h-6" />
-                                  </svg>
-                                  <span className="ml-3">Sign Up</span>
-                                </>
-                              )}
-                            </Button>
-                          </Grid>
+      {/* Terms and Conditions Checkbox */}
+      <div className="flex items-center mb-2">
+        <input
+          type="checkbox"
+          id="termsCheckbox"
+          checked={termsAccepted}
+          onChange={(e) => setTermsAccepted(e.target.checked)}
+          className="w-4 h-4 mr-2 cursor-pointer"
+        />
+        <label htmlFor="termsCheckbox" className="text-sm text-[#443627]">
+          I agree to the{" "}
+          <button
+            type="button"
+            onClick={() => setIsModalOpen(true)}
+            className="text-[#E9762B] underline"
+          >
+            Terms and Conditions
+          </button>
+        </label>
+      </div>
+
+      {/* Signup Button */}
+      <Button
+        type="submit"
+        className={`mt-2 tracking-wide font-semibold w-full bg-gradient-to-r from-[#E9762B] to-[#EDB65C] text-[#443627] transition-all duration-300 px-4 py-3 rounded hover:from-[#EDB65C] hover:to-[#E9762B] active:scale-90 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none ${
+          !termsAccepted ? "opacity-50 cursor-not-allowed" : ""
+        }`}
+        disabled={isLoading || !termsAccepted}
+      >
+        {isLoading ? (
+          "Submitting"
+        ) : (
+          <>
+            <svg
+              className="w-6 h-6 -ml-2"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+              <circle cx="8.5" cy="7" r="4" />
+              <path d="M20 8v6M23 11h-6" />
+            </svg>
+            <span className="ml-3">Sign Up</span>
+          </>
+        )}
+      </Button>
+
+      {/* Terms and Conditions Modal */}
+      {isModalOpen && (
+  <Dialog
+    open={isModalOpen}
+    onClose={() => setIsModalOpen(false)}
+    className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+  >
+    <div className="bg-white p-6 rounded-lg max-w-lg w-full shadow-lg border-2 border-[#E9762B]">
+      <h2 className="text-2xl font-bold text-[#E9762B] border-b-2 border-[#EDB65C] pb-3 text-center">Terms and Conditions</h2>
+      <div className="mt-4 text-sm text-gray-700 max-h-72 overflow-y-auto space-y-4 p-4 border border-[#EDB65C] rounded-md bg-[#FFF9F2]">
+        <p><strong className="text-[#E9762B]">1. Introduction</strong><br/>Bluesparing provides insurance management software to streamline policy administration, claims processing, and customer interactions. These terms apply to all users.</p>
+        
+        <p><strong className="text-[#E9762B]">2. Account and Access</strong><br/>You must register an account to access certain features. You are responsible for maintaining the confidentiality of your account credentials.</p>
+        
+        <p><strong className="text-[#E9762B]">3. Subscription and Payment</strong><br/>Access may require a subscription. Payments are due as per the agreed billing cycle.</p>
+        
+        <p><strong className="text-[#E9762B]">4. Permitted Use</strong><br/>Users may not modify, copy, distribute, or resell the software without authorization.</p>
+        
+        <p><strong className="text-[#E9762B]">5. Data Privacy and Security</strong><br/>Bluesparing collects and processes data in accordance with our Privacy Policy.</p>
+        
+        <p><strong className="text-[#E9762B]">6. Service Availability and Changes</strong><br/>We strive to maintain 99.9% uptime but may perform maintenance.</p>
+        
+        <p><strong className="text-[#E9762B]">7. Termination of Service</strong><br/>Non-compliance or failure to pay fees may result in termination.</p>
+        
+        <p><strong className="text-[#E9762B]">8. Limitation of Liability</strong><br/>Bluesparing is not responsible for financial losses from misuse.</p>
+        
+        <p><strong className="text-[#E9762B]">9. Governing Law</strong><br/>These Terms are governed by the laws of [Insert Jurisdiction].</p>
+        
+        <p><strong className="text-[#E9762B]">10. Contact Us</strong><br/>For support, contact support@bluesparing.com.</p>
+      </div>
+      <div className="mt-6 flex justify-center">
+        <button
+          onClick={() => setIsModalOpen(false)}
+          className="bg-[#E9762B] text-white px-6 py-3 rounded-lg hover:bg-[#EDB65C] transition-all duration-200 shadow-md font-semibold"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </Dialog>
+)
+}
+    </Grid>
+
                         </Grid>
                       </form>
                     )}

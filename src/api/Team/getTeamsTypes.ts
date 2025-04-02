@@ -1,5 +1,5 @@
 import { Header } from "../../Auth/IAuth";
-import { ITeams } from "../../components/Admin/Team/ITeam";
+import { ITeamForm, ITeams } from "../../components/Admin/Team/ITeam";
 
 export interface AddEditTeamProps {
   header?: Header;
@@ -24,7 +24,7 @@ export interface GetTeamDetailsProps {
 export interface DeleteTeamProps {
   header?: Header;
   teamId?: string;
-  teams: ITeams[];
+  teams?: FormData;
 }
 export interface GetRMListProps {
   header?: Header;

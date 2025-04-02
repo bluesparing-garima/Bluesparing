@@ -3,6 +3,7 @@ import { getPolicyCountEndpoint as endpoint } from "../apiEndpoints";
 import { getPolicyCountProps } from "../getPoliciesTypes";
 type PolicyCountResponse = {
     remainingPolicyCount: number; // Adjust this based on the actual API response
+    userLimit : any;
   };
 const getPolicyCountAPI = async ({ userId }: getPolicyCountProps) => {
   const url = endpoint();
