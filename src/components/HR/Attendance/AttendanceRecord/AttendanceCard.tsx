@@ -145,7 +145,7 @@ const AttendanceCard: React.FC<AttendanceCardProps> = ({ employee }) => {
                   ...ui,
                   padding: "20px",
                   borderRadius: 3,
-                  boxShadow: "0 0 20px 10px #F2DDD4",
+                  boxShadow: "0 0 10px 4px #F2DDD4",
                   color: "black",
                   border: "none",
                   background: "#fff",
@@ -153,7 +153,7 @@ const AttendanceCard: React.FC<AttendanceCardProps> = ({ employee }) => {
                   position: "relative",
                   "&:hover": {
                     transform: "scale(1.02)",
-                    boxShadow: "0 0 30px 15px #F2DDD4",
+                    boxShadow: "0 0 20px 8px #F2DDD4",
                   },
                 }}
                 className="sm:w-[50vw]"

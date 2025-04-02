@@ -188,7 +188,7 @@ const BookingDashboard: React.FC = () => {
     const formattedCount =
       typeof count === "number" ? Math.round(count).toLocaleString() : count;
     const content = (
-      <div className="bg-white m-2 p-3 mt-8 rounded-[10.33px] shadow-[0_0_10px_2px_#F2DDD4] flex items-center justify-between transform transition-transform duration-200 hover:scale-105">
+      <div className="bg-white m-2 p-3 mt-8 rounded-[10.33px] shadow-[0_0_5px_2px_#F2DDD4] flex items-center justify-between transform transition-transform duration-200 hover:scale-105">
         <div>
           <Typography
             variant="body2"
@@ -213,10 +213,11 @@ const BookingDashboard: React.FC = () => {
     );
   };
   return (
-    <div className="bg-white h-full p-2">
+    // <div className="bg-[#F2DDD4] h-full p-2">
+    <div className="bg-blue-50 h-full pl-5 pr-5 pt-2">
       <Grid container>
         <div className="flex justify-between w-full m-2 items-center gap-x-2 flex-wrap gap-3 md:gap-0 ">
-          <div className="flex justify-evenly items-center w-[12%]">
+          <div className="flex justify-between items-center md:w-[20%] border lg:w-[15%]">
             <CartButton
               onClick={handleFirstCart}
               tooltipTitle="View Booking Data"
@@ -240,8 +241,8 @@ const BookingDashboard: React.FC = () => {
             onSubmit={onSubmit}
             render={({ handleSubmit, submitting, errors, values }) => (
               <form onSubmit={handleSubmit} noValidate>
-                <div className="flex w-full  items-center flex-1 gap-x-2 justify-between">
-                  <div className="w-[47%]">
+                <div className="flex w-[100%] items-center flex-1 gap-x-2 justify-end">
+                  <div className="lg:w-[30%] md:w-[20%]">
                     <Field name="startDate">
                       {({ input, meta }) => (
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -268,7 +269,7 @@ const BookingDashboard: React.FC = () => {
                       )}
                     </Field>
                   </div>
-                  <div className="w-[47%]">
+                  <div className="w-[30%]">
                     <Field name="endDate">
                       {({ input, meta }) => (
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
