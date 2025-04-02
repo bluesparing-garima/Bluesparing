@@ -740,12 +740,12 @@ export const CartButton: React.FC<CartButtonProps> = ({
   const buttonSize = isSmallScreen ? "small" : "medium";
   return (
     <div
-      className={`p-1 md:p-2 ${
-        isSelected ? "bg-[#E59411] shadow-md" : ""
-      } rounded`}
+      className={`flex w-8 h-8 md:w-10 md:h-10 justify-center items-center ${
+        isSelected ? "bg-[#F15729] " : "bg-white border"
+      } rounded-full shadow-lg m-1`}
     >
       <Tooltip title={tooltipTitle} arrow>
-        <Button size={buttonSize} type="button" onClick={onClick}>
+        <Button  className="w-full h-full" type="button" onClick={onClick}>
           {iconPath}
         </Button>
       </Tooltip>

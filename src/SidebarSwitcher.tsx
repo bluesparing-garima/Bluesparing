@@ -20,7 +20,7 @@ const SidebarSwitcher: React.FC<SidebarSwitcherProps> = ({
   let SidebarComponent = DynamicSidebar;
 
   return (
-    <div className="flex  bg-gray-100">
+    <div className="flex">
       <div
         className={`${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
