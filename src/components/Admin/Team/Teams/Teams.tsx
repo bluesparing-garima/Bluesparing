@@ -7,8 +7,19 @@ import {
   SafeKaroUser,
   TEAM_STORAGE_KEY,
 } from "../../../../context/constant";
-import { IAppUser, } from "../ITeam";
-import { Button, IconButton, Paper, Tooltip, Typography } from "@mui/material";
+import { IAppUser } from "../ITeam";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  IconButton,
+  Paper,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { teamEditPath, teamAddPath } from "../../../../sitemap";
 import dayjs from "dayjs";
@@ -25,6 +36,10 @@ import generateFormData from "../../../../utils/generateFromData";
 import { useSearchParams } from "react-router-dom";
 import OverlayError from "../../../../utils/ui/OverlayError";
 import OverlayLoader from "../../../../utils/ui/OverlayLoader";
+import deleteTeamService from "../../../../api/Team/DeleteTeam/deleteTeamService";
+import useLocalStorage from "../../../../Hooks/LocalStorage/useLocalStorage";
+import { updateLocalStorage } from "../../../../utils/HandleStore";
+import getPolicyCountAPI from "../../../../api/Policies/getPolicyCount/getPolicyCountAPI";
 
 const Teams = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -36,25 +51,39 @@ const Teams = () => {
     pageIndex: 0,
     pageSize: 10,
   });
-   const [searchParams] = useSearchParams();
-   const queryValue = searchParams.get("role");
+
+  const [userLimit, setUserLimit] = useState(() => {
+    return UserData?.userLimit;
+  });
+
+  useEffect(() => {
+    // Update user limit in localStorage whenever it changes
+    if (UserData) {
+      UserData.userLimit = userLimit;
+      localStorage.setItem("user", JSON.stringify(UserData));
+    }
+  }, [userLimit]);
+  const [searchParams] = useSearchParams();
+  const queryValue = searchParams.get("role");
 
   const onClose = () => {
-    setErrMsg("")
-  }
+    setErrMsg("");
+  };
   useEffect(() => {
     const p = getPaginationState(TEAM_STORAGE_KEY);
     setPagination(p);
   }, []);
 
-  const validateFunc = (role : string)=>{
-         if(queryValue){
-
-          return role.toLowerCase() !== "superadmin" && (queryValue?.toLowerCase() === role.toLowerCase() );
-         }else{
-          return role.toLowerCase() !== "superadmin" ;
-         }
-  }
+  const validateFunc = (role: string) => {
+    if (queryValue) {
+      return (
+        role.toLowerCase() !== "superadmin" &&
+        queryValue?.toLowerCase() === role.toLowerCase()
+      );
+    } else {
+      return role.toLowerCase() !== "superadmin";
+    }
+  };
   const GetTeams = useCallback(
     () =>
       getTeamService({ header })
@@ -132,8 +161,6 @@ const Teams = () => {
     []
   );
 
-
-
   const parsedData = useMemo(() => {
     const filteredTeams =
       UserData.role.toLowerCase() === "hr"
@@ -156,7 +183,7 @@ const Teams = () => {
       .then((updatedTeam) => {
         GetTeams();
       })
-      .catch((response) => { })
+      .catch((response) => {})
       .finally(() => {
         updateLoading();
       });
@@ -167,7 +194,7 @@ const Teams = () => {
       .then((updatedTeam) => {
         GetTeams();
       })
-      .catch((response) => { })
+      .catch((response) => {})
       .finally(() => {
         updateLoading();
       });
@@ -229,6 +256,64 @@ const Teams = () => {
       downloadFile(`${imagePath}/${team?.other!}`, "other");
     }
   };
+  const handleClickDeleteTeam = (team: IAppUser) => {
+    setIsLoading(true);
+
+    deleteTeamService({ teamId: team._id })
+      .then(async () => {
+        // GetTeams();
+
+        // setUserLimit((prevLimit:any) => {
+        //   let roleKey = team.role?.toLowerCase().trim(); // Get role key
+        //   if (!roleKey || !(roleKey in prevLimit)) return prevLimit; // Ensure role exists in userLimit
+        //   if(roleKey === "relationship manager" || roleKey === "rm" ){
+        //     roleKey = 'rm';
+        //   }
+        //   return {
+        //     ...prevLimit,
+        //     [roleKey]: prevLimit[roleKey] + 1, // Increase limit by 1
+        //   };
+        // });
+        console.log("Team",team);
+        const response = await getPolicyCountAPI({
+          userId: UserData.profileId,
+        });
+
+        const updatedUserLimit = response?.userLimit;
+
+        setUserLimit({ ...updatedUserLimit });
+
+        GetTeams();
+      })
+      .catch((error) => {
+        console.error("Error deleting team:", error);
+        setErrMsg("Failed to delete team. Please try again.");
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+  const [open, setOpen] = useState(false);
+
+  const [teamToDelete, setTeamToDelete] = useState<IAppUser | null>(null);
+
+  const handleClickOpen = (team :any) => {
+    setTeamToDelete(team);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setTeamToDelete(null);
+  };
+
+  const handleConfirmDelete = () => {
+    if (teamToDelete) {
+      handleClickDeleteTeam(teamToDelete);
+    }
+    handleClose();
+  };
+
   return (
     <>
       <div className="bg-blue-200 h-screen md:p-7 p-2 ">
@@ -259,7 +344,7 @@ const Teams = () => {
                 Add Team
               </Button>
             </div>
-            { }
+            {}
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
@@ -322,6 +407,10 @@ const Teams = () => {
                     onClick={() => {
                       handleClickEditTeam(row.original as IAppUser);
                     }}
+                    disabled={
+                      row.original.role?.toLowerCase() ===
+                      "relationship manager"
+                    }
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -329,7 +418,12 @@ const Teams = () => {
                       viewBox="0 0 24 24"
                       strokeWidth="1.5"
                       stroke="currentColor"
-                      className="size-5 text-addButton"
+                      className={`size-5 ${
+                        row.original.role?.toLowerCase() ===
+                        "relationship manager"
+                          ? "text-gray"
+                          : "text-addButton"
+                      }`}
                     >
                       <path
                         strokeLinecap="round"
@@ -364,18 +458,61 @@ const Teams = () => {
                     </svg>
                   </IconButton>
                 </Tooltip>
+                <Tooltip title={"Delete"}>
+                  <IconButton
+                    color="primary"
+                    aria-label={"Delete Team"}
+                    component="span"
+                    onClick={() => handleClickOpen(row.original)}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth="1.5"
+                      stroke="currentColor"
+                      className="size-5 text-safekaroDarkOrange"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                      />
+                    </svg>
+                  </IconButton>
+                </Tooltip>
 
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>
+          {teamToDelete?.role?.toLowerCase() === "relationship manager"
+            ? "Warning"
+            : "Confirm Deletion"}
+        </DialogTitle>
+
+        <DialogContent>
+          <DialogContentText>
+            {teamToDelete?.role?.toLowerCase() === "relationship manager"
+              ? "Are You sure all Your Team Member Will be Deleted ? This action cannot be undone."
+              : "Are you sure you want to delete this team? This action cannot be undone."}
+          </DialogContentText>
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">Cancel</Button>
+        
+            <Button onClick={handleConfirmDelete} color="primary">Confirm</Button>
+   
+        </DialogActions>
+      </Dialog>
               </div>
             )}
           />
         </Paper>
-        {
-          errMsg && <OverlayError title="Failed" onClose={onClose} msg={errMsg} />
-        }
-        {
-          isLoading && <OverlayLoader />
-        }
-
+        {errMsg && (
+          <OverlayError title="Failed" onClose={onClose} msg={errMsg} />
+        )}
+        {isLoading && <OverlayLoader />}
       </div>
     </>
   );
