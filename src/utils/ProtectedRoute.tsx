@@ -26,7 +26,7 @@ const ProtectedRoute: FC<ProtectedRouteProps> = ({ children }) => {
     : null;
 
   const location = useLocation();
-  const currentUrl = location.pathname.toLowerCase().trim();
+  const currentUrl = location?.pathname.toLowerCase().trim();
 
   const getMenuIdByPath = () => {
     if (currentMenus.length > 0) {

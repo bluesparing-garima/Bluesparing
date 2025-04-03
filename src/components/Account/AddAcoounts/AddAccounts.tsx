@@ -12,7 +12,7 @@ const AddAccounts = () => {
   const title = "Add Account Details";
   const { accountId } = useParams();
   const location = useLocation();
-  const pathName = location.pathname.split("/");
+  const pathName = location?.pathname.split("/");
   const isAdd = pathName[pathName.length - 1] === ADD;
   const [accountDetails, setAccountDetails] = useState<
     IAccountForm | undefined
