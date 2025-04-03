@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Grid, TextField, Tooltip } from "@mui/material";
+import { Button, Grid, TextField, Tooltip } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import {
   DAYJS_DISPLAY_FORMAT,
@@ -40,6 +40,7 @@ import GetAttendanceCountService from "../../api/Role/GetAttendanceCount/GetAtte
 import AttendanceCard from "../HR/Attendance/AttendanceRecord/AttendanceCard";
 import dayjs from "dayjs";
 import toast, { Toaster } from "react-hot-toast";
+import CustomIconButton from "./data/CustomIconButton";
 const AccountDashboard: React.FC = () => {
   const [data, setData] = useState<IAccountData[]>([]);
   const [isVisible, setIsVisible] = useState(false);
@@ -51,6 +52,7 @@ const AccountDashboard: React.FC = () => {
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
   const [selectedCard, setSelectedcard] = useState("1");
+  const [open, setOpen] = useState(false);
   const [employee, setEmployee] = useState<IEmployee | null>();
   const GetDashboardCount = useCallback((startDate, endDate) => {
     getAccountDashboardService({
@@ -107,7 +109,7 @@ const AccountDashboard: React.FC = () => {
             variant="body2"
             className="text-sm text-gray-600 mb-2 font-satoshi"
           >
-            {title==='Policy Count' ? 'Remaining Policy Count' : title}
+            {title === "Policy Count" ? "Remaining Policy Count" : title}
           </Typography>
           <Typography
             variant="h5"
@@ -132,35 +134,35 @@ const AccountDashboard: React.FC = () => {
       toast.error("Both start date and end date are required.");
       return;
     }
-  
+
     // Convert input dates to Date objects
     const utcStartDate = new Date(value.startDate);
     const utcEndDate = new Date(value.endDate);
-  
+
     // Validate if dates are valid
     if (isNaN(utcStartDate.getTime()) || isNaN(utcEndDate.getTime())) {
       toast.error("Invalid date selected. Please select valid dates.");
       return;
     }
-  
+
     // Ensure endDate is not before startDate
     if (utcEndDate < utcStartDate) {
       toast.error("End date cannot be before start date.");
       return;
     }
-  
+
     // Format dates before passing them
     const formattedStartDate = format(utcStartDate, "yyyy-MM-dd'T'HH:mm:ss");
     const formattedEndDate = format(utcEndDate, "yyyy-MM-dd'T'HH:mm:ss");
-  
+
     // Assign formatted values
     value.startDate = formattedStartDate;
     value.endDate = formattedEndDate;
-  
+
     // Call API function
     GetDashboardCount(value.startDate, value.endDate);
   };
-  
+
   const handleFirstCart = async () => {
     setFirstCart(true);
     setSecondCart(false);
@@ -227,11 +229,15 @@ const AccountDashboard: React.FC = () => {
     },
   ];
 
+  const openDateFilter = () => {
+    setOpen(!open);
+  };
+
   return (
-    <div className="bg-blue-200 h-full pb-5">
-      <Grid container sx={{ margin: 1 }}>
-        <div className="flex justify-around w-[100%] m-2 items-center flex-row flex-wrap gap-x-2">
-          <div className="flex justify-start items-center w-[95%] flex-row flex-wrap">
+    <div className="bg-blue-50 min-h-[90vh] pl-5 pr-5 pt-2">
+      <Grid container>
+        <div className="flex justify-between w-full m-2 items-center gap-x-2 gap-3 md:gap-0">
+          <div className="flex justify-between w-[100%] items-center lg:w-[12%] lg:gap-x-5 md:gap-x-7 sm:w-[100%]">
             <CartButton
               onClick={handleFirstCart}
               tooltipTitle="View Policy Data"
@@ -262,25 +268,78 @@ const AccountDashboard: React.FC = () => {
               iconPath={<PlanDetailsDataSvg isActive={selectedCard === "5"} />}
               isSelected={fifthCart}
             />
+            <div className="flex justify-around items-center lg:hidden ">
+              <Tooltip title="Select Date">
+                <Button
+                  className="w-10 h-10 flex justify-center items-center md:w-9 md:h-9 rounded-lg shadow-[0_0_5px_1px_#F2DDD4] border-gray-100 hover:bg-gray-200 transition duration-200"
+                  type="button"
+                  onClick={openDateFilter}
+                  sx={{
+                    minWidth: 0,
+                    width: "100%", // Button ko full width dene ke liye
+                    height: "100%", // Button ko full height dene ke liye
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    border: "1px solid #D1D5DB",
+                    backgroundColor: "transparent",
+                    "&:hover": { backgroundColor: "transparent" },
+                    "&:focus": { outline: "none" },
+                  }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="size-7"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z"
+                    />
+                  </svg>
+                </Button>
+              </Tooltip>
+            </div>
+            <div className="lg:hidden">
+              <CustomIconButton
+                title="Download PDF"
+                onClick={handleDownloadPDF}
+                icon={
+                  <PictureAsPdfSharpIcon className="w-6 h-6 text-red-500" />
+                }
+              />
+            </div>
+            <div className="lg:hidden">
+              <CustomIconButton
+                title="Download Excel"
+                onClick={handleDownloadExcel}
+                icon={
+                  <FileDownloadOutlinedIcon className="w-6 h-6 text-green-700" />
+                }
+              />
+            </div>
           </div>
-          <div className="flex w-[95%] justify-start mt-2 items-center">
+          <div className="hidden lg:flex w-[100%] flex-wrap justify-end gap-x-4 items-center">
             <Form
               onSubmit={onSubmit}
               render={({ handleSubmit, submitting, errors, values }) => (
                 <form onSubmit={handleSubmit} noValidate>
-                  <div className="flex w-[100%] md:w-full items-start flex-1 gap-x-2 justify-start">
-                    <div className="w-[47%]">
+                  <div className="flex w-[100%] items-center flex-1 gap-x-2 justify-end">
+                    <div className="lg:w-[30%]">
                       <Field name="startDate">
                         {({ input, meta }) => (
                           <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
                               disableFuture
+                              label="Start Date"
                               inputFormat="DD/MM/YYYY"
                               value={input.value || null}
-                              onChange={(date) => {
-                                input.onChange(date);
-                              }}
-                              renderInput={(params: any) => (
+                              onChange={(date) => input.onChange(date)}
+                              renderInput={(params) => (
                                 <TextField
                                   variant="outlined"
                                   size="small"
@@ -295,18 +354,17 @@ const AccountDashboard: React.FC = () => {
                         )}
                       </Field>
                     </div>
-                    <div className="w-[47%]">
+                    <div className="lg:w-[30%]">
                       <Field name="endDate">
                         {({ input, meta }) => (
                           <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
                               disableFuture
+                              label="End Date"
                               inputFormat="DD/MM/YYYY"
                               value={input.value || null}
-                              onChange={(date) => {
-                                input.onChange(date);
-                              }}
-                              renderInput={(params: any) => (
+                              onChange={(date) => input.onChange(date)}
+                              renderInput={(params) => (
                                 <TextField
                                   variant="outlined"
                                   size="small"
@@ -321,33 +379,30 @@ const AccountDashboard: React.FC = () => {
                         )}
                       </Field>
                     </div>
-                    <button
-                      className="md:w-10 md:h-10 h-10 w-10 bg-[#30A9FF] shadow-sm rounded flex justify-center items-center text-white"
+                    <CustomIconButton
                       type="submit"
-                    >
-                      <SearchIcon className="md:w-6 md:h-6 h-5 w-5" />
-                    </button>
+                      icon={<SearchIcon className="w-6 h-6" />}
+                    />
                   </div>
                 </form>
               )}
             />
-            <div className="flex w-[50%] justify-end items-center gap-x-2">
-              <Tooltip title="Download PDF">
-                <button
-                  className="md:w-10 md:h-10 h-10 w-10 bg-[#0095FF] shadow-sm rounded flex justify-center items-center text-white"
-                  onClick={handleDownloadPDF}
-                >
-                  <PictureAsPdfSharpIcon className="md:w-6 md:h-6 h-6 w-6" />
-                </button>
-              </Tooltip>
-              <Tooltip title="Download Excel">
-                <button
-                  className="md:w-10 md:h-10 h-10 w-10 bg-[#3BDB03] shadow-sm rounded flex justify-center items-center text-white"
-                  onClick={handleDownloadExcel}
-                >
-                  <FileDownloadOutlinedIcon className="md:w-6 md:h-6 h-6 w-6" />
-                </button>
-              </Tooltip>
+            {/* PDF & Excel Buttons (Only in lg screens) */}
+            <div className="flex justify-between items-center gap-x-4">
+              <CustomIconButton
+                title="Download PDF"
+                onClick={handleDownloadPDF}
+                icon={
+                  <PictureAsPdfSharpIcon className="w-6 h-6 text-red-500" />
+                }
+              />
+              <CustomIconButton
+                title="Download Excel"
+                onClick={handleDownloadExcel}
+                icon={
+                  <FileDownloadOutlinedIcon className="w-6 h-6 text-green-700" />
+                }
+              />
             </div>
           </div>
         </div>
@@ -362,7 +417,7 @@ const AccountDashboard: React.FC = () => {
                         <>
                           {data.map((item, index) => (
                             <div key={index}>
-                              <div className="bg-blue-200 md:p-7 p-2">
+                              <div className="pb-8 pt-5">
                                 <Grid container spacing={2}>
                                   {renderCountBox(
                                     "Motor",
@@ -414,7 +469,7 @@ const AccountDashboard: React.FC = () => {
                         </>
                       )}
                       {fifthCart && (
-                        <div className="bg-blue-200 md:p-7 p-2">
+                        <div className="pt-5 pb-8">
                           <Typography
                             variant="h5"
                             className="text-lg font-bold text-gray-800"
@@ -449,7 +504,9 @@ const AccountDashboard: React.FC = () => {
                                       <React.Fragment key={key}>
                                         {renderCountBox(
                                           key.toUpperCase(),
-                                          value==='Infinity'?"Unlimited":Number(value) || 0,
+                                          value === "Infinity"
+                                            ? "Unlimited"
+                                            : Number(value) || 0,
                                           "",
                                           `/update-plan`
                                         )}

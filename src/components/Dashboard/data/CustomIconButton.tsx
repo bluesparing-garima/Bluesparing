@@ -19,7 +19,7 @@ const CustomIconButton: React.FC<CustomButtonProps> = ({
 }) => {
   return (
     <Button
-    className="w-10 h-10 flex justify-center items-center md:w-9 md:h-9 rounded-full shadow-[0_0_5px_1px_#F2DDD4] border-gray-100 hover:bg-gray-200 transition duration-200"
+    className="w-10 h-10 flex justify-center items-center md:w-9 md:h-9 rounded-lg shadow-[0_0_5px_1px_#F2DDD4] border-gray-100 hover:bg-gray-200 transition duration-200"
     disableRipple
       disableElevation
       sx={{

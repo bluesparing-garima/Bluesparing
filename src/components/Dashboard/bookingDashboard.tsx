@@ -226,8 +226,7 @@ const BookingDashboard: React.FC = () => {
     <div className="bg-blue-50 min-h-[90vh] pl-5 pr-5 pt-2">
       <Grid container>
         <div className="flex justify-between w-full m-2 items-center gap-x-2 gap-3 md:gap-0">
-          {/* Left Side: Cart Buttons */}
-          <div className="flex justify-between items-center gap-x-6 lg:w-[12%] lg:gap-x-5 md:gap-x-8 sm:gap-x-5">
+          <div className="flex justify-between w-[100%] items-center lg:w-[12%] lg:gap-x-5 md:gap-x-7 sm:w-[100%]">
             <CartButton
               onClick={handleFirstCart}
               tooltipTitle="View Booking Data"
@@ -247,11 +246,10 @@ const BookingDashboard: React.FC = () => {
               isSelected={thirdCart}
             />
 
-            {/* md और उससे छोटे स्क्रीन के लिए Filter, PDF, Excel Icons */}
-            <div className="flex gap-x-6 md:flex lg:hidden sm:gap-x-5 md:gap-x-8">
-              <Tip title="Date Filter">
+            <div className="flex justify-around items-center lg:hidden ">
+              <Tip title="Select Date">
                 <Button
-                  className="w-10 h-10 flex justify-center items-center md:w-9 md:h-9 rounded-full shadow-[0_0_5px_1px_#F2DDD4] border-gray-100 hover:bg-gray-200 transition duration-200"
+                  className="w-10 h-10 flex justify-center items-center md:w-9 md:h-9 rounded-lg shadow-[0_0_5px_1px_#F2DDD4] border-gray-100 hover:bg-gray-200 transition duration-200"
                   type="button"
                   onClick={openDateFilter}
                   sx={{
@@ -268,23 +266,23 @@ const BookingDashboard: React.FC = () => {
                   }}
                 >
                   <svg
-                    width="24"
-                    height="24"
                     xmlns="http://www.w3.org/2000/svg"
-                    fill="#00000"
+                    fill="none"
                     viewBox="0 0 24 24"
                     strokeWidth={1.5}
                     stroke="currentColor"
-                    className="size-6"
+                    className="size-7"
                   >
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75"
+                      d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z"
                     />
                   </svg>
                 </Button>
               </Tip>
+            </div>
+            <div className="lg:hidden">
               <CustomIconButton
                 title="Download PDF"
                 onClick={handleDownloadPDF}
@@ -293,6 +291,8 @@ const BookingDashboard: React.FC = () => {
                 }
                 isLoading={isLoading}
               />
+            </div>
+            <div className="lg:hidden">
               <CustomIconButton
                 title="Download Excel"
                 onClick={handleDownloadExcel}
@@ -609,7 +609,7 @@ const BookingDashboard: React.FC = () => {
                           height: "100%", // Button ko full height dene ke liye
                           display: "flex",
                           justifyContent: "center",
-                          marginTop:'15px',
+                          marginTop: "15px",
                           alignItems: "center",
                           border: "1px solid #D1D5DB",
                           backgroundColor: "transparent",
