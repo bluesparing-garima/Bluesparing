@@ -101,7 +101,7 @@ const AccountDashboard: React.FC = () => {
     const formattedCount =
       typeof count === "number" ? Math.round(count).toLocaleString() : count;
     const content = (
-      <div className="bg-white m-2 p-3 rounded-[10.33px] shadow-lg flex items-center justify-between transform transition-transform duration-200 hover:scale-105">
+      <div className="bg-white m-2 p-3 mt-8 rounded-[10.33px] shadow-[0_0_5px_2px_#F2DDD4] flex items-center justify-between transform transition-transform duration-200 hover:scale-105">
         <div>
           <Typography
             variant="body2"
