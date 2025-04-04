@@ -272,6 +272,20 @@ const AcceptedBooking = () => {
             />
           </Typography>
           <MaterialReactTable
+            muiTablePaperProps={{
+              sx: {
+                boxShadow: "none", 
+                backgroundColor: "transparent", 
+              
+              },
+            }}
+      
+            muiTableContainerProps={{
+              sx: {
+                boxShadow: "none", 
+                backgroundColor: "transparent", 
+              },
+            }}
             state={{ isLoading }}
             columns={columns}
             data={parsedData}
