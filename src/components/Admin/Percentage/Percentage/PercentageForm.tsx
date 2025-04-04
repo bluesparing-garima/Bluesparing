@@ -778,15 +778,16 @@ const PercentageForm = () => {
                 </Field>
               </Grid>
               <Grid item xs={12}>
-                <Button
-                  type="submit"
-                  disabled={isLoading}
-                  variant="contained"
-                  color="primary"
-                  className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
-                >
-                  {isLoading ? "Submitting..." : "Update Policies Percentage"}
-                </Button>
+              <Button
+  type="submit"
+  disabled={isLoading}
+  variant="contained"
+  color="primary"
+  className="btnGradient text-black px-4 py-2 rounded-sm w-full sm:w-auto text-[10px] md:text-xs"
+>
+  {isLoading ? "Submitting..." : "Update Policies Percentage"}
+</Button>
+
               </Grid>
             </Grid>
           </form>
