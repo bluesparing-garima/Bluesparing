@@ -84,7 +84,7 @@ const ExcelPayout = () => {
     }
   };
   return (
-    <div className="bg-blue-200 ">
+    <div >
       <Paper
         elevation={3}
         style={{ padding: 20, margin: 30, borderRadius: 10 }}
