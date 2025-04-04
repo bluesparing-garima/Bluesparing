@@ -316,7 +316,7 @@ const Teams = () => {
 
   return (
     <>
-      <div className="bg-blue-200 h-screen md:p-7 p-2 ">
+      <div className="h-screen md:p-4 p-2">
         <Paper elevation={3} style={{ padding: 30 }}>
           <Typography className="text-safekaroDarkOrange" variant="h5">
             Team Table
@@ -338,7 +338,7 @@ const Teams = () => {
               </div>
               <Button
                 type="button"
-                className="w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
+                className="btnGradient text-black w-[10%]"
                 onClick={handleAddTeamClick}
               >
                 Add Team

@@ -31,7 +31,7 @@ const AddTeam = () => {
   const title = isAdd ? "Add Team" : "Update Team";
   return (
     <>
-      <div className="bg-blue-200 md:p-7 ">
+      <div className="md:p-4 ">
         <Paper
           elevation={3}
           style={{ padding: 20, margin: 30, borderRadius: 10 }}
