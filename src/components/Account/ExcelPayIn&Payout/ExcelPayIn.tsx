@@ -84,7 +84,7 @@ const ExcelPayIn = () => {
     }
   };
   return (
-    <div className="bg-blue-200 p-2">
+    <div className="p-2">
       <Paper
         elevation={3}
         style={{ padding: 20, margin: 30, borderRadius: 10 }}
@@ -113,8 +113,7 @@ const ExcelPayIn = () => {
             style={{ width: "100%", borderColor: "grey-800" }}
           />
         </Typography>
-        <Card>
-          <CardContent>
+      
             <Form
               onSubmit={onSubmit}
               validate={validate}
@@ -169,8 +168,7 @@ const ExcelPayIn = () => {
                 </form>
               )}
             />
-          </CardContent>
-        </Card>
+    
       </Paper>
       <Toaster position="bottom-center" reverseOrder={true} />
     </div>
