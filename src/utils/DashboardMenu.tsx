@@ -21,7 +21,7 @@ export default function DashboardMenu({ selectedCategory }: any) {
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
         onClick={handleClick}
-        sx={{ color: "white" }}
+        sx={{ color: "black" }}
       >
         <MoreVertIcon />
       </Button>
