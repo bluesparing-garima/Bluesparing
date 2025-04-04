@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import { useState } from "react";
 import { TextField, Button, Grid } from "@mui/material";
 import addBranchService from "../../../../api/Branch/AddBranch/addBranchService";
 import editBranchService from "../../../../api/Branch/EditBranch/editBranchService";
@@ -114,26 +114,27 @@ const AddBranchForm = (props: addBranchFormProps) => {
                   disabled={isLoading}
                   variant="contained"
                   color="primary"
-                  className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
+                  className="btnGradient text-black px-4 py-2 text-xs sm:text-sm rounded-sm w-full sm:w-auto"
                 >
                   {isLoading
                     ? "Submitting..."
                     : isAdd
-                    ? "Add Branch"
-                    : "Update Branch"}
+                      ? "Add Branch"
+                      : "Update Branch"}
                 </Button>
+
               </Grid>
             </Grid>
           </form>
         )}
       />
-        {
-          errMsg && <OverlayError title="Failed" onClose={onClose} msg={errMsg} />
-        }
-        {
-          isLoading && <OverlayLoader />
-        }
-      
+      {
+        errMsg && <OverlayError title="Failed" onClose={onClose} msg={errMsg} />
+      }
+      {
+        isLoading && <OverlayLoader />
+      }
+
     </>
   );
 };
