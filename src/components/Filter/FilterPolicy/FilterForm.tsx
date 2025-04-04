@@ -104,74 +104,77 @@ const FilterForm = () => {
   }
   return (
     <>
-      <Card>
-        <CardContent>
-          <Form
-            onSubmit={onSubmit}
-            render={({ handleSubmit }) => (
-              <form onSubmit={handleSubmit} noValidate>
-                <Grid container spacing={2} alignItems="center" direction="row">
-                  <Grid item lg={4} md={4} sm={6} xs={12}>
-                    <Field name="policyNumber">
-                      {({ input, meta }) => (
-                        <TextField
-                          {...input}
-                          size="small"
-                          fullWidth
-                          label="Enter Policy Number"
-                          variant="outlined"
-                          error={meta.touched && Boolean(meta.error)}
-                          helperText={meta.touched && meta.error}
-                          onChange={(e) => {
-                            const value = e.target.value.replace(/\s/g, "");
-                            input.onChange(value);
-                          }}
-                        />
-                      )}
-                    </Field>
-                  </Grid>
-                  <Grid item lg={4} md={4} sm={6} xs={12}>
-                    <Field name="vehicleNumber">
-                      {({ input, meta }) => (
-                        <TextField
-                          {...input}
-                          size="small"
-                          fullWidth
-                          label="Enter Vehicle Number"
-                          variant="outlined"
-                          error={meta.touched && Boolean(meta.error)}
-                          helperText={meta.touched && meta.error}
-                          onChange={(e) => {
-                            const value = e.target.value.replace(/\s/g, ''); 
-                            input.onChange(value);
-                          }}
-                        />
-                      )}
-                    </Field>
-                  </Grid>
-                  <Grid item lg={4} md={4} sm={6} xs={12}>
-                    <Button variant="contained" type="submit">
-                      Submit
-                    </Button>
-                  </Grid>
-                </Grid>
-              </form>
-            )}
-          />
-          {motorPolicies ? (
-            <FilterDataTable policy={motorPolicies} />
-          ) : noRecordsFound ? (
-            <Typography
-              variant="body1"
-              color="textSecondary"
-              align="center"
-              mt={2}
-            >
-              No records found
-            </Typography>
-          ) : null}
-        </CardContent>
-      </Card>
+
+      <Form
+        onSubmit={onSubmit}
+        render={({ handleSubmit }) => (
+          <form onSubmit={handleSubmit} noValidate>
+            <Grid container spacing={2} alignItems="center" direction="row">
+              <Grid item lg={4} md={4} sm={6} xs={12}>
+                <Field name="policyNumber">
+                  {({ input, meta }) => (
+                    <TextField
+                      {...input}
+                      size="small"
+                      fullWidth
+                      label="Enter Policy Number"
+                      variant="outlined"
+                      error={meta.touched && Boolean(meta.error)}
+                      helperText={meta.touched && meta.error}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/\s/g, "");
+                        input.onChange(value);
+                      }}
+                    />
+                  )}
+                </Field>
+              </Grid>
+              <Grid item lg={4} md={4} sm={6} xs={12}>
+                <Field name="vehicleNumber">
+                  {({ input, meta }) => (
+                    <TextField
+                      {...input}
+                      size="small"
+                      fullWidth
+                      label="Enter Vehicle Number"
+                      variant="outlined"
+                      error={meta.touched && Boolean(meta.error)}
+                      helperText={meta.touched && meta.error}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/\s/g, '');
+                        input.onChange(value);
+                      }}
+                    />
+                  )}
+                </Field>
+              </Grid>
+              <Grid item lg={4} md={4} sm={6} xs={12}>
+                <Button
+                  variant="contained"
+                  type="submit"
+                  className="btnGradient text-black px-4 py-2 rounded-sm w-full sm:w-auto text-[10px] md:text-xs"
+                >
+                  Submit
+                </Button>
+
+              </Grid>
+            </Grid>
+          </form>
+        )}
+      />
+      {motorPolicies ? (
+        <FilterDataTable policy={motorPolicies} />
+      ) : noRecordsFound ? (
+        <Typography
+          variant="body1"
+          color="textSecondary"
+          align="center"
+          mt={2}
+        >
+          No records found
+        </Typography>
+      ) : null}
+
       <Toaster position="bottom-center" reverseOrder={false} />
     </>
   );
