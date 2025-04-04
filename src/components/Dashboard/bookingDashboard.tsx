@@ -5,8 +5,10 @@ import {
   SafeKaroUser,
 } from "../../context/constant";
 import {
+  Box,
   Button,
   CircularProgress,
+  DialogContent,
   Grid,
   TextField,
   Tooltip as Tip,
@@ -50,6 +52,9 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import toast, { Toaster } from "react-hot-toast";
 import dayjs from "dayjs";
+import SwipeableTemporaryDrawer from "../../utils/ui/SwipeableTemporaryDrawer";
+import IconButton from "./data/CustomIconButton";
+import CustomIconButton from "./data/CustomIconButton";
 ChartJS.register(
   CategoryScale,
   linear,
@@ -71,6 +76,7 @@ const BookingDashboard: React.FC = () => {
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
   const [employee, setEmployee] = useState<IEmployee | null>();
+  const [open, setOpen] = useState(false);
   const GetDashboardCount = useCallback(
     (startDate: string, endDate: string) => {
       getBookingDashboardService({
@@ -188,7 +194,7 @@ const BookingDashboard: React.FC = () => {
     const formattedCount =
       typeof count === "number" ? Math.round(count).toLocaleString() : count;
     const content = (
-      <div className="bg-white m-2 p-3 mt-5 rounded-[10.33px] shadow-[0_0_20px_2px_#F2DDD4] flex items-center justify-between transform transition-transform duration-200 hover:scale-105">
+      <div className="bg-white m-2 p-3 mt-8 rounded-[10.33px] shadow-[0_0_5px_2px_#F2DDD4] flex items-center justify-between transform transition-transform duration-200 hover:scale-105">
         <div>
           <Typography
             variant="body2"
@@ -212,11 +218,15 @@ const BookingDashboard: React.FC = () => {
       </Grid>
     );
   };
+  const openDateFilter = () => {
+    setOpen(!open);
+  };
   return (
-    <div className="bg-white h-full p-2">
+    // <div className="bg-[#F2DDD4] h-full p-2">
+    <div className="bg-blue-50 min-h-[90vh] pl-5 pr-5 pt-2">
       <Grid container>
-        <div className="flex justify-between w-full m-2 items-center gap-x-2 flex-wrap gap-3 md:gap-0 ">
-          <div className="flex justify-evenly items-center w-[12%]">
+        <div className="flex justify-between w-full m-2 items-center gap-x-2 gap-3 md:gap-0">
+          <div className="flex justify-between w-[100%] items-center lg:w-[12%] lg:gap-x-5 md:gap-x-7 sm:w-[100%]">
             <CartButton
               onClick={handleFirstCart}
               tooltipTitle="View Booking Data"
@@ -225,150 +235,160 @@ const BookingDashboard: React.FC = () => {
             />
             <CartButton
               onClick={handleSecondCart}
-              tooltipTitle="Monthly Attendance "
+              tooltipTitle="Monthly Attendance"
               iconPath={<AttendanceDataSvg isActive={selectedCard === "2"} />}
               isSelected={secondCart}
             />
             <CartButton
               onClick={handleThirdCart}
-              tooltipTitle="Plan Details "
+              tooltipTitle="Plan Details"
               iconPath={<PlanDetailsDataSvg isActive={selectedCard === "3"} />}
               isSelected={thirdCart}
             />
-          </div>
-          <Form
-            onSubmit={onSubmit}
-            render={({ handleSubmit, submitting, errors, values }) => (
-              <form onSubmit={handleSubmit} noValidate>
-                <div className="flex w-full  items-center flex-1 gap-x-2 justify-between">
-                  <div className="w-[47%]">
-                    <Field name="startDate">
-                      {({ input, meta }) => (
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <DatePicker
-                            disableFuture
-                            label="Start Date"
-                            inputFormat="DD/MM/YYYY"
-                            value={input.value || null}
-                            onChange={(date) => {
-                              input.onChange(date);
-                            }}
-                            renderInput={(params: any) => (
-                              <TextField
-                                variant="outlined"
-                                size="small"
-                                fullWidth
-                                {...params}
-                                error={meta.touched && !!meta.error}
-                                helperText={meta.touched && meta.error}
-                              />
-                            )}
-                          />
-                        </LocalizationProvider>
-                      )}
-                    </Field>
-                  </div>
-                  <div className="w-[47%]">
-                    <Field name="endDate">
-                      {({ input, meta }) => (
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <DatePicker
-                            disableFuture
-                            label="End Date"
-                            inputFormat="DD/MM/YYYY"
-                            value={input.value || null}
-                            onChange={(date) => {
-                              input.onChange(date);
-                            }}
-                            renderInput={(params: any) => (
-                              <TextField
-                                variant="outlined"
-                                size="small"
-                                fullWidth
-                                {...params}
-                                error={meta.touched && !!meta.error}
-                                helperText={meta.touched && meta.error}
-                              />
-                            )}
-                          />
-                        </LocalizationProvider>
-                      )}
-                    </Field>
-                  </div>
-                  <Button
-                    className="w-10 h-10 flex justify-center items-center rounded-full border-gray-300 hover:bg-gray-200 transition duration-200"
-                    disableRipple
-                    disableElevation
-                    sx={{
-                      minWidth: 0,
-                      width: "100%", // Button ko full width dene ke liye
-                      height: "100%", // Button ko full height dene ke liye
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      border: "1px solid #D1D5DB",
-                      backgroundColor: "transparent",
-                      "&:hover": { backgroundColor: "transparent" },
-                      "&:focus": { outline: "none" },
-                    }}
-                    type="submit"
-                    disabled={isLoading}
+
+            <div className="flex justify-around items-center lg:hidden ">
+              <Tip title="Select Date">
+                <Button
+                  className="w-10 h-10 flex justify-center items-center md:w-9 md:h-9 rounded-lg shadow-[0_0_5px_1px_#F2DDD4] border-gray-100 hover:bg-gray-200 transition duration-200"
+                  type="button"
+                  onClick={openDateFilter}
+                  sx={{
+                    minWidth: 0,
+                    width: "100%", // Button ko full width dene ke liye
+                    height: "100%", // Button ko full height dene ke liye
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    border: "1px solid #D1D5DB",
+                    backgroundColor: "transparent",
+                    "&:hover": { backgroundColor: "transparent" },
+                    "&:focus": { outline: "none" },
+                  }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="size-7"
                   >
-                    {isLoading ? (
-                      <CircularProgress className="w-6 h-6" />
-                    ) : (
-                      <SearchIcon className="w-6 h-6" />
-                    )}
-                  </Button>
-                </div>
-              </form>
-            )}
-          />
-          <div className="flex justify-center items-center gap-x-2">
-            <Tip title="Download PDF">
-              <Button
-                className="w-10 h-10 flex justify-center items-center rounded-full border-gray-300 hover:bg-gray-200 transition duration-200"
-                disableRipple
-                disableElevation
-                sx={{
-                  minWidth: 0,
-                  width: "100%", // Button ko full width dene ke liye
-                  height: "100%", // Button ko full height dene ke liye
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  border: "1px solid #D1D5DB",
-                  backgroundColor: "transparent",
-                  "&:hover": { backgroundColor: "transparent" },
-                  "&:focus": { outline: "none" },
-                }}
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z"
+                    />
+                  </svg>
+                </Button>
+              </Tip>
+            </div>
+            <div className="lg:hidden">
+              <CustomIconButton
+                title="Download PDF"
                 onClick={handleDownloadPDF}
-              >
-                <PictureAsPdfSharpIcon className="w-6 h-6 text-red-500" />
-              </Button>
-            </Tip>
-            <Tip title="Download Excel">
-              <Button
-                className="w-10 h-10 flex justify-center items-center rounded-full border-gray-300 hover:bg-gray-200 transition duration-200"
-                disableRipple
-                disableElevation
-                sx={{
-                  minWidth: 0,
-                  width: "100%", // Button ko full width dene ke liye
-                  height: "100%", // Button ko full height dene ke liye
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  border: "1px solid #D1D5DB",
-                  backgroundColor: "transparent",
-                  "&:hover": { backgroundColor: "transparent" },
-                  "&:focus": { outline: "none" },
-                }}
+                icon={
+                  <PictureAsPdfSharpIcon className="w-6 h-6 text-red-500" />
+                }
+                isLoading={isLoading}
+              />
+            </div>
+            <div className="lg:hidden">
+              <CustomIconButton
+                title="Download Excel"
                 onClick={handleDownloadExcel}
-              >
-                <FileDownloadOutlinedIcon className="w-6 h-6 text-green-700" />
-              </Button>
-            </Tip>
+                icon={
+                  <FileDownloadOutlinedIcon className="w-6 h-6 text-green-700" />
+                }
+                isLoading={isLoading}
+              />
+            </div>
+          </div>
+
+          {/* Right Side: Filters (Only in lg screens) */}
+          <div className="hidden lg:flex w-[100%] flex-wrap justify-end gap-x-2 items-center">
+            <Form
+              onSubmit={onSubmit}
+              render={({ handleSubmit, submitting, errors, values }) => (
+                <form onSubmit={handleSubmit} noValidate>
+                  <div className="flex w-[100%] items-center flex-1 gap-x-2 justify-evenly">
+                    <div className="lg:w-[40%] md:w-[25%]">
+                      <Field name="startDate">
+                        {({ input, meta }) => (
+                          <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DatePicker
+                              disableFuture
+                              label="Start Date"
+                              inputFormat="DD/MM/YYYY"
+                              value={input.value || null}
+                              onChange={(date) => input.onChange(date)}
+                              renderInput={(params) => (
+                                <TextField
+                                  variant="outlined"
+                                  size="small"
+                                  fullWidth
+                                  {...params}
+                                  error={meta.touched && !!meta.error}
+                                  helperText={meta.touched && meta.error}
+                                />
+                              )}
+                            />
+                          </LocalizationProvider>
+                        )}
+                      </Field>
+                    </div>
+                    <div className="lg:w-[40%] md:w-[25%]">
+                      <Field name="endDate">
+                        {({ input, meta }) => (
+                          <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DatePicker
+                              disableFuture
+                              label="End Date"
+                              inputFormat="DD/MM/YYYY"
+                              value={input.value || null}
+                              onChange={(date) => input.onChange(date)}
+                              renderInput={(params) => (
+                                <TextField
+                                  variant="outlined"
+                                  size="small"
+                                  fullWidth
+                                  {...params}
+                                  error={meta.touched && !!meta.error}
+                                  helperText={meta.touched && meta.error}
+                                />
+                              )}
+                            />
+                          </LocalizationProvider>
+                        )}
+                      </Field>
+                    </div>
+                    <CustomIconButton
+                      type="submit"
+                      icon={<SearchIcon className="w-6 h-6" />}
+                      isLoading={isLoading}
+                    />
+                  </div>
+                </form>
+              )}
+            />
+            {/* PDF & Excel Buttons (Only in lg screens) */}
+            <div className="flex justify-between items-center gap-x-4">
+              <CustomIconButton
+                title="Download PDF"
+                onClick={handleDownloadPDF}
+                icon={
+                  <PictureAsPdfSharpIcon className="w-6 h-6 text-red-500" />
+                }
+                isLoading={isLoading}
+              />
+              <CustomIconButton
+                title="Download Excel"
+                onClick={handleDownloadExcel}
+                icon={
+                  <FileDownloadOutlinedIcon className="w-6 h-6 text-green-700" />
+                }
+                isLoading={isLoading}
+              />
+            </div>
           </div>
         </div>
         <Grid item lg={12}>
@@ -377,7 +397,7 @@ const BookingDashboard: React.FC = () => {
               {data &&
                 firstCart &&
                 data.map((item: IBookingData, index: number) => (
-                  <div key={index}>
+                  <div key={index} className="pb-20">
                     <Grid container spacing={2}>
                       {renderCountBox(
                         "Motor",
@@ -436,7 +456,14 @@ const BookingDashboard: React.FC = () => {
                 ))}
               {secondCart && (
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6} md={8} lg={9}>
+                  <Grid
+                    item
+                    xs={12}
+                    sm={6}
+                    md={8}
+                    lg={12}
+                    sx={{ marginTop: "50px" }}
+                  >
                     {employee && (
                       <>
                         <AttendanceCard employee={employee} />
@@ -446,7 +473,7 @@ const BookingDashboard: React.FC = () => {
                 </Grid>
               )}
               {thirdCart && (
-                <div className="bg-blue-200 md:p-7 p-2">
+                <div className="md:p-7 p-2">
                   <Typography
                     variant="h5"
                     className="text-lg font-bold text-gray-800"
@@ -501,6 +528,114 @@ const BookingDashboard: React.FC = () => {
           )}
         </Grid>
         <Toaster position="bottom-center" reverseOrder={false} />
+
+        <SwipeableTemporaryDrawer open={open} setOpen={setOpen}>
+          <Box className="p-2 md:p-8 rounded-2xl shadow-lg">
+            {/* 🔵 Dialog Title */}
+            <h2 className="text-xl md:text-2xl font-semibold text-gray-800 text-center mb-4">
+              Select Date Range
+            </h2>
+            <Form
+              onSubmit={onSubmit}
+              render={({ handleSubmit, submitting }) => (
+                <form
+                  onSubmit={handleSubmit}
+                  className="w-full max-w-2xl bg-white p-6 md:p-8 rounded-2xl shadow-lg border border-gray-200"
+                >
+                  <div className="flex flex-col md:flex-row gap-4 md:gap-6 items-center justify-center">
+                    <Field name="startDate">
+                      {({ input, meta }) => (
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DatePicker
+                            disableFuture
+                            inputFormat="DD/MM/YYYY"
+                            value={input.value || null}
+                            onChange={(date) => input.onChange(date)}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label="Start Date"
+                                variant="outlined"
+                                size="small"
+                                fullWidth
+                                className="bg-white rounded-md mt-2 mb-2 md:mr-3"
+                                error={meta.touched && !!meta.error}
+                                helperText={meta.touched && meta.error}
+                              />
+                            )}
+                          />
+                        </LocalizationProvider>
+                      )}
+                    </Field>
+
+                    <Field name="endDate">
+                      {({ input, meta }) => (
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DatePicker
+                            disableFuture
+                            inputFormat="DD/MM/YYYY"
+                            value={input.value || null}
+                            onChange={(date) => input.onChange(date)}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label="End Date"
+                                variant="outlined"
+                                size="small"
+                                fullWidth
+                                className="bg-white rounded-md mt-2 mb-2 md:ml-3"
+                                error={meta.touched && !!meta.error}
+                                helperText={meta.touched && meta.error}
+                              />
+                            )}
+                          />
+                        </LocalizationProvider>
+                      )}
+                    </Field>
+                  </div>
+                  <div className="mt-6 flex justify-center">
+                    <button
+                      type="submit"
+                      className="flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 active:bg-blue-800 focus:ring-2 focus:ring-blue-400 disabled:opacity-50 transition duration-300 ease-in-out"
+                      disabled={submitting}
+                    >
+                      <Button
+                        className="w-full h-10 flex justify-center items-center rounded-full shadow-[0_0_5px_1px_#F2DDD4] border-gray-100 hover:bg-gray-200 transition duration-200"
+                        disableRipple
+                        disableElevation
+                        sx={{
+                          minWidth: 0,
+                          width: "71vw", // Button ko full width dene ke liye
+                          height: "100%", // Button ko full height dene ke liye
+                          display: "flex",
+                          justifyContent: "center",
+                          marginTop: "15px",
+                          alignItems: "center",
+                          border: "1px solid #D1D5DB",
+                          backgroundColor: "transparent",
+                          "&:hover": { backgroundColor: "transparent" },
+                          "&:focus": { outline: "none" },
+                        }}
+                        type="submit"
+                        disabled={isLoading}
+                      >
+                        {isLoading ? (
+                          <CircularProgress className="w-6 h-6" />
+                        ) : (
+                          // <Box display="flex" justifyContent="flex-end">
+                          <SearchIcon
+                            className="w-6 h-6 md:w-5 md:h-5"
+                            onClick={() => setOpen(false)}
+                          />
+                        )}
+                      </Button>
+                    </button>
+                  </div>
+                </form>
+              )}
+            />
+          </Box>
+        </SwipeableTemporaryDrawer>
       </Grid>
     </div>
   );

@@ -40,7 +40,9 @@ const SidebarUi: FC<SidebarProps> = ({
         return "/hr/dashboard";
       case "booking":
         return "/bookingdashboard";
-      case "account":
+        case "partner":
+          return "/partnerdashboard";
+        case "account":
         return "/accountdashboard";
       case "operation":
         return "/operationdashboard";
