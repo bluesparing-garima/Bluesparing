@@ -85,6 +85,20 @@ const DisputedPolicyPage = () => {
   return (
     <PolicyDisputeWrapper title="Disputed Policies">
       <MaterialReactTable
+        muiTablePaperProps={{
+          sx: {
+            boxShadow: "none", 
+            backgroundColor: "transparent", 
+          
+          },
+        }}
+  
+        muiTableContainerProps={{
+          sx: {
+            boxShadow: "none", 
+            backgroundColor: "transparent", 
+          },
+        }}
         state={{
           isLoading: loading,
         }}
@@ -94,13 +108,14 @@ const DisputedPolicyPage = () => {
         enableGlobalFilter
         renderTopToolbarCustomActions={({ table }) => (
           <>
-            <Button
-              className="text-white bg-safekaroDarkOrange md:m-2 md:p-2 md:text-xs text-[10px]"
-              disabled={table.getRowModel().rows.length === 0}
-              onClick={() => handleExportRows(table.getFilteredRowModel().rows)}
-            >
-              Export Filter Data
-            </Button>
+<Button
+  className="btnGradient text-black px-4 py-2 rounded-sm w-full sm:w-auto text-[10px] md:text-xs md:m-2"
+  disabled={table.getRowModel().rows.length === 0}
+  onClick={() => handleExportRows(table.getFilteredRowModel().rows)}
+>
+  Export Filter Data
+</Button>
+
           </>
         )}
         renderRowActions={({ row }) => {
