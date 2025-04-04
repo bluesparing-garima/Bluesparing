@@ -160,6 +160,20 @@ const Categories = () => {
             />
           </Typography>
           <MaterialReactTable
+           muiTablePaperProps={{
+            sx: {
+              boxShadow: "none", 
+              backgroundColor: "transparent", 
+            
+            },
+          }}
+    
+          muiTableContainerProps={{
+            sx: {
+              boxShadow: "none", 
+              backgroundColor: "transparent", 
+            },
+          }}
             state={{ isLoading, pagination }}
             columns={columns}
             data={parsedData}
