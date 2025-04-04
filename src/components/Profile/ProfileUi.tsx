@@ -72,14 +72,14 @@ const ProfileUi: React.FC<ITeamsVM> = ({
         alignItems: "center",
         bgcolor: "#bfdbfe",
         minHeight: "80vh",
-        padding: 2,
+        // padding: 2,
         fontFamily: "'Satoshi', sans-serif",
       }}
     >
       <Card
         sx={{
-          width: { xs: "90%", sm: "80%", md: 800 },
-          padding: 4,
+          width: { xs: "90%", sm: "80%", md: 800, lg:'80%' },
+          // padding: 4,
           borderRadius: 4,
           boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.2)",
           display: "flex",

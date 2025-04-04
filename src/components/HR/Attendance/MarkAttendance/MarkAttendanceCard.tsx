@@ -127,12 +127,16 @@ const MarkAttendanceCard: React.FC<AttendanceCardProps> = ({
         width: "40vw",
         padding: "20px",
         borderRadius: 3,
-        boxShadow: 5,
+        boxShadow:'0 0 20px 10px #F2DDD4',
+        color : 'black',
+      border : 'none',
+      background:'#fff',
+        // boxShadow: 5,
         transition: "transform 0.3s ease, box-shadow 0.3s ease",
         position: "relative",
         "&:hover": {
           transform: "scale(1.02)",
-          boxShadow: 8,
+          boxShadow:'0 0 30px 15px #F2DDD4',
         },
       }}
       className='sm:w-[50vw]'
@@ -140,7 +144,7 @@ const MarkAttendanceCard: React.FC<AttendanceCardProps> = ({
       <CardContent>
         <div className="flex items-center mb-4">
           {avatarContent}
-          <Typography variant="h5" className="ml-2" sx={{ color: ui.color }}>
+          <Typography variant="h5" className="ml-2" sx={{ color: '#F15729' }}>
             {attendance?.employeeName?.toUpperCase()}
           </Typography>
         </div>
@@ -164,7 +168,7 @@ const MarkAttendanceCard: React.FC<AttendanceCardProps> = ({
           </div>
         </div>
   
-        <Typography variant="body1" sx={{ mt: 4, color: ui.color }}>
+        <Typography variant="body1" sx={{ mt: 4, color: '#F15729' }}>
           Today -{" "}
           <strong>
             {employee.todaysAttendance === "Default" ? "No Record" : employee.todaysAttendance}

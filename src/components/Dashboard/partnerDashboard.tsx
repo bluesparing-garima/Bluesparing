@@ -63,7 +63,7 @@ const PartnerDashboard: React.FC = () => {
         });
     },
     [UserData.profileId]
-  );
+  ); 
   useEffect(() => {
     const currentDate = new Date();
     const firstDayOfMonth = startOfMonth(currentDate);
@@ -88,7 +88,8 @@ const PartnerDashboard: React.FC = () => {
     title: string,
     count: number | string,
     icon: string,
-    path?: string
+    path?: string,
+    
   ) => {
     const formattedCount = typeof count === "number" ? Math.round(count).toLocaleString() : count;
     const content = (
@@ -639,7 +640,7 @@ const PartnerDashboard: React.FC = () => {
                 </div>
               </form>
             )}
-          />
+          /> 
         </Box>
       </SwipeableTemporaryDrawer>
     </div>

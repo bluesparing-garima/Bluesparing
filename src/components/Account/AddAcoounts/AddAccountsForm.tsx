@@ -29,7 +29,7 @@ const AddAccountsForm = (props: addAccountFormProps) => {
   let { initialValues } = props;
   const navigate = useNavigate();
   const location = useLocation() as any;
-  const pathName = location.pathname.split("/");
+  const pathName = location?.pathname.split("/");
   const isAddEdit = pathName[pathName.length - 1] as string;
   const isAdd = isAddEdit === ADD;
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
@@ -149,7 +149,7 @@ const AddAccountsForm = (props: addAccountFormProps) => {
                 <form onSubmit={handleSubmit} noValidate>
                   <Grid container spacing={2}>
                 
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
+                    {/* <Grid item lg={4} md={4} sm={6} xs={12}>
                       <Field name="partner">
                         {({ input, meta }) => (
                           <div>
@@ -188,7 +188,7 @@ const AddAccountsForm = (props: addAccountFormProps) => {
                           </div>
                         )}
                       </Field>
-                    </Grid>
+                    </Grid> */}
                     <Grid item lg={4} md={4} sm={6} xs={12}>
                       <Field name="accountNumber">
                         {({ input, meta }) => (
