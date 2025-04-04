@@ -139,7 +139,7 @@ const Products = () => {
   };
   return (
     <>
-      <div className="bg-blue-200 md:p-7 p-2">
+      <div className="md:p-7 p-2" >
         <Paper elevation={3} style={{ padding: 30 }}>
           <Typography className="text-safekaroDarkOrange" variant="h5">
             Product Table
