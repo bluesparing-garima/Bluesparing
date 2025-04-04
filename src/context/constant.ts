@@ -147,3 +147,32 @@ export const addBookingReqDocumentsOptions = [
   { label: "GST", value: "gst" },
   { label: "Other", value: "Other" },
 ];
+
+export const RmLinkMapper: Record<string, string> = {
+  "total policy count": "/rm/rm_polices",
+  "total net premium": "/netpremium",
+  "total final premium": "/finalpremium",
+  "total revenue": "",
+  "monthly policy count": "/rm/rm_polices",
+  "monthly net premium": "/netpremium/monthly_preminum",
+  "monthly final premium": "/finalpremium/monthly",
+  "monthly revenue": "",
+  "total payin amount": "/payins",
+  "total received payin amount": "/payins/recieved",
+  "total payin balance": "/payins/balance",
+  "total left dist.": "/payins/leftDistributed",
+  "monthly payin": "/payins/monthly",
+  "monthly received payin": "/payins/recieved/monthly",
+  "monthly payin balance": "/payins/balance/monthly",
+  "monthly payin left dist.": "/payins/leftDistributed/monthly",
+  "total payout amount": "/payouts",
+  "total paid payout amount": "/payouts/paid",
+  "total payout balance": "/payouts/balance",
+  "total payout left dist.": "/payouts/leftDistributed",
+  "monthly payout amount": "/payouts/monthly",
+  "monthly paid payout amount": "/payouts/monthly/paid",
+  "monthly payout balance": "/payouts/monthly/balance",
+  "monthly payout left dist.": "/payouts/monthly/leftDistributed",
+};
+
+

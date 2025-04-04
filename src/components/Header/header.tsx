@@ -291,7 +291,7 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
           </div>
         </div>
       </div>
-      <hr className="my-2" />
+      {/* <hr className="my-2" /> */}
     </>
   );
 });
