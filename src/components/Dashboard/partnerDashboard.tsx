@@ -63,7 +63,7 @@ const PartnerDashboard: React.FC = () => {
         });
     },
     [UserData.profileId]
-  );
+  ); 
   useEffect(() => {
     const currentDate = new Date();
     const firstDayOfMonth = startOfMonth(currentDate);
