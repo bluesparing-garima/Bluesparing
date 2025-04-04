@@ -338,7 +338,7 @@ const Teams = () => {
               </div>
               <Button
                 type="button"
-                className="btnGradient text-black w-[10%]"
+                className="btnGradient text-black px-4 py-2 w-full sm:w-auto"
                 onClick={handleAddTeamClick}
               >
                 Add Team
