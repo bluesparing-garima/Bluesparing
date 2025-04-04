@@ -571,78 +571,108 @@ const PartnerDashboard: React.FC = () => {
       </CardContent>
       <Toaster position="bottom-center" reverseOrder={false} />
       <SwipeableTemporaryDrawer open={open} setOpen={setOpen}>
-      <Box height={300} display="flex" justifyContent="space-between" alignItems="center" gap={5}>
-
-      <Form
-            onSubmit={onSubmit}
-            render={({ handleSubmit, submitting }) => (
-              <form onSubmit={handleSubmit} className="w-full max-w-lg bg-white p-6 rounded-xl shadow-2xl border border-gray-200">
-                <div className="flex flex-col md:flex-row gap-6 items-center justify-center " >
-                  <Field name="startDate"  style={{ boxShadow: '6.08px 6.08px 30.41px 0px #F2DDD480' }}>
-                    {({ input, meta }) => (
-                      <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DatePicker
-                          disableFuture
-                           inputFormat="DD/MM/YYYY"
-                          value={input.value || null}
-                          onChange={(date) => input.onChange(date)}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label="Start Date"
-                              variant="outlined"
-                              size="small"
-                              fullWidth
-                              className="bg-white rounded-md"
-                              error={meta.touched && !!meta.error}
-                              helperText={meta.touched && meta.error}
-                            />
-                          )}
-                        />
-                      </LocalizationProvider>
+              <Box textAlign="center" mb={3}>
+              <h4
+      className="text-gray-800"
+      style={{
+        fontSize: "1.5rem",
+        fontWeight: "bold",
+        textAlign: "center",
+      }}
+    >
+      Select Date Range
+    </h4></Box>
+              <Form
+                    onSubmit={onSubmit}
+                    render={({ handleSubmit, submitting }) => (
+                      <form
+                        onSubmit={handleSubmit}
+                        className="space-y-6"
+                      >
+                        <Box display="flex" flexDirection={{ xs: "column", md: "row" }} gap={2}>
+                          <Field name="startDate">
+                            {({ input, meta }) => (
+                              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DatePicker
+                                  disableFuture
+                                  inputFormat="DD/MM/YYYY"
+                                  value={input.value || null}
+                                  onChange={(date) => input.onChange(date)}
+                                  renderInput={(params) => (
+                                    <TextField
+                                      {...params}
+                                      label="Start Date"
+                                      variant="outlined"
+                                      size="small"
+                                      fullWidth
+                                      error={meta.touched && !!meta.error}
+                                      helperText={meta.touched && meta.error}
+                                    />
+                                  )}
+                                />
+                              </LocalizationProvider>
+                            )}
+                          </Field>
+      
+                          <Field name="endDate">
+                            {({ input, meta }) => (
+                              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DatePicker
+                                  disableFuture
+                                  inputFormat="DD/MM/YYYY"
+                                  value={input.value || null}
+                                  onChange={(date) => input.onChange(date)}
+                                  renderInput={(params) => (
+                                    <TextField
+                                      {...params}
+                                      label="End Date"
+                                      variant="outlined"
+                                      size="small"
+                                      fullWidth
+                                      error={meta.touched && !!meta.error}
+                                      helperText={meta.touched && meta.error}
+                                    />
+                                  )}
+                                />
+                              </LocalizationProvider>
+                            )}
+                          </Field>
+                        </Box>
+                        <div className="mt-6 flex justify-center items-center">
+                            <Button
+                              className="btnGradient"
+                              disableRipple
+                              disableElevation
+                              color="primary"
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                // gap: 1,
+                                px: 4,
+                                py: 1.5,
+                                borderRadius: "8px",
+                                fontWeight: "bold",
+                                color : 'black',
+                                mt:2
+                              }}
+                              type="submit"
+                              disabled={isLoading}
+                            >
+                              {isLoading ? (
+                                <CircularProgress className="w-6 h-6" />
+                              ) : (
+                                // <Box display="flex" justifyContent="flex-end">
+                                <SearchIcon
+                                  className="w-8 h-8"
+                                  onClick={() => setOpen(false)}
+                                />
+                              )}
+                            </Button>
+                        </div>
+                      </form>
                     )}
-                  </Field>
-
-                  <Field name="endDate"  style={{ boxShadow: '6.08px 6.08px 30.41px 0px #F2DDD480' }}>
-                    {({ input, meta }) => (
-                      <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DatePicker
-                          disableFuture
-                             inputFormat="DD/MM/YYYY"
-                          value={input.value || null}
-                          onChange={(date) => input.onChange(date)}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label="End Date"
-                              variant="outlined"
-                              size="small"
-                              fullWidth
-                              className="bg-white rounded-md"
-                              error={meta.touched && !!meta.error}
-                              helperText={meta.touched && meta.error}
-                            />
-                          )}
-                        />
-                      </LocalizationProvider>
-                    )}
-                  </Field>
-                </div>
-                <div className="mt-6 flex justify-center">
-                  <button
-                    type="submit"
-                    className="flex items-center justify-center px-5 py-3 bg-blue-600 text-white font-medium rounded-lg shadow-lg hover:bg-blue-700 disabled:opacity-50 transition duration-300 ease-in-out"
-                    disabled={submitting}
-                  >
-                    {submitting ? <CircularProgress size={24} className="text-white" /> : <SearchIcon className="mr-2" />}
-                    <span>Search</span>
-                  </button>
-                </div>
-              </form>
-            )}
-          /> 
-        </Box>
-      </SwipeableTemporaryDrawer>
+                  />
+              </SwipeableTemporaryDrawer>
     </div>
   );
 };
