@@ -82,7 +82,7 @@ const ViewCreditDebitByPartnerCard = () => {
           >
             {title}
           </Typography>
-          <React.Fragment>
+        
             <Form
               onSubmit={onSubmit}
               validate={validate}
@@ -194,7 +194,7 @@ const ViewCreditDebitByPartnerCard = () => {
                 </form>
               )}
             />
-          </React.Fragment>
+      
           {isVisible && (
             <ViewCreditDebitByPartner creditDebits={creditDebits} />
           )}
