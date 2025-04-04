@@ -115,28 +115,28 @@ const GetRenewals = () => {
       // alert("Both start date and end date are required.");
       return;
     }
-  
+
     // Convert input dates to Date objects
     const newStartDate = new Date(stDate);
     const newEndDate = new Date(eDate);
-  
+
     // Validate if dates are valid
     if (isNaN(newStartDate.getTime()) || isNaN(newEndDate.getTime())) {
       toast.error("Invalid date selected. Please select valid dates.");
       // alert("Invalid date selected. Please select valid dates.");
       return;
     }
-  
+
     // Ensure endDate is not before startDate
     if (newEndDate < newStartDate) {
       toast.error("End date cannot be before start date.")
       // alert("End date cannot be before start date.");
       return;
     }
-  
+
     // Proceed based on user role
     const userRole = userData.role.toLowerCase();
-  
+
     if (userRole === "admin" || userRole === "account") {
       GetPolicies(newStartDate, newEndDate);
     } else if (userData.role.toLowerCase() === "booking") {
@@ -440,24 +440,24 @@ const GetRenewals = () => {
     () =>
       [
         {
-          accessorKey: "endDate", 
+          accessorKey: "endDate",
           header: "End Date",
           size: 100,
-          visible: userData.role === "admin", 
+          visible: userData.role === "admin",
         },
         {
-          accessorKey: "issueDate", 
+          accessorKey: "issueDate",
           header: "Issue Date",
           size: 100,
         },
         {
-          accessorKey: "category", 
+          accessorKey: "category",
           header: "Category",
           size: 100,
-          visible: userData.role === "admin", 
+          visible: userData.role === "admin",
         },
         {
-          accessorKey: "vehicleNumber", 
+          accessorKey: "vehicleNumber",
           header: "Vehicle Number",
           size: 100,
         },
@@ -744,7 +744,7 @@ const GetRenewals = () => {
           },
         },
 
-        
+
         {
           header: "Created On",
           accessorKey: "createdOn",
@@ -758,86 +758,86 @@ const GetRenewals = () => {
     () =>
       motorPolicies?.map(
         (motorPolicy: IViewPolicy) =>
-          ({
-            id: motorPolicy._id,
-            policyId: motorPolicy.policyId,
-            fullName: motorPolicy.fullName,
-            productType: motorPolicy.productType,
-            emailId: motorPolicy.emailId,
-            weight: motorPolicy.weight,
-            broker: motorPolicy.broker,
-            brokerCode: motorPolicy.brokerCode,
-            policyType: motorPolicy.policyType,
-            caseType: motorPolicy.caseType,
-            category: motorPolicy.category,
-            subCategory: motorPolicy.subCategory,
-            companyName: motorPolicy.companyName,
-            make: motorPolicy.make,
-            model: motorPolicy.model,
-            fuelType: motorPolicy.fuelType,
-            rto: motorPolicy.rto,
-            vehicleNumber: motorPolicy.vehicleNumber,
-            seatingCapacity: motorPolicy.seatingCapacity,
-            vehicleAge: motorPolicy.vehicleAge,
-            ncb: motorPolicy.ncb,
-            policyNumber: motorPolicy.policyNumber,
-            phoneNumber: motorPolicy.phoneNumber,
-            mfgYear: motorPolicy.mfgYear,
-            registrationDate: dayjs(motorPolicy.registrationDate).format(
-              DAYJS_DISPLAY_FORMAT
-            ),
-            endDate: dayjs(motorPolicy.endDate).format(DAYJS_DISPLAY_FORMAT),
-            issueDate: dayjs(motorPolicy.issueDate).format(
-              DAYJS_DISPLAY_FORMAT
-            ),
-            tenure: motorPolicy.tenure,
-            idv: motorPolicy.idv,
-            od: motorPolicy.od,
-            tp: motorPolicy.tp,
-            netPremium: motorPolicy.netPremium,
-            finalPremium: parseInt(motorPolicy.finalPremium),
-            cc: motorPolicy.cc,
-            paymentMode: motorPolicy.paymentMode,
-            policyCreatedBy: motorPolicy.policyCreatedBy,
-            createdOn: dayjs(motorPolicy.createdOn).format(
-              DAYJS_DISPLAY_FORMAT
-            ),
-            paymentDetails: motorPolicy.paymentDetails,
-            policyStatus: motorPolicy.policyStatus,
-            partnerCode: motorPolicy.partnerCode,
-            partnerId: motorPolicy.partnerId,
-            partnerName: motorPolicy.partnerName,
-            relationshipManagerName: motorPolicy.relationshipManagerName,
-            relationshipManagerId: motorPolicy.relationshipManagerId,
-            rcFront: motorPolicy.rcFront,
-            rcBack: motorPolicy.rcBack,
-            previousPolicy: motorPolicy.previousPolicy,
-            policyCompletedByName: motorPolicy.policyCompletedByName,
-            policyCompletedByCode: motorPolicy.policyCompletedByCode,
-            survey: motorPolicy.survey,
-            puc: motorPolicy.puc,
-            fitness: motorPolicy.fitness,
-            proposal: motorPolicy.proposal,
-            currentPolicy: motorPolicy.currentPolicy,
-            payInPaymentStatus: motorPolicy.payInPaymentStatus,
-            payInODAmount: motorPolicy.payInODAmount,
-            payInODPercentage: motorPolicy.payInODPercentage,
-            payInTPPercentage: motorPolicy.payInTPPercentage,
-            payInTPAmount: motorPolicy.payInTPAmount,
-            payInBalance: motorPolicy.payInBalance,
-            payInCommission: motorPolicy.payInCommission,
-            payOutODPercentage: motorPolicy.payOutODPercentage,
-            payOutTPPercentage: motorPolicy.payOutTPPercentage,
-            payOutODAmount: motorPolicy.payOutODAmount,
-            payOutTPAmount: motorPolicy.payOutTPAmount,
-            payOutBalance: motorPolicy.payOutBalance,
-            payOutCommission: motorPolicy.payOutCommission,
-            payInAmount: motorPolicy.payInAmount,
-            payOutAmount: motorPolicy.payOutAmount,
-            payOutPaymentStatus: motorPolicy.payOutPaymentStatus,
-            other: motorPolicy.other,
-           
-          } as unknown as IViewPolicy)
+        ({
+          id: motorPolicy._id,
+          policyId: motorPolicy.policyId,
+          fullName: motorPolicy.fullName,
+          productType: motorPolicy.productType,
+          emailId: motorPolicy.emailId,
+          weight: motorPolicy.weight,
+          broker: motorPolicy.broker,
+          brokerCode: motorPolicy.brokerCode,
+          policyType: motorPolicy.policyType,
+          caseType: motorPolicy.caseType,
+          category: motorPolicy.category,
+          subCategory: motorPolicy.subCategory,
+          companyName: motorPolicy.companyName,
+          make: motorPolicy.make,
+          model: motorPolicy.model,
+          fuelType: motorPolicy.fuelType,
+          rto: motorPolicy.rto,
+          vehicleNumber: motorPolicy.vehicleNumber,
+          seatingCapacity: motorPolicy.seatingCapacity,
+          vehicleAge: motorPolicy.vehicleAge,
+          ncb: motorPolicy.ncb,
+          policyNumber: motorPolicy.policyNumber,
+          phoneNumber: motorPolicy.phoneNumber,
+          mfgYear: motorPolicy.mfgYear,
+          registrationDate: dayjs(motorPolicy.registrationDate).format(
+            DAYJS_DISPLAY_FORMAT
+          ),
+          endDate: dayjs(motorPolicy.endDate).format(DAYJS_DISPLAY_FORMAT),
+          issueDate: dayjs(motorPolicy.issueDate).format(
+            DAYJS_DISPLAY_FORMAT
+          ),
+          tenure: motorPolicy.tenure,
+          idv: motorPolicy.idv,
+          od: motorPolicy.od,
+          tp: motorPolicy.tp,
+          netPremium: motorPolicy.netPremium,
+          finalPremium: parseInt(motorPolicy.finalPremium),
+          cc: motorPolicy.cc,
+          paymentMode: motorPolicy.paymentMode,
+          policyCreatedBy: motorPolicy.policyCreatedBy,
+          createdOn: dayjs(motorPolicy.createdOn).format(
+            DAYJS_DISPLAY_FORMAT
+          ),
+          paymentDetails: motorPolicy.paymentDetails,
+          policyStatus: motorPolicy.policyStatus,
+          partnerCode: motorPolicy.partnerCode,
+          partnerId: motorPolicy.partnerId,
+          partnerName: motorPolicy.partnerName,
+          relationshipManagerName: motorPolicy.relationshipManagerName,
+          relationshipManagerId: motorPolicy.relationshipManagerId,
+          rcFront: motorPolicy.rcFront,
+          rcBack: motorPolicy.rcBack,
+          previousPolicy: motorPolicy.previousPolicy,
+          policyCompletedByName: motorPolicy.policyCompletedByName,
+          policyCompletedByCode: motorPolicy.policyCompletedByCode,
+          survey: motorPolicy.survey,
+          puc: motorPolicy.puc,
+          fitness: motorPolicy.fitness,
+          proposal: motorPolicy.proposal,
+          currentPolicy: motorPolicy.currentPolicy,
+          payInPaymentStatus: motorPolicy.payInPaymentStatus,
+          payInODAmount: motorPolicy.payInODAmount,
+          payInODPercentage: motorPolicy.payInODPercentage,
+          payInTPPercentage: motorPolicy.payInTPPercentage,
+          payInTPAmount: motorPolicy.payInTPAmount,
+          payInBalance: motorPolicy.payInBalance,
+          payInCommission: motorPolicy.payInCommission,
+          payOutODPercentage: motorPolicy.payOutODPercentage,
+          payOutTPPercentage: motorPolicy.payOutTPPercentage,
+          payOutODAmount: motorPolicy.payOutODAmount,
+          payOutTPAmount: motorPolicy.payOutTPAmount,
+          payOutBalance: motorPolicy.payOutBalance,
+          payOutCommission: motorPolicy.payOutCommission,
+          payInAmount: motorPolicy.payInAmount,
+          payOutAmount: motorPolicy.payOutAmount,
+          payOutPaymentStatus: motorPolicy.payOutPaymentStatus,
+          other: motorPolicy.other,
+
+        } as unknown as IViewPolicy)
       ) ?? [],
     [motorPolicies]
   );
@@ -1056,7 +1056,7 @@ const GetRenewals = () => {
           a.click();
           document.body.removeChild(a);
         })
-        .catch((error) => {throw error});
+        .catch((error) => { throw error });
     } else {
     }
   };
@@ -1359,7 +1359,7 @@ const GetRenewals = () => {
 
   return (
     <>
-      <div className="bg-blue-200 md:p-7 p-2">
+      <div className=" md:p-7 p-2">
         <Paper elevation={3} style={{ padding: 30 }}>
           <Typography className="text-safekaroDarkOrange" variant="h5">
             Motor Policies Renewals Table
@@ -1379,18 +1379,19 @@ const GetRenewals = () => {
                 </span>
               </div>
               {userData.role.toLowerCase() === "admin" ||
-              userData.role.toLowerCase() === "booking" ||
-              userData.role.toLowerCase() === "account" ? (
+                userData.role.toLowerCase() === "booking" ||
+                userData.role.toLowerCase() === "account" ? (
                 <Button
                   type="button"
-                  className="w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                   onClick={handleClickAddMotorPolicy}
                   size="small"
+                  className="btnGradient text-black px-4 py-2 rounded-sm w-full sm:w-auto"
                 >
-                  <span className="md:text-xs text-[10px]">
+                  <span className="text-[10px] md:text-xs">
                     Add Motor Policies
                   </span>
                 </Button>
+
               ) : (
                 ""
               )}
@@ -1478,10 +1479,11 @@ const GetRenewals = () => {
                         disabled={submitting}
                         variant="contained"
                         color="primary"
-                        className=" w-26 h-10 bg-addButton text-white p-3 md:text-xs text-[10px] rounded-sm"
+                        className="btnGradient text-black px-4 py-2 rounded-sm w-full sm:w-auto text-[10px] md:text-xs"
                       >
-                        {"Get Records"}
+                        Get Records
                       </Button>
+
                     </Grid>
                   </Grid>
                 </form>
@@ -1490,24 +1492,37 @@ const GetRenewals = () => {
           </React.Fragment>
 
           <MaterialReactTable
+            muiTablePaperProps={{
+              sx: {
+                boxShadow: "none",
+                backgroundColor: "transparent",
+
+              },
+            }}
+
+            muiTableContainerProps={{
+              sx: {
+                boxShadow: "none",
+                backgroundColor: "transparent",
+              },
+            }}
             state={{ isLoading }}
             columns={columns}
             data={parsedData}
-          
+
             renderTopToolbarCustomActions={({ table }) => (
               <>
                 <Button
-                  className="text-white bg-safekaroDarkOrange md:m-2 md:p-2 md:text-xs text-[10px]"
+                  className="btnGradient text-black px-4 py-2 rounded-sm w-full sm:w-auto text-[10px] md:text-xs md:m-2"
                   disabled={table.getRowModel().rows.length === 0}
-                  onClick={() =>
-                    handleExportRows(table.getFilteredRowModel().rows)
-                  }
+                  onClick={() => handleExportRows(table.getFilteredRowModel().rows)}
                 >
                   Export Filter Data
                 </Button>
+
               </>
             )}
-           
+
           />
           <ConfirmationDialogBox
             open={dialogOpen}
