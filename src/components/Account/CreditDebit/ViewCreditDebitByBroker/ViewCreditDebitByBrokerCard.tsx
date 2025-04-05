@@ -82,119 +82,118 @@ const ViewCreditDebitByBrokerCard = () => {
           >
             {title}
           </Typography>
-     
-            <Form
-              onSubmit={onSubmit}
-              validate={validate}
-              render={({ handleSubmit, submitting, errors, values }) => (
-                <form onSubmit={handleSubmit} noValidate>
-                  <Grid container spacing={2} mt={2} mb={2}>
-                    {}
-                    <Grid item lg={3} md={3} sm={6} xs={12}>
-                      <Field name="startDate">
-                        {({ input, meta }) => (
-                          <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DatePicker
-                              disableFuture
-                              label="Start Date"
-                              inputFormat="DD/MM/YYYY"
-                              value={input.value || null}
-                              onChange={(date) => input.onChange(date)}
-                              renderInput={(params: any) => (
-                                <TextField
-                                  variant="outlined"
-                                  size="small"
-                                  fullWidth
-                                  {...params}
-                                  error={meta.touched && !!meta.error}
-                                  helperText={meta.touched && meta.error}
-                                />
-                              )}
-                            />
-                          </LocalizationProvider>
-                        )}
-                      </Field>
-                    </Grid>
-                    <Grid item lg={3} md={3} sm={6} xs={12}>
-                      <Field name="endDate">
-                        {({ input, meta }) => (
-                          <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DatePicker
-                              disableFuture
-                              label="End Date"
-                              inputFormat="DD/MM/YYYY"
-                              value={input.value || null}
-                              onChange={(date) => input.onChange(date)}
-                              renderInput={(params: any) => (
-                                <TextField
-                                  variant="outlined"
-                                  size="small"
-                                  fullWidth
-                                  {...params}
-                                  error={meta.touched && !!meta.error}
-                                  helperText={meta.touched && meta.error}
-                                />
-                              )}
-                            />
-                          </LocalizationProvider>
-                        )}
-                      </Field>
-                    </Grid>
-                    <Grid item lg={3} md={3} sm={6} xs={12}>
-                      <Field name="brokerName">
-                        {({ input, meta }) => (
-                          <div>
-                            <FormControl fullWidth size="small">
-                              <Autocomplete
-                                {...input}
-                                id="brokerName"
-                                value={
-                                  input.value !== undefined ? input.value : null
-                                }
-                                getOptionLabel={(option) =>
-                                  typeof option === "string"
-                                    ? option
-                                    : `${option.brokerName} - ${option.brokerCode}` ||
-                                      ""
-                                }
-                                options={brokers}
-                                onChange={(event, newValue) => {
-                                  input.onChange(newValue.brokerName);
-                                  setSelectedBrokerId(newValue._id);
-                                }}
-                                renderInput={(params) => (
-                                  <TextField
-                                    {...params}
-                                    label=" Select Broker Name"
-                                    className="rounded-sm w-full"
-                                    size="small"
-                                    variant="outlined"
-                                    error={meta.touched && !!meta.error}
-                                    helperText={meta.touched && meta.error}
-                                  />
-                                )}
+
+          <Form
+            onSubmit={onSubmit}
+            validate={validate}
+            render={({ handleSubmit, submitting, errors, values }) => (
+              <form onSubmit={handleSubmit} noValidate>
+                <Grid container spacing={2} mt={2} mb={2}>
+                  { }
+                  <Grid item lg={3} md={3} sm={6} xs={12}>
+                    <Field name="startDate">
+                      {({ input, meta }) => (
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DatePicker
+                            disableFuture
+                            label="Start Date"
+                            inputFormat="DD/MM/YYYY"
+                            value={input.value || null}
+                            onChange={(date) => input.onChange(date)}
+                            renderInput={(params: any) => (
+                              <TextField
+                                variant="outlined"
+                                size="small"
+                                fullWidth
+                                {...params}
+                                error={meta.touched && !!meta.error}
+                                helperText={meta.touched && meta.error}
                               />
-                            </FormControl>
-                          </div>
-                        )}
-                      </Field>
-                    </Grid>
-                    <Grid item lg={3} md={3} sm={6} xs={12}>
-                      <Button
-                        type="submit"
-                        disabled={isLoading}
-                        variant="contained"
-                        color="primary"
-                        className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
-                      >
-                        {isLoading ? "Submitting..." : "Get Record"}
-                      </Button>
-                    </Grid>
+                            )}
+                          />
+                        </LocalizationProvider>
+                      )}
+                    </Field>
                   </Grid>
-                </form>
-              )}
-            />
-    
+                  <Grid item lg={3} md={3} sm={6} xs={12}>
+                    <Field name="endDate">
+                      {({ input, meta }) => (
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DatePicker
+                            disableFuture
+                            label="End Date"
+                            inputFormat="DD/MM/YYYY"
+                            value={input.value || null}
+                            onChange={(date) => input.onChange(date)}
+                            renderInput={(params: any) => (
+                              <TextField
+                                variant="outlined"
+                                size="small"
+                                fullWidth
+                                {...params}
+                                error={meta.touched && !!meta.error}
+                                helperText={meta.touched && meta.error}
+                              />
+                            )}
+                          />
+                        </LocalizationProvider>
+                      )}
+                    </Field>
+                  </Grid>
+                  <Grid item lg={3} md={3} sm={6} xs={12}>
+                    <Field name="brokerName">
+                      {({ input, meta }) => (
+                        <div>
+                          <FormControl fullWidth size="small">
+                            <Autocomplete
+                              {...input}
+                              id="brokerName"
+                              value={
+                                input.value !== undefined ? input.value : null
+                              }
+                              getOptionLabel={(option) =>
+                                typeof option === "string"
+                                  ? option
+                                  : `${option.brokerName} - ${option.brokerCode}` ||
+                                  ""
+                              }
+                              options={brokers}
+                              onChange={(event, newValue) => {
+                                input.onChange(newValue.brokerName);
+                                setSelectedBrokerId(newValue._id);
+                              }}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  label=" Select Broker Name"
+                                  className="rounded-sm w-full"
+                                  size="small"
+                                  variant="outlined"
+                                  error={meta.touched && !!meta.error}
+                                  helperText={meta.touched && meta.error}
+                                />
+                              )}
+                            />
+                          </FormControl>
+                        </div>
+                      )}
+                    </Field>
+                  </Grid>
+                  <Grid item lg={3} md={3} sm={6} xs={12}>
+                    <Button
+                      type="submit"
+                      disabled={isLoading}
+                      className="btnGradient text-black px-4 py-2 rounded-sm w-full sm:w-auto text-[10px] md:text-xs"
+                    >
+                      {isLoading ? "Submitting..." : "Get Record"}
+                    </Button>
+
+                  </Grid>
+                </Grid>
+              </form>
+            )}
+          />
+
           {isVisible && <ViewCreditDebitByBroker creditDebits={creditDebits} />}
         </Paper>
       </div>

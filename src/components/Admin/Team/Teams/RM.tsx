@@ -224,12 +224,13 @@ const RM = () => {
                 <span className="text-grey-600 text-sm"> Team</span>
               </div>
               <Button
-                type="button"
-                className="w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
-                onClick={handleAddTeamClick}
-              >
-                Add Team
-              </Button>
+  type="button"
+  className="btnGradient text-black px-4 py-2 rounded-sm w-full sm:w-auto text-[10px] md:text-xs"
+  onClick={handleAddTeamClick}
+>
+  Add Team
+</Button>
+
             </div>
            
             <hr

@@ -47,12 +47,12 @@ const CreditDebits = () => {
               <span className="text-grey-600 text-sm"> Transactions</span>
             </div>
             <Button
-  type="button"
-  className="btnGradient text-black px-4 py-3 rounded-sm w-full sm:w-auto text-[10px] md:text-xs"
-  onClick={handleAddCreditDebitClick}
->
-  Add Transaction
-</Button>
+              type="button"
+              className="btnGradient text-black px-4 py-3 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
+              onClick={handleAddCreditDebitClick}
+            >
+              Add Transaction
+            </Button>
 
           </div>
 
@@ -63,36 +63,36 @@ const CreditDebits = () => {
         </Typography>
 
         <Grid container spacing={1}>
-  <Grid item>
-    <Button
-      type="button"
-      className="btnGradient text-black px-4 py-1.5 rounded-sm w-full sm:w-auto text-[10px] md:text-xs"
-      onClick={handleClickCreditDebit}
-    >
-      All
-    </Button>
-  </Grid>
+          <Grid item>
+            <Button
+              type="button"
+              className="btnGradient text-black px-4 py-1.5 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
+              onClick={handleClickCreditDebit}
+            >
+              All
+            </Button>
+          </Grid>
 
-  <Grid item>
-    <Button
-      type="button"
-      className="btnGradient text-black px-4 py-1.5 rounded-sm w-full sm:w-auto text-[10px] md:text-xs"
-      onClick={handleClickCredit}
-    >
-      Credit
-    </Button>
-  </Grid>
+          <Grid item>
+            <Button
+              type="button"
+              className="btnGradient text-black px-4 py-1.5 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
+              onClick={handleClickCredit}
+            >
+              Credit
+            </Button>
+          </Grid>
 
-  <Grid item>
-    <Button
-      type="button"
-      className="btnGradient text-black px-4 py-1.5 rounded-sm w-full sm:w-auto text-[10px] md:text-xs"
-      onClick={handleClickDebit}
-    >
-      Debit
-    </Button>
-  </Grid>
-</Grid>
+          <Grid item>
+            <Button
+              type="button"
+              className="btnGradient text-black px-4 py-1.5 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
+              onClick={handleClickDebit}
+            >
+              Debit
+            </Button>
+          </Grid>
+        </Grid>
 
 
 

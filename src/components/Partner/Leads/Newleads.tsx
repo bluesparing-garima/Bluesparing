@@ -166,7 +166,7 @@ const Leads = () => {
               {userData.role.toLowerCase() !== "admin" && (
                 <Button
                   type="button"
-                  className="w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
+                  className="w-28 h-10 btnGradient text-black p-3 text-xs rounded-md"
                   onClick={handleAddLeadClick}
                 >
                   Add Lead

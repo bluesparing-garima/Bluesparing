@@ -388,7 +388,7 @@ const GetArchiveMotorPolicies = () => {
                 <Button
                   type="button"
                   onClick={handleClickAddMotorPolicy}
-                  className="btnGradient text-black px-4 py-2 rounded-sm w-full sm:w-auto text-[10px] md:text-xs"
+                  className="btnGradient text-black px-4 py-3 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
                 >
                   Add Motor Policies
                 </Button>
@@ -465,7 +465,7 @@ const GetArchiveMotorPolicies = () => {
                         disabled={isLoading}
                         variant="contained"
                         color="primary"
-                        className="btnGradient text-black px-4 py-2 rounded-sm w-full sm:w-auto text-[10px] md:text-xs"
+                        className="btnGradient text-black px-4 py-2.5 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
                       >
                         {isLoading ? "Getting..." : "Get Records"}
                       </Button>
@@ -500,7 +500,7 @@ const GetArchiveMotorPolicies = () => {
             renderTopToolbarCustomActions={({ table }) => (
               <>
                 <Button
-                  className="btnGradient text-black px-4 py-2 rounded-sm w-full sm:w-auto text-[10px] md:text-xs md:m-2"
+                  className="btnGradient text-black px-4 py-2 rounded-md w-full sm:w-auto text-[10px] md:text-xs md:m-2"
                   disabled={table.getRowModel().rows.length === 0}
                   onClick={() => handleExportRows(table.getFilteredRowModel().rows)}
                 >

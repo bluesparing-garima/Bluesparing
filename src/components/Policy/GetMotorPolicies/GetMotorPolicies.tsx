@@ -1464,7 +1464,7 @@ const GetMotorPolicies = () => {
                   type="button"
                   size="small"
                   onClick={handleClickAddMotorPolicy}
-                  className="btnGradient text-black px-4 py-2 rounded-sm w-full sm:w-auto"
+                  className="btnGradient text-black px-4 py-3 rounded-md w-full sm:w-auto"
                 >
                   <span className="text-[10px] md:text-xs">
                     Add Motor Policies
@@ -1564,7 +1564,7 @@ const GetMotorPolicies = () => {
   disabled={isLoading}
   variant="contained"
   color="primary"
-  className="btnGradient text-black px-4 py-2 rounded-sm w-full sm:w-auto text-[10px] md:text-xs"
+  className="btnGradient text-black px-4 py-2.5 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
 >
   {isLoading ? "Getting..." : "Get Records"}
 </Button>
@@ -1689,15 +1689,13 @@ const GetMotorPolicies = () => {
             }}
             renderTopToolbarCustomActions={({ table }) => (
               <>
-                <Button
-                  className="text-white bg-safekaroDarkOrange md:m-2 md:p-2 md:text-xs text-[10px]"
-                  disabled={table.getRowModel().rows.length === 0}
-                  onClick={() =>
-                    handleExportRows(table.getFilteredRowModel().rows)
-                  }
-                >
-                  Export Filter Data
-                </Button>
+<Button
+  className="btnGradient text-black px-4 py-2.5 m-2 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
+  disabled={table.getRowModel().rows.length === 0}
+  onClick={() => handleExportRows(table.getFilteredRowModel().rows)}
+>
+  Export Filter Data
+</Button>
               </>
             )}
             renderRowActions={({ row }) => {

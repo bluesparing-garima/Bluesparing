@@ -53,7 +53,7 @@ const ManageBrokerPaymentForm = () => {
     endDate: yup.string().nullable().required("End Date is required"),
   });
   const validate = validateFormValues(validationSchema);
-  
+
   const onSubmit = async (updatePayment: IUpdatePartnerPaymentPolicy) => {
     const newStartDate = dayjs(updatePayment.startDate).format(DAY_FORMAT);
     const newEndDate = dayjs(updatePayment.endDate).format(DAY_FORMAT);
@@ -79,7 +79,7 @@ const ManageBrokerPaymentForm = () => {
     } catch (error: any) {
       const err = await error;
       toast.error(err.message);
-    }finally{
+    } finally {
       setIsLoading(false);
     }
   };
@@ -104,7 +104,7 @@ const ManageBrokerPaymentForm = () => {
                             typeof option === "string"
                               ? option
                               : `${option.brokerName} - ${option.brokerCode}` ||
-                                ""
+                              ""
                           }
                           options={brokers}
                           onChange={(event, newValue) => {
@@ -227,12 +227,11 @@ const ManageBrokerPaymentForm = () => {
                 <Button
                   type="submit"
                   disabled={isLoading}
-                  variant="contained"
-                  color="primary"
-                  className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
+                  className="btnGradient text-black px-4 py-2.5 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
                 >
                   {isLoading ? "Submitting" : "Get Motor Policies"}
                 </Button>
+
               </Grid>
             </Grid>
           </form>

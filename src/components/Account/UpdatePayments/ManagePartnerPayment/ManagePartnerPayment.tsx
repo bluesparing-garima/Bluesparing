@@ -5,7 +5,7 @@ const ManagePartnerPayment = () => {
   const title = "Update Partner Distribution";
   return (
     <>
-      <div className="bg-blue-200 md:p-7 p-2">
+      <div className="md:p-7 p-2">
         <Paper elevation={3} style={{ padding: 20 }}>
           <Typography
             variant="h5"

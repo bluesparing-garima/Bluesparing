@@ -5,7 +5,7 @@ import { Paper, Typography } from "@mui/material";
 const TDSWrapper: FC<TdsWrapper> = ({ children, title }) => {
   return (
     <>
-      <div className="bg-blue-200 md:p-7 p-2">
+      <div className=" md:p-7 p-2">
         <Paper elevation={3} style={{ padding: 20 }}>
           <Typography variant="h5" mb={2}>
             <div style={{ display: "flex", alignItems: "center" }}>
