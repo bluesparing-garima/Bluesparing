@@ -7,7 +7,7 @@ import {
   Grid,
   TextField,
 } from "@mui/material";
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import { Field, Form } from "react-final-form";
 import { ADD, SafeKaroUser, header } from "../../../context/constant";
 import { accountsPath } from "../../../sitemap";
@@ -35,7 +35,7 @@ const AddAccountsForm = (props: addAccountFormProps) => {
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let userData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
   let [partners] = useGetPartners({ header: header, role: "partner" });
-  const [isLoading,setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const onSubmit = (accountForm: IAccountForm, form: any) => {
     let accountHolderName = accountForm.accountHolderName!.toUpperCase();
     let bankName = accountForm.bankName!.substring(0, 3);
@@ -76,7 +76,7 @@ const AddAccountsForm = (props: addAccountFormProps) => {
       const err = await error;
       toast.error(err.message);
       return { [FORM_ERROR]: `error` };
-    }finally{
+    } finally {
       setIsLoading(false)
     }
   };
@@ -97,7 +97,7 @@ const AddAccountsForm = (props: addAccountFormProps) => {
       const err = await error;
       toast.error(err.message);
       return { [FORM_ERROR]: `error` };
-    }finally{
+    } finally {
       setIsLoading(false)
     }
   };
@@ -137,9 +137,7 @@ const AddAccountsForm = (props: addAccountFormProps) => {
   const addValidate = validateFormValues(validationSchema);
   return (
     <>
-      <React.Fragment>
-        <Card>
-          <CardContent>
+    
             <Form
               mt={3}
               onSubmit={onSubmit}
@@ -148,7 +146,7 @@ const AddAccountsForm = (props: addAccountFormProps) => {
               render={({ handleSubmit, submitError, submitting }) => (
                 <form onSubmit={handleSubmit} noValidate>
                   <Grid container spacing={2}>
-                
+
                     {/* <Grid item lg={4} md={4} sm={6} xs={12}>
                       <Field name="partner">
                         {({ input, meta }) => (
@@ -283,17 +281,20 @@ const AddAccountsForm = (props: addAccountFormProps) => {
                           {submitError}
                         </div>
                       )}
-                      <Button variant="contained" type="submit" disabled={isLoading}>
-                       {isLoading?"Submitting":"Submit"} 
+                      <Button
+                        type="submit"
+                        disabled={isLoading}
+                        className="btnGradient text-black px-4 py-2.5 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
+                      >
+                        {isLoading ? "Submitting" : "Submit"}
                       </Button>
+
                     </Grid>
                   </Grid>
                 </form>
               )}
             />
-          </CardContent>
-        </Card>
-      </React.Fragment>
+
       <Toaster position="bottom-center" reverseOrder={false} />
     </>
   );

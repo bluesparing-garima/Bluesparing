@@ -147,6 +147,7 @@ const AllCreditDebits = () => {
   return (
     <div className="p-7 mt-3">
       <MaterialReactTable
+      
         state={{ isLoading }}
         columns={columns}
         data={parsedData}

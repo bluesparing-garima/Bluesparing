@@ -161,9 +161,7 @@ const AddCreditDebitForm = (props: addCreditDebitFormProps) => {
   const addValidate = validateFormValues(validationSchema);
   return (
     <>
-      <React.Fragment>
-        <Card>
-          <CardContent>
+      
             <Form
               mt={3}
               onSubmit={onSubmit}
@@ -605,9 +603,7 @@ const AddCreditDebitForm = (props: addCreditDebitFormProps) => {
                 </form>
               )}
             />
-          </CardContent>
-        </Card>
-      </React.Fragment>
+       
       <Toaster position="bottom-center" reverseOrder={false} />
     </>
   );
