@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Button, Grid, TextField, Tooltip } from "@mui/material";
+import { Box, Button, Grid, TextField, Tooltip } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import {
   DAYJS_DISPLAY_FORMAT,
@@ -41,6 +41,7 @@ import AttendanceCard from "../HR/Attendance/AttendanceRecord/AttendanceCard";
 import dayjs from "dayjs";
 import toast, { Toaster } from "react-hot-toast";
 import CustomIconButton from "./data/CustomIconButton";
+import SwipeableTemporaryDrawer from "../../utils/ui/SwipeableTemporaryDrawer";
 const AccountDashboard: React.FC = () => {
   const [data, setData] = useState<IAccountData[]>([]);
   const [isVisible, setIsVisible] = useState(false);
@@ -103,7 +104,7 @@ const AccountDashboard: React.FC = () => {
     const formattedCount =
       typeof count === "number" ? Math.round(count).toLocaleString() : count;
     const content = (
-      <div className="bg-white m-2 p-3 mt-8 rounded-[10.33px] shadow-[0_0_5px_2px_#F2DDD4] flex items-center justify-between transform transition-transform duration-200 hover:scale-105">
+      <div className="bg-white m-2 p-3 mt-8 rounded-[10.33px] shadow-[0_0_10px_2px_#F2DDD4] flex items-center justify-between transform transition-transform duration-200 hover:scale-105">
         <div>
           <Typography
             variant="body2"
@@ -234,11 +235,11 @@ const AccountDashboard: React.FC = () => {
   };
 
   return (
-    <div className="bg-blue-50 min-h-[90vh] pl-5 pr-5 pt-2">
-      <Grid container>
-        <div className="flex justify-between w-full m-2 items-center gap-x-2 gap-3 md:gap-0">
-          <div className="flex justify-between w-[100%] items-center lg:w-[12%] lg:gap-x-5 md:gap-x-7 sm:w-[100%]">
-            <CartButton
+  <div className="pl-5 pr-5 pt-2">
+        <Grid container>
+          <div className="flex justify-between w-full m-2 items-center gap-x-2 gap-3 md:gap-0">
+            <div className="flex justify-between w-[100%] items-center lg:w-[12%] lg:gap-x-5 md:gap-x-7 sm:w-[100%]">
+              <CartButton
               onClick={handleFirstCart}
               tooltipTitle="View Policy Data"
               iconPath={<MotorSvg isActive={selectedCard === "1"} />}
@@ -531,6 +532,103 @@ const AccountDashboard: React.FC = () => {
         </Grid>
       </Grid>
       <Toaster position="bottom-center" reverseOrder={false} />
+      
+      <SwipeableTemporaryDrawer open={open} setOpen={setOpen}>
+                    <Box textAlign="center" mb={3}>
+                    <h4
+            className="text-gray-800"
+            style={{
+              fontSize: "1.5rem",
+              fontWeight: "bold",
+              textAlign: "center",
+            }}
+          >
+            Select Date Range
+          </h4></Box>
+                    <Form
+                          onSubmit={onSubmit}
+                          render={({ handleSubmit, submitting }) => (
+                            <form
+                              onSubmit={handleSubmit}
+                              className="space-y-6"
+                            >
+                              <Box display="flex" flexDirection={{ xs: "column", md: "row" }} gap={2}>
+                                <Field name="startDate">
+                                  {({ input, meta }) => (
+                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                      <DatePicker
+                                        disableFuture
+                                        inputFormat="DD/MM/YYYY"
+                                        value={input.value || null}
+                                        onChange={(date) => input.onChange(date)}
+                                        renderInput={(params) => (
+                                          <TextField
+                                            {...params}
+                                            label="Start Date"
+                                            variant="outlined"
+                                            size="small"
+                                            fullWidth
+                                            error={meta.touched && !!meta.error}
+                                            helperText={meta.touched && meta.error}
+                                          />
+                                        )}
+                                      />
+                                    </LocalizationProvider>
+                                  )}
+                                </Field>
+            
+                                <Field name="endDate">
+                                  {({ input, meta }) => (
+                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                      <DatePicker
+                                        disableFuture
+                                        inputFormat="DD/MM/YYYY"
+                                        value={input.value || null}
+                                        onChange={(date) => input.onChange(date)}
+                                        renderInput={(params) => (
+                                          <TextField
+                                            {...params}
+                                            label="End Date"
+                                            variant="outlined"
+                                            size="small"
+                                            fullWidth
+                                            error={meta.touched && !!meta.error}
+                                            helperText={meta.touched && meta.error}
+                                          />
+                                        )}
+                                      />
+                                    </LocalizationProvider>
+                                  )}
+                                </Field>
+                              </Box>
+                              <div className="mt-6 flex justify-center items-center">
+                                  <Button
+                                    className="btnGradient"
+                                    disableRipple
+                                    disableElevation
+                                    color="primary"
+                                    sx={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      // gap: 1,
+                                      px: 4,
+                                      py: 1.5,
+                                      borderRadius: "8px",
+                                      fontWeight: "bold",
+                                      color : 'black',
+                                      mt:2
+                                    }}
+                                    type="submit"
+                                  ><SearchIcon
+                                        className="w-8 h-8"
+                                        onClick={() => setOpen(false)}
+                                      />
+                                  </Button>
+                              </div>
+                            </form>
+                          )}
+                        />
+                    </SwipeableTemporaryDrawer>
     </div>
   );
 };
