@@ -66,11 +66,11 @@ const Attendance: React.FC = () => {
     return `${percentage}%`;
   };
   return (
-    <Container className="bg-blue-200 h-screen">
+    <Container className="rounded-md shadow-[0_0_5px_1px_#F2DDD4] border-gray-100 p-5 mt-5 transition duration-200">
       {UserData.role.toLowerCase() === "hr" ||
       UserData.role.toLowerCase() === "admin" ? (
-        <div className="bg-blue-200">
-          <div className="bg-blue-200 w-full mt-1">
+        <>
+          <div className="w-full mt-1">
             <div className="flex md:hidden flex-col  my-2 w-1/2 justify-start items-start">
               <span className="text-sm font-semibold font-satoshi">
                 Select Department
@@ -104,7 +104,7 @@ const Attendance: React.FC = () => {
                 </Select>
               </FormControl>
             </div>
-            <Typography variant="h5" mb={2} ml={2}>
+            <Typography variant="h5" mb={2} ml={1} pt={2}>
               <div style={{ display: "flex", alignItems: "center" }}>
                 <div style={{ flex: 1 }}>
                   <Link
@@ -117,27 +117,30 @@ const Attendance: React.FC = () => {
                 </div>
               </div>
             </Typography>
-            <div className=" mb-3 hidden md:flex  w-full justify-between items-center bg-white">
+            <div className={`mb-3 hidden md:flex w-full justify-between items-center bg-white rounded-md shadow-[0_0_5px_1px_#F2DDD4] border-gray-100 hover:bg-gray-200 transition duration-200`}>
               {departments.map((category, catIndex) => (
                 <Grid
                   item
                   md={4}
                   key={category}
-                  className={`p-1  flex items-center justify-center gap-x-3 w-[${calculateWidth()}]   ${
+                  className={`p-1 flex items-center justify-center gap-x-3 w-[${calculateWidth()}]   ${
                     catIndex === selectedCategoryIndex
-                      ? "bg-[#0095FF] shadow-md "
+                      ? "bg-[#F2DDD499] shadow-md "
                       : "bg-white text-black"
                   }`}
                 >
                   <Button
                     type="button"
                     onClick={() => handleCategoryClick(catIndex, category)}
+                    disableRipple
+                                          disableElevation
+                                          className="bg-transparent w-full"
                   >
                     <Tooltip title={`View ${category} Data`}>
                       <h2
                         className={` font-satoshi font-semibold text-center ${
                           catIndex === selectedCategoryIndex
-                            ? "text-white"
+                            ? "text-[#F15729] font-bold"
                             : "text-black"
                         }`}
                       >
@@ -154,7 +157,7 @@ const Attendance: React.FC = () => {
               return <AttendanceCard employee={employee} />;
             })}
           </Grid>
-        </div>
+        </>
       ) : (
         <div>Access denied</div>
       )}
