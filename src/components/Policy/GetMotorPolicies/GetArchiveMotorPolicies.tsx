@@ -16,8 +16,8 @@ import {
   Typography,
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
-import { motorPolicyAddPath, motorPolicyPath } from "../../../sitemap";
-import { IAddEditPolicyForm, IPolicy, IPolicyVM } from "../IPolicy";
+import { motorPolicyAddPath } from "../../../sitemap";
+import { IPolicy, IPolicyVM } from "../IPolicy";
 import dayjs from "dayjs";
 import { endOfMonth, format, startOfMonth } from "date-fns";
 import CountdownTimer from "../../../utils/CountdownTimer";
@@ -28,9 +28,10 @@ import React from "react";
 import { setIn } from "final-form";
 import * as yup from "yup";
 import getArchiveMotorPolicyService from "../../../api/Policies/GetArchiveMotorPolicy/getArchiveMotorPolicyService";
-import editPolicyService from "../../../api/Policies/EditPolicy/editPolicyService";
 import toast, { Toaster } from "react-hot-toast";
 import Papa from "papaparse";
+import UpdateStatusService from "../../../api/Policies/UpdateStatus/UpdateStatusService";
+
 const GetArchiveMotorPolicies = () => {
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let userData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
@@ -49,12 +50,14 @@ const GetArchiveMotorPolicies = () => {
     (startDate, endDate) =>
       getArchiveMotorPolicyService({ header, startDate, endDate })
         .then((motorPolicy) => {
-          setMotorPolicies(motorPolicy.data);
+          if (motorPolicy.status === "success") {
+            setMotorPolicies(motorPolicy.data);
+          }
         })
         .catch(async (error: any) => {
           const err = await error;
           toast.error(err.message);
-          throw error
+
         }),
     []
   );
@@ -327,24 +330,13 @@ const GetArchiveMotorPolicies = () => {
     downloadCsv("exported-rows.csv", csv);
   };
   const handleClickRestorePolicy = async (policy: any) => {
-    const formData = new FormData();
-    policy.isActive = true;
-    Object.keys(policy).forEach((key) => {
-      formData.append(key, policy[key as keyof IAddEditPolicyForm]);
-    });
+    const policyId = policy.id;
+    const status = true;
     try {
-      const newPolicy = await editPolicyService({
-        header,
-        policy: formData,
-        policyId: policy.id!,
-      });
-      if (newPolicy.status === "success") {
-        navigate(motorPolicyPath());
-      } else {
-        return;
-      }
-    } catch (err: any) {
-      const errorData = await err;
+      const res = await UpdateStatusService({ header, policyId, status })
+      toast.success(res.message)
+    } catch (error: any) {
+      const errorData = await error;
       toast.error(errorData.message);
       return;
     }
@@ -487,16 +479,16 @@ const GetArchiveMotorPolicies = () => {
           <MaterialReactTable
             muiTablePaperProps={{
               sx: {
-                boxShadow: "none", 
-                backgroundColor: "transparent", 
-              
+                boxShadow: "none",
+                backgroundColor: "transparent",
+
               },
             }}
-      
+
             muiTableContainerProps={{
               sx: {
-                boxShadow: "none", 
-                backgroundColor: "transparent", 
+                boxShadow: "none",
+                backgroundColor: "transparent",
               },
             }}
             state={{ isLoading }}
