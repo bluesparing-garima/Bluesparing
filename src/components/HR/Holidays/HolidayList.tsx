@@ -301,6 +301,20 @@ const HolidaysList: React.FC = () => {
             />
           </div>
           <MaterialReactTable
+            muiTablePaperProps={{
+              sx: {
+                boxShadow: "none", 
+                backgroundColor: "transparent", 
+              
+              },
+            }}
+      
+            muiTableContainerProps={{
+              sx: {
+                boxShadow: "none", 
+                backgroundColor: "transparent", 
+              },
+            }}
             state={{ isLoading, pagination }}
             columns={columns}
             data={holidays}
