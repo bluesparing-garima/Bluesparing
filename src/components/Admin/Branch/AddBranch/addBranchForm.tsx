@@ -114,7 +114,7 @@ const AddBranchForm = (props: addBranchFormProps) => {
                   disabled={isLoading}
                   variant="contained"
                   color="primary"
-                  className="btnGradient text-black px-4 py-2 text-xs sm:text-sm rounded-sm w-full sm:w-auto"
+                  className="btnGradient text-black px-4 py-2 text-xs sm:text-sm rounded-md w-full sm:w-auto"
                 >
                   {isLoading
                     ? "Submitting..."

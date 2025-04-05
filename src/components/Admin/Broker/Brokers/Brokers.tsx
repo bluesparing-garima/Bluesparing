@@ -157,7 +157,7 @@ const Brokers = () => {
               </div>
               <Button
                 type="button"
-                className="btnGradient text-black px-4 py-2 text-xs sm:text-sm rounded-sm w-full sm:w-auto"
+                className="btnGradient text-black px-4 py-2 text-xs sm:text-sm rounded-nd w-full sm:w-auto"
                 onClick={handleAddBrokerClick}
               >
                 Add Broker

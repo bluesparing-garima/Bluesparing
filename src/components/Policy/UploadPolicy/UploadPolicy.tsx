@@ -157,7 +157,7 @@ const UploadPolicy = () => {
                     disabled={isLoading}
                     variant="contained"
                     color="primary"
-                    className="btnGradient text-black px-4 py-3 rounded-sm w-full sm:w-auto text-[10px] md:text-xs"
+                    className="btnGradient text-black px-4 py-3 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
                   >
                     {isLoading ? "Submitting..." : "Upload Excel"}
                   </Button>

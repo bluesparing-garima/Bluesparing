@@ -783,7 +783,7 @@ const PercentageForm = () => {
   disabled={isLoading}
   variant="contained"
   color="primary"
-  className="btnGradient text-black px-4 py-2 rounded-sm w-full sm:w-auto text-[10px] md:text-xs"
+  className="btnGradient text-black px-4 py-2 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
 >
   {isLoading ? "Submitting..." : "Update Policies Percentage"}
 </Button>

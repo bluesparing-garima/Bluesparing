@@ -48,7 +48,7 @@ const CreditDebits = () => {
             </div>
             <Button
   type="button"
-  className="btnGradient text-black px-4 py-3 rounded-sm w-full sm:w-auto text-[10px] md:text-xs"
+  className="btnGradient text-black px-4 py-3 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
   onClick={handleAddCreditDebitClick}
 >
   Add Transaction
@@ -66,7 +66,7 @@ const CreditDebits = () => {
   <Grid item>
     <Button
       type="button"
-      className="btnGradient text-black px-4 py-1.5 rounded-sm w-full sm:w-auto text-[10px] md:text-xs"
+      className="btnGradient text-black px-4 py-1.5 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
       onClick={handleClickCreditDebit}
     >
       All
@@ -76,7 +76,7 @@ const CreditDebits = () => {
   <Grid item>
     <Button
       type="button"
-      className="btnGradient text-black px-4 py-1.5 rounded-sm w-full sm:w-auto text-[10px] md:text-xs"
+      className="btnGradient text-black px-4 py-1.5 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
       onClick={handleClickCredit}
     >
       Credit
@@ -86,7 +86,7 @@ const CreditDebits = () => {
   <Grid item>
     <Button
       type="button"
-      className="btnGradient text-black px-4 py-1.5 rounded-sm w-full sm:w-auto text-[10px] md:text-xs"
+      className="btnGradient text-black px-4 py-1.5 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
       onClick={handleClickDebit}
     >
       Debit
