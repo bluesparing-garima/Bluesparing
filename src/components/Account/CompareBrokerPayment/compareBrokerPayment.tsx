@@ -123,7 +123,7 @@ const CompareBrokerPayment: React.FC = () => {
     }
   };
   return (
-    <div className="bg-blue-200 p-2">
+    <div className="blue-200 p-2">
       <Paper
         elevation={3}
         style={{ padding: 20, margin: 30, borderRadius: 10 }}
@@ -293,7 +293,7 @@ const CompareBrokerPayment: React.FC = () => {
           </CardContent>
         </Card>
         {comparePolicyResult && (
-          <div className="bg-blue-200 p-2 mt-3">
+          <div className=" p-2 mt-3">
             <CompareBrokerResult
               comparison={comparePolicyResult}
               onExcelUploaded={() => setExcelUploaded(true)}
