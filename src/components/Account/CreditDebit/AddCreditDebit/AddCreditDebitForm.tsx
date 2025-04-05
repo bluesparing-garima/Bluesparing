@@ -37,7 +37,7 @@ export interface addCreditDebitFormProps {
 const AddCreditDebitForm = (props: addCreditDebitFormProps) => {
   let { initialValues } = props;
   const navigate = useNavigate();
-  const[isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const location = useLocation() as any;
   const pathName = location.pathname.split("/");
   const isAddEdit = pathName[pathName.length - 1] as string;
@@ -106,7 +106,7 @@ const AddCreditDebitForm = (props: addCreditDebitFormProps) => {
       const err = await error;
       toast.error(err.message);
       return { [FORM_ERROR]: `error` };
-    }finally{
+    } finally {
       setIsLoading(false)
     }
   };
@@ -130,7 +130,7 @@ const AddCreditDebitForm = (props: addCreditDebitFormProps) => {
       const err = await error;
       toast.error(err.message);
       return { [FORM_ERROR]: `error` };
-    }finally{
+    } finally {
       setIsLoading(false)
     }
   };
@@ -161,449 +161,454 @@ const AddCreditDebitForm = (props: addCreditDebitFormProps) => {
   const addValidate = validateFormValues(validationSchema);
   return (
     <>
-      
-            <Form
-              mt={3}
-              onSubmit={onSubmit}
-              initialValues={initialValues}
-              validate={addValidate}
-              render={({ handleSubmit, submitError, submitting }) => (
-                <form onSubmit={handleSubmit} noValidate>
-                  <Grid container spacing={2}>
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field name="accountType">
-                        {({ input, meta }) => (
-                          <div>
-                            <FormControl fullWidth size="small">
-                              <Autocomplete
-                                {...input}
-                                id="accountType"
-                                value={
-                                  input.value !== undefined
-                                    ? input.value
-                                    : initialValues.accountType || null
-                                }
-                                getOptionLabel={(option) =>
-                                  typeof option === "string"
-                                    ? option
-                                    : option.label || ""
-                                }
-                                onChange={(event, newValue) => {
-                                  input.onChange(
-                                    newValue ? newValue.value : null
-                                  );
-                                  setAccountType(newValue.value);
-                                }}
-                                options={[
-                                  { label: "CutPay", value: "CutPay" },
-                                  { label: "Salary", value: "Salary" },
-                                  {
-                                    label: "Electricity",
-                                    value: "Electricity",
-                                  },
-                                  { label: "Rent", value: "Rent" },
-                                  { label: "Other", value: "Other" },
-                                ]}
-                                renderInput={(params) => (
-                                  <TextField
-                                    {...params}
-                                    label="Select Account Type"
-                                    className="rounded-sm w-full"
-                                    size="small"
-                                    variant="outlined"
-                                    error={meta.touched && !!meta.error}
-                                    helperText={meta.touched && meta.error}
-                                  />
-                                )}
-                              />
-                            </FormControl>
-                          </div>
-                        )}
-                      </Field>
-                    </Grid>
 
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field name="type">
-                        {({ input, meta }) => (
-                          <div>
-                            <FormControl fullWidth size="small">
-                              <Autocomplete
-                                {...input}
-                                id="type"
-                                value={
-                                  input.value !== undefined
-                                    ? input.value
-                                    : initialValues.type || null
-                                }
-                                getOptionLabel={(option) =>
-                                  typeof option === "string"
-                                    ? option
-                                    : option.label || ""
-                                }
-                                onChange={(event, newValue) => {
-                                  input.onChange(
-                                    newValue ? newValue.value : null
-                                  );
-                                }}
-                                options={
-                                  accountType === "PayIn"
-                                    ? [{ label: "credit", value: "credit" }]
-                                    : accountType === "Salary" ||
-                                      accountType === "Electricity" ||
-                                      accountType === "Rent"
-                                    ? [{ label: "debit", value: "debit" }]
-                                    : [
-                                        { label: "credit", value: "credit" },
-                                        { label: "debit", value: "debit" },
-                                      ]
-                                }
-                                renderInput={(params) => (
-                                  <TextField
-                                    {...params}
-                                    label="Select Type"
-                                    className="rounded-sm w-full"
-                                    size="small"
-                                    variant="outlined"
-                                    error={meta.touched && !!meta.error}
-                                    helperText={meta.touched && meta.error}
-                                  />
-                                )}
-                              />
-                            </FormControl>
-                          </div>
-                        )}
-                      </Field>
-                    </Grid>
-
-                    {accountType === "PayIn" && (
-                      <Grid item lg={4} md={4} sm={6} xs={12}>
-                        <Field name="brokerName">
-                          {({ input, meta }) => (
-                            <div>
-                              <FormControl fullWidth size="small">
-                                <Autocomplete
-                                  {...input}
-                                  id="brokerName"
-                                  value={
-                                    input.value !== undefined
-                                      ? input.value
-                                      : initialValues.brokerName || null
-                                  }
-                                  getOptionLabel={(option) =>
-                                    typeof option === "string"
-                                      ? option
-                                      : `${option.brokerName} - ${option.brokerCode}` ||
-                                        ""
-                                  }
-                                  options={brokers}
-                                  onChange={(event, newValue) => {
-                                    input.onChange(newValue.brokerName);
-                                    setSelectedBrokerId(newValue._id);
-                                  }}
-                                  renderInput={(params) => (
-                                    <TextField
-                                      {...params}
-                                      label=" Select Broker"
-                                      className="rounded-sm w-full"
-                                      size="small"
-                                      variant="outlined"
-                                      error={meta.touched && !!meta.error}
-                                      helperText={meta.touched && meta.error}
-                                    />
-                                  )}
-                                />
-                              </FormControl>
-                            </div>
+      <Form
+        mt={3}
+        onSubmit={onSubmit}
+        initialValues={initialValues}
+        validate={addValidate}
+        render={({ handleSubmit, submitError, submitting }) => (
+          <form onSubmit={handleSubmit} noValidate>
+            <Grid container spacing={2}>
+              <Grid item lg={4} md={4} sm={6} xs={12}>
+                <Field name="accountType">
+                  {({ input, meta }) => (
+                    <div>
+                      <FormControl fullWidth size="small">
+                        <Autocomplete
+                          {...input}
+                          id="accountType"
+                          value={
+                            input.value !== undefined
+                              ? input.value
+                              : initialValues.accountType || null
+                          }
+                          getOptionLabel={(option) =>
+                            typeof option === "string"
+                              ? option
+                              : option.label || ""
+                          }
+                          onChange={(event, newValue) => {
+                            input.onChange(
+                              newValue ? newValue.value : null
+                            );
+                            setAccountType(newValue.value);
+                          }}
+                          options={[
+                            { label: "CutPay", value: "CutPay" },
+                            { label: "Salary", value: "Salary" },
+                            {
+                              label: "Electricity",
+                              value: "Electricity",
+                            },
+                            { label: "Rent", value: "Rent" },
+                            { label: "Other", value: "Other" },
+                          ]}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="Select Account Type"
+                              className="rounded-sm w-full"
+                              size="small"
+                              variant="outlined"
+                              error={meta.touched && !!meta.error}
+                              helperText={meta.touched && meta.error}
+                            />
                           )}
-                        </Field>
-                      </Grid>
-                    )}
+                        />
+                      </FormControl>
+                    </div>
+                  )}
+                </Field>
+              </Grid>
 
-                    {accountType === "Salary" && (
-                      <Grid item lg={4} md={4} sm={6} xs={12}>
-                        <Field name="employeeName">
-                          {({ input, meta }) => (
-                            <div>
-                              <FormControl fullWidth size="small">
-                                <Autocomplete
-                                  {...input}
-                                  id="employeeName"
-                                  value={
-                                    input.value !== undefined
-                                      ? input.value
-                                      : initialValues.employeeName || null
-                                  }
-                                  getOptionLabel={(option) =>
-                                    typeof option === "string"
-                                      ? option
-                                      : `${option.fullName} - ${option.partnerId}` ||
-                                        ""
-                                  }
-                                  options={employees}
-                                  onChange={(event, newValue) => {
-                                    input.onChange(newValue.fullName);
-                                    setSelectedEmployeeId(newValue._id!);
-                                  }}
-                                  renderInput={(params) => (
-                                    <TextField
-                                      {...params}
-                                      className="rounded-sm w-full"
-                                      size="small"
-                                      label="Select Employee"
-                                      variant="outlined"
-                                      error={meta.touched && !!meta.error}
-                                      helperText={meta.touched && meta.error}
-                                    />
-                                  )}
-                                />
-                              </FormControl>
-                            </div>
+              <Grid item lg={4} md={4} sm={6} xs={12}>
+                <Field name="type">
+                  {({ input, meta }) => (
+                    <div>
+                      <FormControl fullWidth size="small">
+                        <Autocomplete
+                          {...input}
+                          id="type"
+                          value={
+                            input.value !== undefined
+                              ? input.value
+                              : initialValues.type || null
+                          }
+                          getOptionLabel={(option) =>
+                            typeof option === "string"
+                              ? option
+                              : option.label || ""
+                          }
+                          onChange={(event, newValue) => {
+                            input.onChange(
+                              newValue ? newValue.value : null
+                            );
+                          }}
+                          options={
+                            accountType === "PayIn"
+                              ? [{ label: "credit", value: "credit" }]
+                              : accountType === "Salary" ||
+                                accountType === "Electricity" ||
+                                accountType === "Rent"
+                                ? [{ label: "debit", value: "debit" }]
+                                : [
+                                  { label: "credit", value: "credit" },
+                                  { label: "debit", value: "debit" },
+                                ]
+                          }
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="Select Type"
+                              className="rounded-sm w-full"
+                              size="small"
+                              variant="outlined"
+                              error={meta.touched && !!meta.error}
+                              helperText={meta.touched && meta.error}
+                            />
                           )}
-                        </Field>
-                      </Grid>
-                    )}
+                        />
+                      </FormControl>
+                    </div>
+                  )}
+                </Field>
+              </Grid>
 
-                    {accountType === "CutPay" && (
-                      <>
-                        <Grid item lg={4} md={4} sm={6} xs={12}>
-                          <Field name="partnerName">
-                            {({ input, meta }) => (
-                              <div>
-                                <FormControl fullWidth size="small">
-                                  <Autocomplete
-                                    {...input}
-                                    id="partnerName"
-                                    value={
-                                      input.value !== undefined
-                                        ? input.value
-                                        : initialValues.partnerName || null
-                                    }
-                                    getOptionLabel={(option) =>
-                                      typeof option === "string"
-                                        ? option
-                                        : `${option.fullName} - ${option.partnerId}` ||
-                                          ""
-                                    }
-                                    options={partners}
-                                    onChange={(event, newValue) => {
-                                      input.onChange(newValue.fullName);
-                                      setSelectedPartnerId(newValue._id!);
-                                    }}
-                                    renderInput={(params) => (
-                                      <TextField
-                                        {...params}
-                                        className="rounded-sm w-full"
-                                        size="small"
-                                        label="Select Partners"
-                                        variant="outlined"
-                                        error={meta.touched && !!meta.error}
-                                        helperText={meta.touched && meta.error}
-                                      />
-                                    )}
-                                  />
-                                </FormControl>
-                              </div>
-                            )}
-                          </Field>
-                        </Grid>
-                        <Grid item lg={4} md={4} sm={6} xs={12}>
-                          <Field name="policyNumber">
-                            {({ input, meta }) => (
+              {accountType === "PayIn" && (
+                <Grid item lg={4} md={4} sm={6} xs={12}>
+                  <Field name="brokerName">
+                    {({ input, meta }) => (
+                      <div>
+                        <FormControl fullWidth size="small">
+                          <Autocomplete
+                            {...input}
+                            id="brokerName"
+                            value={
+                              input.value !== undefined
+                                ? input.value
+                                : initialValues.brokerName || null
+                            }
+                            getOptionLabel={(option) =>
+                              typeof option === "string"
+                                ? option
+                                : `${option.brokerName} - ${option.brokerCode}` ||
+                                ""
+                            }
+                            options={brokers}
+                            onChange={(event, newValue) => {
+                              input.onChange(newValue.brokerName);
+                              setSelectedBrokerId(newValue._id);
+                            }}
+                            renderInput={(params) => (
                               <TextField
-                                {...input}
-                                id="policyNumber"
+                                {...params}
+                                label=" Select Broker"
+                                className="rounded-sm w-full"
                                 size="small"
-                                fullWidth
-                                label="Enter Policy Number"
                                 variant="outlined"
-                                error={meta.touched && Boolean(meta.error)}
+                                error={meta.touched && !!meta.error}
                                 helperText={meta.touched && meta.error}
-                                onChange={(e) => {
-                                  const value = e.target.value.replace(
-                                    /\s/g,
-                                    ""
-                                  );
-                                  input.onChange(value);
-                                }}
                               />
                             )}
-                          </Field>
-                        </Grid>
-                      </>
+                          />
+                        </FormControl>
+                      </div>
                     )}
+                  </Field>
+                </Grid>
+              )}
 
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field name="accountCode">
-                        {({ input, meta }) => (
-                          <div>
-                            <FormControl fullWidth size="small">
-                              <Autocomplete
-                                {...input}
-                                id="accountCode"
-                                value={
-                                  input.value !== undefined
-                                    ? input.value
-                                    : initialValues.accountCode || null
-                                }
-                                getOptionLabel={(option) =>
-                                  typeof option === "string"
-                                    ? option
-                                    : option.accountCode || ""
-                                }
-                                options={accounts}
-                                onChange={(event, newValue) => {
-                                  input.onChange(newValue.accountCode);
-                                  setSelectedAccountId(newValue._id);
-                                }}
-                                renderInput={(params) => (
-                                  <TextField
-                                    {...params}
-                                    label=" Select Account Details"
-                                    className="rounded-sm w-full"
-                                    size="small"
-                                    variant="outlined"
-                                    error={meta.touched && !!meta.error}
-                                    helperText={meta.touched && meta.error}
-                                  />
-                                )}
+              {accountType === "Salary" && (
+                <Grid item lg={4} md={4} sm={6} xs={12}>
+                  <Field name="employeeName">
+                    {({ input, meta }) => (
+                      <div>
+                        <FormControl fullWidth size="small">
+                          <Autocomplete
+                            {...input}
+                            id="employeeName"
+                            value={
+                              input.value !== undefined
+                                ? input.value
+                                : initialValues.employeeName || null
+                            }
+                            getOptionLabel={(option) =>
+                              typeof option === "string"
+                                ? option
+                                : `${option.fullName} - ${option.partnerId}` ||
+                                ""
+                            }
+                            options={employees}
+                            onChange={(event, newValue) => {
+                              input.onChange(newValue.fullName);
+                              setSelectedEmployeeId(newValue._id!);
+                            }}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                className="rounded-sm w-full"
+                                size="small"
+                                label="Select Employee"
+                                variant="outlined"
+                                error={meta.touched && !!meta.error}
+                                helperText={meta.touched && meta.error}
                               />
-                            </FormControl>
-                          </div>
-                        )}
-                      </Field>
-                    </Grid>
-
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field name="amount">
-                        {({ input, meta }) => (
-                          <TextField
-                            {...input}
-                            id="amount"
-                            size="small"
-                            fullWidth
-                            type="number"
-                            label="Enter Amount"
-                            variant="outlined"
-                            error={meta.touched && Boolean(meta.error)}
-                            helperText={meta.touched && meta.error}
+                            )}
                           />
-                        )}
-                      </Field>
-                    </Grid>
+                        </FormControl>
+                      </div>
+                    )}
+                  </Field>
+                </Grid>
+              )}
 
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field name="startDate">
-                        {({ input, meta }) => (
-                          <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DatePicker
-                              disableFuture
-                              label="Start Date"
-                              inputFormat="DD/MM/YYYY"
-                              value={input.value || null}
-                              onChange={(date) => input.onChange(date)}
-                              renderInput={(params: any) => (
+              {accountType === "CutPay" && (
+                <>
+                  <Grid item lg={4} md={4} sm={6} xs={12}>
+                    <Field name="partnerName">
+                      {({ input, meta }) => (
+                        <div>
+                          <FormControl fullWidth size="small">
+                            <Autocomplete
+                              {...input}
+                              id="partnerName"
+                              value={
+                                input.value !== undefined
+                                  ? input.value
+                                  : initialValues.partnerName || null
+                              }
+                              getOptionLabel={(option) =>
+                                typeof option === "string"
+                                  ? option
+                                  : `${option.fullName} - ${option.partnerId}` ||
+                                  ""
+                              }
+                              options={partners}
+                              onChange={(event, newValue) => {
+                                input.onChange(newValue.fullName);
+                                setSelectedPartnerId(newValue._id!);
+                              }}
+                              renderInput={(params) => (
                                 <TextField
-                                  variant="outlined"
-                                  size="small"
-                                  fullWidth
                                   {...params}
+                                  className="rounded-sm w-full"
+                                  size="small"
+                                  label="Select Partners"
+                                  variant="outlined"
                                   error={meta.touched && !!meta.error}
                                   helperText={meta.touched && meta.error}
                                 />
                               )}
                             />
-                          </LocalizationProvider>
-                        )}
-                      </Field>
-                    </Grid>
-
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field name="endDate">
-                        {({ input, meta }) => (
-                          <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DatePicker
-                              disableFuture
-                              label="End Date"
-                              inputFormat="DD/MM/YYYY"
-                              value={input.value || null}
-                              onChange={(date) => input.onChange(date)}
-                              renderInput={(params: any) => (
-                                <TextField
-                                  variant="outlined"
-                                  size="small"
-                                  fullWidth
-                                  {...params}
-                                  error={meta.touched && !!meta.error}
-                                  helperText={meta.touched && meta.error}
-                                />
-                              )}
-                            />
-                          </LocalizationProvider>
-                        )}
-                      </Field>
-                    </Grid>
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field name="distributedDate">
-                        {({ input, meta }) => (
-                          <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DatePicker
-                              disableFuture
-                              label="Distributed Date"
-                              inputFormat="DD/MM/YYYY"
-                              value={input.value || null}
-                              onChange={(date) => input.onChange(date)}
-                              renderInput={(params: any) => (
-                                <TextField
-                                  variant="outlined"
-                                  size="small"
-                                  fullWidth
-                                  {...params}
-                                  error={meta.touched && !!meta.error}
-                                  helperText={meta.touched && meta.error}
-                                />
-                              )}
-                            />
-                          </LocalizationProvider>
-                        )}
-                      </Field>
-                    </Grid>
-
-                    <Grid item lg={12} md={12} sm={12} xs={12}>
-                      <Field name="remarks">
-                        {({ input, meta }) => (
-                          <TextField
-                            {...input}
-                            id="remarks"
-                            size="small"
-                            multiline
-                            rows={4}
-                            fullWidth
-                            label="Enter Remarks"
-                            variant="outlined"
-                            error={meta.touched && Boolean(meta.error)}
-                            helperText={meta.touched && meta.error}
-                          />
-                        )}
-                      </Field>
-                    </Grid>
-                  </Grid>
-
-                  <Grid container spacing={2} mt={2}>
-                    <Grid item lg={12} md={12} sm={12} xs={12}>
-                      {submitError && (
-                        <div className="error text-safekaroDarkOrange">
-                          {submitError}
+                          </FormControl>
                         </div>
                       )}
-                      <Button variant="contained" type="submit" disabled={isLoading}>
-                        {isLoading ? 'Submitting':'Submit'}
-                      </Button>
-                    </Grid>
+                    </Field>
                   </Grid>
-                </form>
+                  <Grid item lg={4} md={4} sm={6} xs={12}>
+                    <Field name="policyNumber">
+                      {({ input, meta }) => (
+                        <TextField
+                          {...input}
+                          id="policyNumber"
+                          size="small"
+                          fullWidth
+                          label="Enter Policy Number"
+                          variant="outlined"
+                          error={meta.touched && Boolean(meta.error)}
+                          helperText={meta.touched && meta.error}
+                          onChange={(e) => {
+                            const value = e.target.value.replace(
+                              /\s/g,
+                              ""
+                            );
+                            input.onChange(value);
+                          }}
+                        />
+                      )}
+                    </Field>
+                  </Grid>
+                </>
               )}
-            />
-       
+
+              <Grid item lg={4} md={4} sm={6} xs={12}>
+                <Field name="accountCode">
+                  {({ input, meta }) => (
+                    <div>
+                      <FormControl fullWidth size="small">
+                        <Autocomplete
+                          {...input}
+                          id="accountCode"
+                          value={
+                            input.value !== undefined
+                              ? input.value
+                              : initialValues.accountCode || null
+                          }
+                          getOptionLabel={(option) =>
+                            typeof option === "string"
+                              ? option
+                              : option.accountCode || ""
+                          }
+                          options={accounts}
+                          onChange={(event, newValue) => {
+                            input.onChange(newValue.accountCode);
+                            setSelectedAccountId(newValue._id);
+                          }}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label=" Select Account Details"
+                              className="rounded-sm w-full"
+                              size="small"
+                              variant="outlined"
+                              error={meta.touched && !!meta.error}
+                              helperText={meta.touched && meta.error}
+                            />
+                          )}
+                        />
+                      </FormControl>
+                    </div>
+                  )}
+                </Field>
+              </Grid>
+
+              <Grid item lg={4} md={4} sm={6} xs={12}>
+                <Field name="amount">
+                  {({ input, meta }) => (
+                    <TextField
+                      {...input}
+                      id="amount"
+                      size="small"
+                      fullWidth
+                      type="number"
+                      label="Enter Amount"
+                      variant="outlined"
+                      error={meta.touched && Boolean(meta.error)}
+                      helperText={meta.touched && meta.error}
+                    />
+                  )}
+                </Field>
+              </Grid>
+
+              <Grid item lg={4} md={4} sm={6} xs={12}>
+                <Field name="startDate">
+                  {({ input, meta }) => (
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DatePicker
+                        disableFuture
+                        label="Start Date"
+                        inputFormat="DD/MM/YYYY"
+                        value={input.value || null}
+                        onChange={(date) => input.onChange(date)}
+                        renderInput={(params: any) => (
+                          <TextField
+                            variant="outlined"
+                            size="small"
+                            fullWidth
+                            {...params}
+                            error={meta.touched && !!meta.error}
+                            helperText={meta.touched && meta.error}
+                          />
+                        )}
+                      />
+                    </LocalizationProvider>
+                  )}
+                </Field>
+              </Grid>
+
+              <Grid item lg={4} md={4} sm={6} xs={12}>
+                <Field name="endDate">
+                  {({ input, meta }) => (
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DatePicker
+                        disableFuture
+                        label="End Date"
+                        inputFormat="DD/MM/YYYY"
+                        value={input.value || null}
+                        onChange={(date) => input.onChange(date)}
+                        renderInput={(params: any) => (
+                          <TextField
+                            variant="outlined"
+                            size="small"
+                            fullWidth
+                            {...params}
+                            error={meta.touched && !!meta.error}
+                            helperText={meta.touched && meta.error}
+                          />
+                        )}
+                      />
+                    </LocalizationProvider>
+                  )}
+                </Field>
+              </Grid>
+              <Grid item lg={4} md={4} sm={6} xs={12}>
+                <Field name="distributedDate">
+                  {({ input, meta }) => (
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DatePicker
+                        disableFuture
+                        label="Distributed Date"
+                        inputFormat="DD/MM/YYYY"
+                        value={input.value || null}
+                        onChange={(date) => input.onChange(date)}
+                        renderInput={(params: any) => (
+                          <TextField
+                            variant="outlined"
+                            size="small"
+                            fullWidth
+                            {...params}
+                            error={meta.touched && !!meta.error}
+                            helperText={meta.touched && meta.error}
+                          />
+                        )}
+                      />
+                    </LocalizationProvider>
+                  )}
+                </Field>
+              </Grid>
+
+              <Grid item lg={12} md={12} sm={12} xs={12}>
+                <Field name="remarks">
+                  {({ input, meta }) => (
+                    <TextField
+                      {...input}
+                      id="remarks"
+                      size="small"
+                      multiline
+                      rows={4}
+                      fullWidth
+                      label="Enter Remarks"
+                      variant="outlined"
+                      error={meta.touched && Boolean(meta.error)}
+                      helperText={meta.touched && meta.error}
+                    />
+                  )}
+                </Field>
+              </Grid>
+            </Grid>
+
+            <Grid container spacing={2} mt={2}>
+              <Grid item lg={12} md={12} sm={12} xs={12}>
+                {submitError && (
+                  <div className="error text-safekaroDarkOrange">
+                    {submitError}
+                  </div>
+                )}
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className="btnGradient text-black px-4 py-3 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
+                >
+                  {isLoading ? "Submitting..." : "Submit"}
+                </Button>
+
+              </Grid>
+            </Grid>
+          </form>
+        )}
+      />
+
       <Toaster position="bottom-center" reverseOrder={false} />
     </>
   );
