@@ -262,13 +262,28 @@ const RmRequestedBooking = () => {
             />
           </Typography>
           <MaterialReactTable
+            muiTablePaperProps={{
+              sx: {
+                boxShadow: "none", 
+                backgroundColor: "transparent", 
+              
+              },
+            }}
+      
+            muiTableContainerProps={{
+              sx: {
+                boxShadow: "none", 
+                backgroundColor: "transparent", 
+              },
+            }}
+  
             columns={columns}
             data={parsedData}
             enableRowActions
             renderTopToolbarCustomActions={({ table }) => (
               <>
                 <Button
-                  className="text-white bg-safekaroDarkOrange m-2 p-2"
+                  className="text-black btnGradient m-2 p-2 w-52"
                   disabled={table.getRowModel().rows.length === 0}
                   onClick={() =>
                     handleExportRows(table.getFilteredRowModel().rows)
