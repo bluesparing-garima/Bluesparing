@@ -1,4 +1,4 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   TextField,
   Button,
@@ -233,7 +233,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
         teamForm.planExpired = UserData.planExpired;
         teamForm.planStartDate = UserData.planStartDate;
         teamForm.transactionId = UserData.transactionId;
-        teamForm.transactionStatus = UserData.transactionStatus;  
+        teamForm.transactionStatus = UserData.transactionStatus;
         documents.forEach((doc: Document) => {
           if (doc.file && doc.docName) {
             teamForm[doc.docName as keyof typeof teamForm] = doc.file;
@@ -281,17 +281,17 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       }
     }
   };
-  
+
   const navigateToTeams = (message: string) => {
     const storedTheme: any = localStorage.getItem("user");
     const UserData = storedTheme ? JSON.parse(storedTheme) : null;
     const userRole = UserData?.role || ""; // User ka role fetch karna
-  
+
     navigate(teamPath(userRole), {
       state: message,
     });
   };
-  
+
   const callAddTeamAPI = async (team: any) => {
     try {
       setIsLoading(true);
@@ -333,13 +333,13 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
     try {
       setIsLoading(true);
       const newTeam = await editTeamService({ header, team, teamId });
-          const response = await getPolicyCountAPI({ userId: UserData.profileId });
-          console.log("response",response);
-              updateLocalStorage({userLimit :response?.userLimit});
+      const response = await getPolicyCountAPI({ userId: UserData.profileId });
+      console.log("response", response);
+      updateLocalStorage({ userLimit: response?.userLimit });
       navigateToTeams(`${newTeam.message}`);
     } catch (err: any) {
       const errObj = await err;
-     
+
       setErrMsg(errObj.message);
     } finally {
       setIsLoading(false);
@@ -507,8 +507,8 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       .matches(/^\d{6}$/, "Pincode must be exactly 6 digits")
       .required("Pincode is required")
       .min(1, "Pincode must be at least 1 character")
-      .max(6, "Pincode must be exactly 6 digits"), 
-      salary: yup
+      .max(6, "Pincode must be exactly 6 digits"),
+    salary: yup
       .string()
       .required("salary is required")
       .min(1, "salary must be at least 1 character"),
@@ -569,35 +569,35 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                   )}
                 </Field>
               </Grid>
-           
+
               <Grid item lg={4} md={4} sm={6} xs={12}>
-  <Field name="role">
-    {({ input, meta }) => (
-      <div>
-        <FormControl fullWidth size="small">
-        <Autocomplete
-  id="role"
-  value={roles.find(role => role.roleName === (selectedRole ?? "")) || null}
-  options={roles.filter(role => allowedRoles.includes(role.roleName ?? ""))}
-  getOptionLabel={(option) => option?.roleName ?? ""}
-  onChange={(event, newValue) => {
-    if (newValue?.roleName) {
-      setSelectedRole(newValue.roleName);
-      handleChangeRole(newValue.roleName);
-    } else {
-      setSelectedRole(""); // Default empty string
-    }
-  }}  
-  renderInput={(params) => (
-    <TextField {...params} label="Role" variant="outlined" fullWidth size="small" />
-  )}
-/>
-        </FormControl>
-      </div>
-    )}
-  </Field>
-</Grid>
-       {selectedRole !== "Relationship Manager" && (
+                <Field name="role">
+                  {({ input, meta }) => (
+                    <div>
+                      <FormControl fullWidth size="small">
+                        <Autocomplete
+                          id="role"
+                          value={roles.find(role => role.roleName === (selectedRole ?? "")) || null}
+                          options={roles.filter(role => allowedRoles.includes(role.roleName ?? ""))}
+                          getOptionLabel={(option) => option?.roleName ?? ""}
+                          onChange={(event, newValue) => {
+                            if (newValue?.roleName) {
+                              setSelectedRole(newValue.roleName);
+                              handleChangeRole(newValue.roleName);
+                            } else {
+                              setSelectedRole(""); // Default empty string
+                            }
+                          }}
+                          renderInput={(params) => (
+                            <TextField {...params} label="Role" variant="outlined" fullWidth size="small" />
+                          )}
+                        />
+                      </FormControl>
+                    </div>
+                  )}
+                </Field>
+              </Grid>
+              {selectedRole !== "Relationship Manager" && (
                 <Grid item lg={4} md={4} sm={6} xs={12}>
                   <Field name="headRM">
                     {({ input, meta }) => (
@@ -792,35 +792,35 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                 </Field>
               </Grid>
               <Grid item lg={4} md={4} sm={6} xs={12}>
-  <Field name="dateOfBirth">
-    {({ input, meta }) => (
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DatePicker
-          disableFuture
-          label="Date of Birth"
-          defaultCalendarMonth={dayjs().subtract(18, "year")} // Opens at a date 18 years ago
-          value={input.value || null}
-          onChange={(date) => input.onChange(date)}
-          shouldDisableDate={(date) => {
-            const minAgeDate = dayjs().subtract(18, "year");
-            return date.isAfter(minAgeDate); // Disable dates that make the user younger than 18
-          }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              variant="outlined"
-              size="small"
-              fullWidth
-              inputProps={{ ...params.inputProps, readOnly: true }} // Prevent manual entry
-              error={meta.touched && !!meta.error}
-              helperText={meta.touched && meta.error}
-            />
-          )}
-        />
-      </LocalizationProvider>
-    )}
-  </Field>
-</Grid>
+                <Field name="dateOfBirth">
+                  {({ input, meta }) => (
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DatePicker
+                        disableFuture
+                        label="Date of Birth"
+                        defaultCalendarMonth={dayjs().subtract(18, "year")} // Opens at a date 18 years ago
+                        value={input.value || null}
+                        onChange={(date) => input.onChange(date)}
+                        shouldDisableDate={(date) => {
+                          const minAgeDate = dayjs().subtract(18, "year");
+                          return date.isAfter(minAgeDate); // Disable dates that make the user younger than 18
+                        }}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            variant="outlined"
+                            size="small"
+                            fullWidth
+                            inputProps={{ ...params.inputProps, readOnly: true }} // Prevent manual entry
+                            error={meta.touched && !!meta.error}
+                            helperText={meta.touched && meta.error}
+                          />
+                        )}
+                      />
+                    </LocalizationProvider>
+                  )}
+                </Field>
+              </Grid>
 
               <Grid item lg={4} md={4} sm={6} xs={12}>
                 <Field name="joiningDate">
@@ -991,14 +991,15 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                   disabled={isLoading}
                   variant="contained"
                   color="primary"
-                  className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
+                  className="btnGradient text-black px-4 py-2 w-full sm:w-auto"
                 >
                   {isLoading
                     ? "Submitting..."
                     : isAdd
-                    ? "Add Team"
-                    : "Update Team"}
+                      ? "Add Team"
+                      : "Update Team"}
                 </Button>
+
               </Grid>
             </Grid>
           </form>
@@ -1010,7 +1011,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       {
         isLoading && <OverlayLoader />
       }
-      <LoadingOverlay loading={progress > 0 && progress<100 } message={progress} />
+      <LoadingOverlay loading={progress > 0 && progress < 100} message={progress} />
     </>
   );
 };

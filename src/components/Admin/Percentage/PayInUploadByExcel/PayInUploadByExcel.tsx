@@ -89,7 +89,7 @@ const PayInUploadByExcel = () => {
     }
   };
   return (
-    <div className="bg-blue-200 p-2">
+    <div className="p-2">
       <Paper
         elevation={3}
         style={{ padding: 20, margin: 30, borderRadius: 10 }}
@@ -110,8 +110,7 @@ const PayInUploadByExcel = () => {
             style={{ width: "100%", borderColor: "grey-800" }}
           />
         </Typography>
-        <Card>
-          <CardContent>
+      
             <Form
               onSubmit={onSubmit}
               validate={validate}
@@ -152,22 +151,22 @@ const PayInUploadByExcel = () => {
                       </Field>
                     </Grid>
                     <Grid item lg={4} xs={12}>
-                      <Button
-                        type="submit"
-                        disabled={isLoading}
-                        variant="contained"
-                        color="primary"
-                        className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
-                      >
-                        {isLoading ? "Submitting..." : "Upload Excel"}
-                      </Button>
+                    <Button
+  type="submit"
+  disabled={isLoading}
+  variant="contained"
+  color="primary"
+  className="btnGradient text-black px-4 py-2.5 rounded-sm w-full sm:w-auto text-[10px] md:text-xs"
+>
+  {isLoading ? "Submitting..." : "Upload Excel"}
+</Button>
+
                     </Grid>
                   </Grid>
                 </form>
               )}
             />
-          </CardContent>
-        </Card>
+       
         <PayInUploadByExcelData onExcelUploaded={handleChangeUploadExcel} />
       </Paper>
       <Toaster position="bottom-center" reverseOrder={false} />

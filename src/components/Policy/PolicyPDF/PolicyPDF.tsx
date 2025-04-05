@@ -6,8 +6,8 @@ const PolicyPDF = () => {
   const title = "Upload PDF Motor Policy";
   return (
     <>
-      <div className="bg-blue-200 h-full md:p-7 p-2">
-        <Paper elevation={3} style={{ padding: 20 }}>
+      <div className="h-full md:p-7 p-2">
+        <Paper elevation={3} style={{ padding: 25 }}>
           <Typography
             variant="h5"
             className="text-safekaroDarkOrange"

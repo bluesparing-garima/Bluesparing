@@ -242,69 +242,69 @@ const GetArchiveMotorPolicies = () => {
     () =>
       motorPolicies.map(
         (motorPolicy: IPolicy) =>
-          ({
-            uuid: motorPolicy.uuid,
-            id: motorPolicy._id,
-            fullName: motorPolicy.fullName,
-            bookingDate: motorPolicy.bookingDate,
-            bookingTimer: motorPolicy.bookingTimer,
-            leadDate: motorPolicy.leadDate,
-            leadTimer: motorPolicy.leadTimer,
-            productType: motorPolicy.productType,
-            emailId: motorPolicy.emailId,
-            weight: motorPolicy.weight,
-            broker: motorPolicy.broker,
-            policyType: motorPolicy.policyType,
-            caseType: motorPolicy.caseType,
-            category: motorPolicy.category,
-            subCategory: motorPolicy.subCategory,
-            companyName: motorPolicy.companyName,
-            make: motorPolicy.make,
-            model: motorPolicy.model,
-            fuelType: motorPolicy.fuelType,
-            rto: motorPolicy.rto,
-            vehicleNumber: motorPolicy.vehicleNumber,
-            seatingCapacity: motorPolicy.seatingCapacity,
-            vehicleAge: motorPolicy.vehicleAge,
-            ncb: motorPolicy.ncb,
-            policyNumber: motorPolicy.policyNumber,
-            phoneNumber: motorPolicy.phoneNumber,
-            mfgYear: motorPolicy.mfgYear,
-            registrationDate: dayjs(motorPolicy.registrationDate).format(
-              DAYJS_DISPLAY_FORMAT
-            ),
-            endDate: dayjs(motorPolicy.endDate).format(DAYJS_DISPLAY_FORMAT),
-            issueDate: dayjs(motorPolicy.issueDate).format(
-              DAYJS_DISPLAY_FORMAT
-            ),
-            tenure: motorPolicy.tenure,
-            idv: motorPolicy.idv,
-            od: motorPolicy.od,
-            tp: motorPolicy.tp,
-            netPremium: motorPolicy.netPremium,
-            finalPremium: motorPolicy.finalPremium,
-            cc: motorPolicy.cc,
-            paymentMode: motorPolicy.paymentMode,
-            policyCreatedBy: motorPolicy.policyCreatedBy,
-            createdOn: dayjs(motorPolicy.createdOn).format(
-              DAYJS_DISPLAY_FORMAT
-            ),
-            paymentDetails: motorPolicy.paymentDetails,
-            policyStatus: motorPolicy.policyStatus,
-            partnerId: motorPolicy.partnerId,
-            partnerName: motorPolicy.partnerName,
-            relationshipManagerName: motorPolicy.relationshipManagerName,
-            relationshipManagerId: motorPolicy.relationshipManagerId,
-            rcFront: motorPolicy.rcFront,
-            rcBack: motorPolicy.rcBack,
-            previousPolicy: motorPolicy.previousPolicy,
-            survey: motorPolicy.survey,
-            puc: motorPolicy.puc,
-            fitness: motorPolicy.fitness,
-            proposal: motorPolicy.proposal,
-            currentPolicy: motorPolicy.currentPolicy,
-            other: motorPolicy.other,
-          } as unknown as IPolicyVM)
+        ({
+          uuid: motorPolicy.uuid,
+          id: motorPolicy._id,
+          fullName: motorPolicy.fullName,
+          bookingDate: motorPolicy.bookingDate,
+          bookingTimer: motorPolicy.bookingTimer,
+          leadDate: motorPolicy.leadDate,
+          leadTimer: motorPolicy.leadTimer,
+          productType: motorPolicy.productType,
+          emailId: motorPolicy.emailId,
+          weight: motorPolicy.weight,
+          broker: motorPolicy.broker,
+          policyType: motorPolicy.policyType,
+          caseType: motorPolicy.caseType,
+          category: motorPolicy.category,
+          subCategory: motorPolicy.subCategory,
+          companyName: motorPolicy.companyName,
+          make: motorPolicy.make,
+          model: motorPolicy.model,
+          fuelType: motorPolicy.fuelType,
+          rto: motorPolicy.rto,
+          vehicleNumber: motorPolicy.vehicleNumber,
+          seatingCapacity: motorPolicy.seatingCapacity,
+          vehicleAge: motorPolicy.vehicleAge,
+          ncb: motorPolicy.ncb,
+          policyNumber: motorPolicy.policyNumber,
+          phoneNumber: motorPolicy.phoneNumber,
+          mfgYear: motorPolicy.mfgYear,
+          registrationDate: dayjs(motorPolicy.registrationDate).format(
+            DAYJS_DISPLAY_FORMAT
+          ),
+          endDate: dayjs(motorPolicy.endDate).format(DAYJS_DISPLAY_FORMAT),
+          issueDate: dayjs(motorPolicy.issueDate).format(
+            DAYJS_DISPLAY_FORMAT
+          ),
+          tenure: motorPolicy.tenure,
+          idv: motorPolicy.idv,
+          od: motorPolicy.od,
+          tp: motorPolicy.tp,
+          netPremium: motorPolicy.netPremium,
+          finalPremium: motorPolicy.finalPremium,
+          cc: motorPolicy.cc,
+          paymentMode: motorPolicy.paymentMode,
+          policyCreatedBy: motorPolicy.policyCreatedBy,
+          createdOn: dayjs(motorPolicy.createdOn).format(
+            DAYJS_DISPLAY_FORMAT
+          ),
+          paymentDetails: motorPolicy.paymentDetails,
+          policyStatus: motorPolicy.policyStatus,
+          partnerId: motorPolicy.partnerId,
+          partnerName: motorPolicy.partnerName,
+          relationshipManagerName: motorPolicy.relationshipManagerName,
+          relationshipManagerId: motorPolicy.relationshipManagerId,
+          rcFront: motorPolicy.rcFront,
+          rcBack: motorPolicy.rcBack,
+          previousPolicy: motorPolicy.previousPolicy,
+          survey: motorPolicy.survey,
+          puc: motorPolicy.puc,
+          fitness: motorPolicy.fitness,
+          proposal: motorPolicy.proposal,
+          currentPolicy: motorPolicy.currentPolicy,
+          other: motorPolicy.other,
+        } as unknown as IPolicyVM)
       ) ?? [],
     [motorPolicies]
   );
@@ -375,7 +375,7 @@ const GetArchiveMotorPolicies = () => {
   const validate = validateFormValues(validationSchema);
   return (
     <>
-      <div className="bg-blue-200 md:p-7 p-2">
+      <div className=" md:p-7 p-2">
         <Paper elevation={3} style={{ padding: 30 }}>
           <Typography className="text-safekaroDarkOrange" variant="h5">
             Archive Motor Policies Table
@@ -392,19 +392,20 @@ const GetArchiveMotorPolicies = () => {
                 <span className="text-grey-600 text-sm"> Motor Policies</span>
               </div>
               {userData.role.toLowerCase() === "admin" ||
-              userData.role.toLowerCase() === "booking" ? (
+                userData.role.toLowerCase() === "booking" ? (
                 <Button
                   type="button"
-                  className="w-26 h-10 bg-addButton text-white p-3 md:text-xs text-[10px] rounded-sm"
                   onClick={handleClickAddMotorPolicy}
+                  className="btnGradient text-black px-4 py-2 rounded-sm w-full sm:w-auto text-[10px] md:text-xs"
                 >
                   Add Motor Policies
                 </Button>
+
               ) : (
                 ""
               )}
             </div>
-            {}
+            { }
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
@@ -417,7 +418,7 @@ const GetArchiveMotorPolicies = () => {
               render={({ handleSubmit, submitting, errors, values }) => (
                 <form onSubmit={handleSubmit} noValidate>
                   <Grid container spacing={2}>
-                    {}
+                    { }
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                       <Field name="startDate">
                         {({ input, meta }) => (
@@ -425,7 +426,7 @@ const GetArchiveMotorPolicies = () => {
                             <DatePicker
                               label="Start Date"
                               inputFormat="DD/MM/YYYY"
-                              value={input.value || null} 
+                              value={input.value || null}
                               onChange={(date) => input.onChange(date)}
                               renderInput={(params: any) => (
                                 <TextField
@@ -472,10 +473,11 @@ const GetArchiveMotorPolicies = () => {
                         disabled={isLoading}
                         variant="contained"
                         color="primary"
-                        className=" w-26 h-10 bg-addButton text-white p-3 md:text-xs text-[10px]  rounded-sm"
+                        className="btnGradient text-black px-4 py-2 rounded-sm w-full sm:w-auto text-[10px] md:text-xs"
                       >
-                        {isLoading?"Getting...":"Get Records"}
+                        {isLoading ? "Getting..." : "Get Records"}
                       </Button>
+
                     </Grid>
                   </Grid>
                 </form>
@@ -483,6 +485,20 @@ const GetArchiveMotorPolicies = () => {
             />
           </React.Fragment>
           <MaterialReactTable
+            muiTablePaperProps={{
+              sx: {
+                boxShadow: "none", 
+                backgroundColor: "transparent", 
+              
+              },
+            }}
+      
+            muiTableContainerProps={{
+              sx: {
+                boxShadow: "none", 
+                backgroundColor: "transparent", 
+              },
+            }}
             state={{ isLoading }}
             columns={columns}
             data={parsedData}
@@ -492,14 +508,13 @@ const GetArchiveMotorPolicies = () => {
             renderTopToolbarCustomActions={({ table }) => (
               <>
                 <Button
-                  className="text-white bg-safekaroDarkOrange md:m-2 md:p-2 md:text-xs text-[10px]"
+                  className="btnGradient text-black px-4 py-2 rounded-sm w-full sm:w-auto text-[10px] md:text-xs md:m-2"
                   disabled={table.getRowModel().rows.length === 0}
-                  onClick={() =>
-                    handleExportRows(table.getFilteredRowModel().rows)
-                  }
+                  onClick={() => handleExportRows(table.getFilteredRowModel().rows)}
                 >
                   Export Filter Data
                 </Button>
+
               </>
             )}
             renderRowActions={({ row }) => (
@@ -523,7 +538,7 @@ const GetArchiveMotorPolicies = () => {
                     >
                       <path
                         strokeLinecap="round"
-                         strokeLinejoin="round"
+                        strokeLinejoin="round"
                         d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
                       />
                     </svg>

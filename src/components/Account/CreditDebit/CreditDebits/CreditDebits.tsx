@@ -29,7 +29,7 @@ const CreditDebits = () => {
     navigate(creditDebitsAddPath());
   };
   return (
-    <div className="bg-blue-200 md:p-7 p-2">
+    <div className="md:p-7 p-2">
       <Paper elevation={3} style={{ padding: 30 }}>
         <Typography className="text-safekaroDarkOrange" variant="h5">
           Transaction Table
@@ -47,12 +47,13 @@ const CreditDebits = () => {
               <span className="text-grey-600 text-sm"> Transactions</span>
             </div>
             <Button
-              type="button"
-              className="w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
-              onClick={handleAddCreditDebitClick}
-            >
-              Add Transaction
-            </Button>
+  type="button"
+  className="btnGradient text-black px-4 py-3 rounded-sm w-full sm:w-auto text-[10px] md:text-xs"
+  onClick={handleAddCreditDebitClick}
+>
+  Add Transaction
+</Button>
+
           </div>
 
           <hr
@@ -61,29 +62,39 @@ const CreditDebits = () => {
           />
         </Typography>
 
-        <Grid container>
-          <Button
-            type="button"
-            className="w-26 h-8 bg-safekaroDarkOrange text-white p-3 text-xs rounded-sm"
-            onClick={handleClickCreditDebit}
-          >
-            All
-          </Button>
-          <Button
-            type="button"
-            className="w-26 h-8 ml-4 bg-addButton text-white p-3 text-xs rounded-sm"
-            onClick={handleClickCredit}
-          >
-            Credit
-          </Button>
-          <Button
-            type="button"
-            className="w-26 h-8 ml-4 bg-addButton text-white p-3 text-xs rounded-sm"
-            onClick={handleClickDebit}
-          >
-            Debit
-          </Button>
-        </Grid>
+        <Grid container spacing={1}>
+  <Grid item>
+    <Button
+      type="button"
+      className="btnGradient text-black px-4 py-1.5 rounded-sm w-full sm:w-auto text-[10px] md:text-xs"
+      onClick={handleClickCreditDebit}
+    >
+      All
+    </Button>
+  </Grid>
+
+  <Grid item>
+    <Button
+      type="button"
+      className="btnGradient text-black px-4 py-1.5 rounded-sm w-full sm:w-auto text-[10px] md:text-xs"
+      onClick={handleClickCredit}
+    >
+      Credit
+    </Button>
+  </Grid>
+
+  <Grid item>
+    <Button
+      type="button"
+      className="btnGradient text-black px-4 py-1.5 rounded-sm w-full sm:w-auto text-[10px] md:text-xs"
+      onClick={handleClickDebit}
+    >
+      Debit
+    </Button>
+  </Grid>
+</Grid>
+
+
 
         {showAllCreditDebits && <AllCreditDebits />}
         {showCreditByBroker && <ViewCreditDebitByBrokerCard />}

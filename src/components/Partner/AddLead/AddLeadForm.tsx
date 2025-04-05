@@ -222,8 +222,10 @@ const AddLeadFormCard = (props: addLeadRequestFormProps) => {
   };
   return (
     <>
+ 
             <Form
               mt={3}
+              
               onSubmit={onSubmit}
               initialValues={initialValues}
               validate={addValidate}
@@ -561,6 +563,7 @@ const AddLeadFormCard = (props: addLeadRequestFormProps) => {
                 </form>
               )}
             />
+ 
       <Toaster position="bottom-center" reverseOrder={false} />
     </>
   );

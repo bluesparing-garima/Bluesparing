@@ -109,14 +109,15 @@ const AddPolicyTypeForm = (props: addPolicyTypeFormProps) => {
                   disabled={isLoading}
                   variant="contained"
                   color="primary"
-                  className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
+                  className="btnGradient text-black px-4 py-2 text-xs sm:text-sm rounded-sm w-full sm:w-auto"
                 >
                   {isLoading
                     ? "Submitting..."
                     : isAdd
-                    ? "Add Broker"
-                    : "Update Broker"}
+                      ? "Add Broker"
+                      : "Update Broker"}
                 </Button>
+
               </Grid>
             </Grid>
           </form>

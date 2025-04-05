@@ -35,7 +35,7 @@ const AddBroker = () => {
   const title = isAdd ? "Add Broker" : "Update Broker";
 
   return (
-    <div className="bg-blue-200 md:p-7 ">
+    <div className="md:p-7 ">
       <Paper
         elevation={3}
         style={{ padding: 20, margin: 30, borderRadius: 10 }}
