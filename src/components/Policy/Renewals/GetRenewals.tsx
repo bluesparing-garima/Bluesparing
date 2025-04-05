@@ -1385,7 +1385,7 @@ const GetRenewals = () => {
                   type="button"
                   onClick={handleClickAddMotorPolicy}
                   size="small"
-                  className="btnGradient text-black px-4 py-2 rounded-md w-full sm:w-auto"
+                  className="btnGradient text-black px-4 py-3 rounded-md w-full sm:w-auto"
                 >
                   <span className="text-[10px] md:text-xs">
                     Add Motor Policies
