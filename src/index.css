@@ -62,3 +62,31 @@ code {
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+.btnGradient {
+  letter-spacing: 0.05em; /* tracking-wide */
+  font-weight: 600; /* font-semibold */
+  background: linear-gradient(to right, #E9762B, #EDB65C); /* gradient */
+  color: #443627; /* text color */
+  transition: all 0.3s ease-in-out; /* transition-all + duration-300 + ease-in-out */
+  width: 100%; /* w-full */
+  margin-bottom: 2.5rem; /* mb-10 = 40px */
+  padding: 0.75rem 1rem; /* py-3 px-4 = 12px 16px */
+  border-radius: 0.5rem; /* rounded = 8px */
+  display: flex; /* flex */
+  align-items: center; /* items-center */
+  justify-content: center; /* justify-center */
+  outline: none; /* focus:outline-none */
+}
+
+.btnGradient:hover {
+  background: linear-gradient(to right, #EDB65C, #E9762B); /* reversed on hover */
+}
+
+.btnGradient:active {
+  transform: scale(0.9); /* active:scale-90 */
+}
+
+.btnGradient:focus {
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5); /* similar to shadow-outline */
+}

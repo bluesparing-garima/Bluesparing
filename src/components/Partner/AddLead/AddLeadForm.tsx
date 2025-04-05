@@ -222,9 +222,6 @@ const AddLeadFormCard = (props: addLeadRequestFormProps) => {
   };
   return (
     <>
-      <React.Fragment>
-        <Card>
-          <CardContent>
             <Form
               mt={3}
               onSubmit={onSubmit}
@@ -556,7 +553,7 @@ const AddLeadFormCard = (props: addLeadRequestFormProps) => {
                           {submitError}
                         </div>
                       )}
-                      <Button variant="contained" type="submit" disabled={isLoading}>
+                      <Button variant="contained" type="submit" disabled={isLoading} className="btnGradient text-black w-[10%]">
                         {isLoading ? 'Submitting...' : 'submit'}
                       </Button>
                     </Grid>
@@ -564,9 +561,6 @@ const AddLeadFormCard = (props: addLeadRequestFormProps) => {
                 </form>
               )}
             />
-          </CardContent>
-        </Card>
-      </React.Fragment>
       <Toaster position="bottom-center" reverseOrder={false} />
     </>
   );
