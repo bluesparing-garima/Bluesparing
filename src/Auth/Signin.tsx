@@ -52,9 +52,11 @@ const Signin = () => {
     rm: "/rm/dashboard",
     hr: "/hr/dashboard",
     it: "/it/dashboard",
+    sales:"/salesdashboard",
     default: "/partnerdashboard",
   };
   const onSubmit = async (signInData: ISignIn) => {
+  
     if (mode === 'client') {
       await verifyOtp(debouncedEmail, otp);
     } else {
@@ -68,6 +70,7 @@ const Signin = () => {
           body: JSON.stringify(signInData),
         };
         const responseData = await fetchInterceptor<any>(url, options);
+      
         if (responseData.role.toLowerCase().trim() === "superadmin") {
           setErrMsg("super admin can't login ")
           return;
