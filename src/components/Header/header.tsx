@@ -263,7 +263,7 @@ export default Header;
 const NotificationComponent = () => {
   const storedTheme: any = localStorage.getItem("user");
   const UserData = storedTheme ? JSON.parse(storedTheme) : null;
-
+  const navigate = useNavigate();
   const [notificationData, setNotificationData] = useState<INotification[]>();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -287,17 +287,21 @@ const NotificationComponent = () => {
   };
 
   useEffect(() => {
-    fetchNotification(); // fetch once on mount
+    fetchNotification();
 
     const interval = setInterval(() => {
-      fetchNotification(); // fetch every 30 seconds
-    }, 30000); // 30,000 ms = 30 sec
+      fetchNotification();
+    }, 30000);
 
-    return () => clearInterval(interval); // cleanup on unmount
+    return () => clearInterval(interval);
   }, []);
 
+  const navigateTopPath = () => {
+    navigate("notification", { state: notificationData })
+  }
+
   return (
-    <Badge badgeContent={notificationData?.length || 0} color="secondary" className="mx-2">
+    <Badge onClick={navigateTopPath} badgeContent={notificationData?.length || 0} color="secondary" className="mx-2 cursor-pointer">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"

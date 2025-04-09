@@ -6,7 +6,7 @@ import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined
 import { IconButton, Paper, Tooltip, Typography } from "@mui/material";
 import GetNotificationByRoleService from "../../api/Notification/GetNotificationByRole/GetNotificationByRoleService";
 import { header } from "../../context/constant";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import MaterialReactTable, { MRT_ColumnDef } from "material-react-table";
 import dayjs from "dayjs";
 import EditNotificationViewService from "../../api/Notification/EditNotificationView/EditNotificationViewService";
@@ -15,51 +15,20 @@ const Notification = () => {
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
   const [isLoading, setIsLoading] = useState(false);
-  const [notificationData, setNotificationData] = useState<INotification[]>();
+  const loc = useLocation();
+  const data = loc.state as INotification[];
+  const [notificationData, setNotificationData] = useState<INotification[]>(data);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
-  const accessNotification = () => {
-    const role = UserData.role.toLowerCase();
-    switch (role) {
-      case "booking":
-        return ["operation"];
-      case "operation":
-        return ["booking", "partner"];
-      case "partner":
-        return ["booking", "operation"];
-      default:
-        return ["booking"];
-    }
-  };
-  const fetchNotification = async () => {
-    setIsLoading(true);
-    try {
-      const res = await GetNotificationByRoleService({
-        header,
-        role:UserData?.role?.toLowerCase(), id: UserData.profileId
-      });
-      if (res.status === "success") {
 
-        setNotificationData(res.data);
-      }
-    } catch (error: any) {
-      const err = await error;
-      toast.error(err.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
-  useEffect(() => {
-    fetchNotification();
-    // eslint-disable-next-line
-  }, []);
+console.log(notificationData)
   const generateDashBoarding = () => {
     const role = UserData.role.toLowerCase();
     switch (role) {
       case "hr":
         return "/hr/dashboard";
       case "booking":
-        return "/booking-dashboard";
+        return "/bookingdashboard";
       case "account":
         return "/accountdashboard";
       case "operation":
@@ -80,13 +49,13 @@ const Notification = () => {
         header: "Title",
         size: 100,
       },
+      
       {
-        accessorKey: "role",
-        header: "Role",
+        accessorKey: "notificationSenderName",
+        header: "Sender",
         size: 100,
       },
-     
-   
+
       {
         accessorKey: "createdOn",
         header: "Date",
