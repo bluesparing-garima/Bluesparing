@@ -8,7 +8,7 @@ export interface getNotificationProps {
 }
 export interface getNotificationByRoleProps {
   header?: any;
-  role: string[];
+  role: string;
   id:string;
 
 }

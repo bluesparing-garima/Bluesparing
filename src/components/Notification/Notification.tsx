@@ -35,7 +35,7 @@ const Notification = () => {
     try {
       const res = await GetNotificationByRoleService({
         header,
-        role: accessNotification(), id: UserData.profileId
+        role:UserData?.role?.toLowerCase(), id: UserData.profileId
       });
       if (res.status === "success") {
 

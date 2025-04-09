@@ -514,7 +514,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
       .min(1, "salary must be at least 1 character"),
     branch: yup.object().required("Branch Name is required").nullable(),
   });
-  const allowedRoles = ["Account", "Booking", "HR", "Operation", "Partner", "Relationship Manager"];
+  const allowedRoles = ["Account", "Booking", "HR", "Operation", "Partner", "Relationship Manager","sales"];
   const validate = validateFormValues(validationSchema);
   return (
     <>
@@ -579,7 +579,7 @@ const AddTeamForm = (props: addPolicyTypeFormProps) => {
                           id="role"
                           value={roles.find(role => role.roleName === (selectedRole ?? "")) || null}
                           options={roles.filter(role => allowedRoles.includes(role.roleName ?? ""))}
-                          getOptionLabel={(option) => option?.roleName ?? ""}
+                          getOptionLabel={(option) => option?.roleName?.toUpperCase() ?? ""}
                           onChange={(event, newValue) => {
                             if (newValue?.roleName) {
                               setSelectedRole(newValue.roleName);
