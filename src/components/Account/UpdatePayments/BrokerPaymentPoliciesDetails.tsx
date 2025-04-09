@@ -249,7 +249,7 @@ function BrokerPaymentPoliciesDetails({
     return <CircularProgress />
   }
   return (
-    <div className="bg-blue-200 p-7 mt-4">
+    <div className="p-7 mt-4">
       <Paper elevation={3} style={{ padding: 30 }}>
         <Typography className="text-safekaroDarkOrange" variant="h5">
           Filter Motor Policies

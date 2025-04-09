@@ -1,15 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
-import { SafeKaroUser } from "../../context/constant";
+import { DAYJS_DISPLAY_FORMAT_TABLES, SafeKaroUser } from "../../context/constant";
 import { INotification } from "./INotification";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import { IconButton, Paper, Tooltip, Typography } from "@mui/material";
 import GetNotificationByRoleService from "../../api/Notification/GetNotificationByRole/GetNotificationByRoleService";
 import { header } from "../../context/constant";
-
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import MaterialReactTable, { MRT_ColumnDef } from "material-react-table";
 import dayjs from "dayjs";
 import EditNotificationViewService from "../../api/Notification/EditNotificationView/EditNotificationViewService";
@@ -18,54 +15,20 @@ const Notification = () => {
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
   const [isLoading, setIsLoading] = useState(false);
-  const [notificationData, setNotificationData] = useState<INotification[]>();
-
+  const loc = useLocation();
+  const data = loc.state as INotification[];
+  const [notificationData, setNotificationData] = useState<INotification[]>(data);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
-  const accessNotification = () => {
-    const role = UserData.role.toLowerCase();
-    switch (role) {
-      case "booking":
-        return ["operation"];
-      case "operation":
-        return ["booking","partner"];
-      case "partner":
-        return ["booking", "operation"];
-      default:
-        return ["booking"];
-    }
-  };
-  const fetchNotification = async () => {
-    setIsLoading(true);
-    try {
-      const res = await GetNotificationByRoleService({
-        header,
-        role: accessNotification(),
-      });
-      if (res.status === "success") {
-        const filterData = res.data.filter(
-          (ele: INotification) => ele.notificationFor === UserData.profileId
-        );
-        setNotificationData(filterData);
-      }
-    } catch (error: any) {
-      const err = await error;
-      toast.error(err.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
-  useEffect(() => {
-    fetchNotification();
-    // eslint-disable-next-line
-  }, []);
+
+console.log(notificationData)
   const generateDashBoarding = () => {
     const role = UserData.role.toLowerCase();
     switch (role) {
       case "hr":
         return "/hr/dashboard";
       case "booking":
-        return "/booking-dashboard";
+        return "/bookingdashboard";
       case "account":
         return "/accountdashboard";
       case "operation":
@@ -86,41 +49,20 @@ const Notification = () => {
         header: "Title",
         size: 100,
       },
+      
       {
-        accessorKey: "role",
-        header: "Role",
+        accessorKey: "notificationSenderName",
+        header: "Sender",
         size: 100,
       },
-      {
-        accessorKey: "type",
-        header: "Type",
-        size: 100,
-      },
-      {
-        accessorKey: "isActive",
-        header: "Status",
-        size: 50,
-        Cell: ({ cell }) => {
-          const value = cell.getValue<boolean>();
-          return value ? (
-            <CheckCircleOutlineIcon color="success" />
-          ) : (
-            <CancelOutlinedIcon color="error" />
-          );
-        },
-      },
-      {
-        accessorKey: "createdBy",
-        header: "Created By",
-        size: 150,
-      },
+
       {
         accessorKey: "createdOn",
         header: "Date",
         size: 200,
         Cell: ({ cell }) => {
           const dateValue = cell.getValue() as string;
-          return dayjs(dateValue).format("DD/MM/YYYY");
+          return dayjs(dateValue).format(DAYJS_DISPLAY_FORMAT_TABLES);
         },
       },
     ],
@@ -147,7 +89,7 @@ const Notification = () => {
   };
   return (
     <>
-      <div className="bg-blue-200 md:p-7 p-2">
+      <div className=" md:p-7 p-2">
         <Paper elevation={3} style={{ padding: 30 }}>
           <Typography className="text-safekaroDarkOrange" variant="h5">
             Notification

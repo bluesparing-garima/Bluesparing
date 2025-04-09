@@ -235,7 +235,7 @@ const Leads = () => {
 
   return (
     <>
-      <div className="bg-blue-200 md:p-7 p-2">
+      <div className="md:p-7 p-2">
         <Paper elevation={3} style={{ padding: 30 }}>
           <Typography className="text-safekaroDarkOrange" variant="h5">
             Lead Table
@@ -252,13 +252,15 @@ const Leads = () => {
                 <span className="text-grey-600 text-sm"> Lead</span>
               </div>
               {userData.role.toLowerCase() !== "admin" && (
-                <Button
-                  type="button"
-                  className="w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
-                  onClick={handleAddLeadClick}
-                >
-                  Add Lead
-                </Button>
+        <Button
+        type="button"
+        className="w-28 h-10 btnGradient text-black px-4 py-2 text-xs rounded-md"
+        onClick={handleAddLeadClick}
+      >
+        Add Lead
+      </Button>
+      
+
               )}
             </div>
 
@@ -268,6 +270,20 @@ const Leads = () => {
             />
           </Typography>
           <MaterialReactTable
+            muiTablePaperProps={{
+            sx: {
+              boxShadow: "none", 
+              backgroundColor: "transparent", 
+            
+            },
+          }}
+    
+          muiTableContainerProps={{
+            sx: {
+              boxShadow: "none", 
+              backgroundColor: "transparent", 
+            },
+          }}
             state={{ isLoading }}
             columns={columns}
             data={parsedData}

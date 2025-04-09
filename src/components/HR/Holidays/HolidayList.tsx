@@ -153,23 +153,23 @@ const HolidaysList: React.FC = () => {
       toast.error("Both start date and end date are required");
       return;
     }
-  
+
     const utcStartDate = dayjs(filterForm.startDate);
     const utcEndDate = dayjs(filterForm.endDate);
-  
+
     if (!utcStartDate.isValid() || !utcEndDate.isValid()) {
       toast.error("Invalid date selected. Please select valid dates.");
       return;
     }
-  
+
     if (utcEndDate.isBefore(utcStartDate)) {
       toast.error("End date cannot be before start date.");
       return;
     }
-  
+
     const startDate = utcStartDate.format(DAY_FORMAT);
     const endDate = utcEndDate.format(DAY_FORMAT);
-  
+
     try {
       const res = await GetHolidaysDateFilterService({
         header,
@@ -184,10 +184,10 @@ const HolidaysList: React.FC = () => {
       toast.error(err);
     }
   };
-  
+
   return (
     <>
-      <div className="bg-blue-200 md:p-7 p-2">
+      <div className="md:p-7 p-2">
         <Paper elevation={3} style={{ padding: 30 }}>
           <Typography className="text-safekaroDarkOrange" variant="h5">
             Holiday Table
@@ -204,13 +204,14 @@ const HolidaysList: React.FC = () => {
                 <span className="text-grey-600 text-sm"> Holidays</span>
               </div>
               {isAccessAction() && (
-                <Button
-                  type="button"
-                  className="w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
-                  onClick={handleAddHolidayClick}
-                >
-                  Add Holiday
-                </Button>
+               <Button
+               type="button"
+               className="btnGradient text-black px-4 py-2.5 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
+               onClick={handleAddHolidayClick}
+             >
+               Add Holiday
+             </Button>
+             
               )}
             </div>
             <hr
@@ -230,7 +231,7 @@ const HolidaysList: React.FC = () => {
                         {({ input, meta }) => (
                           <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
-                            
+
                               label="Start Date"
                               inputFormat="DD/MM/YYYY"
                               value={input.value ? dayjs(input.value) : null}
@@ -260,7 +261,7 @@ const HolidaysList: React.FC = () => {
                         {({ input, meta }) => (
                           <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
-                              
+
                               label="End Date"
                               inputFormat="DD/MM/YYYY"
                               value={input.value ? dayjs(input.value) : null}
@@ -289,12 +290,11 @@ const HolidaysList: React.FC = () => {
                       <Button
                         type="submit"
                         disabled={submitting}
-                        variant="contained"
-                        color="primary"
-                        className="w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
+                        className="btnGradient text-black px-4 py-2.5 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
                       >
                         Get Records
                       </Button>
+
                     </Grid>
                   </Grid>
                 </form>
@@ -302,6 +302,20 @@ const HolidaysList: React.FC = () => {
             />
           </div>
           <MaterialReactTable
+            muiTablePaperProps={{
+              sx: {
+                boxShadow: "none", 
+                backgroundColor: "transparent", 
+              
+              },
+            }}
+      
+            muiTableContainerProps={{
+              sx: {
+                boxShadow: "none", 
+                backgroundColor: "transparent", 
+              },
+            }}
             state={{ isLoading, pagination }}
             columns={columns}
             data={holidays}
@@ -357,15 +371,14 @@ const HolidaysList: React.FC = () => {
             )}
             renderTopToolbarCustomActions={({ table }) => (
               <>
-                <Button
-                  className="text-white bg-safekaroDarkOrange m-2 p-2"
-                  disabled={table.getRowModel().rows.length === 0}
-                  onClick={() =>
-                    handleExportRows(table.getFilteredRowModel().rows)
-                  }
-                >
-                  Export Filter Data
-                </Button>
+              <Button
+  className="btnGradient text-black px-4 py-2 m-2 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
+  disabled={table.getRowModel().rows.length === 0}
+  onClick={() => handleExportRows(table.getFilteredRowModel().rows)}
+>
+  Export Filter Data
+</Button>
+
               </>
             )}
           />

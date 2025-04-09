@@ -8,9 +8,9 @@ export interface getNotificationProps {
 }
 export interface getNotificationByRoleProps {
   header?: any;
-  role: string[];
-  type?: string;
-  isView?: boolean;
+  role: string;
+  id:string;
+
 }
 
 export interface updateNotificationViewProps {

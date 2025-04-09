@@ -75,7 +75,7 @@ const Brokers = () => {
     callUpdateBrokerAPI(broker);
   };
   const forcedRenderCount = 0;
- 
+
   const columns = useMemo<MRT_ColumnDef<IBrokers>[]>(
     () => [
       {
@@ -113,15 +113,15 @@ const Brokers = () => {
     () =>
       brokers.map(
         (broker: IBrokers) =>
-          ({
-            id: broker._id,
-            brokerName: broker.brokerName,
-            brokerCode: broker.brokerCode,
-            isActive: broker.isActive,
-            createdOn: dayjs(broker.createdOn).format(DAYJS_DISPLAY_FORMAT),
-            updatedOn: dayjs(broker.updatedOn).format(DAYJS_DISPLAY_FORMAT),
-            forceUpdate: forcedRenderCount,
-          } as IBrokersVM)
+        ({
+          id: broker._id,
+          brokerName: broker.brokerName,
+          brokerCode: broker.brokerCode,
+          isActive: broker.isActive,
+          createdOn: dayjs(broker.createdOn).format(DAYJS_DISPLAY_FORMAT),
+          updatedOn: dayjs(broker.updatedOn).format(DAYJS_DISPLAY_FORMAT),
+          forceUpdate: forcedRenderCount,
+        } as IBrokersVM)
       ) ?? [],
     [brokers, forcedRenderCount]
   );
@@ -136,10 +136,10 @@ const Brokers = () => {
     savePaginationState(pagination, BROKER_STORAGE_KEY);
     navigate(brokerEditPath(broker.id!));
   };
- 
+
   return (
     <>
-      <div className="bg-blue-200 h-screen md:p-7 p-2">
+      <div className="h-screen md:p-7 p-2">
         <Paper elevation={3} style={{ padding: 30 }}>
           <Typography className="text-safekaroDarkOrange" variant="h5">
             Broker Table
@@ -157,11 +157,12 @@ const Brokers = () => {
               </div>
               <Button
                 type="button"
-                className="w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
+                className="btnGradient text-black px-4 py-2 text-xs sm:text-sm rounded-nd w-full sm:w-auto"
                 onClick={handleAddBrokerClick}
               >
                 Add Broker
               </Button>
+
             </div>
             <hr
               className="mt-4"
@@ -169,6 +170,20 @@ const Brokers = () => {
             />
           </Typography>
           <MaterialReactTable
+           muiTablePaperProps={{
+            sx: {
+              boxShadow: "none", 
+              backgroundColor: "transparent", 
+            
+            },
+          }}
+    
+          muiTableContainerProps={{
+            sx: {
+              boxShadow: "none", 
+              backgroundColor: "transparent", 
+            },
+          }}
             state={{ isLoading, pagination }}
             columns={columns}
             data={parsedData}

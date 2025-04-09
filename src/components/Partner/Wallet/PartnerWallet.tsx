@@ -200,13 +200,13 @@ const PartnerWallet = () => {
   });
   const validate = validateFormValues(validationSchema);
   return (
-    <div className="bg-blue-200 md:p-7 p-2 ">
+    <div className="md:p-7 p-2 ">
       <Paper elevation={3} style={{ padding: 30 }}>
-        {}
+        { }
         <Typography className="text-safekaroDarkOrange" variant="h5">
           Partner Wallet History Table
         </Typography>
-        {}
+        { }
         <Typography variant="h5" mb={2}>
           <div style={{ display: "flex", alignItems: "center" }}>
             <div style={{ flex: 1 }}>
@@ -218,7 +218,7 @@ const PartnerWallet = () => {
               </Link>
             </div>
           </div>
-          {}
+          { }
           <hr
             className="mt-4"
             style={{ width: "100%", borderColor: "grey-800" }}
@@ -246,7 +246,7 @@ const PartnerWallet = () => {
                                 typeof option === "string"
                                   ? option
                                   : `${option.name} - ${option.userCode}` ||
-                                    ""
+                                  ""
                               }
                               options={partners}
                               onChange={(event, newValue) => {
@@ -329,20 +329,33 @@ const PartnerWallet = () => {
                     <Button
                       type="submit"
                       disabled={isLoading}
-                      variant="contained"
-                      color="primary"
-                      className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
+                      className="btnGradient text-black px-4 py-3 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
                     >
                       {isLoading ? "Getting..." : "Get Records"}
                     </Button>
+
                   </Grid>
                 </Grid>
               </form>
             )}
           />
         </React.Fragment>
-        {}
+        { }
         <MaterialReactTable
+          muiTablePaperProps={{
+            sx: {
+              boxShadow: "none", 
+              backgroundColor: "transparent", 
+            
+            },
+          }}
+    
+          muiTableContainerProps={{
+            sx: {
+              boxShadow: "none", 
+              backgroundColor: "transparent", 
+            },
+          }}
           state={{ isLoading }}
           columns={columns}
           data={parsedData}
@@ -350,7 +363,7 @@ const PartnerWallet = () => {
           positionActionsColumn="last"
           renderRowActions={({ row }) => (
             <div style={{ display: "flex", flexWrap: "nowrap" }}>
-              {}
+              { }
               {row.original.credit ? (
                 <Tooltip title="View Wallet History">
                   <IconButton

@@ -18,21 +18,17 @@ import GetTodayAttendanceRecordService from "../../api/HR/Attendance/GetTodayAtt
 import MarkInTime from "../HR/Attendance/MarkAttendance/MarkInTime";
 import MarkOutTime from "../HR/Attendance/MarkAttendance/MarkOutTime";
 import { INotification } from "../Notification/INotification";
-// import GetNotificationByRoleService from "../../api/Notification/GetNotificationByRole/GetNotificationByRoleService";
-import CustomToast from "../../utils/CustomToast";
-import {
-  getNotifications,
-  storeNotifications,
-} from "../../utils/NotificationSessionHandler";
+import Badge from '@mui/material/Badge';
+import GetNotificationByRoleService from "../../api/Notification/GetNotificationByRole/GetNotificationByRoleService";
 import crownIcon from "../../assets/pl.png";
-import { styled, keyframes } from "@mui/system"; // Styled System MUI से
+import { styled, keyframes } from "@mui/system";
 
 const blink = keyframes`
   0% { opacity: 1; transform: scale(1); box-shadow: 0 0 8px red; }
   100% { opacity: 0.9; transform: scale(1.2); box-shadow: 0 0 2px red; }
 `;
 
-// 🏆 Styled Icon Button
+
 const PremiumButton = styled(IconButton)({
   position: "relative",
   transform: "scale(1.2)",
@@ -43,14 +39,14 @@ const PremiumButton = styled(IconButton)({
   },
 });
 
-// 👑 Styled Crown Icon
+
 const CrownImage = styled("img")({
   width: "25px",
   filter: "drop-shadow(0px 0px 3px gold)",
   transition: "transform 0.3s ease-in-out, filter 0.3s ease-in-out",
 });
 
-// 🔴 Styled Red Dot
+
 const RedDot = styled("span")({
   position: "absolute",
   top: "8px",
@@ -75,42 +71,12 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
   const [attendance, setAttendance] = useState<IAttendance | null>();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const [notificationData, setNotificationData] = useState<INotification[]>([]);
   const navigate = useNavigate();
 
-  const accessNotification = useMemo(() => {
-    const role = UserData?.role?.toLowerCase();
-    switch (role) {
-      case "booking":
-        return ["operation"];
-      case "operation":
-        return ["booking", "partner"];
-      case "partner":
-        return ["booking", "operation"];
-      default:
-        return ["booking"];
-    }
-  }, [UserData?.role]);
 
-  const debounce = <T extends (...args: any[]) => void>(
-    func: T,
-    delay: number
-  ) => {
-    let timeoutId: NodeJS.Timeout;
-    return (...args: Parameters<T>) => {
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
-      timeoutId = setTimeout(() => {
-        func(...args);
-      }, delay);
-    };
-  };
-  const isViewNotification = useCallback(() => {
-    return ["booking", "operation", "partner"].includes(
-      UserData?.role?.toLowerCase()
-    );
-  }, [UserData?.role]);
+
+
+
 
   const fetchData = async () => {
     try {
@@ -134,7 +100,7 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
     if (userData) {
       fetchData();
     }
-    // eslint-disable-next-line
+
   }, [userData]);
   useEffect(() => {
     if (storedTheme) {
@@ -147,7 +113,7 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
             setUserRank(rankData?.rank);
           })
           .catch((error) => {
-           toast.error(error.message||"")
+            toast.error(error.message || "")
           });
       }
     }
@@ -157,12 +123,8 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
     sessionStorage.clear();
     handleClose();
   }, []);
-  const showToast = (msg: string) => {
-    toast.custom((t) => <CustomToast t={t} message={msg} />);
-  };
-  const handlePlay = (msg: string) => {
-    showToast(msg);
-  };
+
+
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -216,7 +178,7 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
         <div className="md:flex sm:justify-start w-[50%] text-sm md:w-[50%] lg:text-md sm:w-[45%] md:text-sm sm:text-sm font-medium font-satoshi content-start">
           Welcome Back, {userData?.name}
         </div>
-        <div className="flex md:hidden hidden sm:hidden text-sm font-medium font-satoshi content-start">
+        <div className="flex md:hidden  sm:hidden text-sm font-medium font-satoshi content-start">
           {userData?.name}
         </div>
         <div className="flex items-center justify-center gap-3">
@@ -226,7 +188,9 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
               <CrownImage src={crownIcon} alt="Crown" />
             </PremiumButton>
           </Tooltip>
-
+          {
+            (userData?.role.toLowerCase().trim() === "booking" || userData?.role.toLowerCase().trim() === "partner" || userData?.role.toLowerCase().trim() === "operation") && <NotificationComponent />
+          }
           <Avatar
             className="md:w-[40px] md:h-[40px] w-[30px] h-[30px]"
             alt={userData?.name}
@@ -240,13 +204,13 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
               <p className="text-[#737791] md:text-xs text-[10px]">
                 {userData?.role}
                 {userData?.role === "Partner" && (
-                  <span className="text-safekaroDarkOrange"> ({userRank||""})</span>
+                  <span className="text-safekaroDarkOrange"> ({userRank || ""})</span>
                 )}
               </p>
             </Link>
             <Button
               id="basic-button"
-              sx={{ color: "black"}}
+              sx={{ color: "black" }}
               onClick={handleClick}
               className="-ml-3"
             >
@@ -290,8 +254,68 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
           </div>
         </div>
       </div>
-      {/* <hr className="my-2" /> */}
+
     </>
   );
 });
 export default Header;
+
+const NotificationComponent = () => {
+  const storedTheme: any = localStorage.getItem("user");
+  const UserData = storedTheme ? JSON.parse(storedTheme) : null;
+  const navigate = useNavigate();
+  const [notificationData, setNotificationData] = useState<INotification[]>();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const fetchNotification = async () => {
+    if (!UserData?.role || !UserData?.profileId) return;
+    setIsLoading(true);
+    try {
+      const res = await GetNotificationByRoleService({
+        header,
+        role: UserData?.role?.toLowerCase(),
+        id: UserData.profileId,
+      });
+      if (res.status === "success") {
+        setNotificationData(res.data);
+      }
+    } catch (error: any) {
+      toast.error(error?.message || "Failed to fetch notifications");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchNotification();
+
+    const interval = setInterval(() => {
+      fetchNotification();
+    }, 30000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const navigateTopPath = () => {
+    navigate("notification", { state: notificationData })
+  }
+
+  return (
+    <Badge onClick={navigateTopPath} badgeContent={notificationData?.length || 0} color="secondary" className="mx-2 cursor-pointer">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={1.5}
+        stroke="currentColor"
+        className="size-6"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"
+        />
+      </svg>
+    </Badge>
+  );
+};

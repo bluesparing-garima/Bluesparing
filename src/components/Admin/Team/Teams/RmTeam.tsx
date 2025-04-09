@@ -324,12 +324,13 @@ const RmTeams = () => {
                 <span className="text-grey-600 text-sm"> Team</span>
               </div>
               <Button
-                type="button"
-                className="w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
-                onClick={handleAddTeamClick}
-              >
-                Add Team
-              </Button>
+  type="button"
+  className="btnGradient text-black px-4 py-3 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
+  onClick={handleAddTeamClick}
+>
+  Add Team
+</Button>
+
             </div>
            
             <hr
@@ -351,6 +352,21 @@ const RmTeams = () => {
             </Button>
           </Tooltip> */}
           <MaterialReactTable
+            muiTablePaperProps={{
+              sx: {
+                boxShadow: "none", 
+                backgroundColor: "transparent", 
+              
+              },
+            }}
+      
+            muiTableContainerProps={{
+              sx: {
+                boxShadow: "none", 
+                backgroundColor: "transparent", 
+              },
+            }}
+  
             state={{ isLoading }}
             columns={columns}
             data={parsedData}

@@ -192,25 +192,25 @@ const ManageCards = () => {
       // alert("Both start date and end date are required.");
       return;
     }
-  
+
     // Convert input dates to Date objects
     const utcStartDate = new Date(creditdebitForm.startDate);
     const utcEndDate = new Date(creditdebitForm.endDate);
-  
+
     // Validate if dates are valid
     if (isNaN(utcStartDate.getTime()) || isNaN(utcEndDate.getTime())) {
       toast.error("Invalid date selected. Please select valid dates.");
       // alert("Invalid date selected. Please select valid dates.");
       return;
     }
-  
+
     // Ensure endDate is not before startDate
     if (utcEndDate < utcStartDate) {
       toast.error("End date cannot be before start date.")
       // alert("End date cannot be before start date.");
       return;
     }
-  
+
     // Format dates before passing them
     const formattedStartDate = format(utcStartDate, "yyyy-MM-dd'T'HH:mm:ss");
     creditdebitForm.startDate = formattedStartDate;
@@ -323,12 +323,11 @@ const ManageCards = () => {
                     <Button
                       type="submit"
                       disabled={submitting}
-                      variant="contained"
-                      color="primary"
-                      className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
+                      className="btnGradient text-black px-4 py-2.5 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
                     >
-                      {"Get Records"}
+                      Get Records
                     </Button>
+
                   </Grid>
                 </Grid>
               </form>

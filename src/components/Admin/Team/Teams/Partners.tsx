@@ -36,7 +36,7 @@ const Partners = () => {
   const handleAddTeamClick = () => {
     navigate(teamAddPath());
   };
-  const forcedRenderCount =0;
+  const forcedRenderCount = 0;
   const columns = useMemo<MRT_ColumnDef<ITeams>[]>(
     () => [
       {
@@ -89,42 +89,42 @@ const Partners = () => {
     () =>
       teams.map(
         (team: ITeams) =>
-          ({
-            id: team._id!,
-            branchName: team.branchName!,
-            userCode: team.userCode!,
-            role: team.role!,
-            headRMId: team.headRMId!,
-            headRM: team.headRM!,
-            fullName: team.name!,
-            password: team.originalPassword!,
-            phoneNumber: team.phoneNumber!,
-            email: team.email!,
-            dateOfBirth: dayjs(team?.dateOfBirth).format(DAYJS_DISPLAY_FORMAT),
-            gender: team.gender!,
-            address: team.address!,
-            pincode: team.pincode!,
-            bankName: team.bankName!,
-            IFSC: team.IFSC!,
-            accountHolderName: team.accountHolderName!,
-            accountNumber: team.accountNumber!,
-            salary: team.salary!,
-            image: team.image!,
-            adharCardBack: team.adharCardBack!,
-            adharCardFront: team.adharCardFront!,
-            panCard: team.panCard!,
-            qualification: team.qualification!,
-            bankProof: team.bankProof!,
-            experience: team.experience!,
-            other: team.other!,
-            isActive: team.isActive,
-            joiningDate: dayjs(team.joiningDate).format(DAYJS_DISPLAY_FORMAT),
-            updatedBy: team.updatedBy!,
-            createdBy: team.createdBy!,
-            createdOn: dayjs(team.createdOn).format(DAYJS_DISPLAY_FORMAT),
-            updatedOn: dayjs(team.updatedOn).format(DAYJS_DISPLAY_FORMAT),
-            forceUpdate: forcedRenderCount,
-          } as ITeamsVM)
+        ({
+          id: team._id!,
+          branchName: team.branchName!,
+          userCode: team.userCode!,
+          role: team.role!,
+          headRMId: team.headRMId!,
+          headRM: team.headRM!,
+          fullName: team.name!,
+          password: team.originalPassword!,
+          phoneNumber: team.phoneNumber!,
+          email: team.email!,
+          dateOfBirth: dayjs(team?.dateOfBirth).format(DAYJS_DISPLAY_FORMAT),
+          gender: team.gender!,
+          address: team.address!,
+          pincode: team.pincode!,
+          bankName: team.bankName!,
+          IFSC: team.IFSC!,
+          accountHolderName: team.accountHolderName!,
+          accountNumber: team.accountNumber!,
+          salary: team.salary!,
+          image: team.image!,
+          adharCardBack: team.adharCardBack!,
+          adharCardFront: team.adharCardFront!,
+          panCard: team.panCard!,
+          qualification: team.qualification!,
+          bankProof: team.bankProof!,
+          experience: team.experience!,
+          other: team.other!,
+          isActive: team.isActive,
+          joiningDate: dayjs(team.joiningDate).format(DAYJS_DISPLAY_FORMAT),
+          updatedBy: team.updatedBy!,
+          createdBy: team.createdBy!,
+          createdOn: dayjs(team.createdOn).format(DAYJS_DISPLAY_FORMAT),
+          updatedOn: dayjs(team.updatedOn).format(DAYJS_DISPLAY_FORMAT),
+          forceUpdate: forcedRenderCount,
+        } as ITeamsVM)
       ) ?? [],
     [teams, forcedRenderCount]
   );
@@ -144,7 +144,7 @@ const Partners = () => {
       .then((updatedTeam) => {
         GetTeams();
       })
-      .catch((response) => {})
+      .catch((response) => { })
       .finally(() => {
         updateLoading();
       });
@@ -175,7 +175,7 @@ const Partners = () => {
           a.click();
           document.body.removeChild(a);
         })
-        .catch((error) => {throw error});
+        .catch((error) => { throw error });
     } else {
     }
   };
@@ -228,13 +228,14 @@ const Partners = () => {
               </div>
               <Button
                 type="button"
-                className="w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
+                className="btnGradient text-black px-4 py-3 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
                 onClick={handleAddTeamClick}
               >
                 Add Team
               </Button>
+
             </div>
-           
+
             <hr
               className="mt-4"
               style={{ width: "100%", borderColor: "grey-800" }}
@@ -254,6 +255,22 @@ const Partners = () => {
             </Button>
           </Tooltip> */}
           <MaterialReactTable
+            muiTablePaperProps={{
+              sx: {
+                boxShadow: "none",
+                backgroundColor: "transparent",
+
+              },
+            }}
+
+            muiTableContainerProps={{
+              sx: {
+                boxShadow: "none",
+                backgroundColor: "transparent",
+              },
+            }}
+
+
             state={{ isLoading }}
             columns={columns}
             data={parsedData}

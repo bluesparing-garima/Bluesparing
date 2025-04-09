@@ -251,7 +251,7 @@ const AllBookingReq = () => {
   };
   return (
     <>
-      <div className="bg-blue-200 md:p-7 p-2">
+      <div className="md:p-7 p-2">
         <Paper elevation={3} style={{ padding: 30 }}>
           <Typography className="text-safekaroDarkOrange" variant="h5">
             Booking Request Table
@@ -275,6 +275,20 @@ const AllBookingReq = () => {
             />
           </Typography>
           <MaterialReactTable
+            muiTablePaperProps={{
+              sx: {
+                boxShadow: "none", 
+                backgroundColor: "transparent", 
+              
+              },
+            }}
+      
+            muiTableContainerProps={{
+              sx: {
+                boxShadow: "none", 
+                backgroundColor: "transparent", 
+              },
+            }}
             state={{ isLoading }}
             columns={columns}
             data={parsedData}
@@ -283,15 +297,14 @@ const AllBookingReq = () => {
             autoResetPageIndex={false}
             renderTopToolbarCustomActions={({ table }) => (
               <>
-                <Button
-                  className="text-white bg-safekaroDarkOrange md:m-2 md:p-2 md:text-xs text-[10px]"
-                  disabled={table.getRowModel().rows.length === 0}
-                  onClick={() =>
-                    handleExportRows(table.getFilteredRowModel().rows)
-                  }
-                >
-                  Export Filter Data
-                </Button>
+           <Button
+  className="btnGradient text-black px-4 py-2 rounded-md w-full sm:w-auto text-[10px] md:text-xs md:m-2"
+  disabled={table.getRowModel().rows.length === 0}
+  onClick={() => handleExportRows(table.getFilteredRowModel().rows)}
+>
+  Export Filter Data
+</Button>
+
               </>
             )}
             renderRowActions={({ row }) => (
