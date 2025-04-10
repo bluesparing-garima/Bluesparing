@@ -10,6 +10,7 @@ import Checkout from "./components/UpdatePlan/Checkout";
 import { elements } from "chart.js";
 import UploadPolicyPdf from "./components/Partner/Leads/UploadPolicyPdf";
 import Client from "./components/Client/Client";
+import WelcomePage from "./components/Dashboard/WelcomeScreen";
 
 const Dashboard = lazy(() => import("./components/Dashboard/dashboard"));
 const PartnerDashboard = lazy(
@@ -540,6 +541,19 @@ const routes = [
       {
         path: "",
         element: <Signin />,
+      },
+    ],
+  },
+  {
+    path: "/welcome",
+    children: [
+      {
+        path: "",
+        element: (
+          <SuspenseWrapper>
+            <WelcomePage />
+          </SuspenseWrapper>
+        ),
       },
     ],
   },
