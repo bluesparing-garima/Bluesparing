@@ -100,3 +100,6 @@ return '/api/policy/motor/all-is-dispute'
 export const uploadpolicyPdf = () => {
   return (`/api/policy/motor/upload-policy-pdf`);
 };
+export const changeStatus = ()=>{
+  return ('/api/policy/motor/change-status')
+}

@@ -92,6 +92,20 @@ const PayInUploadByExcelData = ({ onExcelUploaded }: ActivitiesProps) => {
             Pay In Table
           </Typography>
           <MaterialReactTable
+            muiTablePaperProps={{
+              sx: {
+                boxShadow: "none", 
+                backgroundColor: "transparent", 
+              
+              },
+            }}
+      
+            muiTableContainerProps={{
+              sx: {
+                boxShadow: "none", 
+                backgroundColor: "transparent", 
+              },
+            }}
             state={{ isLoading }}
             columns={columns}
             data={parsedData}

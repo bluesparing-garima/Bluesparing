@@ -1,15 +1,10 @@
-export const getNotificationByRoleEndpoint = (role: string[], type?: string, isView?: boolean) => {
+export const getNotificationByRoleEndpoint = (role: string[],id:string) => {
     let url = `/api/notification?role=`
     role.forEach(element => {
         url += element + ',';
     });
     url = url.slice(0, -1);
-    if (type) {
-        url = url + `&type=${type}`
-    }
-    if (isView === false) {
-        url = url + `&isView=${isView}`
-    }
+    url = url + `&id=${id}`
     return url;
 }
 

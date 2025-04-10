@@ -71,7 +71,7 @@ const PayOutUploadByExcel = () => {
           value &&
           (value.type === "application/vnd.ms-excel" ||
             value.type ===
-              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
       ),
   });
   const validate = (values: FormValues) => {
@@ -89,7 +89,7 @@ const PayOutUploadByExcel = () => {
     }
   };
   return (
-    <div className="bg-blue-200 p-2">
+    <div className="p-2">
       <Paper
         elevation={3}
         style={{ padding: 20, margin: 30, borderRadius: 10 }}
@@ -110,64 +110,63 @@ const PayOutUploadByExcel = () => {
             style={{ width: "100%", borderColor: "grey-800" }}
           />
         </Typography>
-        <Card>
-          <CardContent>
-            <Form
-              onSubmit={onSubmit}
-              validate={validate}
-              render={({ handleSubmit, submitting }) => (
-                <form onSubmit={handleSubmit}>
-                  <Grid container spacing={2}>
-                    <Grid item lg={8} xs={12}>
-                      <Field name="file">
-                        {({ input, meta }) => (
-                          <div>
-                            <Grid item lg={12} xs={12}>
-                              <input
-                                type="file"
-                                style={{
-                                  border: "1px solid #c4c4c4",
-                                  padding: "5px",
-                                  width: "100%",
-                                  borderRadius: "5px",
-                                }}
-                                onChange={(
-                                  event: React.ChangeEvent<HTMLInputElement>
-                                ) => {
-                                  const file = event.target.files
-                                    ? event.target.files[0]
-                                    : null;
-                                  input.onChange(file);
-                                }}
-                                accept=".xls,.xlsx"
-                              />
-                              {meta.touched && meta.error && (
-                                <span style={{ color: "red" }}>
-                                  {meta.error}
-                                </span>
-                              )}
-                            </Grid>
-                          </div>
-                        )}
-                      </Field>
-                    </Grid>
-                    <Grid item lg={4} xs={12}>
-                      <Button
-                        type="submit"
-                        disabled={isLoading}
-                        variant="contained"
-                        color="primary"
-                        className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
-                      >
-                        {isLoading ? "Submitting..." : "Upload Excel"}
-                      </Button>
-                    </Grid>
-                  </Grid>
-                </form>
-              )}
-            />
-          </CardContent>
-        </Card>
+
+        <Form
+          onSubmit={onSubmit}
+          validate={validate}
+          render={({ handleSubmit, submitting }) => (
+            <form onSubmit={handleSubmit}>
+              <Grid container spacing={2}>
+                <Grid item lg={8} xs={12}>
+                  <Field name="file">
+                    {({ input, meta }) => (
+                      <div>
+                        <Grid item lg={12} xs={12}>
+                          <input
+                            type="file"
+                            style={{
+                              border: "1px solid #c4c4c4",
+                              padding: "5px",
+                              width: "100%",
+                              borderRadius: "5px",
+                            }}
+                            onChange={(
+                              event: React.ChangeEvent<HTMLInputElement>
+                            ) => {
+                              const file = event.target.files
+                                ? event.target.files[0]
+                                : null;
+                              input.onChange(file);
+                            }}
+                            accept=".xls,.xlsx"
+                          />
+                          {meta.touched && meta.error && (
+                            <span style={{ color: "red" }}>
+                              {meta.error}
+                            </span>
+                          )}
+                        </Grid>
+                      </div>
+                    )}
+                  </Field>
+                </Grid>
+                <Grid item lg={4} xs={12}>
+                  <Button
+                    type="submit"
+                    disabled={isLoading}
+                    variant="contained"
+                    color="primary"
+                    className="btnGradient text-black px-4 py-2.5 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
+                  >
+                    {isLoading ? "Submitting..." : "Upload Excel"}
+                  </Button>
+
+                </Grid>
+              </Grid>
+            </form>
+          )}
+        />
+
         <PayOutUploadByExcelData onExcelUploaded={handleChangeUploadExcel} />
       </Paper>
       <Toaster position="bottom-center" reverseOrder={false} />

@@ -1441,7 +1441,7 @@ const GetMotorPolicies = () => {
   const validate = validateFormValues(validationSchema);
   return (
     <>
-      <div className="bg-blue-200 md:p-7 p-2">
+      <div className=" md:p-7 p-2">
         <Paper elevation={3} style={{ padding: 30 }}>
           <Typography className="text-safekaroDarkOrange" variant="h5">
             Motor Policies Table
@@ -1460,17 +1460,17 @@ const GetMotorPolicies = () => {
               {userData.role.toLowerCase() === "admin" ||
                 userData.role.toLowerCase() === "booking" ||
                 userData.role.toLowerCase() === "account" ? (
-                <Button
+                  <Button
                   type="button"
-                  className="w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
-                  onClick={handleClickAddMotorPolicy}
                   size="small"
+                  onClick={handleClickAddMotorPolicy}
+                  className="btnGradient text-black px-4 py-3 rounded-md w-full sm:w-auto"
                 >
-                  <span className="md:text-xs text-[10px]">
-                    {" "}
+                  <span className="text-[10px] md:text-xs">
                     Add Motor Policies
                   </span>
                 </Button>
+                
               ) : (
                 ""
               )}
@@ -1559,15 +1559,16 @@ const GetMotorPolicies = () => {
                       </Field>
                     </Grid>
                     <Grid item lg={3} md={3} sm={6} xs={12}>
-                      <Button
-                        type="submit"
-                        disabled={isLoading}
-                        variant="contained"
-                        color="primary"
-                        className=" w-26 h-10 bg-addButton text-white p-3 md:text-xs text-[10px] rounded-sm"
-                      >
-                        {isLoading ? "Getting..." : "Get Records"}
-                      </Button>
+                    <Button
+  type="submit"
+  disabled={isLoading}
+  variant="contained"
+  color="primary"
+  className="btnGradient text-black px-4 py-2.5 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
+>
+  {isLoading ? "Getting..." : "Get Records"}
+</Button>
+
                     </Grid>
                   </Grid>
                 </form>
@@ -1575,6 +1576,20 @@ const GetMotorPolicies = () => {
             />
           </React.Fragment>
           <MaterialReactTable
+                      muiTablePaperProps={{
+                        sx: {
+                          boxShadow: "none",
+                          backgroundColor: "transparent",
+          
+                        },
+                      }}
+          
+                      muiTableContainerProps={{
+                        sx: {
+                          boxShadow: "none",
+                          backgroundColor: "transparent",
+                        },
+                      }}
             state={{
               isLoading,
               globalFilter: globalFilter.trim(),
@@ -1674,15 +1689,13 @@ const GetMotorPolicies = () => {
             }}
             renderTopToolbarCustomActions={({ table }) => (
               <>
-                <Button
-                  className="text-white bg-safekaroDarkOrange md:m-2 md:p-2 md:text-xs text-[10px]"
-                  disabled={table.getRowModel().rows.length === 0}
-                  onClick={() =>
-                    handleExportRows(table.getFilteredRowModel().rows)
-                  }
-                >
-                  Export Filter Data
-                </Button>
+<Button
+  className="btnGradient text-black px-4 py-2.5 m-2 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
+  disabled={table.getRowModel().rows.length === 0}
+  onClick={() => handleExportRows(table.getFilteredRowModel().rows)}
+>
+  Export Filter Data
+</Button>
               </>
             )}
             renderRowActions={({ row }) => {

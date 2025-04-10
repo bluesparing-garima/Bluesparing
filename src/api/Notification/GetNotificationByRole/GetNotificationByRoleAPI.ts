@@ -3,8 +3,8 @@ import { getNotificationByRoleProps } from "../getNotificationTypes";
 import { getNotificationByRoleEndpoint as endpoint } from "../apiEndpoints";
 
 
-const GetNotificationByRoleAPI = async ({ header, role, type, isView }: getNotificationByRoleProps) => {
-  const url = endpoint(role, type, isView)
+const GetNotificationByRoleAPI = async ({ header, role ,id}: getNotificationByRoleProps) => {
+  const url = endpoint(role,id)
   const options: FetchOptions = {
     method: "GET",
     headers: header,

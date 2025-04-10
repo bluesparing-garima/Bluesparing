@@ -99,7 +99,7 @@ const ComparePartnerPayment: React.FC = () => {
           value &&
           (value.type === "application/vnd.ms-excel" ||
             value.type ===
-              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
       )
       .test(
         "fileSize",
@@ -123,7 +123,7 @@ const ComparePartnerPayment: React.FC = () => {
     }
   };
   return (
-    <div className="bg-blue-200 p-2">
+    <div className="p-2">
       <Paper
         elevation={3}
         style={{ padding: 20, margin: 30, borderRadius: 10 }}
@@ -141,161 +141,158 @@ const ComparePartnerPayment: React.FC = () => {
             style={{ width: "100%", borderColor: "grey-800" }}
           />
         </Typography>
-        <Card>
-          <CardContent>
-            <Form
-              onSubmit={onSubmit}
-              validate={validate}
-              render={({ handleSubmit, submitting }) => (
-                <form onSubmit={handleSubmit}>
-                  <Grid container spacing={2}>
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field name="startDate">
-                        {({ input, meta }) => (
-                          <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DatePicker
-                              disableFuture
-                              label="Start Date"
-                              inputFormat="DD/MM/YYYY"
-                              value={input.value || null}
-                              onChange={(date) => input.onChange(date)}
-                              renderInput={(params: any) => (
-                                <TextField
-                                  variant="outlined"
-                                  size="small"
-                                  fullWidth
-                                  {...params}
-                                  error={meta.touched && !!meta.error}
-                                  helperText={meta.touched && meta.error}
-                                />
-                              )}
+
+        <Form
+          onSubmit={onSubmit}
+          validate={validate}
+          render={({ handleSubmit, submitting }) => (
+            <form onSubmit={handleSubmit}>
+              <Grid container spacing={2}>
+                <Grid item lg={4} md={4} sm={6} xs={12}>
+                  <Field name="startDate">
+                    {({ input, meta }) => (
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                          disableFuture
+                          label="Start Date"
+                          inputFormat="DD/MM/YYYY"
+                          value={input.value || null}
+                          onChange={(date) => input.onChange(date)}
+                          renderInput={(params: any) => (
+                            <TextField
+                              variant="outlined"
+                              size="small"
+                              fullWidth
+                              {...params}
+                              error={meta.touched && !!meta.error}
+                              helperText={meta.touched && meta.error}
                             />
-                          </LocalizationProvider>
-                        )}
-                      </Field>
-                    </Grid>
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field name="endDate">
-                        {({ input, meta }) => (
-                          <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DatePicker
-                              disableFuture
-                              label="End Date"
-                              inputFormat="DD/MM/YYYY"
-                              value={input.value || null}
-                              onChange={(date) => input.onChange(date)}
-                              renderInput={(params: any) => (
-                                <TextField
-                                  variant="outlined"
-                                  size="small"
-                                  fullWidth
-                                  {...params}
-                                  error={meta.touched && !!meta.error}
-                                  helperText={meta.touched && meta.error}
-                                />
-                              )}
+                          )}
+                        />
+                      </LocalizationProvider>
+                    )}
+                  </Field>
+                </Grid>
+                <Grid item lg={4} md={4} sm={6} xs={12}>
+                  <Field name="endDate">
+                    {({ input, meta }) => (
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                          disableFuture
+                          label="End Date"
+                          inputFormat="DD/MM/YYYY"
+                          value={input.value || null}
+                          onChange={(date) => input.onChange(date)}
+                          renderInput={(params: any) => (
+                            <TextField
+                              variant="outlined"
+                              size="small"
+                              fullWidth
+                              {...params}
+                              error={meta.touched && !!meta.error}
+                              helperText={meta.touched && meta.error}
                             />
-                          </LocalizationProvider>
-                        )}
-                      </Field>
-                    </Grid>
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field name="partnerName">
-                        {({ input, meta }) => (
-                          <div>
-                            <FormControl fullWidth size="small">
-                              <Autocomplete
-                                {...input}
-                                id="partnerName"
-                                value={
-                                  input.value !== undefined ? input.value : null
-                                }
-                                getOptionLabel={(option) =>
-                                  typeof option === "string"
-                                    ? option
-                                    : `${option.fullName} - ${option.partnerId}` ||
-                                      ""
-                                }
-                                options={partners}
-                                onChange={(event, newValue) => {
-                                  input.onChange(
-                                    newValue ? newValue.fullName : ""
-                                  );
-                                  setPartnerCode(newValue?.partnerId);
-                                }}
-                                renderInput={(params) => (
-                                  <TextField
-                                    {...params}
-                                    className="rounded-sm w-full"
-                                    size="small"
-                                    label="Select Partners"
-                                    variant="outlined"
-                                    error={meta.touched && !!meta.error}
-                                    helperText={meta.touched && meta.error}
-                                  />
-                                )}
+                          )}
+                        />
+                      </LocalizationProvider>
+                    )}
+                  </Field>
+                </Grid>
+                <Grid item lg={4} md={4} sm={6} xs={12}>
+                  <Field name="partnerName">
+                    {({ input, meta }) => (
+                      <div>
+                        <FormControl fullWidth size="small">
+                          <Autocomplete
+                            {...input}
+                            id="partnerName"
+                            value={
+                              input.value !== undefined ? input.value : null
+                            }
+                            getOptionLabel={(option) =>
+                              typeof option === "string"
+                                ? option
+                                : `${option.fullName} - ${option.partnerId}` ||
+                                ""
+                            }
+                            options={partners}
+                            onChange={(event, newValue) => {
+                              input.onChange(
+                                newValue ? newValue.fullName : ""
+                              );
+                              setPartnerCode(newValue?.partnerId);
+                            }}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                className="rounded-sm w-full"
+                                size="small"
+                                label="Select Partners"
+                                variant="outlined"
+                                error={meta.touched && !!meta.error}
+                                helperText={meta.touched && meta.error}
                               />
-                            </FormControl>
-                          </div>
-                        )}
-                      </Field>
-                    </Grid>
-                    <Grid item lg={8} xs={12}>
-                      <Field name="file">
-                        {({ input, meta }) => (
-                          <div>
-                            <Grid item lg={12} xs={12}>
-                              <input
-                                type="file"
-                                style={{
-                                  border: "1px solid #c4c4c4",
-                                  padding: "5px",
-                                  width: "100%",
-                                  borderRadius: "5px",
-                                }}
-                                onChange={(
-                                  event: React.ChangeEvent<HTMLInputElement>
-                                ) => {
-                                  const file = event.target.files
-                                    ? event.target.files[0]
-                                    : null;
-                                  input.onChange(file);
-                                }}
-                                accept=".xls,.xlsx"
-                              />
-                              {meta.touched && meta.error && (
-                                <span style={{ color: "red" }}>
-                                  {meta.error}
-                                </span>
-                              )}
-                            </Grid>
-                          </div>
-                        )}
-                      </Field>
-                    </Grid>
-                    <Grid item lg={4} xs={12}>
-                      <Button
-                        type="submit"
-                        disabled={isLoading}
-                        variant="contained"
-                        color="primary"
-                        className="w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
-                      >
-                        {isLoading ? "Submitting" : "Upload Partner Payment"}
-                      </Button>
-                    </Grid>
-                  </Grid>
-                </form>
-              )}
-            />
-            {comparePolicyResult && (
-              <ComparePartnerResult
-                comparison={comparePolicyResult}
-                onExcelUploaded={() => setExcelUploaded(true)}
-              />
-            )}
-          </CardContent>
-        </Card>
+                            )}
+                          />
+                        </FormControl>
+                      </div>
+                    )}
+                  </Field>
+                </Grid>
+                <Grid item lg={8} xs={12}>
+                  <Field name="file">
+                    {({ input, meta }) => (
+                      <div>
+                        <Grid item lg={12} xs={12}>
+                          <input
+                            type="file"
+                            style={{
+                              border: "1px solid #c4c4c4",
+                              padding: "5px",
+                              width: "100%",
+                              borderRadius: "5px",
+                            }}
+                            onChange={(
+                              event: React.ChangeEvent<HTMLInputElement>
+                            ) => {
+                              const file = event.target.files
+                                ? event.target.files[0]
+                                : null;
+                              input.onChange(file);
+                            }}
+                            accept=".xls,.xlsx"
+                          />
+                          {meta.touched && meta.error && (
+                            <span style={{ color: "red" }}>
+                              {meta.error}
+                            </span>
+                          )}
+                        </Grid>
+                      </div>
+                    )}
+                  </Field>
+                </Grid>
+                <Grid item lg={4} xs={12}>
+                  <Button
+                    type="submit"
+                    disabled={isLoading}
+                    className="btnGradient text-black px-4 py-3 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
+                  >
+                    {isLoading ? "Submitting..." : "Upload Partner Payment"}
+                  </Button>
+
+                </Grid>
+              </Grid>
+            </form>
+          )}
+        />
+        {comparePolicyResult && (
+          <ComparePartnerResult
+            comparison={comparePolicyResult}
+            onExcelUploaded={() => setExcelUploaded(true)}
+          />
+        )}
+
       </Paper>
       <Toaster position="bottom-center" reverseOrder={false} />
     </div>

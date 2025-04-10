@@ -115,13 +115,13 @@ const OperationDashboard: React.FC = () => {
       typeof count === "number" ? Math.round(count).toLocaleString() : count;
 
     const content = (
-      <div className="bg-white m-2 p-3 rounded-[10.33px] shadow-lg flex items-center justify-between transform transition-transform duration-200 hover:scale-105">
+      <div className="bg-white m-2 p-3 rounded-[10.33px] shadow-[0_0_5px_2px_#F2DDD4]  flex items-center justify-between transform transition-transform duration-200 hover:scale-105">
         <div>
           <Typography
             variant="body2"
             className="text-sm text-gray-600 mb-2 font-satoshi"
           >
-            {title==='Policy Count' ? 'Remaining Policy Count' : title}
+            {title === 'Policy Count' ? 'Remaining Policy Count' : title}
           </Typography>
           <Typography
             variant="h5"
@@ -183,46 +183,50 @@ const OperationDashboard: React.FC = () => {
   ];
 
   return (
-    <div className="bg-blue-200 h-screen">
-      <Grid container>
-        <div className="flex justify-between w-full m-2 items-center gap-x-2">
-          <div className="flex justify-center items-center">
-            <CartButton
-              onClick={handleFirstCart}
-              tooltipTitle="View Booking Data"
-              iconPath={<EmployeeSvg isActive={selectedCard === "1"} />}
-              isSelected={firstCart}
-            />
-            <CartButton
-              onClick={handleSecondCart}
-              tooltipTitle="Monthly Attendance "
-              iconPath={<AttendanceDataSvg isActive={selectedCard === "2"} />}
-              isSelected={secondCart}
-            />
-            <CartButton
-              onClick={handleThirdCart}
-              tooltipTitle="Plan Details "
-              iconPath={<PlanDetailsDataSvg isActive={selectedCard === "3"} />}
-              isSelected={thirdCart}
-            />
+    <div className=" h-screen p-3">
+      <Grid container >
+        <div className="flex w-full items-center flex-col gap-2 md:gap-0 md:flex-row justify-start mb-3">
+          <div className="flex justify-between w-full items-center">
+            <div className="flex md:justify-start justify-center gap-x-3  lg:gap-x-8 items-center w-[40%]">
+              <CartButton
+                onClick={handleFirstCart}
+                tooltipTitle="View Booking Data"
+                iconPath={<EmployeeSvg isActive={selectedCard === "1"} />}
+                isSelected={firstCart}
+              />
+              <CartButton
+                onClick={handleSecondCart}
+                tooltipTitle="Monthly Attendance "
+                iconPath={<AttendanceDataSvg isActive={selectedCard === "2"} />}
+                isSelected={secondCart}
+              />
+              <CartButton
+                onClick={handleThirdCart}
+                tooltipTitle="Plan Details "
+                iconPath={<PlanDetailsDataSvg isActive={selectedCard === "3"} />}
+                isSelected={thirdCart}
+              />
+            </div>
           </div>
           <div className="flex justify-center items-center gap-x-2">
-            <Tip title="Download PDF">
-              <Button
-                className=" h-10  bg-[#0095FF] shadow-sm rounded flex justify-center items-center text-white"
-                onClick={handleDownloadPDF}
-              >
+
+
+            <button
+              className="md:w-10 md:h-10 h-4 w-4 bg-white  rounded-full flex justify-center items-center text-black shadow-lg"
+              onClick={handleDownloadPDF}
+            ><Tip title="Download PDF">
                 <PictureAsPdfSharpIcon className="w-6 h-6 " />
-              </Button>
-            </Tip>
+              </Tip>                      </button>
+
             <Tip title="Download Excel">
-              <Button
-                className=" h-10  bg-[#3BDB03] shadow-sm rounded flex justify-center items-center text-white"
+              <button
+                className="h-6 w-6 bg-white  rounded-full flex justify-center items-center text-black shadow-lg"
                 onClick={handleDownloadExcel}
               >
                 <FileDownloadOutlinedIcon className="w-6 h-6 " />
-              </Button>
+              </button>
             </Tip>
+
           </div>
         </div>
 
@@ -351,7 +355,7 @@ const OperationDashboard: React.FC = () => {
                               <React.Fragment key={key}>
                                 {renderCountBox(
                                   key.toUpperCase(),
-                                  value==='Infinity'?"Unlimited":Number(value) || 0,
+                                  value === 'Infinity' ? "Unlimited" : Number(value) || 0,
                                   "",
                                   `/update-plan`
                                 )}

@@ -117,8 +117,8 @@ const BrokerCreditForm = (props: addCreditDebitFormProps) => {
   };
   return (
     <>
-      <React.Fragment>
-        <Card>
+     
+
           {amountInAccount > 0 && (
             <Grid item lg={12} md={12} sm={12} xs={12} mt={2} ml={3}>
               <Typography
@@ -340,13 +340,14 @@ const BrokerCreditForm = (props: addCreditDebitFormProps) => {
                           {submitError}
                         </div>
                       )}
-                      <Button
-                        variant="contained"
-                        type="submit"
-                        disabled={isLoading}
-                      >
-                        {isLoading ? "Submitting..." : "Submit"}
-                      </Button>
+                     <Button
+  type="submit"
+  disabled={isLoading}
+  className="btnGradient text-black px-4 py-2.5 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
+>
+  {isLoading ? "Submitting..." : "Submit"}
+</Button>
+
                     </Grid>
                   </Grid>
                 </form>
@@ -379,9 +380,9 @@ const BrokerCreditForm = (props: addCreditDebitFormProps) => {
               />
             )
           )}
-        </Card>
+ 
         <Toaster position="bottom-center" reverseOrder={false} />
-      </React.Fragment>
+   
     </>
   );
 };
