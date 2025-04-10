@@ -35,7 +35,7 @@ const AddBranch = () => {
   const title = isAdd ? "Add Branch" : "Update Branch";
 
   return (
-    <div className="bg-blue-200 md:p-7 ">
+    <div className="md:p-7 ">
       <Paper
         elevation={3}
         style={{ padding: 20, margin: 30, borderRadius: 10 }}

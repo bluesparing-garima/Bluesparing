@@ -562,15 +562,14 @@ const RMGetMotorPolicies = () => {
                     </Grid>
 
                     <Grid item lg={3} md={3} sm={6} xs={12}>
-                      <Button
-                        type="submit"
-                        disabled={isLoading}
-                        variant="contained"
-                        color="primary"
-                        className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
-                      >
-                        {isLoading ? "Getting..." : "Get Records"}
-                      </Button>
+                    <Button
+  type="submit"
+  disabled={isLoading}
+  className="btnGradient text-black px-4 py-3 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
+>
+  {isLoading ? "Getting..." : "Get Records"}
+</Button>
+
                     </Grid>
                   </Grid>
                 </form>
@@ -579,6 +578,21 @@ const RMGetMotorPolicies = () => {
           </React.Fragment>
 
           <MaterialReactTable
+            muiTablePaperProps={{
+              sx: {
+                boxShadow: "none", 
+                backgroundColor: "transparent", 
+              
+              },
+            }}
+      
+            muiTableContainerProps={{
+              sx: {
+                boxShadow: "none", 
+                backgroundColor: "transparent", 
+              },
+            }}
+  
             state={{ isLoading }}
             columns={columns}
             data={parsedData}

@@ -18,8 +18,8 @@ export const ALLOWED_FILE_TYPES = [
 
 export const ALLOWED_BLOG_FILE_TYPES = ["image/jpeg", "image/png", "image/jpg"];
 
-// export const imagePath = "https://iimapi.bluesparing.com/uploads/";
-export const imagePath = "http://localhost:7000/uploads/";
+export const imagePath = "https://iimapi.bluesparing.com/uploads/";
+// export const imagePath = "http://localhost:7000/uploads/";
 
 export type SafeKaroContextType = {
   user: SafeKaroUser;

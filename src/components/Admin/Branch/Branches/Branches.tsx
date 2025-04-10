@@ -1,4 +1,4 @@
-import {  useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { MaterialReactTable, type MRT_ColumnDef } from "material-react-table";
 import {
   BRANCH_STORAGE_KEY,
@@ -96,14 +96,14 @@ const Branches = () => {
     () =>
       branches.map(
         (branch: IBranches) =>
-          ({
-            id: branch._id,
-            branchName: branch.branchName,
-            isActive: branch.isActive,
-            createdOn: dayjs(branch.createdOn).format(DAYJS_DISPLAY_FORMAT),
-            updatedOn: dayjs(branch.updatedOn).format(DAYJS_DISPLAY_FORMAT),
-            forceUpdate: forcedRenderCount,
-          } as IBranchesVM)
+        ({
+          id: branch._id,
+          branchName: branch.branchName,
+          isActive: branch.isActive,
+          createdOn: dayjs(branch.createdOn).format(DAYJS_DISPLAY_FORMAT),
+          updatedOn: dayjs(branch.updatedOn).format(DAYJS_DISPLAY_FORMAT),
+          forceUpdate: forcedRenderCount,
+        } as IBranchesVM)
       ) ?? [],
     [branches, forcedRenderCount]
   );
@@ -138,7 +138,7 @@ const Branches = () => {
   };
   return (
     <>
-      <div className="bg-blue-200 h-screen md:p-7 p-2">
+      <div className="h-screen md:p-7 p-2">
         <Paper elevation={3} style={{ padding: 30 }}>
           <Typography className="text-safekaroDarkOrange" variant="h5">
             Branch Table
@@ -156,11 +156,12 @@ const Branches = () => {
               </div>
               <Button
                 type="button"
-                className="w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
+                className="btnGradient text-black px-4 py-2 text-xs sm:text-sm rounded-md w-full sm:w-auto"
                 onClick={handleAddBranchClick}
               >
                 Add Branch
               </Button>
+
             </div>
 
             <hr
@@ -169,6 +170,20 @@ const Branches = () => {
             />
           </Typography>
           <MaterialReactTable
+           muiTablePaperProps={{
+            sx: {
+              boxShadow: "none", 
+              backgroundColor: "transparent", 
+            
+            },
+          }}
+    
+          muiTableContainerProps={{
+            sx: {
+              boxShadow: "none", 
+              backgroundColor: "transparent", 
+            },
+          }}
             state={{ isLoading, pagination }}
             columns={columns}
             data={parsedData}
@@ -238,7 +253,7 @@ const Branches = () => {
         {
           isLoading && <OverlayLoader />
         }
-        
+
       </div>
     </>
   );

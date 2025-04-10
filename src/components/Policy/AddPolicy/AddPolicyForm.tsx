@@ -762,9 +762,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
         open={showUpgradePopup}
         onClose={() => setShowUpgradePopup(false)}
       />
-      <React.Fragment>
-        <Card>
-          <CardContent>
+ 
             <Form
               mt={3}
               onSubmit={onSubmit}
@@ -1945,21 +1943,22 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                   </Grid>
                   <Grid container spacing={2} mt={2}>
                     <Grid item lg={12} md={12} sm={12} xs={12}>
-                      <Button
-                        variant="contained"
-                        type="submit"
-                        disabled={isLoading}
-                      >
-                        {isLoading ? "Submitting..." : "Submit"}
-                      </Button>
+                    <Button
+  variant="contained"
+  type="submit"
+  disabled={isLoading}
+  className="btnGradient text-black px-6 py-3 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
+>
+  {isLoading ? "Submitting..." : "Submit"}
+</Button>
+
                     </Grid>
                   </Grid>
                 </form>
               )}
             />
-          </CardContent>
-        </Card>
-      </React.Fragment>
+    
+ 
       <Toaster position="bottom-center" reverseOrder={false} />
       <LoadingOverlay loading={progress > 0 && progress<100} message={progress} />
     </>

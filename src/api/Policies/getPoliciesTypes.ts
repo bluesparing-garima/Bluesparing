@@ -23,6 +23,11 @@ export interface EditPolicyProps {
   policy: any;
   policyId: string;
 }
+export interface changePolicyStatus {
+  header: Header;
+  policyId: string;
+  status:boolean;
+}
 export interface AddPolicyRemarks {
   policyRemarks: string;
   policyId: string;

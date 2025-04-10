@@ -406,9 +406,7 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
   };
   return (
     <>
-      <React.Fragment>
-        <Card>
-          <CardContent>
+     
             <Form
               mt={3}
               onSubmit={onSubmit}
@@ -867,17 +865,22 @@ const AddBookingRequestFormCard = (props: addBookingRequestFormProps) => {
                           {submitError}
                         </div>
                       )}
-                      <Button variant="contained" type="submit" disabled={isLoading}>
-                        {isLoading?'Submitting...':'submit'}
-                      </Button>
+               <Button
+  type="submit"
+  disabled={isLoading}
+  variant="contained"
+  color="primary"
+  className="btnGradient text-black px-5 py-2 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
+>
+  {isLoading ? "Submitting..." : "Submit"}
+</Button>
+
                     </Grid>
                   </Grid>
                 </form>
               )}
             />
-          </CardContent>
-        </Card>
-      </React.Fragment>
+
       <Toaster position="bottom-center" reverseOrder={false} />
     </>
   );

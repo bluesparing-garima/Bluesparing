@@ -53,7 +53,7 @@ const ManagePartnerPaymentForm = () => {
     endDate: yup.string().nullable().required("End Date is required"),
   });
   const validate = validateFormValues(validationSchema);
-  
+
   const onSubmit = async (updatePayment: IUpdatePartnerPaymentPolicy) => {
     const newStartDate = dayjs(updatePayment.startDate).format(DAY_FORMAT);
     const newEndDate = dayjs(updatePayment.endDate).format(DAY_FORMAT);
@@ -79,7 +79,7 @@ const ManagePartnerPaymentForm = () => {
     } catch (error: any) {
       const err = await error
       toast.error(err.message)
-    }finally{
+    } finally {
       setIsLoading(false)
     }
   };
@@ -203,7 +203,7 @@ const ManagePartnerPaymentForm = () => {
                   )}
                 </Field>
               </Grid>
-             
+
               <Grid item lg={12} md={12} sm={12} xs={12}>
                 <Field name="remarks">
                   {({ input, meta }) => (
@@ -226,12 +226,11 @@ const ManagePartnerPaymentForm = () => {
                 <Button
                   type="submit"
                   disabled={isLoading}
-                  variant="contained"
-                  color="primary"
-                  className=" w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
+                  className="btnGradient text-black px-4 py-3 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
                 >
-                  {isLoading ? 'Submitting':"Get Motor Policies"}
+                  {isLoading ? "Submitting" : "Get Motor Policies"}
                 </Button>
+
               </Grid>
             </Grid>
           </form>
@@ -254,7 +253,7 @@ const ManagePartnerPaymentForm = () => {
       ) : (
         ""
       )}
-<Toaster position="bottom-center" reverseOrder={false} />
+      <Toaster position="bottom-center" reverseOrder={false} />
     </React.Fragment>
   );
 };

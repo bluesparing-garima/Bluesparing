@@ -134,7 +134,7 @@ const PolicyTypes = () => {
   };
   return (
     <>
-      <div className="bg-blue-200 h-full md:p-7 p-2">
+      <div className="h-full md:p-7 p-2">
         <Paper elevation={3} style={{ padding: 30 }}>
           <Typography className="text-safekaroDarkOrange" variant="h5">
             Policy Type Table
@@ -165,6 +165,20 @@ const PolicyTypes = () => {
             />
           </Typography>
           <MaterialReactTable
+           muiTablePaperProps={{
+            sx: {
+              boxShadow: "none", 
+              backgroundColor: "transparent", 
+            
+            },
+          }}
+    
+          muiTableContainerProps={{
+            sx: {
+              boxShadow: "none", 
+              backgroundColor: "transparent", 
+            },
+          }}
             state={{ isLoading, pagination }}
             columns={columns}
             data={parsedData}
