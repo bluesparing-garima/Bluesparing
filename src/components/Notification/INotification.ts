@@ -1,9 +1,10 @@
 export interface INotification {
     _id?: string;
     title?: string;
-    role: [string];
-    from: string;
-    to: [string];
+    type?:string;
+    receiverRole: string;
+    notificationSenderName: string;
+    notificationReceiversIds: [string];
     isView: boolean;
     createdOn?: string;
 
