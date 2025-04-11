@@ -258,7 +258,8 @@ const Dashboard: React.FC = () => {
               }
               isSelected={fourCart}
             />
-            <CartButton
+            {
+              UserData.userLimit.hr &&   <CartButton
               onClick={handleFifthCart}
               tooltipTitle="Monthly Attendance "
               iconPath={
@@ -269,6 +270,8 @@ const Dashboard: React.FC = () => {
               }
               isSelected={fifthCart}
             />
+            }
+          
             <CartButton
               onClick={handleSixthCart}
               tooltipTitle="Plan Details "

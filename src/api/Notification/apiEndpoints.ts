@@ -1,8 +1,6 @@
-export const getNotificationByRoleEndpoint = (role: string[],id:string) => {
+export const getNotificationByRoleEndpoint = (role: string,id:string) => {
     let url = `/api/notification?role=`
-    role.forEach(element => {
-        url += element + ',';
-    });
+    url += role + ',';
     url = url.slice(0, -1);
     url = url + `&id=${id}`
     return url;
