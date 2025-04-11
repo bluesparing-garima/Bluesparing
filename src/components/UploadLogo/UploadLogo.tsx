@@ -77,12 +77,9 @@ const UploadLogo = () => {
 
   return (
     <>
-      <div className="bg-blue-200   md:p-7">
-        <Paper
-          elevation={3}
-          style={{ padding: 20, margin: 30, borderRadius: 10 }}
-        >
-          <Typography className="text-safekaroDarkOrange" variant="h5">
+      <div className="  md:p-7 h-screen">
+      <div className="shadow-[0_0_5px_1px_#F2DDD4] p-4 rounded flex flex-col ">
+      <Typography className="text-safekaroDarkOrange" variant="h5">
             Upload Company Logo
           </Typography>
           <Typography variant="h5" mb={2}>
@@ -98,11 +95,12 @@ const UploadLogo = () => {
               style={{ width: "100%", borderColor: "grey-800" }}
             />
           </Typography>
+        
           <Form
             onSubmit={onSubmit}
             validate={validate}
             render={({ handleSubmit, submitting, errors }) => (
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmit} className="flex  h-[20vh] w-[100vw] items-center">
                 <Grid container spacing={2}>
                   <Grid item lg={12} md={12} xs={12}>
                     <label
@@ -113,7 +111,7 @@ const UploadLogo = () => {
                     </label>
                     <Field name="companyLogo">
                       {({ input, meta }) => (
-                        <div>
+                        <div className="w-1/2">
                           <Grid item lg={12} xs={12}>
                             <input
                               type="file"
@@ -144,13 +142,13 @@ const UploadLogo = () => {
                       )}
                     </Field>
                   </Grid>
-                  <Grid item lg={4} xs={12}>
+                  <Grid item lg={4} xs={12} marginTop={3}>
                     <Button
                       type="submit"
                       disabled={isLoading}
                       variant="contained"
                       color="primary"
-                      className="w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
+                      className="btnGradient w-26 h-10 text-white p-3 text-xs rounded-sm"
                     >
                       {isLoading?'Submitting...':'Upload Logo'}
                     </Button>
@@ -159,7 +157,9 @@ const UploadLogo = () => {
               </form>
             )}
           />
-        </Paper>
+      </div>
+          
+       
       </div>
       <Toaster position="bottom-center" reverseOrder={false} />
     </>
