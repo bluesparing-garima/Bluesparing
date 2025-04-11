@@ -4,14 +4,15 @@ import {
   Paper,
   Button,
   Grid,
-  Card,
-  CardContent,
+
   TextField,
   FormControl,
   Autocomplete,
+  Tooltip,
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import { Form, Field } from "react-final-form";
+import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import * as yup from "yup";
 import ComparePartnerResult from "./comparePartnerResult";
 import { ComparePartnerResultProps } from "../ICompareResult";
@@ -127,10 +128,22 @@ const ComparePartnerPayment: React.FC = () => {
       <Paper
         elevation={3}
         style={{ padding: 20, margin: 30, borderRadius: 10 }}
-      >
-        <Typography className="text-safekaroDarkOrange" variant="h5">
+      ><div className="flex justify-between items-center">
+          <Typography className="text-safekaroDarkOrange" variant="h5">
           {title}
         </Typography>
+       
+          <Tooltip title="Download Excel Sample">
+            <a
+              href="partnerSample.xlsx"
+              download="partnerSample.xlsx"
+              className="md:w-10 md:h-10 h-4 w-4 btnGradient shadow-sm rounded flex justify-center items-center text-white"
+            >
+              <FileDownloadOutlinedIcon className="md:w-6 md:h-6 h-3 w-3" />
+            </a>
+          </Tooltip>
+        </div>
+
         <Typography variant="h5" mb={2}>
           <Link to="/dashboard" className="text-addButton font-bold text-sm">
             Dashboard {" / "}

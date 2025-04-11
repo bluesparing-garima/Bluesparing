@@ -8,7 +8,7 @@ title:string;
 }
 const UnAuthorizedPage: React.FC<UnAuthorizedProps> = ({title}) => {
   return (
-    <Box className="  bg-blue-200 h-[88vh] flex justify-center items-center  p-3">
+    <Box className="   h-[88vh] flex justify-center items-center  p-3">
       <Card className="max-w-lg w-full shadow-lg bg-[#F5F0CD]">
         <CardContent>
           <Box className="flex flex-col items-center">

@@ -4,11 +4,11 @@ import {
   Paper,
   Button,
   Grid,
-  Card,
-  CardContent,
+
   TextField,
   FormControl,
   Autocomplete,
+  Tooltip,
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import { Form, Field } from "react-final-form";
@@ -20,6 +20,7 @@ import BrokerCompareExcelService from "../../../api/compareExcel/BrokerCompareEx
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
+import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import toast, { Toaster } from "react-hot-toast";
 import useGetBrokers from "../../../Hooks/Broker/useGetBrokers";
 interface FormValues {
@@ -128,9 +129,21 @@ const CompareBrokerPayment: React.FC = () => {
         elevation={3}
         style={{ padding: 20, margin: 30, borderRadius: 10 }}
       >
-        <Typography className="text-safekaroDarkOrange" variant="h5">
-          {title}
-        </Typography>
+        <div className="flex justify-between items-center">
+
+          <Typography className="text-safekaroDarkOrange" variant="h5">
+            {title}
+          </Typography>
+          <Tooltip title="Download Excel Sample">
+            <a
+              href="brokerSample.xlsx"
+              download="brokerSample.xlsx"
+              className="md:w-10 md:h-10 h-4 w-4 btnGradient shadow-sm rounded flex justify-center items-center text-white"
+            >
+              <FileDownloadOutlinedIcon className="md:w-6 md:h-6 h-3 w-3" />
+            </a>
+          </Tooltip>
+        </div>
         <Typography variant="h5" mb={2}>
           <Link to="/dashboard" className="text-addButton font-bold text-sm">
             Dashboard {" / "}

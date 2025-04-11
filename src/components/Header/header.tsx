@@ -97,10 +97,9 @@ const Header = React.memo<HeaderProps>(({ isSidebarOpen, setSidebarOpen }) => {
     return role !== "admin" && role !== "partner";
   }, [UserData?.role]);
   useEffect(() => {
-    if (userData) {
+    if (userData?.userLimit?.hr) {
       fetchData();
     }
-
   }, [userData]);
   useEffect(() => {
     if (storedTheme) {
