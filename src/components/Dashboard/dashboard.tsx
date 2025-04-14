@@ -210,7 +210,7 @@ const Dashboard: React.FC = () => {
     setOpen(!open);
   };
   return (
-    <div className="pl-5 pr-5 pt-2 h-[100%] overflow-x-hidden">
+    <div className="pl-5 pr-5 pt-2 h-[100%] overflow-x-hidden min-h-screen ">
       <Grid container>
         <div className="flex justify-between w-full m-2 items-center gap-x-2 gap-3 md:gap-0">
           <div className="flex justify-between w-[100%] items-center lg:w-[12%] lg:gap-x-5 sm:w-[100%]">
