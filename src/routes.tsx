@@ -14,6 +14,7 @@ import WelcomePage from "./components/Dashboard/WelcomeScreen";
 
 import ComingSoonHealth from "./components/Health/ComingSoonHealth";
 import ComingSoonNonMotor from "./components/NonMotor/ComingSoonNonMotor";
+import AddHealthPolicy from "./components/Health/AddPolicy/AddHealthPolicy";
 
 const Dashboard = lazy(() => import("./components/Dashboard/dashboard"));
 const PartnerDashboard = lazy(
@@ -2408,6 +2409,14 @@ const routes = [
         element: (
           <SuspenseWrapper>
             <ComingSoonHealth />
+          </SuspenseWrapper>
+        ),
+      },
+      {
+        path: "policy",
+        element: (
+          <SuspenseWrapper>
+             <AddHealthPolicy />
           </SuspenseWrapper>
         ),
       },
