@@ -4,7 +4,7 @@ import { Typography, Paper } from "@mui/material";
 import AddPolicyFormCard from "./AddHealthPolicyFormCard";
 import { Link } from "react-router-dom";
 const AddHealthPolicy = () => {
-  const title = "Add Motor Policy";
+  const title = "Add Health Policy";
   return (
     <>
       <div className=" md:p-7 p-2">
