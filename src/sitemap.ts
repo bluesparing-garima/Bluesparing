@@ -129,3 +129,4 @@ export const newsCategoryEditPath = (categoryId: string) =>
 export const newsPath = () => `/website/news`;
 export const newsAddPath = () => `/website/news/add`;
 export const newsEditPath = (newsId: string) => `/website/news/${newsId}/edit`;
+export const healthPolicyAddPath = () => `/policy/health/add`;

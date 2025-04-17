@@ -15,6 +15,7 @@ import WelcomePage from "./components/Dashboard/WelcomeScreen";
 import ComingSoonHealth from "./components/Health/ComingSoonHealth";
 import ComingSoonNonMotor from "./components/NonMotor/ComingSoonNonMotor";
 import AddHealthPolicy from "./components/Health/AddPolicy/AddHealthPolicy";
+import GetHealthPolicies from "./components/Health/GetHealthPolicy/GetHealthPolicies";
 
 const Dashboard = lazy(() => import("./components/Dashboard/dashboard"));
 const PartnerDashboard = lazy(
@@ -1776,6 +1777,22 @@ const routes = [
           </SuspenseWrapper>
         ),
       },
+      {
+        path: "/policy/health/add",
+        element: (
+          <SuspenseWrapper>
+            <AddHealthPolicy />
+          </SuspenseWrapper>
+        ),
+      },
+      {
+        path: "health-policies",
+        element: (
+          <SuspenseWrapper>
+            <GetHealthPolicies />
+          </SuspenseWrapper>
+        ),
+      },
     ],
   },
   {
@@ -2401,27 +2418,19 @@ const routes = [
       },
     ],
   },
-  {
-    path: "health",
-    children: [
-      {
-        path: "",
-        element: (
-          <SuspenseWrapper>
-            <ComingSoonHealth />
-          </SuspenseWrapper>
-        ),
-      },
-      {
-        path: "policy",
-        element: (
-          <SuspenseWrapper>
-             <AddHealthPolicy />
-          </SuspenseWrapper>
-        ),
-      },
-    ],
-  },
+  // {
+  //   path: "health",
+  //   children: [
+  //     {
+  //       path: "",
+  //       element: (
+  //         <SuspenseWrapper>
+  //           <ComingSoonHealth />
+  //         </SuspenseWrapper>
+  //       ),
+  //     },
+  //   ],
+  // },
   {
     path: "hr",
     children: [

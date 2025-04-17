@@ -28,6 +28,7 @@ import {
   ADD,
   DAY_FORMAT,
   addPolicyDocumentsOptions,
+  addHealthPolicyDocumentsOptions,
 } from "../../../context/constant";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -66,7 +67,7 @@ import UpgradePlanPopup from "../../UpdatePlan/UpgradeExistingPlan";
 import LoadingOverlay from "../../../utils/ui/LoadingOverlay";
 import getPolicyCountAPI from "../../../api/Policies/getPolicyCount/getPolicyCountAPI";
 export interface AddPolicyFormProps {
-  initialValues: IAddEditHealthForm
+  initialValues: IAddEditHealthForm;
 }
 const AddPolicyForm = (props: AddPolicyFormProps) => {
   const { policyId } = useParams();
@@ -79,13 +80,31 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   const [errors, setErrors] = useState<{ docName: string; file: string }[]>([
     { docName: "", file: "" },
   ]);
-  let [policyTypes] = useGetPolicyTypes({ header: header });
+  // let [policyTypes] = useGetPolicyTypes({ header: header });
+  const policyTypes = [
+    { policyType: "Individuals" },
+    { policyType: "Family Floater" },
+    { policyType: "Critical Illness" },
+    { policyType: "Top-up Policy" },
+    { policyType: "Personal Accidental" },
+    { policyType: "Travel Insurance" },
+  ];
+
+  const caseTypes = [
+    { caseType: "New" },
+    { caseType: "ReNewal" },
+    { caseType: "Port" },
+    ];
+  
+  // const YourComponent = ({ initialValues = {} }) => {
+  //   const [policyType, setPolicyType] = useState(initialValues.policyType || "");
+  
   let [relationshipManagers] = useGetPartners({
     header: header,
     role: "Relationship Manager",
   });
   let [partners] = useGetPartners({ header: header, role: "partner" });
-  let [caseTypes] = useGetCaseTypes({ header: header });
+  // let [caseTypes] = useGetCaseTypes({ header: header });
   let [makes] = useGetMakes({ header: header });
   let [models] = useGetModels({ header: header });
   let [fuelTypes] = useGetFuelTypes({ header: header });
@@ -98,8 +117,9 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   const [selectedBrokerId, setSelectedBrokerId] = useState("");
   const [selectedRMName, setSelectedRMName] = useState("");
   const [selectedRMId, setSelectedRMId] = useState("");
-  const [selectedCaseType, setSelectedCaseType] = useState(initialValues.caseType || "");
-
+  const [selectedCaseType, setSelectedCaseType] = useState(
+    initialValues.caseType || ""
+  );
 
   const navigate = useNavigate();
   const [selectedPaymentMode, setSelectedPaymentMode] = useState();
@@ -154,20 +174,20 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       setCC(initialValues.cc ?? 0);
       setIdv(initialValues.idv ?? 0);
       setTenure(initialValues.tenure ?? 1);
-      setSelectedCaseType(initialValues.caseType ?? "")
+      setSelectedCaseType(initialValues.caseType ?? "");
       const updatedDocuments: Document[] = [];
-      if (initialValues.rcBack) {
-        updatedDocuments.push({
-          docName: "rcBack",
-          file: initialValues.rcBack,
-        });
-      }
-      if (initialValues.rcFront) {
-        updatedDocuments.push({
-          docName: "rcFront",
-          file: initialValues.rcFront,
-        });
-      }
+      // if (initialValues.rcBack) {
+      //   updatedDocuments.push({
+      //     docName: "rcBack",
+      //     file: initialValues.rcBack,
+      //   });
+      // }
+      // if (initialValues.rcFront) {
+      //   updatedDocuments.push({
+      //     docName: "rcFront",
+      //     file: initialValues.rcFront,
+      //   });
+      // }
       if (initialValues.previousPolicy) {
         updatedDocuments.push({
           docName: "previousPolicy",
@@ -451,18 +471,18 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   };
 
   const onProgress = (p: number) => {
-    setProgress(p)
-  }
+    setProgress(p);
+  };
 
   const callAddPolicyAPI = async (policy: any) => {
     try {
       setIsLoading(true);
-  
-      if (policyCount<= 0) {
+
+      if (policyCount <= 0) {
         setShowUpgradePopup(true);
         return;
       }
-  
+
       const newPolicy = await addPolicyService({ header, policy, onProgress });
       if (newPolicy.status === "success") {
         if (policyCount > 0) {
@@ -472,7 +492,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
             return updatedCount;
           });
         }
-  
+
         navigate(motorPolicyPath());
         return;
       } else {
@@ -486,7 +506,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       setIsLoading(false);
     }
   };
-  
+
   const callEditPolicyAPI = async (policy: any, policyId: string) => {
     try {
       setIsLoading(true);
@@ -522,30 +542,25 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
     setIsLoading(true);
     try {
       const response = await getPolicyCountAPI({ userId: userData.profileId });
-       if(response?.remainingPolicyCount <=0 ){
-      
-        updateLocalStorage({ policyCount: policyCount })
+      if (response?.remainingPolicyCount <= 0) {
+        updateLocalStorage({ policyCount: policyCount });
         setShowUpgradePopup(true);
-       }
-       setPolicyCount(response.remainingPolicyCount);
+      }
+      setPolicyCount(response.remainingPolicyCount);
     } catch (err) {
       setErrors((prevErrors) => [
         ...prevErrors,
-        { docName: "Error", file: "Failed to fetch policy count" }, 
+        { docName: "Error", file: "Failed to fetch policy count" },
       ]);
     } finally {
-      setIsLoading(false); 
+      setIsLoading(false);
     }
   };
   useEffect(() => {
-   
-
     if (userData.profileId) {
       fetchPolicyCount();
     }
   }, [userData.profileId]);
-
-
 
   useEffect(() => {
     if (isAdd) {
@@ -614,67 +629,80 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       .transform((value) =>
         value ? value.replace(/\s+/g, " ").trim() : value
       ),
-    mfgYear: yup.number().required("MFG Year is required").nullable(),
-    tenure: yup.number().required("Tenure is required").nullable(),
-    cc: yup.string().required("CC is required").nullable(),
-    tp: yup.number().required("TP is required").nullable(),
-    od: yup.number().required("OD is required").nullable(),
-    idv: yup
-      .number()
-      .nullable()
-      .when([], {
-        is: () => policyType.toLowerCase().trim() === "third party only/ tp",
-        then: yup.number().nullable(),
-        otherwise: yup.number().required("IDV is required").nullable(),
-      }),
 
-    netPremium: yup.number().required("Net Premium is required").nullable(),
-    finalPremium: yup.number().required("Final Premium is required").nullable(),
-    fullName: yup
-      .string()
-      .trim()
-      .nullable()
-      .required("Full Name is required")
-      .min(1, "Full Name must be at least 1 character")
-      .max(100, "Full Name cannot exceed 100 characters"),
-    emailId: yup
-      .string()
-      .trim()
-      .nullable()
-      .required("Email Id is required")
-      .min(1, "Email Id must be at least 1 character")
-      .email("Must be a valid email address"),
-    phoneNumber: yup
-      .string()
-      .matches(/^\d{10}$/, "Phone Number must be exactly 10 digits long")
-      .required("Phone Number is required")
-      .min(1, "Phone Number must be at least 1 character")
-      .max(10, "Phone Number must be at least 10 character"),
-    vehicleNumber: yup
-      .string()
-      .required("Vehicle Number is required")
-      .min(1, "Vehicle Number must be at least 1 character")
-      .max(12, "Vehicle Number must can be 12 character"),
-    registrationDate: yup
-      .string()
-      .required("Registration Date is required")
-      .nullable(),
+      netPremium: yup.number().required("Net Premium is required").nullable(),
+      finalPremium: yup.number().required("Final Premium is required").nullable(),
+      sumInsured: yup.number().required("Total Sum Insured is required").nullable(),
+      
+      fullName: yup
+        .string()
+        .trim()
+        .nullable()
+        .required("Full Name is required")
+        .min(1, "Full Name must be at least 1 character")
+        .max(100, "Full Name cannot exceed 100 characters"),
+      emailId: yup
+        .string()
+        .trim()
+        .nullable()
+        .required("Email Id is required")
+        .min(1, "Email Id must be at least 1 character")
+        .email("Must be a valid email address"),
+      phoneNumber: yup
+        .string()
+        .matches(/^\d{10}$/, "Phone Number must be exactly 10 digits long")
+        .required("Phone Number is required")
+        .min(1, "Phone Number must be at least 1 character")
+        .max(10, "Phone Number must be at least 10 character"),
+        firstPurchasedDate: yup
+        .string()
+        .required("First Purchased Date is required")
+        .nullable(),
+        renewalYear: yup.number().required("Renewal Year is required").nullable(),
+        accumulatedBonus: yup.string().nullable().required("Accumulated Bonus is required"),
+        issueDate: yup.string().required("Issue Date is required").nullable(),
+        EndDate: yup.string().required("Issue Date is required").nullable(),
+        policyType: yup.string().required("Policy Type is required").nullable(),
+        caseType: yup.string().nullable().required("Case Type is required"),
+        productType: yup.string().nullable().required("Product Type is required"),
+        companyName: yup.string().nullable().required("Company Name is required"),
+        paymentMode: yup.string().nullable().required("Payment Mode is required"),
+        
+        // policyCreatedBy: yup
+        // .string()
+        // .nullable()
+        // .required("Policy Created By is required"),
+        
+        // registrationDate: yup
+        //   .string()
+        //   .required("Registration Date is required")
+        //   .nullable(),
+        
+            // mfgYear: yup.number().required("MFG Year is required").nullable(),
+        // tenure: yup.number().required("Tenure is required").nullable(),
+        // cc: yup.string().required("CC is required").nullable(),
+        // tp: yup.number().required("TP is required").nullable(),
+    // od: yup.number().required("OD is required").nullable(),
+    // idv: yup
+    //   .number()
+    //   .nullable()
+    //   .when([], {
+    //     is: () => policyType.toLowerCase().trim() === "third party only/ tp",
+    //     then: yup.number().nullable(),
+    //     otherwise: yup.number().required("IDV is required").nullable(),
+    //   }),
+
+    // vehicleNumber: yup
+    //   .string()
+    //   .required("Vehicle Number is required")
+    //   .min(1, "Vehicle Number must be at least 1 character")
+    //   .max(12, "Vehicle Number must can be 12 character"),
     // endDate: yup.string().required("End Date is required").nullable(),
-    issueDate: yup.string().required("Issue Date is required").nullable(),
-    policyType: yup.string().required("Policy Type is required").nullable(),
-    caseType: yup.string().nullable().required("Case Type is required"),
-    productType: yup.string().nullable().required("Product Type is required"),
-    companyName: yup.string().nullable().required("Company Name is required"),
-    make: yup.string().required("Make is required").nullable(),
-    model: yup.string().nullable().required("Model is required"),
-    fuelType: yup.string().nullable().required("Fuel Type is required"),
-    paymentMode: yup.string().nullable().required("Payment Mode is required"),
-    ncb: yup.string().nullable().required("NCB is required"),
-    broker: yup.string().nullable().required("Broker Name is required"),
-    policyCreatedBy: yup
-      .string()
-      .nullable()
-      .required("Policy Created By is required"),
+    // make: yup.string().required("Make is required").nullable(),
+    // model: yup.string().nullable().required("Model is required"),
+    // fuelType: yup.string().nullable().required("Fuel Type is required"),
+    // ncb: yup.string().nullable().required("NCB is required"),
+    // broker: yup.string().nullable().required("Broker Name is required"),
   });
   const addValidate = validateFormValues(addValidationSchema);
   const handleSelectPolicyCreatedBy = (event: any, newValue: any) => {
@@ -693,7 +721,6 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
     }
   };
 
-
   const handleSelectRMChange = async (e: any) => {
     setSelectedRMId(e._id!);
     setSelectedRMName(e.fullName!);
@@ -710,11 +737,10 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       } else {
         setPolicyErrorMessage("");
       }
-    } catch {
-    }
+    } catch {}
   };
   const validateVehicleNumber = async (e: any) => {
-    if (selectedCaseType.toLowerCase().trim() === 'new') {
+    if (selectedCaseType.toLowerCase().trim() === "new") {
       return;
     }
     const vehicleNumber = e.target.value;
@@ -734,7 +760,6 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
     }
   };
 
-
   const getDocumentUrl = (file: any): string | undefined => {
     if (!file) return undefined; // null ki jagah undefined return karein
     if (file instanceof File) {
@@ -744,13 +769,14 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   };
 
   const predefinedOrder = [
-    "Two Wheeler",
-    "Private Car",
-    "Pccv up to 6 passenger",
-    "Pccv Above 6 passenger",
-    "Goods Carrying Vehicle",
-    "Miscellaneous",
+    "Health"
   ];
+
+  const product = [
+    "Health",
+    ' Personal Accident'
+  ];
+
 
   const sortedProducts = [...products].sort((a, b) => {
     const nameA = a.productName || "";
@@ -764,1205 +790,792 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
         open={showUpgradePopup}
         onClose={() => setShowUpgradePopup(false)}
       />
- 
-            <Form
-              mt={3}
-              onSubmit={onSubmit}
-              initialValues={initialValues}
-              validate={addValidate}
-              render={({ handleSubmit }) => (
-                <form onSubmit={handleSubmit} noValidate>
-                  <Grid container spacing={2}>
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field name="policyNumber">
-                        {({ input, meta }) => (
-                          <TextField
-                            {...input}
-                            size="small"
-                            fullWidth
-                            label="Enter Policy Number"
-                            variant="outlined"
-                            disabled={isAdd ? false : true}
-                            onChange={(e) => {
-                              const value = e.target.value.replace(/\s/g, "");
-                              input.onChange(value);
-                              handleChangePolicyNumber(e);
-                            }}
-                            error={meta.touched && Boolean(meta.error)}
-                            helperText={meta.touched && meta.error}
-                          />
-                        )}
-                      </Field>
-                      {policyErrorMessage && (
-                        <div style={{ color: "red" }}>{policyErrorMessage}</div>
-                      )}
-                    </Grid>
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field name="policyType">
-                        {({ input, meta }) => (
-                          <div>
-                            <FormControl fullWidth size="small">
-                              <Autocomplete
-                                {...input}
-                                id="policyType"
-                                value={
-                                  input.value !== undefined
-                                    ? input.value
-                                    : initialValues.policyType || null
-                                }
-                                options={policyTypes}
-                                getOptionLabel={(option) =>
-                                  typeof option === "string"
-                                    ? option
-                                    : option.policyType || ""
-                                }
-                                onChange={(event, newValue) => {
-                                  if (newValue && newValue.policyType) {
-                                    setPolicyType(newValue.policyType);
-                                  }
-                                  input.onChange(
-                                    newValue ? newValue.policyType : ""
-                                  );
-                                }}
-                                renderInput={(params) => (
-                                  <TextField
-                                    {...params}
-                                    label=" Select Policy Type"
-                                    value={policyType}
-                                    className="rounded-sm w-full"
-                                    size="small"
-                                    variant="outlined"
-                                    error={meta.touched && !!meta.error}
-                                    helperText={meta.touched && meta.error}
-                                  />
-                                )}
-                              />
-                            </FormControl>
-                          </div>
-                        )}
-                      </Field>
-                    </Grid>
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field name="caseType">
-                        {({ input, meta }) => (
-                          <div>
-                            <FormControl fullWidth size="small">
-                              <Autocomplete
-                                {...input}
-                                id="caseType"
-                                options={caseTypes}
-                                value={
-                                  input.value !== undefined
-                                    ? input.value
-                                    : initialValues.caseType || null
-                                }
-                                getOptionLabel={(option) =>
-                                  typeof option === "string"
-                                    ? option
-                                    : option.caseType || ""
-                                }
-                                onChange={(event, newValue) => {
-                                  input.onChange(
-                                    newValue ? newValue.caseType : ""
-                                  );
-                                  setSelectedCaseType(newValue.caseType)
-                                }}
-                                renderInput={(params) => (
-                                  <TextField
-                                    {...params}
-                                    label=" Select Case Type"
-                                    className="rounded-sm w-full"
-                                    size="small"
-                                    variant="outlined"
-                                    error={meta.touched && !!meta.error}
-                                    helperText={meta.touched && meta.error}
-                                  />
-                                )}
-                              />
-                            </FormControl>
-                          </div>
-                        )}
-                      </Field>
-                    </Grid>
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field name="productType">
-                        {({ input, meta }) => (
-                          <div>
-                            <FormControl fullWidth size="small">
-                              <Autocomplete
-                                {...input}
-                                value={
-                                  input.value !== undefined
-                                    ? input.value
-                                    : initialValues.productType || null
-                                }
-                                options={sortedProducts}
-                                getOptionLabel={(option) =>
-                                  typeof option === "string"
-                                    ? option
-                                    : option.productName || ""
-                                }
-                                onChange={(event, newValue) => {
-                                  input.onChange(
-                                    newValue ? newValue.productName : ""
-                                  );
-                                  setSelectedProduct(newValue);
-                                  setProType(newValue?.productName);
-                                }}
-                                renderInput={(params) => (
-                                  <TextField
-                                    {...params}
-                                    label=" Select Product"
-                                    className="rounded-sm w-full"
-                                    size="small"
-                                    variant="outlined"
-                                    error={meta.touched && !!meta.error}
-                                    helperText={meta.touched && meta.error}
-                                  />
-                                )}
-                              />
-                            </FormControl>
-                          </div>
-                        )}
-                      </Field>
-                    </Grid>
-                    {filteredSubcategories &&
-                      filteredSubcategories.length > 0 && (
-                        <Grid item lg={4} md={4} sm={6} xs={12}>
-                          <Field name="subCategory">
-                            {({ input, meta }) => (
-                              <div>
-                                <FormControl fullWidth size="small">
-                                  <Autocomplete
-                                    {...input}
-                                    value={input.value || null}
-                                    getOptionLabel={(option) =>
-                                      typeof option === "string"
-                                        ? option
-                                        : option.productSubType || ""
-                                    }
 
-                                    onChange={(event, newValue) =>
-                                      input.onChange(
-                                        newValue ? newValue.productSubType : ""
-                                      )
-                                    }
-                                    options={filteredSubcategories}
-                                    renderInput={(params) => (
-                                      <TextField
-                                        {...params}
-                                        label=" Select Sub Category"
-                                        className="rounded-sm w-full"
-                                        size="small"
-                                        variant="outlined"
-                                        error={meta.touched && !!meta.error}
-                                        helperText={meta.touched && meta.error}
-                                      />
-                                    )}
-                                  />
-                                </FormControl>
-                              </div>
-                            )}
-                          </Field>
-                        </Grid>
-                      )}
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field name="companyName">
-                        {({ input, meta }) => (
-                          <div>
-                            <FormControl fullWidth size="small">
-                              <Autocomplete
-                                {...input}
-                                id="companyName"
-                                value={
-                                  input.value !== undefined
-                                    ? input.value
-                                    : initialValues.companyName || null
-                                }
-                                getOptionLabel={(option) =>
-                                  typeof option === "string"
-                                    ? option
-                                    : option.companyName || ""
-                                }
-                                options={companies}
-                                onChange={(event, newValue) => {
-                                  input.onChange(
-                                    newValue ? newValue.companyName : ""
-                                  );
-                                }}
-                                renderInput={(params) => (
-                                  <TextField
-                                    {...params}
-                                    label=" Select Company Name"
-                                    className="rounded-sm w-full"
-                                    size="small"
-                                    variant="outlined"
-                                    error={meta.touched && !!meta.error}
-                                    helperText={meta.touched && meta.error}
-                                  />
-                                )}
-                              />
-                            </FormControl>
-                          </div>
-                        )}
-                      </Field>
-                    </Grid>
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field name="broker">
-                        {({ input, meta }) => (
-                          <div>
-                            <FormControl fullWidth size="small">
-                              <Autocomplete
-                                {...input}
-                                id="broker"
-                                value={
-                                  input.value !== undefined
-                                    ? input.value
-                                    : initialValues.broker || null
-                                }
-                                getOptionLabel={(option) =>
-                                  typeof option === "string"
-                                    ? option
-                                    : `${option.brokerName} - ${option.brokerCode}` ||
-                                    ""
-                                }
-                                options={brokers}
-                                onChange={(event, newValue) => {
-                                  input.onChange(
-                                    newValue ? newValue.brokerName : ""
-                                  );
-                                  setSelectedBrokerId(
-                                    newValue ? newValue._id : ""
-                                  );
-                                }}
-                                renderInput={(params) => (
-                                  <TextField
-                                    {...params}
-                                    label=" Select Broker"
-                                    className="rounded-sm w-full"
-                                    size="small"
-                                    variant="outlined"
-                                    error={meta.touched && !!meta.error}
-                                    helperText={meta.touched && meta.error}
-                                  />
-                                )}
-                              />
-                            </FormControl>
-                          </div>
-                        )}
-                      </Field>
-                    </Grid>
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field name="make">
-                        {({ input, meta }) => (
-                          <div>
-                            <FormControl fullWidth size="small">
-                              <Autocomplete
-                                {...input}
-                                id="make"
-                                value={
-                                  input.value !== undefined
-                                    ? input.value
-                                    : initialValues.make || null
-                                }
-                                getOptionLabel={(option) =>
-                                  typeof option === "string"
-                                    ? option
-                                    : option.makeName || ""
-                                }
-                                options={makes}
-                                onChange={(event, newValue) => {
-                                  input.onChange(
-                                    newValue ? newValue.makeName : ""
-                                  );
-                                  setSelectedMake(newValue);
-                                  if (newValue) {
-                                    const MakeId = newValue._id;
-                                    const filterModel = models.filter(
-                                      (sub) => sub.makeId === MakeId
-                                    );
-                                    setFilteredSubModels(filterModel);
-                                  } else {
-                                    setFilteredSubModels([]);
-                                  }
-                                }}
-                                renderInput={(params) => (
-                                  <TextField
-                                    {...params}
-                                    label=" Select Make"
-                                    className="rounded-sm w-full"
-                                    size="small"
-                                    variant="outlined"
-                                    error={meta.touched && !!meta.error}
-                                    helperText={meta.touched && meta.error}
-                                  />
-                                )}
-                              />
-                            </FormControl>
-                          </div>
-                        )}
-                      </Field>
-                    </Grid>
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field
-                        name="model"
-                        validate={(value) =>
-                          !filteredSubModels || filteredSubModels.length === 0
-                            ? "Please select a make first"
-                            : undefined
-                        }
-                      >
-                        {({ input, meta }) => (
-                          <div>
-                            <FormControl fullWidth size="small">
-                              <Autocomplete
-                                {...input}
-                                id="model"
-                                value={
-                                  input.value !== undefined
-                                    ? input.value
-                                    : initialValues.model || null
-                                }
-                                getOptionLabel={(option) =>
-                                  typeof option === "string"
-                                    ? option
-                                    : option.modelName || ""
-                                }
-                                options={filteredSubModels}
-                                onChange={(event, newValue) => {
-                                  input.onChange(
-                                    newValue ? newValue.modelName : ""
-                                  );
-                                }}
-                                renderInput={(params) => (
-                                  <TextField
-                                    {...params}
-                                    label=" Select Model"
-                                    className="rounded-sm w-full"
-                                    size="small"
-                                    variant="outlined"
-                                    error={meta.touched && !!meta.error}
-                                    helperText={meta.touched && meta.error}
-                                  />
-                                )}
-                              />
-                            </FormControl>
-                          </div>
-                        )}
-                      </Field>
-                    </Grid>
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field name="fuelType">
-                        {({ input, meta }) => (
-                          <div>
-                            <FormControl fullWidth size="small">
-                              <Autocomplete
-                                {...input}
-                                id="fuelType"
-                                value={
-                                  input.value !== undefined
-                                    ? input.value
-                                    : initialValues.fuelType || null
-                                }
-                                getOptionLabel={(option) =>
-                                  typeof option === "string"
-                                    ? option
-                                    : option.fuelType || ""
-                                }
-                                options={fuelTypes}
-                                onChange={(event, newValue) => {
-                                  input.onChange(
-                                    newValue ? newValue.fuelType : ""
-                                  );
-                                }}
-                                renderInput={(params) => (
-                                  <TextField
-                                    {...params}
-                                    label=" Select Fuel Type"
-                                    className="rounded-sm w-full"
-                                    size="small"
-                                    variant="outlined"
-                                    error={meta.touched && !!meta.error}
-                                    helperText={meta.touched && meta.error}
-                                  />
-                                )}
-                              />
-                            </FormControl>
-                          </div>
-                        )}
-                      </Field>
-                    </Grid>
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field name="tenure">
-                        {({ input, meta }) => (
-                          <TextField
-                            {...input}
-                            fullWidth
-                            size="small"
-                            type="number"
-                            value={tenure}
-                            onChange={(event) => {
-                              input.onChange(event);
-                              let t = event.target.value;
-                              setTenure(Number(t));
-                            }}
-                            label="Enter Tenure"
-                            variant="outlined"
-                            error={meta.touched && Boolean(meta.error)}
-                            helperText={meta.touched && meta.error}
-                          />
-                        )}
-                      </Field>
-                    </Grid>
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field name="registrationDate">
-                        {({ input, meta }) => (
-                          <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DatePicker
-                              disableFuture
-                              label="Registration Date"
-                              inputFormat="DD/MM/YYYY"
-                              value={input.value || null}
-                              onChange={(date) => input.onChange(date)}
-                              renderInput={(params: any) => (
-                                <TextField
-                                  variant="outlined"
-                                  size="small"
-                                  fullWidth
-                                  {...params}
-                                  error={meta.touched && !!meta.error}
-                                  helperText={meta.touched && meta.error}
-                                />
-                              )}
-                            />
-                          </LocalizationProvider>
-                        )}
-                      </Field>
-                    </Grid>
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field name="issueDate">
-                        {({ input, meta }) => (
-                          <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DatePicker
-                              disableFuture
-                              label="Issue Date"
-                              inputFormat="DD/MM/YYYY"
-                              value={input.value || null}
-                              onChange={(date) => {
-                                input.onChange(date);
-                              }}
-                              renderInput={(params: any) => (
-                                <TextField
-                                  variant="outlined"
-                                  size="small"
-                                  fullWidth
-                                  {...params}
-                                  error={meta.touched && !!meta.error}
-                                  helperText={meta.touched && meta.error}
-                                />
-                              )}
-                            />
-                          </LocalizationProvider>
-                        )}
-                      </Field>
-                    </Grid>
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field name="endDate">
-                        {({ input, meta }) => (
-                          <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DatePicker
-                              disablePast
-                              label="End Date"
-                              value={input.value}
-                              inputFormat="DD/MM/YYYY"
-                              onChange={(date) => input.onChange(date)}
-                              renderInput={(params: any) => (
-                                <TextField
-                                  variant="outlined"
-                                  size="small"
-                                  fullWidth
-                                  {...params}
-                                  error={meta.touched && !!meta.error}
-                                  helperText={meta.touched && meta.error}
-                                />
-                              )}
-                            />
-                          </LocalizationProvider>
-                        )}
-                      </Field>
-                    </Grid>
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field name="vehicleNumber">
-                        {({ input, meta }) => (
-                          <TextField
-                            {...input}
-                            size="small"
-                            label="Enter Vehicle Number"
-                            variant="outlined"
-                            className="rounded-sm w-full"
-                            onChangeCapture={validateVehicleNumber}
-                            error={meta.touched && Boolean(meta.error)}
-                            helperText={meta.touched && meta.error}
-                          />
-                        )}
-                      </Field>
-                      {vehicleErr && (
-                        <div className="text-[red] text-sm">{vehicleErr}</div>
-                      )}
-                    </Grid>
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field name="mfgYear">
-                        {({ input, meta }) => (
-                          <TextField
-                            {...input}
-                            fullWidth
-                            size="small"
-                            type="number"
-                            label="Enter MFG Year"
-                            className="rounded-sm w-full"
-                            variant="outlined"
-                            error={meta.touched && Boolean(meta.error)}
-                            helperText={meta.touched && meta.error}
-                          />
-                        )}
-                      </Field>
-                    </Grid>
-
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field name="ncb">
-                        {({ input, meta }) => {
-                          let defaultValue = "";
-                          if (policyType === "Third Party Only/ TP") {
-                            defaultValue = "no";
-                            input.onChange("no");
-                          } else {
-                            defaultValue = initialValues.ncb || "";
+      <Form
+        mt={3}
+        onSubmit={onSubmit}
+        initialValues={initialValues}
+        validate={addValidate}
+        render={({ handleSubmit }) => (
+          <form onSubmit={handleSubmit} noValidate>
+            <Grid container spacing={2}>
+              <Grid item lg={4} md={4} sm={6} xs={12}>
+                <Field name="policyNumber">
+                  {({ input, meta }) => (
+                    <TextField
+                      {...input}
+                      size="small"
+                      fullWidth
+                      label="Enter Policy Number"
+                      variant="outlined"
+                      disabled={isAdd ? false : true}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/\s/g, "");
+                        input.onChange(value);
+                        handleChangePolicyNumber(e);
+                      }}
+                      error={meta.touched && Boolean(meta.error)}
+                      helperText={meta.touched && meta.error}
+                    />
+                  )}
+                </Field>
+                {policyErrorMessage && (
+                  <div style={{ color: "red" }}>{policyErrorMessage}</div>
+                )}
+              </Grid>
+              <Grid item lg={4} md={4} sm={6} xs={12}>
+                <Field name="policyType">
+                  {({ input, meta }) => (
+                    <div>
+                      <FormControl fullWidth size="small">
+                        <Autocomplete
+                          {...input}
+                          id="policyType"
+                          value={
+                            input.value !== undefined
+                              ? input.value
+                              : initialValues.policyType || null
                           }
-                          return (
-                            <div>
-                              <FormControl fullWidth size="small">
-                                <Autocomplete
-                                  {...input}
-                                  id="ncb"
-                                  value={
-                                    input.value ? input.value : defaultValue
-                                  }
-                                  getOptionLabel={(option) =>
-                                    typeof option === "string"
-                                      ? option
-                                      : option.label || ""
-                                  }
-                                  onChange={(event, newValue) => {
-                                    input.onChange(
-                                      newValue ? newValue.value : defaultValue
-                                    );
-                                  }}
-                                  options={[
-                                    { label: "Yes", value: "yes" },
-                                    { label: "No", value: "no" },
-                                  ]}
-                                  renderInput={(params) => (
-                                    <TextField
-                                      {...params}
-                                      label="Select NCB"
-                                      className="rounded-sm w-full"
-                                      size="small"
-                                      variant="outlined"
-                                      error={meta.touched && !!meta.error}
-                                      helperText={meta.touched && meta.error}
-                                    />
-                                  )}
-                                />
-                              </FormControl>
-                            </div>
-                          );
+                          options={policyTypes}
+                          getOptionLabel={(option) =>
+                            typeof option === "string"
+                              ? option
+                              : option.policyType || ""
+                          }
+                          onChange={(event, newValue) => {
+                            if (newValue && newValue.policyType) {
+                              setPolicyType(newValue.policyType);
+                            }
+                            input.onChange(newValue ? newValue.policyType : "");
+                          }}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label=" Select Policy Type"
+                              value={policyType}
+                              className="rounded-sm w-full"
+                              size="small"
+                              variant="outlined"
+                              error={meta.touched && !!meta.error}
+                              helperText={meta.touched && meta.error}
+                            />
+                          )}
+                        />
+                      </FormControl>
+                    </div>
+                  )}
+                </Field>
+              </Grid>
+              <Grid item lg={4} md={4} sm={6} xs={12}>
+                <Field name="caseType">
+                  {({ input, meta }) => (
+                    <div>
+                      <FormControl fullWidth size="small">
+                        <Autocomplete
+                          {...input}
+                          id="caseType"
+                          options={caseTypes}
+                          value={
+                            input.value !== undefined
+                              ? input.value
+                              : initialValues.caseType || null
+                          }
+                          getOptionLabel={(option) =>
+                            typeof option === "string"
+                              ? option
+                              : option.caseType || ""
+                          }
+                          onChange={(event, newValue) => {
+                            input.onChange(newValue ? newValue.caseType : "");
+                            setSelectedCaseType(newValue.caseType);
+                          }}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label=" Select Case Type"
+                              className="rounded-sm w-full"
+                              size="small"
+                              variant="outlined"
+                              error={meta.touched && !!meta.error}
+                              helperText={meta.touched && meta.error}
+                            />
+                          )}
+                        />
+                      </FormControl>
+                    </div>
+                  )}
+                </Field>
+              </Grid>
+              <Grid item lg={4} md={4} sm={6} xs={12}>
+                <Field name="productType">
+                  {({ input, meta }) => (
+                    <div>
+                      <FormControl fullWidth size="small">
+                        <Autocomplete
+                          {...input}
+                          value={
+                            input.value !== undefined
+                              ? input.value
+                              : initialValues.productType || null
+                          }
+                          options={product}
+                          getOptionLabel={(option) =>
+                            typeof option === "string"
+                              ? option
+                              : option.productName || ""
+                          }
+                          onChange={(event, newValue) => {
+                            input.onChange(
+                              newValue ? newValue.productName : ""
+                            );
+                            setSelectedProduct(newValue);
+                            setProType(newValue?.productName);
+                          }}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label=" Select Product"
+                              className="rounded-sm w-full"
+                              size="small"
+                              variant="outlined"
+                              error={meta.touched && !!meta.error}
+                              helperText={meta.touched && meta.error}
+                            />
+                          )}
+                        />
+                      </FormControl>
+                    </div>
+                  )}
+                </Field>
+              </Grid>
+              <Grid item lg={4} md={4} sm={6} xs={12}>
+                <Field name="companyName">
+                  {({ input, meta }) => (
+                    <div>
+                      <FormControl fullWidth size="small">
+                        <Autocomplete
+                          {...input}
+                          id="companyName"
+                          value={
+                            input.value !== undefined
+                              ? input.value
+                              : initialValues.companyName || null
+                          }
+                          getOptionLabel={(option) =>
+                            typeof option === "string"
+                              ? option
+                              : option.companyName || ""
+                          }
+                          options={companies}
+                          onChange={(event, newValue) => {
+                            input.onChange(
+                              newValue ? newValue.companyName : ""
+                            );
+                          }}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label=" Select Company Name"
+                              className="rounded-sm w-full"
+                              size="small"
+                              variant="outlined"
+                              error={meta.touched && !!meta.error}
+                              helperText={meta.touched && meta.error}
+                            />
+                          )}
+                        />
+                      </FormControl>
+                    </div>
+                  )}
+                </Field>
+              </Grid>
+              <Grid item lg={4} md={4} sm={6} xs={12}>
+                <Field name="issueDate">
+                  {({ input, meta }) => (
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DatePicker
+                        disableFuture
+                        label="Issue Date"
+                        inputFormat="DD/MM/YYYY"
+                        value={input.value || null}
+                        onChange={(date) => {
+                          input.onChange(date);
                         }}
-                      </Field>
-                    </Grid>
-                    {proType === "Goods Carrying Vehicle" ? (
-                      <Grid item lg={4} md={4} sm={6} xs={12}>
-                        <Field name="weight">
-                          {({ input, meta }) => (
-                            <TextField
-                              {...input}
-                              size="small"
-                              label="Enter Weight"
-                              type="number"
-                              fullWidth
-                              variant="outlined"
-                              error={meta.touched && Boolean(meta.error)}
-                              helperText={meta.touched && meta.error}
-                            />
-                          )}
-                        </Field>
-                      </Grid>
-                    ) : (
-                      <Grid item lg={4} md={4} sm={6} xs={12}>
-                        <Field name="seatingCapacity">
-                          {({ input, meta }) => (
-                            <TextField
-                              {...input}
-                              size="small"
-                              fullWidth
-                              type="number"
-                              label="Enter Seating Capacity"
-                              variant="outlined"
-                              error={meta.touched && Boolean(meta.error)}
-                              helperText={meta.touched && meta.error}
-                            />
-                          )}
-                        </Field>
-                      </Grid>
+                        renderInput={(params: any) => (
+                          <TextField
+                            variant="outlined"
+                            size="small"
+                            fullWidth
+                            {...params}
+                            error={meta.touched && !!meta.error}
+                            helperText={meta.touched && meta.error}
+                          />
+                        )}
+                      />
+                    </LocalizationProvider>
+                  )}
+                </Field>
+              </Grid>
+              <Grid item lg={4} md={4} sm={6} xs={12}>
+                <Field name="endDate">
+                  {({ input, meta }) => (
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DatePicker
+                        disablePast
+                        label="End Date"
+                        value={input.value}
+                        inputFormat="DD/MM/YYYY"
+                        onChange={(date) => input.onChange(date)}
+                        renderInput={(params: any) => (
+                          <TextField
+                            variant="outlined"
+                            size="small"
+                            fullWidth
+                            {...params}
+                            error={meta.touched && !!meta.error}
+                            helperText={meta.touched && meta.error}
+                          />
+                        )}
+                      />
+                    </LocalizationProvider>
+                  )}
+                </Field>
+              </Grid>
+              <Grid item lg={4} md={4} sm={6} xs={12}>
+                <Field name="sumInsured">
+                  {({ input, meta }) => (
+                    <TextField
+                      {...input}
+                      size="small"
+                      fullWidth
+                      value={netPremium}
+                      onChange={(event) => {
+                        input.onChange(event);
+                        handleNetPremiumChange(event);
+                      }}
+                      type="number"
+                      label="Total Sum Insured"
+                      variant="outlined"
+                      error={meta.touched && Boolean(meta.error)}
+                      helperText={meta.touched && meta.error}
+                    />
+                  )}
+                </Field>
+              </Grid>
+              <Grid item lg={4} md={4} sm={6} xs={12}>
+                <Field name="netPremium">
+                  {({ input, meta }) => (
+                    <TextField
+                      {...input}
+                      size="small"
+                      fullWidth
+                      value={netPremium}
+                      onChange={(event) => {
+                        input.onChange(event);
+                        handleNetPremiumChange(event);
+                      }}
+                      type="number"
+                      label="Enter Net Premium"
+                      variant="outlined"
+                      error={meta.touched && Boolean(meta.error)}
+                      helperText={meta.touched && meta.error}
+                    />
+                  )}
+                </Field>
+              </Grid>
+              <Grid item lg={4} md={4} sm={6} xs={12}>
+                <Field name="finalPremium">
+                  {({ input, meta }) => (
+                    <TextField
+                      {...input}
+                      size="small"
+                      type="number"
+                      label="Enter Final Premium"
+                      fullWidth
+                      variant="outlined"
+                      error={meta.touched && Boolean(meta.error)}
+                      helperText={meta.touched && meta.error}
+                    />
+                  )}
+                </Field>
+              </Grid>
+              <Grid item lg={4} md={4} sm={6} xs={12}>
+                <Field name="firstPurchasedDate">
+                  {({ input, meta }) => (
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DatePicker
+                        disableFuture
+                        label="First Purchased Date"
+                        inputFormat="DD/MM/YYYY"
+                        value={input.value || null}
+                        onChange={(date) => input.onChange(date)}
+                        renderInput={(params: any) => (
+                          <TextField
+                            variant="outlined"
+                            size="small"
+                            fullWidth
+                            {...params}
+                            error={meta.touched && !!meta.error}
+                            helperText={meta.touched && meta.error}
+                          />
+                        )}
+                      />
+                    </LocalizationProvider>
+                  )}
+                </Field>
+              </Grid>
+              <Grid item lg={4} md={4} sm={6} xs={12}>
+                <Field name="renewalYear">
+                  {({ input, meta }) => (
+                    <TextField
+                      {...input}
+                      fullWidth
+                      size="small"
+                      type="number"
+                      label="Renewal Year(Auto Fetch)"
+                      className="rounded-sm w-full"
+                      variant="outlined"
+                      error={meta.touched && Boolean(meta.error)}
+                      helperText={meta.touched && meta.error}
+                    />
+                  )}
+                </Field>
+              </Grid>
+              <Grid item lg={4} md={4} sm={6} xs={12}>
+                <Field name="accumulatedBonus">
+                  {({ input, meta }) => (
+                    <TextField
+                      {...input}
+                      size="small"
+                      label="Enter Accumulated Bonus"
+                      variant="outlined"
+                      className="rounded-sm w-full"
+                      onChangeCapture={validateVehicleNumber}
+                      error={meta.touched && Boolean(meta.error)}
+                      helperText={meta.touched && meta.error}
+                    />
+                  )}
+                </Field>
+                {vehicleErr && (
+                  <div className="text-[red] text-sm">{vehicleErr}</div>
+                )}
+              </Grid>
+              <>
+                <Grid item lg={4} md={4} sm={6} xs={12}>
+                  <Field name="fullName">
+                    {({ input, meta }) => (
+                      <TextField
+                        {...input}
+                        size="small"
+                        label="Enter Full Name"
+                        className="rounded-sm w-full"
+                        variant="outlined"
+                        error={meta.touched && Boolean(meta.error)}
+                        helperText={meta.touched && meta.error}
+                      />
                     )}
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field name="cc">
-                        {({ input, meta }) => (
-                          <TextField
+                  </Field>
+                </Grid>
+                <Grid item lg={4} md={4} sm={6} xs={12}>
+                  <Field name="emailId">
+                    {({ input, meta }) => (
+                      <TextField
+                        {...input}
+                        size="small"
+                        fullWidth
+                        label="Enter Email Id"
+                        className="rounded-sm w-full"
+                        variant="outlined"
+                        error={meta.touched && Boolean(meta.error)}
+                        helperText={meta.touched && meta.error}
+                      />
+                    )}
+                  </Field>
+                </Grid>
+                <Grid item lg={4} md={4} sm={6} xs={12}>
+                  <Field name="phoneNumber">
+                    {({ input, meta }) => (
+                      <TextField
+                        {...input}
+                        fullWidth
+                        type="text"
+                        size="small"
+                        label="Enter Phone Number"
+                        className="rounded-sm w-full"
+                        variant="outlined"
+                        inputProps={{ maxLength: 10 }}
+                        error={meta.touched && Boolean(meta.error)}
+                        helperText={meta.touched && meta.error}
+                      />
+                    )}
+                  </Field>
+                </Grid>
+                <Grid item lg={4} md={4} sm={6} xs={12}>
+                  <Field name="paymentMode">
+                    {({ input, meta }) => (
+                      <div>
+                        <FormControl fullWidth size="small">
+                          <Autocomplete
                             {...input}
-                            size="small"
-                            label="Enter CC"
-                            type="number"
-                            value={cc}
-                            fullWidth
-                            variant="outlined"
-                            onChange={(event) => {
-                              input.onChange(event);
-                              let cc = event.target.value;
-                              setCC(Number(cc));
-                              event.target.value = cc;
+                            id="paymentMode"
+                            value={
+                              input.value !== undefined
+                                ? input.value
+                                : initialValues.paymentMode || null
+                            }
+                            getOptionLabel={(option) =>
+                              typeof option === "string"
+                                ? option
+                                : option.label || null
+                            }
+                            onChange={(event, newValue) => {
+                              input.onChange(newValue ? newValue.value : null);
+                              handleSelectPaymentMode(event, newValue);
                             }}
-                            error={meta.touched && Boolean(meta.error)}
-                            helperText={meta.touched && meta.error}
-                            disabled={proType === "Goods Carrying Vehicle"}
+                            options={paymentModes}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                className="rounded-sm w-full"
+                                size="small"
+                                label=" Select Payment Mode"
+                                variant="outlined"
+                                error={meta.touched && !!meta.error}
+                                helperText={meta.touched && meta.error}
+                              />
+                            )}
                           />
-                        )}
-                      </Field>
-                    </Grid>
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field name="idv">
-                        {({ input, meta }) => (
-                          <TextField
-                            {...input}
-                            type="number"
-                            size="small"
-                            fullWidth
-                            value={idv}
-                            onChange={(event) => {
-                              input.onChange(event);
-                              let idv = event.target.value;
-                              setIdv(Number(idv));
-                            }}
-                            label="Enter IDV"
-                            variant="outlined"
-                            error={meta.touched && Boolean(meta.error)}
-                            helperText={meta.touched && meta.error}
-                            disabled={policyType === "Third Party Only/ TP"}
-                          />
-                        )}
-                      </Field>
-                    </Grid>
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field name="od">
-                        {({ input, meta }) => (
-                          <TextField
-                            {...input}
-                            type="number"
-                            size="small"
-                            fullWidth
-                            label="Enter OD"
-                            value={od}
-                            onChangeCapture={(e: any) => setOd(e.target.value)}
-                            variant="outlined"
-                            error={meta.touched && Boolean(meta.error)}
-                            helperText={meta.touched && meta.error}
-                            disabled={policyType === "Third Party Only/ TP"}
-                          />
-                        )}
-                      </Field>
-                    </Grid>
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field name="tp">
-                        {({ input, meta }) => (
-                          <TextField
-                            {...input}
-                            size="small"
-                            type="number"
-                            fullWidth
-                            label="Enter TP"
-                            value={tp}
-                            onChangeCapture={(e: any) => setTp(e.target.value)}
-                            variant="outlined"
-                            error={meta.touched && Boolean(meta.error)}
-                            helperText={meta.touched && meta.error}
-                            disabled={policyType === "Own Damage Only/ OD"}
-                          />
-                        )}
-                      </Field>
-                    </Grid>
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field name="netPremium">
-                        {({ input, meta }) => (
-                          <TextField
-                            {...input}
-                            size="small"
-                            fullWidth
-                            value={netPremium}
-                            onChange={(event) => {
-                              input.onChange(event);
-                              handleNetPremiumChange(event);
-                            }}
-                            type="number"
-                            label="Enter Net Premium"
-                            variant="outlined"
-                            error={meta.touched && Boolean(meta.error)}
-                            helperText={meta.touched && meta.error}
-                          />
-                        )}
-                      </Field>
-                    </Grid>
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field name="finalPremium">
-                        {({ input, meta }) => (
-                          <TextField
-                            {...input}
-                            size="small"
-                            type="number"
-                            label="Enter Final Premium"
-                            fullWidth
-                            variant="outlined"
-                            error={meta.touched && Boolean(meta.error)}
-                            helperText={meta.touched && meta.error}
-                          />
-                        )}
-                      </Field>
-                    </Grid>
-                    <>
-                      <Grid item lg={4} md={4} sm={6} xs={12}>
-                        <Field name="fullName">
-                          {({ input, meta }) => (
-                            <TextField
-                              {...input}
-                              size="small"
-                              label="Enter Full Name"
-                              className="rounded-sm w-full"
-                              variant="outlined"
-                              error={meta.touched && Boolean(meta.error)}
-                              helperText={meta.touched && meta.error}
-                            />
-                          )}
-                        </Field>
-                      </Grid>
-                      <Grid item lg={4} md={4} sm={6} xs={12}>
-                        <Field name="emailId">
-                          {({ input, meta }) => (
-                            <TextField
-                              {...input}
-                              size="small"
-                              fullWidth
-                              label="Enter Email Id"
-                              className="rounded-sm w-full"
-                              variant="outlined"
-                              error={meta.touched && Boolean(meta.error)}
-                              helperText={meta.touched && meta.error}
-                            />
-                          )}
-                        </Field>
-                      </Grid>
-                      <Grid item lg={4} md={4} sm={6} xs={12}>
-                        <Field name="phoneNumber">
-                          {({ input, meta }) => (
-                            <TextField
-                              {...input}
-                              fullWidth
-                              type="text"
-                              size="small"
-                              label="Enter Phone Number"
-                              className="rounded-sm w-full"
-                              variant="outlined"
-                              inputProps={{ maxLength: 10 }}
-                              error={meta.touched && Boolean(meta.error)}
-                              helperText={meta.touched && meta.error}
-                            />
-                          )}
-                        </Field>
-                      </Grid>
-                      <Grid item lg={4} md={4} sm={6} xs={12}>
-                        <Field name="paymentMode">
-                          {({ input, meta }) => (
-                            <div>
-                              <FormControl fullWidth size="small">
-                                <Autocomplete
-                                  {...input}
-                                  id="paymentMode"
-                                  value={
-                                    input.value !== undefined
-                                      ? input.value
-                                      : initialValues.paymentMode || null
-                                  }
-                                  getOptionLabel={(option) =>
-                                    typeof option === "string"
-                                      ? option
-                                      : option.label || null
-                                  }
-                                  onChange={(event, newValue) => {
-                                    input.onChange(
-                                      newValue ? newValue.value : null
-                                    );
-                                    handleSelectPaymentMode(event, newValue);
-                                  }}
-                                  options={paymentModes}
-                                  renderInput={(params) => (
-                                    <TextField
-                                      {...params}
-                                      className="rounded-sm w-full"
-                                      size="small"
-                                      label=" Select Payment Mode"
-                                      variant="outlined"
-                                      error={meta.touched && !!meta.error}
-                                      helperText={meta.touched && meta.error}
-                                    />
-                                  )}
-                                />
-                              </FormControl>
-                            </div>
-                          )}
-                        </Field>
-                      </Grid>
-                      {selectedPaymentMode &&
-                        selectedPaymentMode !== "Cash" && (
-                          <Grid item lg={4} md={4} sm={6} xs={12}>
-                            <Field name="paymentDetails">
-                              {({ input, meta }) => (
-                                <TextField
-                                  {...input}
-                                  size="small"
-                                  fullWidth
-                                  label="Enter Payment Details"
-                                  variant="outlined"
-                                  error={meta.touched && Boolean(meta.error)}
-                                  helperText={meta.touched && meta.error}
-                                />
-                              )}
-                            </Field>
-                          </Grid>
-                        )}
-                      <Grid item lg={4} md={4} sm={6} xs={12}>
-                        <Field name="policyCreatedBy">
-                          {({ input, meta }) => (
-                            <div>
-                              <FormControl fullWidth size="small">
-                                <Autocomplete
-                                  {...input}
-                                  id="policyCreatedBy"
-                                  value={
-                                    input.value !== undefined
-                                      ? input.value
-                                      : initialValues.policyCreatedBy || null
-                                  }
-                                  getOptionLabel={(option) =>
-                                    typeof option === "string"
-                                      ? option
-                                      : option.label || ""
-                                  }
-                                  options={
-                                    userData.role.toLowerCase() === "admin"
-                                      ? policyCreatedBy
-                                      : policyCreatedByAdmin
-                                  }
-                                  onChange={(event, newValue) => {
-                                    input.onChange(
-                                      newValue ? newValue.value : ""
-                                    );
-                                    handleSelectPolicyCreatedBy(
-                                      event,
-                                      newValue
-                                    );
-                                  }}
-                                  renderInput={(params) => (
-                                    <TextField
-                                      {...params}
-                                      className="rounded-sm w-full"
-                                      size="small"
-                                      label="Select Made by"
-                                      variant="outlined"
-                                      error={meta.touched && !!meta.error}
-                                      helperText={meta.touched && meta.error}
-                                    />
-                                  )}
-                                />
-                              </FormControl>
-                            </div>
-                          )}
-                        </Field>
-                      </Grid>
-                      {selectedPolicyCreatedBy &&
-                        selectedPolicyCreatedBy === "Partner" && (
-                          <Grid item lg={4} md={4} sm={6} xs={12}>
-                            <Field name="partnerName">
-                              {({ input, meta }) => (
-                                <div>
-                                  <FormControl fullWidth size="small">
-                                    <Autocomplete
-                                      {...input}
-                                      id="partnerName"
-                                      value={
-                                        input.value !== undefined
-                                          ? input.value
-                                          : initialValues.partnerName || null
-                                      }
-                                      getOptionLabel={(option) =>
-                                        typeof option === "string"
-                                          ? option
-                                          : `${option.name} - ${option.userCode}` ||
-                                          ""
-                                      }
-                                      options={partners}
-                                      onChange={(event, newValue) => {
-                                        input.onChange(
-                                          newValue ? `${newValue.name}-${newValue.userCode}`  : ""
-                                        );
-                                        handleSelectPartnerChange(newValue);
-                                      }}
-                                      renderInput={(params) => (
-                                        <TextField
-                                          {...params}
-                                          className="rounded-sm w-full"
-                                          size="small"
-                                          label="Select Partners"
-                                          variant="outlined"
-                                          error={meta.touched && !!meta.error}
-                                          helperText={
-                                            meta.touched && meta.error
-                                          }
-                                        />
-                                      )}
-                                    />
-                                  </FormControl>
-                                </div>
-                              )}
-                            </Field>
-                          </Grid>
-                        )}
-                      {selectedPolicyCreatedBy &&
-                        selectedPolicyCreatedBy === "Direct" && (
-                          <Grid item lg={4} md={4} sm={6} xs={12}>
-                            <Field name="relationshipManagerName">
-                              {({ input, meta }) => (
-                                <div>
-                                  <FormControl fullWidth size="small">
-                                    <Autocomplete
-                                      {...input}
-                                      id="relationshipManagerName"
-                                      getOptionLabel={(option) =>
-                                        typeof option === "string"
-                                          ? option
-                                          : `${option.name} - ${option.userCode}` ||
-                                          ""
-                                      }
-                                      value={
-                                        input.value !== undefined
-                                          ? input.value
-                                          : initialValues.relationshipManagerName ||
-                                          null
-                                      }
-                                      options={relationshipManagers}
-                                      onChange={(event, newValue) => {
-                                        input.onChange(
-                                          newValue ? newValue.fullName : ""
-                                        );
-                                        handleSelectRMChange(newValue);
-                                      }}
-                                      renderInput={(params) => (
-                                        <TextField
-                                          {...params}
-                                          className="rounded-sm w-full"
-                                          size="small"
-                                          label="Select Relationship Manager"
-                                          variant="outlined"
-                                          error={meta.touched && !!meta.error}
-                                          helperText={
-                                            meta.touched && meta.error
-                                          }
-                                        />
-                                      )}
-                                    />
-                                  </FormControl>
-                                </div>
-                              )}
-                            </Field>
-                          </Grid>
-                        )}
-                      <Grid item md={12} mt={2}>
-                        {rmErrorMessage && (
-                          <div style={{ color: "red" }}>{rmErrorMessage}</div>
-                        )}
-                        <Button
+                        </FormControl>
+                      </div>
+                    )}
+                  </Field>
+                </Grid>
+                {selectedPaymentMode && selectedPaymentMode !== "Cash" && (
+                  <Grid item lg={4} md={4} sm={6} xs={12}>
+                    <Field name="paymentDetails">
+                      {({ input, meta }) => (
+                        <TextField
+                          {...input}
+                          size="small"
+                          fullWidth
+                          label="Enter Payment Details"
                           variant="outlined"
-                          onClick={handleClickAddDocument}
-                        >
-                          Add More Document
-                        </Button>
-                        <Typography variant="body1" gutterBottom mr={4}>
-                          {"Image or PDF should be <= 4MB."}
-                        </Typography>
-                      </Grid>
-                      <Grid item md={12}>
-                        <Grid item lg={12} md={12} sm={12} xs={12}>
-                          <span style={{ color: "red" }}>{errorMessage}</span>
-                        </Grid>
-                        {documents.map((doc, index) => (
-                          <Grid item key={index} md={12} xs={12}>
-                            <Grid container spacing={2} mt={1}>
-                              <Grid item lg={4} md={4} sm={4} xs={12}>
-                                <Autocomplete
-                                  value={
-                                    addPolicyDocumentsOptions.find(
-                                      (option) => option.value === doc.docName
-                                    ) || null
-                                  }
-                                  onChange={(e, newValue) =>
-                                    handleChangeDocumentName(newValue!, index)
-                                  }
-                                  options={addPolicyDocumentsOptions}
-                                  renderInput={(params) => (
-                                    <TextField
-                                      {...params}
-                                      className="rounded-sm w-full"
-                                      size="small"
-                                      label="Select Document"
-                                      fullWidth
-                                      variant="outlined"
-                                    />
-                                  )}
-                                />
-                                {errors[index]?.docName && (
-                                  <span>{errors[index].docName}</span>
-                                )}
-                              </Grid>
-                              <Grid item lg={4} md={4} sm={4} xs={12}>
-                                <FileView
-                                  fileName={formatFilename(doc.file)}
-                                  index={index}
-                                >
-                                  <input
-                                    id={`file-${index}`}
-                                    type="file"
-                                    onChange={(e) =>
-                                      handleFileInputChange(e, index)
-                                    }
-                                    style={{
-                                      position: "absolute",
-                                      opacity: 0,
-                                      width: "100%",
-                                      height: "100%",
-                                      top: 0,
-                                      left: 0,
-                                      cursor: "pointer",
-                                    }}
+                          error={meta.touched && Boolean(meta.error)}
+                          helperText={meta.touched && meta.error}
+                        />
+                      )}
+                    </Field>
+                  </Grid>
+                )}
+                <Grid item lg={4} md={4} sm={6} xs={12}>
+                  <Field name="policyCreatedBy">
+                    {({ input, meta }) => (
+                      <div>
+                        <FormControl fullWidth size="small">
+                          <Autocomplete
+                            {...input}
+                            id="policyCreatedBy"
+                            value={
+                              input.value !== undefined
+                                ? input.value
+                                : initialValues.policyCreatedBy || null
+                            }
+                            getOptionLabel={(option) =>
+                              typeof option === "string"
+                                ? option
+                                : option.label || ""
+                            }
+                            options={
+                              userData.role.toLowerCase() === "admin"
+                                ? policyCreatedBy
+                                : policyCreatedByAdmin
+                            }
+                            onChange={(event, newValue) => {
+                              input.onChange(newValue ? newValue.value : "");
+                              handleSelectPolicyCreatedBy(event, newValue);
+                            }}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                className="rounded-sm w-full"
+                                size="small"
+                                label="Select Made by"
+                                variant="outlined"
+                                error={meta.touched && !!meta.error}
+                                helperText={meta.touched && meta.error}
+                              />
+                            )}
+                          />
+                        </FormControl>
+                      </div>
+                    )}
+                  </Field>
+                </Grid>
+                {selectedPolicyCreatedBy &&
+                  selectedPolicyCreatedBy === "Partner" && (
+                    <Grid item lg={4} md={4} sm={6} xs={12}>
+                      <Field name="partnerName">
+                        {({ input, meta }) => (
+                          <div>
+                            <FormControl fullWidth size="small">
+                              <Autocomplete
+                                {...input}
+                                id="partnerName"
+                                value={
+                                  input.value !== undefined
+                                    ? input.value
+                                    : initialValues.partnerName || null
+                                }
+                                getOptionLabel={(option) =>
+                                  typeof option === "string"
+                                    ? option
+                                    : `${option.name} - ${option.userCode}` ||
+                                      ""
+                                }
+                                options={partners}
+                                onChange={(event, newValue) => {
+                                  input.onChange(
+                                    newValue
+                                      ? `${newValue.name}-${newValue.userCode}`
+                                      : ""
+                                  );
+                                  handleSelectPartnerChange(newValue);
+                                }}
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    className="rounded-sm w-full"
+                                    size="small"
+                                    label="Select Partners"
+                                    variant="outlined"
+                                    error={meta.touched && !!meta.error}
+                                    helperText={meta.touched && meta.error}
                                   />
-                                </FileView>
-
-                                {errors[index]?.file && (
-                                  <span style={{ color: "red" }}>
-                                    {errors[index].file}
-                                  </span>
                                 )}
-                              </Grid>
-                              <Grid item lg={4} md={4} sm={4} xs={4}>
-                                {doc.file ? (
-                                  <>
-                                    <Tooltip title={typeof doc.file === "string" ? doc.file : "View Document"}>
-                                      <IconButton
-                                        color="primary"
-                                        aria-label={`${doc.file}`}
-                                        component="span"
-                                        onClick={() =>
-                                          window.open(
-                                            getDocumentUrl(doc.file),
-                                            "_blank"
-                                          )
-                                        }
-                                      >
-                                        <svg
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          fill="none"
-                                          viewBox="0 0 24 24"
-                                          strokeWidth="1.5"
-                                          stroke="currentColor"
-                                          className="size-6 text-safekaroDarkOrange"
-                                        >
-                                          <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
-                                          />
-                                          <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-                                          />
-                                        </svg>
-                                      </IconButton>
-
-                                    </Tooltip>
-                                  </>
-                                ) : (
-                                  <></>
-                                )}
-                                {documents.length !== 1 && (
-                                  <Tooltip title={"Delete Image"}>
-                                    <IconButton
-                                      color="primary"
-                                      aria-label={"Delete Image"}
-                                      component="span"
-                                      onClick={() =>
-                                        handleClickDeleteDocument(index)
-                                      }
-                                    >
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        strokeWidth="1.5"
-                                        stroke="currentColor"
-                                        className="size-6"
-                                      >
-                                        <path
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                          d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-                                        />
-                                      </svg>
-                                    </IconButton>
-                                  </Tooltip>
-                                )}
-                              </Grid>
-                            </Grid>
-                          </Grid>
-                        ))}
-                      </Grid>
-                    </>
-                  </Grid>
-                  <Grid container spacing={2} mt={2}>
-                    <Grid item lg={12} md={12} sm={12} xs={12}>
-                    <Button
-  variant="contained"
-  type="submit"
-  disabled={isLoading}
-  className="btnGradient text-black px-6 py-3 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
->
-  {isLoading ? "Submitting..." : "Submit"}
-</Button>
-
+                              />
+                            </FormControl>
+                          </div>
+                        )}
+                      </Field>
                     </Grid>
+                  )}
+                {selectedPolicyCreatedBy &&
+                  selectedPolicyCreatedBy === "Direct" && (
+                    <Grid item lg={4} md={4} sm={6} xs={12}>
+                      <Field name="relationshipManagerName">
+                        {({ input, meta }) => (
+                          <div>
+                            <FormControl fullWidth size="small">
+                              <Autocomplete
+                                {...input}
+                                id="relationshipManagerName"
+                                getOptionLabel={(option) =>
+                                  typeof option === "string"
+                                    ? option
+                                    : `${option.name} - ${option.userCode}` ||
+                                      ""
+                                }
+                                value={
+                                  input.value !== undefined
+                                    ? input.value
+                                    : initialValues.relationshipManagerName ||
+                                      null
+                                }
+                                options={relationshipManagers}
+                                onChange={(event, newValue) => {
+                                  input.onChange(
+                                    newValue ? newValue.fullName : ""
+                                  );
+                                  handleSelectRMChange(newValue);
+                                }}
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    className="rounded-sm w-full"
+                                    size="small"
+                                    label="Select Relationship Manager"
+                                    variant="outlined"
+                                    error={meta.touched && !!meta.error}
+                                    helperText={meta.touched && meta.error}
+                                  />
+                                )}
+                              />
+                            </FormControl>
+                          </div>
+                        )}
+                      </Field>
+                    </Grid>
+                  )}
+                <Grid item md={12} mt={2}>
+                  {rmErrorMessage && (
+                    <div style={{ color: "red" }}>{rmErrorMessage}</div>
+                  )}
+                  <Button variant="outlined" onClick={handleClickAddDocument}>
+                    Add More Document
+                  </Button>
+                  <Typography variant="body1" gutterBottom mr={4}>
+                    {"Image or PDF should be <= 4MB."}
+                  </Typography>
+                </Grid>
+                <Grid item md={12}>
+                  <Grid item lg={12} md={12} sm={12} xs={12}>
+                    <span style={{ color: "red" }}>{errorMessage}</span>
                   </Grid>
-                </form>
-              )}
-            />
-    
- 
+                  {documents.map((doc, index) => (
+                    <Grid item key={index} md={12} xs={12}>
+                      <Grid container spacing={2} mt={1}>
+                        <Grid item lg={4} md={4} sm={4} xs={12}>
+                          <Autocomplete
+                            value={
+                              addHealthPolicyDocumentsOptions.find(
+                                (option) => option.value === doc.docName
+                              ) || null
+                            }
+                            onChange={(e, newValue) =>
+                              handleChangeDocumentName(newValue!, index)
+                            }
+                            options={addHealthPolicyDocumentsOptions}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                className="rounded-sm w-full"
+                                size="small"
+                                label="Select Document"
+                                fullWidth
+                                variant="outlined"
+                              />
+                            )}
+                          />
+                          {errors[index]?.docName && (
+                            <span>{errors[index].docName}</span>
+                          )}
+                        </Grid>
+                        <Grid item lg={4} md={4} sm={4} xs={12}>
+                          <FileView
+                            fileName={formatFilename(doc.file)}
+                            index={index}
+                          >
+                            <input
+                              id={`file-${index}`}
+                              type="file"
+                              onChange={(e) => handleFileInputChange(e, index)}
+                              style={{
+                                position: "absolute",
+                                opacity: 0,
+                                width: "100%",
+                                height: "100%",
+                                top: 0,
+                                left: 0,
+                                cursor: "pointer",
+                              }}
+                            />
+                          </FileView>
+
+                          {errors[index]?.file && (
+                            <span style={{ color: "red" }}>
+                              {errors[index].file}
+                            </span>
+                          )}
+                        </Grid>
+                        <Grid item lg={4} md={4} sm={4} xs={4}>
+                          {doc.file ? (
+                            <>
+                              <Tooltip
+                                title={
+                                  typeof doc.file === "string"
+                                    ? doc.file
+                                    : "View Document"
+                                }
+                              >
+                                <IconButton
+                                  color="primary"
+                                  aria-label={`${doc.file}`}
+                                  component="span"
+                                  onClick={() =>
+                                    window.open(
+                                      getDocumentUrl(doc.file),
+                                      "_blank"
+                                    )
+                                  }
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth="1.5"
+                                    stroke="currentColor"
+                                    className="size-6 text-safekaroDarkOrange"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
+                                    />
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                                    />
+                                  </svg>
+                                </IconButton>
+                              </Tooltip>
+                            </>
+                          ) : (
+                            <></>
+                          )}
+                          {documents.length !== 1 && (
+                            <Tooltip title={"Delete Image"}>
+                              <IconButton
+                                color="primary"
+                                aria-label={"Delete Image"}
+                                component="span"
+                                onClick={() => handleClickDeleteDocument(index)}
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth="1.5"
+                                  stroke="currentColor"
+                                  className="size-6"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                                  />
+                                </svg>
+                              </IconButton>
+                            </Tooltip>
+                          )}
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  ))}
+                </Grid>
+              </>
+            </Grid>
+            <Grid container spacing={2} mt={2}>
+              <Grid item lg={12} md={12} sm={12} xs={12}>
+                <Button
+                  variant="contained"
+                  type="submit"
+                  disabled={isLoading}
+                  className="btnGradient text-black px-6 py-3 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
+                >
+                  {isLoading ? "Submitting..." : "Submit"}
+                </Button>
+              </Grid>
+            </Grid>
+          </form>
+        )}
+      />
+
       <Toaster position="bottom-center" reverseOrder={false} />
-      <LoadingOverlay loading={progress > 0 && progress<100} message={progress} />
+      <LoadingOverlay
+        loading={progress > 0 && progress < 100}
+        message={progress}
+      />
     </>
   );
 };
