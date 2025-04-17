@@ -27,7 +27,6 @@ import {
   imagePath,
   ADD,
   DAY_FORMAT,
-  addPolicyDocumentsOptions,
   addHealthPolicyDocumentsOptions,
 } from "../../../context/constant";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
