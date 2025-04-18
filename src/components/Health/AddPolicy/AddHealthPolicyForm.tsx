@@ -1131,7 +1131,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                       fullWidth
                       size="small"
                       type="number"
-                      label="Renewal Year(Auto Fetch)"
+                      label="Renewal Year"
                       className="rounded-sm w-full"
                       variant="outlined"
                       error={meta.touched && Boolean(meta.error)}

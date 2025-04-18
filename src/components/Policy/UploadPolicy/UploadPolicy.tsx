@@ -94,6 +94,8 @@ const UploadPolicy = () => {
         elevation={3}
         style={{ padding: 20, margin: 30, borderRadius: 10 }}
       >
+        <div className="flex justify-between">
+        <div>
         <Typography className="text-safekaroDarkOrange" variant="h5">
           {title}
         </Typography>
@@ -107,10 +109,9 @@ const UploadPolicy = () => {
             style={{ width: "100%", borderColor: "grey-800" }}
           />
         </Typography>
-
-        <div>
-          <MotorPolicyExcel />
         </div>
+          <MotorPolicyExcel />
+          </div>
 
         <Form
           onSubmit={onSubmit}
