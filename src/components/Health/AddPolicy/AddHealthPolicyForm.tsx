@@ -27,7 +27,6 @@ import {
   imagePath,
   ADD,
   DAY_FORMAT,
-  addPolicyDocumentsOptions,
   addHealthPolicyDocumentsOptions,
 } from "../../../context/constant";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -1132,7 +1131,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                       fullWidth
                       size="small"
                       type="number"
-                      label="Renewal Year(Auto Fetch)"
+                      label="Renewal Year"
                       className="rounded-sm w-full"
                       variant="outlined"
                       error={meta.touched && Boolean(meta.error)}

@@ -25,9 +25,9 @@ const PlanCard: FC<PlanCardProps> = ({ p }) => {
 
   const titleGenerator = () => {
     let title = "Checkout";
-    if (userData.planId === p._id) {
+    if (userData?.planId === p._id) {
       title = "Your Plan"
-    } else if (userData.transactionStatus) {
+    } else if (userData?.transactionStatus) {
       title = "Update Plan"
     }
     return title;
@@ -91,9 +91,9 @@ const PlanCard: FC<PlanCardProps> = ({ p }) => {
   <div className="p-4">
     <button
       onClick={handleCheckout}
-      disabled={userData.planId === p._id}
+      disabled={userData?.planId === p._id}
       className={`w-full bg-blue-500 hover:bg-blue-400 text-white font-semibold py-2 rounded-lg transition-all duration-300 
-       ${userData.planId === p._id ? " cursor-not-allowed opacity-70" : ""}`}
+       ${userData?.planId === p._id ? " cursor-not-allowed opacity-70" : ""}`}
     >
       {titleGenerator()}
     </button>

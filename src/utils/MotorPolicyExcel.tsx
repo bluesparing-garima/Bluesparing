@@ -1,6 +1,9 @@
 import React from "react";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import { Tooltip } from "@mui/material";
+import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
+
 const MotorPolicyExcel: React.FC = () => {
   const handleDownload = () => {
     const workbook = XLSX.utils.book_new();
@@ -109,6 +112,15 @@ const MotorPolicyExcel: React.FC = () => {
     const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
     saveAs(blob, "sample.xlsx");
   };
-  return <button onClick={handleDownload}>Download Excel Sample</button>;
+  return (
+    <Tooltip title="Download Excel Sample">
+      <button
+        onClick={handleDownload}
+        className="md:w-10 md:h-10 h-4 w-4 btnGradient shadow-sm rounded flex justify-center items-center text-white"
+      >
+        <FileDownloadOutlinedIcon className="md:w-6 md:h-6 h-3 w-3" />
+      </button>
+    </Tooltip>
+  );
 };
 export default MotorPolicyExcel;

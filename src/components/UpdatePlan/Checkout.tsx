@@ -65,7 +65,7 @@ const Checkout: FC = () => {
   const user = getFromSessionStorage(SESSION_USER) as IUser;
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let userData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
-  const [selectedMonths, setSelectedMonths] = useState<number>(3);
+  const [selectedMonths, setSelectedMonths] = useState<number>(1);
 
   if (!plan) {
     toast.error("No plan selected. Redirecting to plans page...");
@@ -415,7 +415,7 @@ const Checkout: FC = () => {
               className="ml-2 w-32 sm:w-40 h-10 text-sm sm:text-base font-semibold"
               IconComponent={KeyboardArrowDownIcon}
             >
-              {[3,6,12,24].map((ele, index) => {
+              {[1,3,6,12,24].map((ele, index) => {
                 const month = ele;
                 return (
                   <MenuItem key={`${month}-month`} value={month}>
