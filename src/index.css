@@ -70,7 +70,7 @@ code {
   color: #443627; /* text color */
   transition: all 0.3s ease-in-out; /* transition-all + duration-300 + ease-in-out */
   width: 100%; /* w-full */
-  margin-bottom: 2.5rem; /* mb-10 = 40px */
+   /* mb-10 = 40px */
   padding: 0.75rem 1rem; /* py-3 px-4 = 12px 16px */
   border-radius: 0.5rem; /* rounded = 8px */
   display: flex; /* flex */

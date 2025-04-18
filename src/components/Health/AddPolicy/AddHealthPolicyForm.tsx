@@ -4,18 +4,14 @@ import {
   Button,
   Grid,
   Typography,
-  Card,
-  CardContent,
 } from "@mui/material";
 import { FormControl } from "@mui/material";
 import { useState, useEffect } from "react";
 import * as yup from "yup";
-import { Field, Form } from "react-final-form";
+import { Field, Form, FormSpy} from "react-final-form";
 import { setIn } from "final-form";
-// import { IAddEditPolicyForm } from "../IPolicy";
 import { IAddEditHealthForm } from "../IHealth";
 import { IconButton, Tooltip } from "@mui/material";
-import React from "react";
 import addPolicyService from "../../../api/Policies/AddPolicy/addPolicyService";
 import toast, { Toaster } from "react-hot-toast";
 import {
@@ -36,18 +32,13 @@ import { motorPolicyPath } from "../../../sitemap";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { FORM_ERROR } from "final-form";
 import useGetProductSubTypes from "../../../Hooks/Product/useGetProductSubTypes";
-import useGetPolicyTypes from "../../../Hooks/Policy/useGetPolicyTypes";
-import useGetCaseTypes from "../../../Hooks/CaseType/useGetCaseTypes";
 import useGetProducts from "../../../Hooks/Product/useGetProducts";
 import useGetBrokers from "../../../Hooks/Broker/useGetBrokers";
 import useGetCompanies from "../../../Hooks/Company/useGetCompanies";
 import useGetFuelTypes from "../../../Hooks/FuelType/useGetFuelTypes";
 import {
   paymentModes,
-  policyCreatedBy,
-  policyCreatedByAdmin,
 } from "../../Policy/IPolicyData";
-// import { paymentModes } from "../../Policy/IPolicyData";
 import useGetMakes from "../../../Hooks/Make/useGetMakes";
 import useGetModels from "../../../Hooks/Model/useGetModels";
 import useGetPartners from "../../../Hooks/Partner/useGetPartners";
@@ -65,6 +56,7 @@ import { updateLocalStorage } from "../../../utils/HandleStore";
 import UpgradePlanPopup from "../../UpdatePlan/UpgradeExistingPlan";
 import LoadingOverlay from "../../../utils/ui/LoadingOverlay";
 import getPolicyCountAPI from "../../../api/Policies/getPolicyCount/getPolicyCountAPI";
+
 export interface AddPolicyFormProps {
   initialValues: IAddEditHealthForm;
 }
@@ -657,8 +649,9 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
         .string()
         .required("First Purchased Date is required")
         .nullable(),
-        renewalYear: yup.number().required("Renewal Year is required").nullable(),
+        renewalYear: yup.string().required("Renewal Year is required").nullable(),
         accumulatedBonus: yup.string().nullable().required("Accumulated Bonus is required"),
+        accumulativeBonus: yup.string().nullable().required("Accumulative Bonus is required"),
         issueDate: yup.string().required("Issue Date is required").nullable(),
         EndDate: yup.string().required("Issue Date is required").nullable(),
         policyType: yup.string().required("Policy Type is required").nullable(),
@@ -701,7 +694,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
     // model: yup.string().nullable().required("Model is required"),
     // fuelType: yup.string().nullable().required("Fuel Type is required"),
     // ncb: yup.string().nullable().required("NCB is required"),
-    // broker: yup.string().nullable().required("Broker Name is required"),
+    broker: yup.string().nullable().required("Broker Name is required"),
   });
   const addValidate = validateFormValues(addValidationSchema);
   const handleSelectPolicyCreatedBy = (event: any, newValue: any) => {
@@ -989,6 +982,51 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                 </Field>
               </Grid>
               <Grid item lg={4} md={4} sm={6} xs={12}>
+                                    <Field name="broker">
+                                      {({ input, meta }) => (
+                                        <div>
+                                          <FormControl fullWidth size="small">
+                                            <Autocomplete
+                                              {...input}
+                                              id="broker"
+                                              value={
+                                                input.value !== undefined
+                                                  ? input.value
+                                                  : initialValues.broker || null
+                                              }
+                                              getOptionLabel={(option) =>
+                                                typeof option === "string"
+                                                  ? option
+                                                  : `${option.brokerName} - ${option.brokerCode}` ||
+                                                  ""
+                                              }
+                                              options={brokers}
+                                              onChange={(event, newValue) => {
+                                                input.onChange(
+                                                  newValue ? newValue.brokerName : ""
+                                                );
+                                                setSelectedBrokerId(
+                                                  newValue ? newValue._id : ""
+                                                );
+                                              }}
+                                              renderInput={(params) => (
+                                                <TextField
+                                                  {...params}
+                                                  label=" Select Broker"
+                                                  className="rounded-sm w-full"
+                                                  size="small"
+                                                  variant="outlined"
+                                                  error={meta.touched && !!meta.error}
+                                                  helperText={meta.touched && meta.error}
+                                                />
+                                              )}
+                                            />
+                                          </FormControl>
+                                        </div>
+                                      )}
+                                    </Field>
+                                  </Grid>
+              <Grid item lg={4} md={4} sm={6} xs={12}>
                 <Field name="issueDate">
                   {({ input, meta }) => (
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -1099,47 +1137,61 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                 </Field>
               </Grid>
               <Grid item lg={4} md={4} sm={6} xs={12}>
-                <Field name="firstPurchasedDate">
-                  {({ input, meta }) => (
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DatePicker
-                        disableFuture
-                        label="First Purchased Date"
-                        inputFormat="DD/MM/YYYY"
-                        value={input.value || null}
-                        onChange={(date) => input.onChange(date)}
-                        renderInput={(params: any) => (
-                          <TextField
-                            variant="outlined"
-                            size="small"
-                            fullWidth
-                            {...params}
-                            error={meta.touched && !!meta.error}
-                            helperText={meta.touched && meta.error}
-                          />
-                        )}
+  <FormSpy subscription={{}}>
+    {({ form }) => (
+      <Field name="firstPurchasedDate">
+        {({ input, meta }) => (
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              disableFuture
+              label="First Purchased Date"
+              inputFormat="DD/MM/YYYY"
+              value={input.value || null}
+              onChange={(date) => {
+                input.onChange(date);
+                if (date) {
+                  const renewalYear = dayjs(date).add(5, "year").format("DD/MM/YYYY");
+                  form.change("renewalYear", renewalYear);
+                } else {
+                  form.change("renewalYear", "");
+                }
+              }}
+              renderInput={(params: any) => (
+                <TextField
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                  {...params}
+                  error={meta.touched && !!meta.error}
+                  helperText={meta.touched && meta.error}
+                />
+              )}
+            />
+          </LocalizationProvider>
+        )}
+      </Field>
+    )}
+  </FormSpy>
+</Grid>
+                <Grid item lg={4} md={4} sm={6} xs={12}>
+                  <Field name="renewalYear">
+                    {({ input, meta }) => (
+                      <TextField
+                        {...input}
+                        fullWidth
+                        InputProps={{ readOnly: true }}
+                        size="small"
+                        type="text"
+                        label="Renewal Year"
+                        placeholder="DD/MM/YYYY"
+                        className="rounded-sm w-full"
+                        variant="outlined"
+                        error={meta.touched && Boolean(meta.error)}
+                        helperText={meta.touched && meta.error}
                       />
-                    </LocalizationProvider>
-                  )}
-                </Field>
-              </Grid>
-              <Grid item lg={4} md={4} sm={6} xs={12}>
-                <Field name="renewalYear">
-                  {({ input, meta }) => (
-                    <TextField
-                      {...input}
-                      fullWidth
-                      size="small"
-                      type="number"
-                      label="Renewal Year"
-                      className="rounded-sm w-full"
-                      variant="outlined"
-                      error={meta.touched && Boolean(meta.error)}
-                      helperText={meta.touched && meta.error}
-                    />
-                  )}
-                </Field>
-              </Grid>
+                    )}
+                  </Field>
+                </Grid>
               <Grid item lg={4} md={4} sm={6} xs={12}>
                 <Field name="accumulatedBonus">
                   {({ input, meta }) => (
@@ -1147,6 +1199,25 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                       {...input}
                       size="small"
                       label="Enter Accumulated Bonus"
+                      variant="outlined"
+                      className="rounded-sm w-full"
+                      onChangeCapture={validateVehicleNumber}
+                      error={meta.touched && Boolean(meta.error)}
+                      helperText={meta.touched && meta.error}
+                    />
+                  )}
+                </Field>
+                {vehicleErr && (
+                  <div className="text-[red] text-sm">{vehicleErr}</div>
+                )}
+              </Grid>
+              <Grid item lg={4} md={4} sm={6} xs={12}>
+                <Field name="accumulativeBonus">
+                  {({ input, meta }) => (
+                    <TextField
+                      {...input}
+                      size="small"
+                      label="Enter Accumulative Bonus"
                       variant="outlined"
                       className="rounded-sm w-full"
                       onChangeCapture={validateVehicleNumber}
@@ -1266,50 +1337,6 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                     </Field>
                   </Grid>
                 )}
-                <Grid item lg={4} md={4} sm={6} xs={12}>
-                  <Field name="policyCreatedBy">
-                    {({ input, meta }) => (
-                      <div>
-                        <FormControl fullWidth size="small">
-                          <Autocomplete
-                            {...input}
-                            id="policyCreatedBy"
-                            value={
-                              input.value !== undefined
-                                ? input.value
-                                : initialValues.policyCreatedBy || null
-                            }
-                            getOptionLabel={(option) =>
-                              typeof option === "string"
-                                ? option
-                                : option.label || ""
-                            }
-                            options={
-                              userData.role.toLowerCase() === "admin"
-                                ? policyCreatedBy
-                                : policyCreatedByAdmin
-                            }
-                            onChange={(event, newValue) => {
-                              input.onChange(newValue ? newValue.value : "");
-                              handleSelectPolicyCreatedBy(event, newValue);
-                            }}
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                className="rounded-sm w-full"
-                                size="small"
-                                label="Select Made by"
-                                variant="outlined"
-                                error={meta.touched && !!meta.error}
-                                helperText={meta.touched && meta.error}
-                              />
-                            )}
-                          />
-                        </FormControl>
-                      </div>
-                    )}
-                  </Field>
-                </Grid>
                 {selectedPolicyCreatedBy &&
                   selectedPolicyCreatedBy === "Partner" && (
                     <Grid item lg={4} md={4} sm={6} xs={12}>
