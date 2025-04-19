@@ -62,9 +62,17 @@ const DownloadExcel: React.FC = () => {
     saveAs(blob, "sample.xlsx");
   };
   return (
+    // <Tooltip title="Download Excel Sample">
+    //   <button
+    //     onClick={handleDownload}
+    //     className="md:w-10 md:h-10 h-4 w-4 btnGradient shadow-sm rounded flex justify-center items-center text-white"
+    //   >
+    //     <FileDownloadOutlinedIcon className="md:w-6 md:h-6 h-3 w-3" />
+    //   </button>
+    // </Tooltip>
     <Tooltip title="Download Sample Excel">
       <button
-        className="md:w-10 md:h-10 h-4 w-4 bg-[#3BDB03] shadow-sm rounded flex justify-center items-center text-white"
+        className="md:w-10 md:h-10 h-4 w-4 btnGradient shadow-sm rounded flex justify-center items-center text-white"
         onClick={handleDownload}
       >
         <FileDownloadOutlinedIcon className="md:w-6 md:h-6 h-3 w-3" />
