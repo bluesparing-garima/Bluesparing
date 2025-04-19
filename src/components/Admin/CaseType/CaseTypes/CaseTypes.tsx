@@ -154,13 +154,13 @@ const CaseTypes = () => {
                 </Link>
                 <span className="text-grey-600 text-sm"> Case Type</span>
               </div>
-              {/* <Button
+              <Button
                 type="button"
                 className="w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                 onClick={handleAddCaseTypeClick}
               >
                 Add Case Type
-              </Button> */}
+              </Button>
             </div>
             <hr
               className="mt-4"
@@ -189,7 +189,7 @@ const CaseTypes = () => {
             autoResetPageIndex={false}
             renderRowActions={({ row }) => (
               <div style={{ display: "flex", flexWrap: "nowrap" }}>
-                {/* <Tooltip title={"Edit Case Type"}>
+                <Tooltip title={"Edit Case Type"}>
                   <IconButton
                     color="primary"
                     aria-label={"Edit Case Type"}
@@ -213,8 +213,8 @@ const CaseTypes = () => {
                       />
                     </svg>
                   </IconButton>
-                </Tooltip> */}
-                {/* <Tooltip title={"Change Status"}>
+                </Tooltip>
+                <Tooltip title={"Change Status"}>
                   <IconButton
                     color="primary"
                     aria-label={"Change Status"}
@@ -238,7 +238,7 @@ const CaseTypes = () => {
                       />
                     </svg>
                   </IconButton>
-                </Tooltip> */}
+                </Tooltip>
               </div>
             )}
           />
