@@ -13,9 +13,10 @@ import Client from "./components/Client/Client";
 import WelcomePage from "./components/Dashboard/WelcomeScreen";
 
 import ComingSoonHealth from "./components/Health/ComingSoonHealth";
-import ComingSoonNonMotor from "./components/NonMotor/ComingSoonNonMotor";
 import AddHealthPolicy from "./components/Health/AddPolicy/AddHealthPolicy";
 import GetHealthPolicies from "./components/Health/GetHealthPolicy/GetHealthPolicies";
+import GetNonMotorPolicies from "./components/NonMotor/GetNonMotorPolicy/GetNonMotorPolicies";
+import AddNonMotorPolicy from "./components/NonMotor/AddPolicy/AddNonMotorPolicy";
 
 const Dashboard = lazy(() => import("./components/Dashboard/dashboard"));
 const PartnerDashboard = lazy(
@@ -734,9 +735,11 @@ const routes = [
     children: [
       {
         path: "upload-policy-pdf",
-        element: (<SuspenseWrapper>
-          <UploadPolicyPdf />
-        </SuspenseWrapper>)
+        element: (
+          <SuspenseWrapper>
+            <UploadPolicyPdf />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "",
@@ -1629,7 +1632,12 @@ const routes = [
       },
       {
         path: "reject",
-        element: <SuspenseWrapper> <RejectionPolicies /></SuspenseWrapper>,
+        element: (
+          <SuspenseWrapper>
+            {" "}
+            <RejectionPolicies />
+          </SuspenseWrapper>
+        ),
       },
       {
         path: "publish",
@@ -1790,6 +1798,22 @@ const routes = [
         element: (
           <SuspenseWrapper>
             <GetHealthPolicies />
+          </SuspenseWrapper>
+        ),
+      },
+      {
+        path: "non-motor-policies",
+        element: (
+          <SuspenseWrapper>
+            <GetNonMotorPolicies />
+          </SuspenseWrapper>
+        ),
+      },
+      {
+        path: "/policy/non-motor/add",
+        element: (
+          <SuspenseWrapper>
+            <AddNonMotorPolicy />
           </SuspenseWrapper>
         ),
       },
@@ -2393,19 +2417,6 @@ const routes = [
     ],
   },
   {
-    path: "non-motor",
-    children: [
-      {
-        path: "",
-        element: (
-          <SuspenseWrapper>
-            <ComingSoonHealth />
-          </SuspenseWrapper>
-        ),
-      },
-    ],
-  },
-  {
     path: "life",
     children: [
       {
@@ -2418,19 +2429,6 @@ const routes = [
       },
     ],
   },
-  // {
-  //   path: "health",
-  //   children: [
-  //     {
-  //       path: "",
-  //       element: (
-  //         <SuspenseWrapper>
-  //           <ComingSoonHealth />
-  //         </SuspenseWrapper>
-  //       ),
-  //     },
-  //   ],
-  // },
   {
     path: "hr",
     children: [

@@ -4,14 +4,20 @@ import {
   Button,
   Grid,
   Typography,
+  Card,
+  CardContent,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import { FormControl } from "@mui/material";
 import { useState, useEffect } from "react";
 import * as yup from "yup";
-import { Field, Form, FormSpy } from "react-final-form";
+import { Field, Form } from "react-final-form";
 import { setIn } from "final-form";
-import { IAddEditHealthForm } from "../IHealth";
 import { IconButton, Tooltip } from "@mui/material";
+import React from "react";
 import addPolicyService from "../../../api/Policies/AddPolicy/addPolicyService";
 import toast, { Toaster } from "react-hot-toast";
 import {
@@ -23,7 +29,8 @@ import {
   imagePath,
   ADD,
   DAY_FORMAT,
-  addHealthPolicyDocumentsOptions,
+  addPolicyDocumentsOptions,
+  addNonMotorPolicyDocumentsOptions,
 } from "../../../context/constant";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -32,11 +39,12 @@ import { motorPolicyPath } from "../../../sitemap";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { FORM_ERROR } from "final-form";
 import useGetProductSubTypes from "../../../Hooks/Product/useGetProductSubTypes";
+import useGetPolicyTypes from "../../../Hooks/Policy/useGetPolicyTypes";
+import useGetCaseTypes from "../../../Hooks/CaseType/useGetCaseTypes";
 import useGetProducts from "../../../Hooks/Product/useGetProducts";
 import useGetBrokers from "../../../Hooks/Broker/useGetBrokers";
 import useGetCompanies from "../../../Hooks/Company/useGetCompanies";
 import useGetFuelTypes from "../../../Hooks/FuelType/useGetFuelTypes";
-import { paymentModes } from "../../Policy/IPolicyData";
 import useGetMakes from "../../../Hooks/Make/useGetMakes";
 import useGetModels from "../../../Hooks/Model/useGetModels";
 import useGetPartners from "../../../Hooks/Partner/useGetPartners";
@@ -54,11 +62,18 @@ import { updateLocalStorage } from "../../../utils/HandleStore";
 import UpgradePlanPopup from "../../UpdatePlan/UpgradeExistingPlan";
 import LoadingOverlay from "../../../utils/ui/LoadingOverlay";
 import getPolicyCountAPI from "../../../api/Policies/getPolicyCount/getPolicyCountAPI";
+import { IAddEditPolicyForm } from "../../Policy/IPolicy";
+import {
+  paymentModes,
+  policyCreatedBy,
+  policyCreatedByAdmin,
+} from "../../Policy/IPolicyData";
 
 export interface AddPolicyFormProps {
-  initialValues: IAddEditHealthForm;
+  initialValues: IAddEditPolicyForm;
 }
-const AddPolicyForm = (props: AddPolicyFormProps) => {
+
+const AddNonMotorPolicyForm = (props: AddPolicyFormProps) => {
   const { policyId } = useParams();
   const { initialValues } = props;
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
@@ -71,22 +86,51 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   ]);
   // let [policyTypes] = useGetPolicyTypes({ header: header });
   const policyTypes = [
-    { policyType: "Individuals" },
-    { policyType: "Family Floater" },
-    { policyType: "Critical Illness" },
-    { policyType: "Top-up Policy" },
-    { policyType: "Personal Accidental" },
-    { policyType: "Travel Insurance" },
+    { policyType: "Fire" },
+    { policyType: "Marine" },
+    { policyType: "Miscellaneous" },
   ];
 
   const caseTypes = [
     { caseType: "New" },
-    { caseType: "ReNewal" },
-    { caseType: "Port" },
+    { caseType: "Renewal" },
+    { caseType: "Rollover" },
   ];
 
-  // const YourComponent = ({ initialValues = {} }) => {
-  //   const [policyType, setPolicyType] = useState(initialValues.policyType || "");
+  const marineProducts = [
+    { label: "Marine Specific Policy (Single Voyage)" },
+    { label: "Marine Open Policy (MOP)" },
+    { label: "Sales Turnover Policy (STOP)" },
+  ];
+
+  const marineSubCategories = [
+    { label: "Import" },
+    { label: "Export" },
+    { label: "Domestic" },
+    { label: "Import + Export + Domestic" },
+  ];
+
+  const accidentalPercentages = [10, 15, 20, 25];
+
+  const [marineProduct, setMarineProduct] = useState("");
+  const [marineSubCategory, setMarineSubCategory] = useState("");
+  const [commodity, setCommodity] = useState("");
+  const [annualTurnover, setAnnualTurnover] = useState<number>(0);
+  const [accidentalPercent, setAccidentalPercent] = useState<number>(0);
+  const [accidentalAmount, setAccidentalAmount] = useState<number>(0);
+
+  const [miscProduct, setMiscProduct] = useState("");
+  const [customProduct, setCustomProduct] = useState("");
+  const [limitOfLiability, setLimitOfLiability] = useState("");
+
+  const miscProductOptions = [
+    { label: "3D Liability (Premises)" },
+    { label: "Commercial General Liability (CGL)" },
+    { label: "Public Liability Policy (PLI Act)" },
+    { label: "Other" },
+  ];
+
+  const occupancy = [{ label: "IIB Risk Board", value: "IIB Risk Board" }];
 
   let [relationshipManagers] = useGetPartners({
     header: header,
@@ -109,6 +153,20 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   const [selectedCaseType, setSelectedCaseType] = useState(
     initialValues.caseType || ""
   );
+  const [openBurglaryPopup, setOpenBurglaryPopup] = useState(false);
+  const [firstLossBasis, setFirstLossBasis] = useState("");
+  const [sumInsured, setSumInsured] = useState("");
+  const fireSumInsured = "500000"; // example, fetch from fire data
+  const [terrorismCover, setTerrorismCover] = useState(""); // "Yes" / "No"
+
+  const fireProducts = [
+    { product: "Sukah" },
+    { product: "Laghu" },
+    { product: "Standard Fire" },
+    { product: "Residential Fire" },
+  ];
+
+  const yesNoOptions = [{ label: "Yes" }, { label: "No" }];
 
   const navigate = useNavigate();
   const [selectedPaymentMode, setSelectedPaymentMode] = useState();
@@ -123,10 +181,30 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       return arg === val;
     });
   };
-  const [selectedMake, setSelectedMake] = useState<IMakes | undefined>();
+
+  const subCategories = [
+    { subTypeName: "Import" },
+    { subTypeName: "Export" },
+    { subTypeName: "Domestic" },
+    { subTypeName: "Import + Export + Domestic" },
+  ];
+
+  // Convert subTypeName to productSubType (matching IProductSubTypes interface)
+  const convertedSubCategories: IProductSubTypes[] = subCategories.map(
+    (item) => ({
+      productSubType: item.subTypeName,
+    })
+  );
+
   const [filteredSubcategories, setFilteredSubcategories] = useState<
     IProductSubTypes[]
-  >([]);
+  >(convertedSubCategories);
+
+  const [selectedMake, setSelectedMake] = useState<IMakes | undefined>();
+  // const [filteredSubcategories, setFilteredSubcategories] = useState<
+  //   IProductSubTypes[]
+  // >([]);
+
   const [policyType, setPolicyType] = useState(initialValues.policyType || "");
   const [od, setOd] = useState(0);
   const [tp, setTp] = useState(0);
@@ -147,6 +225,10 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   const [showUpgradePopup, setShowUpgradePopup] = useState(false);
   const [progress, setProgress] = useState(0);
   const [policyCount, setPolicyCount] = useState<number>(0);
+  const [selectedOccupancy, setSelectedOccupancy] = useState(
+    (initialValues as any).occupancy || ""
+  );
+
   useEffect(() => {
     if (!isAdd) {
       setOd(initialValues.od ?? 0);
@@ -165,18 +247,18 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       setTenure(initialValues.tenure ?? 1);
       setSelectedCaseType(initialValues.caseType ?? "");
       const updatedDocuments: Document[] = [];
-      // if (initialValues.rcBack) {
-      //   updatedDocuments.push({
-      //     docName: "rcBack",
-      //     file: initialValues.rcBack,
-      //   });
-      // }
-      // if (initialValues.rcFront) {
-      //   updatedDocuments.push({
-      //     docName: "rcFront",
-      //     file: initialValues.rcFront,
-      //   });
-      // }
+      if (initialValues.rcBack) {
+        updatedDocuments.push({
+          docName: "rcBack",
+          file: initialValues.rcBack,
+        });
+      }
+      if (initialValues.rcFront) {
+        updatedDocuments.push({
+          docName: "rcFront",
+          file: initialValues.rcFront,
+        });
+      }
       if (initialValues.previousPolicy) {
         updatedDocuments.push({
           docName: "previousPolicy",
@@ -354,7 +436,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
     const formData = new FormData();
     const addedKeys = new Map<string, string>();
     Object.keys(policyForm).forEach((key) => {
-      const value = policyForm[key as keyof IAddEditHealthForm];
+      const value = policyForm[key as keyof IAddEditPolicyForm];
       if (value !== undefined) {
         addedKeys.set(key, value);
       }
@@ -618,14 +700,22 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       .transform((value) =>
         value ? value.replace(/\s+/g, " ").trim() : value
       ),
+    mfgYear: yup.number().required("MFG Year is required").nullable(),
+    tenure: yup.number().required("Tenure is required").nullable(),
+    cc: yup.string().required("CC is required").nullable(),
+    tp: yup.number().required("TP is required").nullable(),
+    od: yup.number().required("OD is required").nullable(),
+    idv: yup
+      .number()
+      .nullable()
+      .when([], {
+        is: () => policyType.toLowerCase().trim() === "third party only/ tp",
+        then: yup.number().nullable(),
+        otherwise: yup.number().required("IDV is required").nullable(),
+      }),
 
     netPremium: yup.number().required("Net Premium is required").nullable(),
     finalPremium: yup.number().required("Final Premium is required").nullable(),
-    sumInsured: yup
-      .number()
-      .required("Total Sum Insured is required")
-      .nullable(),
-
     fullName: yup
       .string()
       .trim()
@@ -646,62 +736,31 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       .required("Phone Number is required")
       .min(1, "Phone Number must be at least 1 character")
       .max(10, "Phone Number must be at least 10 character"),
-    firstPurchasedDate: yup
+    vehicleNumber: yup
       .string()
-      .required("First Purchased Date is required")
+      .required("Vehicle Number is required")
+      .min(1, "Vehicle Number must be at least 1 character")
+      .max(12, "Vehicle Number must can be 12 character"),
+    registrationDate: yup
+      .string()
+      .required("Registration Date is required")
       .nullable(),
-    renewalYear: yup.string().required("Renewal Year is required").nullable(),
-    accumulatedBonus: yup
-      .string()
-      .nullable()
-      .required("Accumulated Bonus is required"),
-    accumulativeBonus: yup
-      .string()
-      .nullable()
-      .required("Accumulative Bonus is required"),
+    // endDate: yup.string().required("End Date is required").nullable(),
     issueDate: yup.string().required("Issue Date is required").nullable(),
-    EndDate: yup.string().required("Issue Date is required").nullable(),
     policyType: yup.string().required("Policy Type is required").nullable(),
     caseType: yup.string().nullable().required("Case Type is required"),
     productType: yup.string().nullable().required("Product Type is required"),
     companyName: yup.string().nullable().required("Company Name is required"),
+    make: yup.string().required("Make is required").nullable(),
+    model: yup.string().nullable().required("Model is required"),
+    fuelType: yup.string().nullable().required("Fuel Type is required"),
     paymentMode: yup.string().nullable().required("Payment Mode is required"),
-
-    // policyCreatedBy: yup
-    // .string()
-    // .nullable()
-    // .required("Policy Created By is required"),
-
-    // registrationDate: yup
-    //   .string()
-    //   .required("Registration Date is required")
-    //   .nullable(),
-
-    // mfgYear: yup.number().required("MFG Year is required").nullable(),
-    // tenure: yup.number().required("Tenure is required").nullable(),
-    // cc: yup.string().required("CC is required").nullable(),
-    // tp: yup.number().required("TP is required").nullable(),
-    // od: yup.number().required("OD is required").nullable(),
-    // idv: yup
-    //   .number()
-    //   .nullable()
-    //   .when([], {
-    //     is: () => policyType.toLowerCase().trim() === "third party only/ tp",
-    //     then: yup.number().nullable(),
-    //     otherwise: yup.number().required("IDV is required").nullable(),
-    //   }),
-
-    // vehicleNumber: yup
-    //   .string()
-    //   .required("Vehicle Number is required")
-    //   .min(1, "Vehicle Number must be at least 1 character")
-    //   .max(12, "Vehicle Number must can be 12 character"),
-    // endDate: yup.string().required("End Date is required").nullable(),
-    // make: yup.string().required("Make is required").nullable(),
-    // model: yup.string().nullable().required("Model is required"),
-    // fuelType: yup.string().nullable().required("Fuel Type is required"),
-    // ncb: yup.string().nullable().required("NCB is required"),
+    ncb: yup.string().nullable().required("NCB is required"),
     broker: yup.string().nullable().required("Broker Name is required"),
+    policyCreatedBy: yup
+      .string()
+      .nullable()
+      .required("Policy Created By is required"),
   });
   const addValidate = validateFormValues(addValidationSchema);
   const handleSelectPolicyCreatedBy = (event: any, newValue: any) => {
@@ -767,9 +826,12 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
     return `${imagePath}${encodeURIComponent(file)}`; // API se aayi purani file
   };
 
-  const predefinedOrder = ["Health"];
-
-  const product = ["Health", " Personal Accident"];
+  const predefinedOrder = ["Marine Specific Policy(Single Voyage)"];
+  const product = [
+    "Marine Specific Policy(single Voyage)",
+    "Marine Open Policy(MOP)",
+    "Sales Turnover Policy(STOP)",
+  ];
 
   const sortedProducts = [...products].sort((a, b) => {
     const nameA = a.productName || "";
@@ -859,6 +921,313 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                   )}
                 </Field>
               </Grid>
+
+              {policyType === "Fire" && (
+                <>
+                  {/* Product Dropdown */}
+                  <Grid item lg={4} md={4} sm={6} xs={12}>
+                    <FormControl fullWidth size="small">
+                      <Autocomplete
+                        options={fireProducts}
+                        getOptionLabel={(option) => option.product}
+                        onChange={(e, value) =>
+                          console.log("Product selected:", value)
+                        }
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Product Type"
+                            size="small"
+                          />
+                        )}
+                      />
+                    </FormControl>
+                  </Grid>
+
+                  {/* Terrorism Cover */}
+                  <Grid item lg={4} md={4} sm={6} xs={12}>
+                    <FormControl fullWidth size="small">
+                      <Autocomplete
+                        options={yesNoOptions}
+                        getOptionLabel={(option) => option.label}
+                        onChange={(e, value) => {
+                          if (value && value.label) {
+                            setTerrorismCover(value.label);
+                          } else {
+                            setTerrorismCover("");
+                          }
+                        }}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Terrorism Cover"
+                            size="small"
+                          />
+                        )}
+                      />
+                    </FormControl>
+                  </Grid>
+
+                  {/* Conditional Premium Fields */}
+                  {terrorismCover === "Yes" && (
+                    <Grid item lg={4} md={4} sm={6} xs={12}>
+                      <TextField
+                        fullWidth
+                        label="Terrorism Premium"
+                        size="small"
+                        variant="outlined"
+                      />
+                    </Grid>
+                  )}
+                  {terrorismCover === "No" && (
+                    <Grid item lg={4} md={4} sm={6} xs={12}>
+                      <TextField
+                        fullWidth
+                        label="Fire Premium Without Terrorism"
+                        size="small"
+                        variant="outlined"
+                      />
+                    </Grid>
+                  )}
+
+                  {/* Add Corresponding Burglary Policy */}
+                  <Grid item lg={4} md={4} sm={6} xs={12}>
+                    <FormControl fullWidth size="small">
+                      <Autocomplete
+                        options={yesNoOptions}
+                        getOptionLabel={(option) => option.label}
+                        onChange={(e, value) => {
+                          if (value?.label === "Yes") {
+                            setOpenBurglaryPopup(true);
+                          }
+                        }}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Add Burglary Policy"
+                            size="small"
+                          />
+                        )}
+                      />
+                    </FormControl>
+                  </Grid>
+
+                  {/* Popup */}
+                  {openBurglaryPopup && (
+                    <Dialog
+                      open={openBurglaryPopup}
+                      onClose={() => setOpenBurglaryPopup(false)}
+                      fullWidth
+                      maxWidth="md" // options: xs, sm, md, lg, xl
+                      PaperProps={{
+                        sx: {
+                          width: "90%",
+                          maxWidth: "700px",
+                          height: "auto",
+                          maxHeight: "90vh",
+                        },
+                      }}
+                    >
+                      <DialogTitle>Add Burglary Policy</DialogTitle>
+                      <DialogContent>
+                        <TextField
+                          label="Policy Number"
+                          fullWidth
+                          margin="dense"
+                          variant="outlined"
+                        />
+
+                        <Autocomplete
+                          options={[{ label: "Yes" }, { label: "No" }]}
+                          getOptionLabel={(option) => option.label}
+                          onChange={(e, value) =>
+                            setFirstLossBasis(value?.label || "")
+                          }
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="First Loss Basis"
+                              margin="dense"
+                            />
+                          )}
+                        />
+
+                        {firstLossBasis === "Yes" ? (
+                          <TextField
+                            label="Sum Insured Amount"
+                            fullWidth
+                            margin="dense"
+                            variant="outlined"
+                            value={sumInsured}
+                            onChange={(e) => setSumInsured(e.target.value)}
+                          />
+                        ) : firstLossBasis === "No" ? (
+                          <TextField
+                            label="Sum Insured Amount"
+                            fullWidth
+                            margin="dense"
+                            variant="outlined"
+                            value={fireSumInsured}
+                            disabled
+                          />
+                        ) : null}
+                      </DialogContent>
+                      <DialogActions>
+                        <Button onClick={() => setOpenBurglaryPopup(false)}>
+                          Cancel
+                        </Button>
+                        <Button
+                          variant="contained"
+                          onClick={() => {
+                            /* Save logic */
+                          }}
+                        >
+                          Save
+                        </Button>
+                      </DialogActions>
+                    </Dialog>
+                  )}
+                </>
+              )}
+
+              {policyType === "Marine" && (
+                <>
+                  {/* Product Dropdown */}
+                  <Grid item lg={4} md={4} sm={6} xs={12}>
+                    <Autocomplete
+                      options={marineProducts}
+                      getOptionLabel={(option) => option.label}
+                      onChange={(e, value) =>
+                        setMarineProduct(value?.label || "")
+                      }
+                      renderInput={(params) => (
+                        <TextField {...params} label="Select Marine Product" />
+                      )}
+                    />
+                  </Grid>
+
+                  {/* Subcategory */}
+                  <Grid item lg={4} md={4} sm={6} xs={12}>
+                    <Autocomplete
+                      options={marineSubCategories}
+                      getOptionLabel={(option) => option.label}
+                      onChange={(e, value) =>
+                        setMarineSubCategory(value?.label || "")
+                      }
+                      renderInput={(params) => (
+                        <TextField {...params} label="Select Sub Category" />
+                      )}
+                    />
+                  </Grid>
+
+                  {/* Commodity */}
+                  <Grid item lg={4} md={4} sm={6} xs={12}>
+                    <TextField
+                      label="Mention Commodity"
+                      fullWidth
+                      variant="outlined"
+                      value={commodity}
+                      onChange={(e) => setCommodity(e.target.value)}
+                    />
+                  </Grid>
+
+                  {/* Annual Turnover */}
+                  <Grid item lg={4} md={4} sm={6} xs={12}>
+                    <TextField
+                      label="Annual Turnover"
+                      type="number"
+                      fullWidth
+                      variant="outlined"
+                      value={annualTurnover}
+                      onChange={(e) => {
+                        const turnover = parseFloat(e.target.value) || 0;
+                        setAnnualTurnover(turnover);
+                        setAccidentalAmount(
+                          (turnover * accidentalPercent) / 100
+                        );
+                      }}
+                    />
+                  </Grid>
+
+                  {/* Accidental Charges */}
+                  <Grid item lg={4} md={4} sm={6} xs={12}>
+                    <Autocomplete
+                      options={accidentalPercentages}
+                      getOptionLabel={(option) => `${option}%`}
+                      onChange={(e, value) => {
+                        setAccidentalPercent(value || 0);
+                        setAccidentalAmount(
+                          ((annualTurnover || 0) * (value || 0)) / 100
+                        );
+                      }}
+                      renderInput={(params) => (
+                        <TextField {...params} label="Accidental Charge (%)" />
+                      )}
+                    />
+                  </Grid>
+
+                  {/* Auto-Calculated Amount */}
+                  <Grid item lg={4} md={4} sm={6} xs={12}>
+                    <TextField
+                      label="Accidental Amount"
+                      fullWidth
+                      variant="outlined"
+                      value={accidentalAmount}
+                      disabled
+                    />
+                  </Grid>
+                </>
+              )}
+
+              {policyType === "Miscellaneous" && (
+                <>
+                  {/* Product Dropdown */}
+                  <Grid item lg={4} md={4} sm={6} xs={12}>
+                    <Autocomplete
+                      options={miscProductOptions}
+                      getOptionLabel={(option) => option.label}
+                      onChange={(e, value) =>
+                        setMiscProduct(value?.label || "")
+                      }
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Select Product Type"
+                          fullWidth
+                          size="small"
+                        />
+                      )}
+                    />
+                  </Grid>
+
+                  {/* Mention Product - only if 'Other' is selected */}
+                  {miscProduct === "Other" && (
+                    <Grid item lg={4} md={4} sm={6} xs={12}>
+                      <TextField
+                        label="Mention Product"
+                        fullWidth
+                        size="small"
+                        variant="outlined"
+                        value={customProduct}
+                        onChange={(e) => setCustomProduct(e.target.value)}
+                      />
+                    </Grid>
+                  )}
+
+                  {/* Limit of Liability */}
+                  <Grid item lg={4} md={4} sm={6} xs={12}>
+                    <TextField
+                      label="Limit of Liability"
+                      fullWidth
+                      size="small"
+                      variant="outlined"
+                      value={limitOfLiability}
+                      onChange={(e) => setLimitOfLiability(e.target.value)}
+                    />
+                  </Grid>
+                </>
+              )}
+
               <Grid item lg={4} md={4} sm={6} xs={12}>
                 <Field name="caseType">
                   {({ input, meta }) => (
@@ -900,7 +1269,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                 </Field>
               </Grid>
               <Grid item lg={4} md={4} sm={6} xs={12}>
-                <Field name="productType">
+                <Field name="occupancy">
                   {({ input, meta }) => (
                     <div>
                       <FormControl fullWidth size="small">
@@ -909,66 +1278,22 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                           value={
                             input.value !== undefined
                               ? input.value
-                              : initialValues.productType || null
+                              : (initialValues as any).occupancy || null
                           }
-                          options={product}
+                          options={occupancy}
                           getOptionLabel={(option) =>
                             typeof option === "string"
                               ? option
-                              : option.productName || ""
+                              : option.label || ""
                           }
                           onChange={(event, newValue) => {
-                            input.onChange(
-                              newValue ? newValue.productName : ""
-                            );
-                            setSelectedProduct(newValue);
-                            setProType(newValue?.productName);
+                            input.onChange(newValue ? newValue.value : "");
+                            setSelectedOccupancy(newValue.value);
                           }}
                           renderInput={(params) => (
                             <TextField
                               {...params}
-                              label=" Select Product"
-                              className="rounded-sm w-full"
-                              size="small"
-                              variant="outlined"
-                              error={meta.touched && !!meta.error}
-                              helperText={meta.touched && meta.error}
-                            />
-                          )}
-                        />
-                      </FormControl>
-                    </div>
-                  )}
-                </Field>
-              </Grid>
-              <Grid item lg={4} md={4} sm={6} xs={12}>
-                <Field name="companyName">
-                  {({ input, meta }) => (
-                    <div>
-                      <FormControl fullWidth size="small">
-                        <Autocomplete
-                          {...input}
-                          id="companyName"
-                          value={
-                            input.value !== undefined
-                              ? input.value
-                              : initialValues.companyName || null
-                          }
-                          getOptionLabel={(option) =>
-                            typeof option === "string"
-                              ? option
-                              : option.companyName || ""
-                          }
-                          options={companies}
-                          onChange={(event, newValue) => {
-                            input.onChange(
-                              newValue ? newValue.companyName : ""
-                            );
-                          }}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label=" Select Company Name"
+                              label=" Select Occupancy"
                               className="rounded-sm w-full"
                               size="small"
                               variant="outlined"
@@ -1010,6 +1335,90 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                             <TextField
                               {...params}
                               label=" Select Broker"
+                              className="rounded-sm w-full"
+                              size="small"
+                              variant="outlined"
+                              error={meta.touched && !!meta.error}
+                              helperText={meta.touched && meta.error}
+                            />
+                          )}
+                        />
+                      </FormControl>
+                    </div>
+                  )}
+                </Field>
+              </Grid>
+              <Grid item lg={4} md={4} sm={6} xs={12}>
+                <Field name="partner">
+                  {({ input, meta }) => (
+                    <div>
+                      <FormControl fullWidth size="small">
+                        <Autocomplete
+                          {...input}
+                          id="partner"
+                          value={
+                            input.value !== undefined
+                              ? input.value
+                              : initialValues.partnerId || null
+                          }
+                          getOptionLabel={(option) =>
+                            typeof option === "string"
+                              ? option
+                              : `${option.partnerName} - ${option.partnerCode}` ||
+                                ""
+                          }
+                          options={brokers}
+                          onChange={(event, newValue) => {
+                            input.onChange(
+                              newValue ? newValue.partnerName : ""
+                            );
+                            setSelectedPartnerId(newValue ? newValue._id : "");
+                          }}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label=" Select Partner"
+                              className="rounded-sm w-full"
+                              size="small"
+                              variant="outlined"
+                              error={meta.touched && !!meta.error}
+                              helperText={meta.touched && meta.error}
+                            />
+                          )}
+                        />
+                      </FormControl>
+                    </div>
+                  )}
+                </Field>
+              </Grid>
+              <Grid item lg={4} md={4} sm={6} xs={12}>
+                <Field name="companyName">
+                  {({ input, meta }) => (
+                    <div>
+                      <FormControl fullWidth size="small">
+                        <Autocomplete
+                          {...input}
+                          id="companyName"
+                          value={
+                            input.value !== undefined
+                              ? input.value
+                              : initialValues.companyName || null
+                          }
+                          getOptionLabel={(option) =>
+                            typeof option === "string"
+                              ? option
+                              : option.companyName || ""
+                          }
+                          options={companies}
+                          onChange={(event, newValue) => {
+                            input.onChange(
+                              newValue ? newValue.companyName : ""
+                            );
+                          }}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label=" Select Company Name"
                               className="rounded-sm w-full"
                               size="small"
                               variant="outlined"
@@ -1076,7 +1485,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                 </Field>
               </Grid>
               <Grid item lg={4} md={4} sm={6} xs={12}>
-                <Field name="sumInsured">
+                <Field name="totalSumInsured">
                   {({ input, meta }) => (
                     <TextField
                       {...input}
@@ -1133,102 +1542,6 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                   )}
                 </Field>
               </Grid>
-              <Grid item lg={4} md={4} sm={6} xs={12}>
-                <FormSpy subscription={{}}>
-                  {({ form }) => (
-                    <Field name="firstPurchasedDate">
-                      {({ input, meta }) => (
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <DatePicker
-                            disableFuture
-                            label="First Purchased Date"
-                            inputFormat="DD/MM/YYYY"
-                            value={input.value || null}
-                            onChange={(date) => {
-                              input.onChange(date);
-                              if (date) {
-                                const renewalYear = dayjs(date)
-                                  .add(5, "year")
-                                  .format("DD/MM/YYYY");
-                                form.change("renewalYear", renewalYear);
-                              } else {
-                                form.change("renewalYear", "");
-                              }
-                            }}
-                            renderInput={(params: any) => (
-                              <TextField
-                                variant="outlined"
-                                size="small"
-                                fullWidth
-                                {...params}
-                                error={meta.touched && !!meta.error}
-                                helperText={meta.touched && meta.error}
-                              />
-                            )}
-                          />
-                        </LocalizationProvider>
-                      )}
-                    </Field>
-                  )}
-                </FormSpy>
-              </Grid>
-              <Grid item lg={4} md={4} sm={6} xs={12}>
-                <Field name="renewalYear">
-                  {({ input, meta }) => (
-                    <TextField
-                      {...input}
-                      fullWidth
-                      InputProps={{ readOnly: true }}
-                      size="small"
-                      type="text"
-                      label="Renewal Year"
-                      placeholder="DD/MM/YYYY"
-                      className="rounded-sm w-full"
-                      variant="outlined"
-                      error={meta.touched && Boolean(meta.error)}
-                      helperText={meta.touched && meta.error}
-                    />
-                  )}
-                </Field>
-              </Grid>
-              <Grid item lg={4} md={4} sm={6} xs={12}>
-                <Field name="accumulatedBonus">
-                  {({ input, meta }) => (
-                    <TextField
-                      {...input}
-                      size="small"
-                      label="Enter Accumulated Bonus"
-                      variant="outlined"
-                      className="rounded-sm w-full"
-                      onChangeCapture={validateVehicleNumber}
-                      error={meta.touched && Boolean(meta.error)}
-                      helperText={meta.touched && meta.error}
-                    />
-                  )}
-                </Field>
-                {vehicleErr && (
-                  <div className="text-[red] text-sm">{vehicleErr}</div>
-                )}
-              </Grid>
-              <Grid item lg={4} md={4} sm={6} xs={12}>
-                <Field name="accumulativeBonus">
-                  {({ input, meta }) => (
-                    <TextField
-                      {...input}
-                      size="small"
-                      label="Enter Accumulative Bonus"
-                      variant="outlined"
-                      className="rounded-sm w-full"
-                      onChangeCapture={validateVehicleNumber}
-                      error={meta.touched && Boolean(meta.error)}
-                      helperText={meta.touched && meta.error}
-                    />
-                  )}
-                </Field>
-                {vehicleErr && (
-                  <div className="text-[red] text-sm">{vehicleErr}</div>
-                )}
-              </Grid>
               <>
                 <Grid item lg={4} md={4} sm={6} xs={12}>
                   <Field name="fullName">
@@ -1270,6 +1583,24 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                         type="text"
                         size="small"
                         label="Enter Phone Number"
+                        className="rounded-sm w-full"
+                        variant="outlined"
+                        inputProps={{ maxLength: 10 }}
+                        error={meta.touched && Boolean(meta.error)}
+                        helperText={meta.touched && meta.error}
+                      />
+                    )}
+                  </Field>
+                </Grid>
+                <Grid item lg={4} md={4} sm={6} xs={12}>
+                  <Field name="pincode">
+                    {({ input, meta }) => (
+                      <TextField
+                        {...input}
+                        fullWidth
+                        type="text"
+                        size="small"
+                        label="Pincode of Risk Location"
                         className="rounded-sm w-full"
                         variant="outlined"
                         inputProps={{ maxLength: 10 }}
@@ -1336,101 +1667,6 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                     </Field>
                   </Grid>
                 )}
-                {selectedPolicyCreatedBy &&
-                  selectedPolicyCreatedBy === "Partner" && (
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field name="partnerName">
-                        {({ input, meta }) => (
-                          <div>
-                            <FormControl fullWidth size="small">
-                              <Autocomplete
-                                {...input}
-                                id="partnerName"
-                                value={
-                                  input.value !== undefined
-                                    ? input.value
-                                    : initialValues.partnerName || null
-                                }
-                                getOptionLabel={(option) =>
-                                  typeof option === "string"
-                                    ? option
-                                    : `${option.name} - ${option.userCode}` ||
-                                      ""
-                                }
-                                options={partners}
-                                onChange={(event, newValue) => {
-                                  input.onChange(
-                                    newValue
-                                      ? `${newValue.name}-${newValue.userCode}`
-                                      : ""
-                                  );
-                                  handleSelectPartnerChange(newValue);
-                                }}
-                                renderInput={(params) => (
-                                  <TextField
-                                    {...params}
-                                    className="rounded-sm w-full"
-                                    size="small"
-                                    label="Select Partners"
-                                    variant="outlined"
-                                    error={meta.touched && !!meta.error}
-                                    helperText={meta.touched && meta.error}
-                                  />
-                                )}
-                              />
-                            </FormControl>
-                          </div>
-                        )}
-                      </Field>
-                    </Grid>
-                  )}
-                {selectedPolicyCreatedBy &&
-                  selectedPolicyCreatedBy === "Direct" && (
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field name="relationshipManagerName">
-                        {({ input, meta }) => (
-                          <div>
-                            <FormControl fullWidth size="small">
-                              <Autocomplete
-                                {...input}
-                                id="relationshipManagerName"
-                                getOptionLabel={(option) =>
-                                  typeof option === "string"
-                                    ? option
-                                    : `${option.name} - ${option.userCode}` ||
-                                      ""
-                                }
-                                value={
-                                  input.value !== undefined
-                                    ? input.value
-                                    : initialValues.relationshipManagerName ||
-                                      null
-                                }
-                                options={relationshipManagers}
-                                onChange={(event, newValue) => {
-                                  input.onChange(
-                                    newValue ? newValue.fullName : ""
-                                  );
-                                  handleSelectRMChange(newValue);
-                                }}
-                                renderInput={(params) => (
-                                  <TextField
-                                    {...params}
-                                    className="rounded-sm w-full"
-                                    size="small"
-                                    label="Select Relationship Manager"
-                                    variant="outlined"
-                                    error={meta.touched && !!meta.error}
-                                    helperText={meta.touched && meta.error}
-                                  />
-                                )}
-                              />
-                            </FormControl>
-                          </div>
-                        )}
-                      </Field>
-                    </Grid>
-                  )}
                 <Grid item md={12} mt={2}>
                   {rmErrorMessage && (
                     <div style={{ color: "red" }}>{rmErrorMessage}</div>
@@ -1452,14 +1688,14 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                         <Grid item lg={4} md={4} sm={4} xs={12}>
                           <Autocomplete
                             value={
-                              addHealthPolicyDocumentsOptions.find(
+                              addPolicyDocumentsOptions.find(
                                 (option) => option.value === doc.docName
                               ) || null
                             }
                             onChange={(e, newValue) =>
                               handleChangeDocumentName(newValue!, index)
                             }
-                            options={addHealthPolicyDocumentsOptions}
+                            options={addNonMotorPolicyDocumentsOptions}
                             renderInput={(params) => (
                               <TextField
                                 {...params}
@@ -1604,4 +1840,4 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
     </>
   );
 };
-export default AddPolicyForm;
+export default AddNonMotorPolicyForm;

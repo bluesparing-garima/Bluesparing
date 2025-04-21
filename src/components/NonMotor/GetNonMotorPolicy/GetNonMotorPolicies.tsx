@@ -37,6 +37,7 @@ import {
   motorPolicyPath,
   motorPolicyViewDetailsPath,
   motorPolicyViewPath,
+  nonMotorPolicyAddPath,
 } from "../../../sitemap";
 import dayjs from "dayjs";
 import getCalculatePayinService from "../../../api/CalcualtePayouts/GetCalculatePayin/getCalculatePayinService";
@@ -70,6 +71,7 @@ import {
 } from "../../../utils/PaginationHandler";
 import { IPolicyPayment } from "../../Policy/IPolicy";
 import AddRemarksModal from "../../Policy/GetMotorPolicies/AddRemarksModal";
+
 interface MenuIconButtonProps {
   row: { original: IViewPolicy };
   isAdmin?: boolean;
@@ -86,10 +88,12 @@ interface MenuIconButtonProps {
   onPublish?: () => void;
   addRemark?: () => void;
 }
+
 interface IViewPolicy {
   [key: string]: any;
 }
-const GetHealthPolicies = () => {
+
+const GetNonMotorPolicies = () => {
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let userData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
   const startTime = sessionStorage.getItem("startDate");
@@ -106,7 +110,7 @@ const GetHealthPolicies = () => {
   const [selectedPolicyId, setSelectedPolicyId] = useState("");
   const handleClickAddMotorPolicy = () => {
     savePaginationState(pagination, MOTOR_POLICY_STORAGE_KEY);
-    navigate(healthPolicyAddPath());
+    navigate(nonMotorPolicyAddPath());
   };
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -1120,7 +1124,7 @@ const GetHealthPolicies = () => {
                               handleClose();
                             }}
                           >
-                            View Health Policy
+                            View Non Motor Policy
                           </MenuItem>
                         )}
                         {onEditCommission && (
@@ -1183,7 +1187,7 @@ const GetHealthPolicies = () => {
                               handleClose();
                             }}
                           >
-                            View Health Policy
+                            View Non Motor Policy
                           </MenuItem>
                         )}
                       </>
@@ -1221,7 +1225,7 @@ const GetHealthPolicies = () => {
       <div className=" md:p-7 p-2">
         <Paper elevation={3} style={{ padding: 30 }}>
           <Typography className="text-safekaroDarkOrange" variant="h5">
-            Health Policies Table
+            Non Motor Policies Table
           </Typography>
           <Typography variant="h5" mb={2}>
             <div style={{ display: "flex", alignItems: "center" }}>
@@ -1232,7 +1236,7 @@ const GetHealthPolicies = () => {
                 >
                   Dashboard /
                 </Link>
-                <span className="text-grey-600 text-sm"> Health Policies</span>
+                <span className="text-grey-600 text-sm"> Non Motor Policies</span>
               </div>
               {userData.role.toLowerCase() === "admin" ||
               userData.role.toLowerCase() === "booking" ||
@@ -1244,7 +1248,7 @@ const GetHealthPolicies = () => {
                   className="btnGradient text-black px-4 py-3 rounded-md w-full sm:w-auto"
                 >
                   <span className="text-[10px] md:text-xs">
-                    Add Health Policies
+                    Add Non Motor Policies
                   </span>
                 </Button>
               ) : (
@@ -1618,4 +1622,4 @@ const GetHealthPolicies = () => {
     </>
   );
 };
-export default GetHealthPolicies;
+export default GetNonMotorPolicies;
