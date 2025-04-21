@@ -145,13 +145,13 @@ const Categories = () => {
                 </Link>
                 <span className="text-grey-600 text-sm"> Category</span>
               </div>
-              {/* <Button
+              <Button
                 type="button"
                 className="w-26 h-10 bg-addButton text-white p-3 text-xs rounded-sm"
                 onClick={handleAddCategoryClick}
               >
                 Add Category
-              </Button> */}
+              </Button>
             </div>
             
             <hr
@@ -177,13 +177,13 @@ const Categories = () => {
             state={{ isLoading, pagination }}
             columns={columns}
             data={parsedData}
-            // enableRowActions
-            // positionActionsColumn="last"
+            enableRowActions
+            positionActionsColumn="last"
             onPaginationChange={setPagination}
             autoResetPageIndex={false}
             renderRowActions={({ row }) => (
               <div style={{ display: "flex", flexWrap: "nowrap" }}>
-                {/* <Tooltip title={"Edit Category"}>
+                 <Tooltip title={"Edit Category"}>
                   <IconButton
                     color="primary"
                     aria-label={"Edit Category"}
@@ -207,8 +207,8 @@ const Categories = () => {
                       />
                     </svg>
                   </IconButton>
-                </Tooltip> */}
-                {/* <Tooltip title={"Change Status"}>
+                </Tooltip> 
+                 <Tooltip title={"Change Status"}>
                   <IconButton
                     color="primary"
                     aria-label={"Change Status"}
@@ -232,7 +232,7 @@ const Categories = () => {
                       />
                     </svg>
                   </IconButton>
-                </Tooltip> */}
+                </Tooltip> 
               </div>
             )}
           />
