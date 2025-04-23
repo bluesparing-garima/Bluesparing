@@ -179,7 +179,7 @@ const GetNonMotorPolicies = () => {
     getMotorPolicyService({ header, startDate, endDate })
       .then((motorPolicy) => {
         const res = motorPolicy.data;
-        setMotorPolicies([...res]);
+        // setMotorPolicies([...res]);
       })
       .catch(async (error: any) => {
         const err = await error;
@@ -216,7 +216,7 @@ const GetNonMotorPolicies = () => {
         endDate,
       })
         .then((bookingRequestDetails) => {
-          setMotorPolicies(bookingRequestDetails.data);
+          // setMotorPolicies(bookingRequestDetails.data);
         })
         .catch(async (error) => {
           const err = await error;
@@ -238,7 +238,7 @@ const GetNonMotorPolicies = () => {
         endDate,
       })
         .then((bookingRequestDetails) => {
-          setMotorPolicies(bookingRequestDetails.data);
+          // setMotorPolicies(bookingRequestDetails.data);
         })
         .catch(async (error) => {
           const err = await error;
@@ -474,7 +474,7 @@ const GetNonMotorPolicies = () => {
         toast.error(err.message);
       }
     }
-    setMotorPolicies([...motorPolicies]);
+    // setMotorPolicies([...motorPolicies]);
   };
   const columns = useMemo<MRT_ColumnDef<IViewPolicy>[]>(
     () =>
@@ -964,7 +964,7 @@ const GetNonMotorPolicies = () => {
     })
       .then((bookingRequestDetails) => {
         toast.success("policy deleted successfully");
-        setMotorPolicies([...bookingRequestDetails]);
+        // setMotorPolicies([...bookingRequestDetails]);
       })
       .catch(async (error) => {
         const err = await error;

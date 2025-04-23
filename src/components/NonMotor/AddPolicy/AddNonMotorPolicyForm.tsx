@@ -17,7 +17,6 @@ import * as yup from "yup";
 import { Field, Form } from "react-final-form";
 import { setIn } from "final-form";
 import { IconButton, Tooltip } from "@mui/material";
-import React from "react";
 import addPolicyService from "../../../api/Policies/AddPolicy/addPolicyService";
 import toast, { Toaster } from "react-hot-toast";
 import {
@@ -68,6 +67,7 @@ import {
   policyCreatedBy,
   policyCreatedByAdmin,
 } from "../../Policy/IPolicyData";
+import useGetOccupancy from "../../../Hooks/Occupancy/useGetOccupancy";
 
 export interface AddPolicyFormProps {
   initialValues: IAddEditPolicyForm;
@@ -130,17 +130,16 @@ const AddNonMotorPolicyForm = (props: AddPolicyFormProps) => {
     { label: "Other" },
   ];
 
-  const occupancy = [{ label: "IIB Risk Board", value: "IIB Risk Board" }];
-
   let [relationshipManagers] = useGetPartners({
     header: header,
     role: "Relationship Manager",
   });
+  let [occupancyData] = useGetOccupancy();
   let [partners] = useGetPartners({ header: header, role: "partner" });
-  // let [caseTypes] = useGetCaseTypes({ header: header });
+
   let [makes] = useGetMakes({ header: header });
   let [models] = useGetModels({ header: header });
-  let [fuelTypes] = useGetFuelTypes({ header: header });
+
   let [brokers] = useGetBrokers({ header: header });
   let [companies] = useGetCompanies({ header: header });
   let [products] = useGetProducts({ header: header, category: "motor" });
@@ -795,7 +794,7 @@ const AddNonMotorPolicyForm = (props: AddPolicyFormProps) => {
       } else {
         setPolicyErrorMessage("");
       }
-    } catch {}
+    } catch { }
   };
   const validateVehicleNumber = async (e: any) => {
     if (selectedCaseType.toLowerCase().trim() === "new") {
@@ -990,7 +989,7 @@ const AddNonMotorPolicyForm = (props: AddPolicyFormProps) => {
                     </Grid>
                   )}
 
-                  {/* Add Corresponding Burglary Policy */}
+
                   <Grid item lg={4} md={4} sm={6} xs={12}>
                     <FormControl fullWidth size="small">
                       <Autocomplete
@@ -1004,7 +1003,7 @@ const AddNonMotorPolicyForm = (props: AddPolicyFormProps) => {
                         renderInput={(params) => (
                           <TextField
                             {...params}
-                            label="Add Burglary Policy"
+                            label="Add Corresponding Burglary Policy"
                             size="small"
                           />
                         )}
@@ -1028,7 +1027,7 @@ const AddNonMotorPolicyForm = (props: AddPolicyFormProps) => {
                         },
                       }}
                     >
-                      <DialogTitle>Add Burglary Policy</DialogTitle>
+                      <DialogTitle>Add  Burglary Policy</DialogTitle>
                       <DialogContent>
                         <TextField
                           label="Policy Number"
@@ -1280,20 +1279,20 @@ const AddNonMotorPolicyForm = (props: AddPolicyFormProps) => {
                               ? input.value
                               : (initialValues as any).occupancy || null
                           }
-                          options={occupancy}
+                          options={occupancyData}
                           getOptionLabel={(option) =>
                             typeof option === "string"
                               ? option
-                              : option.label || ""
+                              : `${option.occupancyDescription}-${option.occupancyCode}` || ""
                           }
                           onChange={(event, newValue) => {
-                            input.onChange(newValue ? newValue.value : "");
-                            setSelectedOccupancy(newValue.value);
+                            input.onChange(newValue ? newValue._id : "");
+                            setSelectedOccupancy(newValue._id);
                           }}
                           renderInput={(params) => (
                             <TextField
                               {...params}
-                              label=" Select Occupancy"
+                              label=" Select Occupancy(IIB Risk board)"
                               className="rounded-sm w-full"
                               size="small"
                               variant="outlined"
@@ -1324,7 +1323,7 @@ const AddNonMotorPolicyForm = (props: AddPolicyFormProps) => {
                             typeof option === "string"
                               ? option
                               : `${option.brokerName} - ${option.brokerCode}` ||
-                                ""
+                              ""
                           }
                           options={brokers}
                           onChange={(event, newValue) => {
@@ -1364,10 +1363,10 @@ const AddNonMotorPolicyForm = (props: AddPolicyFormProps) => {
                           getOptionLabel={(option) =>
                             typeof option === "string"
                               ? option
-                              : `${option.partnerName} - ${option.partnerCode}` ||
-                                ""
+                              : `${option.name} - ${option.userCode}` ||
+                              ""
                           }
-                          options={brokers}
+                          options={partners}
                           onChange={(event, newValue) => {
                             input.onChange(
                               newValue ? newValue.partnerName : ""
