@@ -136,6 +136,16 @@ export const addPolicyDocumentsOptions = [
   { label: "Other", value: "Other" },
 ];
 
+export const addNonMotorPolicyDocumentsOptions = [
+  { label: "Previous Policy", value: "previousPolicy" },
+  { label: "Current Policy", value: "currentPolicy" },
+  { label: "Pan Card", value: "panCard" },
+  { label: "Adhar Card", value: "adharCard" },
+  { label: "Survey", value: "survey" },
+  { label: "GST", value: "gst" },
+  { label: "Other", value: "Other" },
+];
+
 export const addHealthPolicyDocumentsOptions = [
   { label: "Previous Policy", value: "previousPolicy" },
   { label: "Current Policy", value: "currentPolicy" },

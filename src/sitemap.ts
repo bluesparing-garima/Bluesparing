@@ -130,3 +130,4 @@ export const newsPath = () => `/website/news`;
 export const newsAddPath = () => `/website/news/add`;
 export const newsEditPath = (newsId: string) => `/website/news/${newsId}/edit`;
 export const healthPolicyAddPath = () => `/policy/health/add`;
+export const nonMotorPolicyAddPath = () => `/policy/non-motor/add`;
