@@ -67,7 +67,7 @@ import {
   policyCreatedBy,
   policyCreatedByAdmin,
 } from "../../Policy/IPolicyData";
-import useGetOccupancy from "../../../Hooks/Occupancy/useGetOccupancy";
+import useGetOccupancy, { IOccupancy } from "../../../Hooks/Occupancy/useGetOccupancy";
 
 export interface AddPolicyFormProps {
   initialValues: IAddEditPolicyForm;
@@ -112,8 +112,7 @@ const AddNonMotorPolicyForm = (props: AddPolicyFormProps) => {
 
   const accidentalPercentages = [10, 15, 20, 25];
 
-  const [marineProduct, setMarineProduct] = useState("");
-  const [marineSubCategory, setMarineSubCategory] = useState("");
+const [occupancy,setSelectedOccupancy] = useState<IOccupancy>()
   const [commodity, setCommodity] = useState("");
   const [annualTurnover, setAnnualTurnover] = useState<number>(0);
   const [accidentalPercent, setAccidentalPercent] = useState<number>(0);
@@ -136,7 +135,6 @@ const AddNonMotorPolicyForm = (props: AddPolicyFormProps) => {
   });
   let [occupancyData] = useGetOccupancy();
   let [partners] = useGetPartners({ header: header, role: "partner" });
-
   let [makes] = useGetMakes({ header: header });
   let [models] = useGetModels({ header: header });
 
@@ -224,9 +222,8 @@ const AddNonMotorPolicyForm = (props: AddPolicyFormProps) => {
   const [showUpgradePopup, setShowUpgradePopup] = useState(false);
   const [progress, setProgress] = useState(0);
   const [policyCount, setPolicyCount] = useState<number>(0);
-  const [selectedOccupancy, setSelectedOccupancy] = useState(
-    (initialValues as any).occupancy || ""
-  );
+  const [marineProduct, setMarineProduct] = useState("");
+  const [marineSubCategory, setMarineSubCategory] = useState("");
 
   useEffect(() => {
     if (!isAdd) {

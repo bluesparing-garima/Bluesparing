@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { IPartners } from "../../components/Partner/IPartner";
 import GetOccupancyServices from "../../api/Occupancy/GetOccupancy/GetOccupancyServices";
 
 export interface IOccupancy {
@@ -17,10 +16,8 @@ const useGetOccupancy = () => {
       GetOccupancyServices()
         .then((apiResponse) => {
           isLoading.current = false;
-          const partners = apiResponse.data.filter(
-            (partner: IPartners) => partner.isActive === true
-          );
-          setData(partners);
+          
+          setData(apiResponse);
         })
         .catch((res) => {
           throw new Error(res.status);
