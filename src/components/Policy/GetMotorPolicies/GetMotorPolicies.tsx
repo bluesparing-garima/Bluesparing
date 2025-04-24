@@ -358,6 +358,28 @@ const GetMotorPolicies = () => {
     };
     return policyPayment;
   };
+
+  const refreshPage = () => {
+    const userRole = userData.role.toLowerCase();
+    if (userRole === "admin" || userRole === "account") {
+      const currentDate = new Date();
+      const firstDayOfMonth = startOfMonth(currentDate);
+      const lastDayOfMonth = endOfMonth(currentDate);
+      let formattedFirstDay = format(firstDayOfMonth, "yyyy-MM-dd");
+      let formattedLastDay = format(lastDayOfMonth, "yyyy-MM-dd");
+      getMotorPolicyService({ header, startDate:formattedFirstDay, endDate:formattedLastDay })
+      .then((motorPolicy) => {
+        const res = motorPolicy.data
+        setMotorPolicies([...res]);
+      })
+      .catch(async (error: any) => {
+        const err = await error;
+        toast.error(err.message);
+      })
+     
+    }
+
+  }
   const handleSaveCell = async (
     cell: MRT_Cell<IViewPolicy>,
     value: IPartners | IBroker | any
@@ -366,18 +388,21 @@ const GetMotorPolicies = () => {
     if (cell.column.id === "partnerName") {
       const policyId = cell.row.original.id;
       const payloadData = {
-        partnerCode: value.partnerId,
+        partnerCode: value.userCode,
         partnerId: value._id,
-        partnerName: value.fullName,
+        partnerName: value.name,
       };
       const policy = new FormData();
       policy.append("partnerCode", payloadData.partnerCode);
       policy.append("partnerId", payloadData.partnerId);
       policy.append("partnerName", payloadData.partnerName);
+      policy.append("policyNumber", cell.row.original.policyNumber);
       try {
         const newPolicy = await editPolicyService({ header, policy, policyId });
         if (newPolicy.status === "success") {
+         
           toast.success(`${key} is updated successfully`);
+          refreshPage()
         }
       } catch (err: any) {
         const errorData = await err;
@@ -822,7 +847,7 @@ const GetMotorPolicies = () => {
           size: 50,
         },
       ].filter((column) => column.visible !== false),
-    [userData.role]
+    [userData.role,motorPolicies]
   );
   const parsedData = useMemo(
     () =>
@@ -1103,7 +1128,7 @@ const GetMotorPolicies = () => {
           a.click();
           document.body.removeChild(a);
         })
-        .catch((error) => {throw error});
+        .catch((error) => { throw error });
     } else {
     }
   };
@@ -1116,22 +1141,22 @@ const GetMotorPolicies = () => {
       "payOutODPercentage",
       "brokerName",
     ];
-  let { payInPaymentStatus, payOutPaymentStatus } = row;
+    let { payInPaymentStatus, payOutPaymentStatus } = row;
     payInPaymentStatus = typeof payInPaymentStatus === "string" ? payInPaymentStatus.toLowerCase().trim() : "";
     payOutPaymentStatus = typeof payOutPaymentStatus === "string" ? payOutPaymentStatus.toLowerCase().trim() : "";
-    payInPaymentStatus =  payInPaymentStatus==="partial" ?"paid":payInPaymentStatus;
-    payOutPaymentStatus =  payOutPaymentStatus==="partial" ?"paid":payOutPaymentStatus;
+    payInPaymentStatus = payInPaymentStatus === "partial" ? "paid" : payInPaymentStatus;
+    payOutPaymentStatus = payOutPaymentStatus === "partial" ? "paid" : payOutPaymentStatus;
     if (payInPaymentStatus === "paid" && payOutPaymentStatus === "paid") {
-      return ["partnerName","brokerName"];
+      return ["partnerName", "brokerName"];
     } else if (payInPaymentStatus === "paid" && payOutPaymentStatus === "unpaid") {
-      return ["partnerName", "payOutTPPercentage", "payOutODPercentage","brokerName"];
+      return ["partnerName", "payOutTPPercentage", "payOutODPercentage", "brokerName"];
     } else if (payInPaymentStatus === "unpaid" && payOutPaymentStatus === "paid") {
-      return ["payInODPercentage", "payInTPPercentage", "brokerName","partnerName"];
+      return ["payInODPercentage", "payInTPPercentage", "brokerName", "partnerName"];
     } else {
       return result;
     }
   };
-  
+
 
   const handleStartDateChange = (date: any, input: any) => {
     const newDate = dayjs(date).format(DAY_FORMAT);
@@ -1460,7 +1485,7 @@ const GetMotorPolicies = () => {
               {userData.role.toLowerCase() === "admin" ||
                 userData.role.toLowerCase() === "booking" ||
                 userData.role.toLowerCase() === "account" ? (
-                  <Button
+                <Button
                   type="button"
                   size="small"
                   onClick={handleClickAddMotorPolicy}
@@ -1470,7 +1495,7 @@ const GetMotorPolicies = () => {
                     Add Motor Policies
                   </span>
                 </Button>
-                
+
               ) : (
                 ""
               )}
@@ -1559,15 +1584,15 @@ const GetMotorPolicies = () => {
                       </Field>
                     </Grid>
                     <Grid item lg={3} md={3} sm={6} xs={12}>
-                    <Button
-  type="submit"
-  disabled={isLoading}
-  variant="contained"
-  color="primary"
-  className="btnGradient text-black px-4 py-2.5 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
->
-  {isLoading ? "Getting..." : "Get Records"}
-</Button>
+                      <Button
+                        type="submit"
+                        disabled={isLoading}
+                        variant="contained"
+                        color="primary"
+                        className="btnGradient text-black px-4 py-2.5 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
+                      >
+                        {isLoading ? "Getting..." : "Get Records"}
+                      </Button>
 
                     </Grid>
                   </Grid>
@@ -1576,20 +1601,20 @@ const GetMotorPolicies = () => {
             />
           </React.Fragment>
           <MaterialReactTable
-                      muiTablePaperProps={{
-                        sx: {
-                          boxShadow: "none",
-                          backgroundColor: "transparent",
-          
-                        },
-                      }}
-          
-                      muiTableContainerProps={{
-                        sx: {
-                          boxShadow: "none",
-                          backgroundColor: "transparent",
-                        },
-                      }}
+            muiTablePaperProps={{
+              sx: {
+                boxShadow: "none",
+                backgroundColor: "transparent",
+
+              },
+            }}
+
+            muiTableContainerProps={{
+              sx: {
+                boxShadow: "none",
+                backgroundColor: "transparent",
+              },
+            }}
             state={{
               isLoading,
               globalFilter: globalFilter.trim(),
@@ -1610,7 +1635,7 @@ const GetMotorPolicies = () => {
               userData.role?.toLowerCase().trim() === "account"
             }
             muiTableBodyCellEditTextFieldProps={({ cell }) => {
-              const editableColumns = isPaid(cell.row.original) 
+              const editableColumns = isPaid(cell.row.original)
               const isEditable = editableColumns.includes(cell.column.id);
               if (cell.column.id === "partnerName") {
                 return {
@@ -1689,13 +1714,13 @@ const GetMotorPolicies = () => {
             }}
             renderTopToolbarCustomActions={({ table }) => (
               <>
-<Button
-  className="btnGradient text-black px-4 py-2.5 m-2 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
-  disabled={table.getRowModel().rows.length === 0}
-  onClick={() => handleExportRows(table.getFilteredRowModel().rows)}
->
-  Export Filter Data
-</Button>
+                <Button
+                  className="btnGradient text-black px-4 py-2.5 m-2 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
+                  disabled={table.getRowModel().rows.length === 0}
+                  onClick={() => handleExportRows(table.getFilteredRowModel().rows)}
+                >
+                  Export Filter Data
+                </Button>
               </>
             )}
             renderRowActions={({ row }) => {

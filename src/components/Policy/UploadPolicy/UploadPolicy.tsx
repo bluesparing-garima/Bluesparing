@@ -47,7 +47,7 @@ const UploadPolicy = () => {
           .catch(async (error) => {
             const err = await error;
             toast.error(err.message);
-            throw error
+            
           });
       } catch (error: any) {
         const err = await error;

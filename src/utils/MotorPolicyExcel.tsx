@@ -8,7 +8,7 @@ const MotorPolicyExcel: React.FC = () => {
   const handleDownload = () => {
     const workbook = XLSX.utils.book_new();
     const worksheetData = [
-      [
+      ["parentAdminId",
         "category",
         "policyType",
         "productType",
@@ -55,7 +55,7 @@ const MotorPolicyExcel: React.FC = () => {
         "updatedBy",
         "isActive",
       ],
-      [
+      ["67dcff2c5b5c8dc1594bbeea",
         "motor",
         "Comprehensive/ Package",
         "Goods carrying vehicle",
