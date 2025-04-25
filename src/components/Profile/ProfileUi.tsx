@@ -4,6 +4,10 @@ import { deepPurple } from "@mui/material/colors";
 import { ITeamsVM } from "../Admin/Team/ITeam";
 import { DAYJS_DISPLAY_FORMAT, imagePath } from "../../context/constant";
 import dayjs from "dayjs";
+import EditProfileUi from "./EditProfileUi";
+import { IconButton } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+
 
 const ProfileUi: React.FC<ITeamsVM> = ({
   email,
@@ -54,6 +58,10 @@ const ProfileUi: React.FC<ITeamsVM> = ({
     { key: "Wallet", value: wallet },
   ];
 
+  const [openEdit, setOpenEdit] = React.useState(false);
+
+const handleEditOpen = () => setOpenEdit(true);
+const handleEditClose = () => setOpenEdit(false);
   const userLimitDisplayNames: { [key: string]: string } = {
     partner: "Partner",
     booking: "Booking",
@@ -67,6 +75,7 @@ const ProfileUi: React.FC<ITeamsVM> = ({
   return (
     <Box
       sx={{
+        
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -78,6 +87,9 @@ const ProfileUi: React.FC<ITeamsVM> = ({
     >
       <Card
         sx={{
+          mt: 2,
+          
+          position: "relative",
           width: { xs: "90%", sm: "80%", md: 800, lg:'80%' },
           // padding: 4,
           borderRadius: 4,
@@ -87,7 +99,15 @@ const ProfileUi: React.FC<ITeamsVM> = ({
           alignItems: "center",
         }}
       >
+                <IconButton
+  onClick={handleEditOpen}
+  sx={{ position: 'absolute', top: 16, right: 16, bgcolor: '#f5f5f5' }}
+>
+  <EditIcon />
+</IconButton>
         <div>
+
+
           <Avatar
             src={`${imagePath}/${profileImage}`}
             alt={name}
@@ -164,8 +184,24 @@ const ProfileUi: React.FC<ITeamsVM> = ({
             </Grid>
           </CardContent>
         </Box>
+        
       </Card>
+      <EditProfileUi
+      open={openEdit}
+        handleClose={handleEditClose}
+        data={{
+          profileImage,
+          name,
+          email,
+          phoneNumber,
+          dateOfBirth,
+          gender,
+        }}
+      />
+
+      
     </Box>
+    
   );
 };
 
