@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -7,7 +7,13 @@ import {
   TextField,
   Button,
   MenuItem,
+  Avatar,
+  Box,
 } from "@mui/material";
+import getTeamDetailsService from "../../api/Team/GetTeamDetails/getTeamDetailsService";
+import { SafeKaroUser, header } from "../../context/constant";
+import { ITeamsVM } from "../Admin/Team/ITeam";
+import dayjs from "dayjs";
 
 interface IEditProfileUiProps {
   open: boolean;
@@ -22,15 +28,35 @@ interface IEditProfileUiProps {
   };
 }
 
-const EditProfileUi: React.FC<IEditProfileUiProps> = ({
-  open,
-  handleClose,
-  data,
-}) => {
-  const [formData, setFormData] = React.useState(data);
+
+const EditProfileUi: React.FC<IEditProfileUiProps> = ({ open, handleClose, data }) => {
+  const [formData, setFormData] = useState<ITeamsVM | null>(null);
+
+  useEffect(() => {
+    console.log("Data:", data);
+    if (open) {
+      setFormData({
+        ...data,
+        dateOfBirth: data.dateOfBirth ? dayjs(data.dateOfBirth).format("YYYY-MM-DD") : "",
+      });
+    }
+  }, [open, data]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (formData) {
+      setFormData({ ...formData, [e.target.name]: e.target.value });
+    }
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0] && formData) {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        setFormData({ ...formData, profileImage: reader.result as string });
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleSave = () => {
@@ -38,30 +64,70 @@ const EditProfileUi: React.FC<IEditProfileUiProps> = ({
     handleClose();
   };
 
+  if (!formData) {
+    return null; // Render nothing until data is loaded
+  }
+
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
       <DialogTitle>Edit Profile</DialogTitle>
       <DialogContent
-        sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 3,
+          mt: 1,
+          alignItems: "center",
+        }}
       >
+        {/* Profile Picture Section */}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 1,
+          }}
+        >
+          <Avatar
+            src={formData.profileImage}
+            alt="Profile Picture"
+            sx={{ width: 80, height: 80 }}
+          />
+          <Button
+            variant="outlined"
+            component="label"
+            sx={{ textTransform: "none" }}
+          >
+            Upload Picture
+            <input
+              type="file"
+              accept="image/*"
+              hidden
+              onChange={handleImageUpload}
+            />
+          </Button>
+        </Box>
+
+        {/* Form Fields */}
         <TextField
           label="Name"
           name="name"
-          value={formData.name}
+          value={formData.name || ""}
           onChange={handleChange}
           fullWidth
         />
         <TextField
           label="Email"
           name="email"
-          value={formData.email}
+          value={formData.email || ""}
           onChange={handleChange}
           fullWidth
         />
         <TextField
           label="Phone Number"
           name="phoneNumber"
-          value={formData.phoneNumber}
+          value={formData.phoneNumber || ""}
           onChange={handleChange}
           fullWidth
         />
@@ -69,7 +135,7 @@ const EditProfileUi: React.FC<IEditProfileUiProps> = ({
           label="Date of Birth"
           name="dateOfBirth"
           type="date"
-          value={formData.dateOfBirth}
+          value={formData.dateOfBirth || ""}
           onChange={handleChange}
           fullWidth
           InputLabelProps={{ shrink: true }}
@@ -77,7 +143,7 @@ const EditProfileUi: React.FC<IEditProfileUiProps> = ({
         <TextField
           label="Gender"
           name="gender"
-          value={formData.gender}
+          value={formData.gender || ""}
           onChange={handleChange}
           select
           fullWidth

@@ -88,7 +88,6 @@ const handleEditClose = () => setOpenEdit(false);
       <Card
         sx={{
           mt: 2,
-          
           position: "relative",
           width: { xs: "90%", sm: "80%", md: 800, lg:'80%' },
           // padding: 4,
@@ -187,18 +186,17 @@ const handleEditClose = () => setOpenEdit(false);
         
       </Card>
       <EditProfileUi
-      open={openEdit}
-        handleClose={handleEditClose}
-        data={{
-          profileImage,
-          name,
-          email,
-          phoneNumber,
-          dateOfBirth,
-          gender,
-        }}
-      />
-
+  open={openEdit}
+  handleClose={handleEditClose}
+  data={{
+    profileImage,
+    name,
+    email,
+    phoneNumber,
+    dateOfBirth,
+    gender,
+  }}
+/>
       
     </Box>
     
