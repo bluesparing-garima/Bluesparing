@@ -11,14 +11,16 @@ import {
   Box,
 } from "@mui/material";
 import getTeamDetailsService from "../../api/Team/GetTeamDetails/getTeamDetailsService";
-import { SafeKaroUser, header } from "../../context/constant";
+import { SafeKaroUser, header, imagePath } from "../../context/constant";
 import { ITeamsVM } from "../Admin/Team/ITeam";
 import dayjs from "dayjs";
+import editTeamService from "../../api/Team/EditTeam/editTeamService";
 
 interface IEditProfileUiProps {
   open: boolean;
   handleClose: () => void;
   data: {
+    id?:string;
     profileImage?: string;
     name?: string;
     email?: string;
@@ -26,12 +28,14 @@ interface IEditProfileUiProps {
     dateOfBirth?: string;
     gender?: string;
   };
+  
 }
 
 
 const EditProfileUi: React.FC<IEditProfileUiProps> = ({ open, handleClose, data }) => {
   const [formData, setFormData] = useState<ITeamsVM | null>(null);
-
+  let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
+  let UserData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
   useEffect(() => {
     console.log("Data:", data);
     if (open) {
@@ -58,11 +62,39 @@ const EditProfileUi: React.FC<IEditProfileUiProps> = ({ open, handleClose, data 
       reader.readAsDataURL(file);
     }
   };
-
-  const handleSave = () => {
-    console.log("Updated Data:", formData);
-    handleClose();
+  const handleSave = async () => {
+    if (!formData) return;
+  
+    console.log("FormData:", formData);
+  
+    const payload = new FormData();
+  
+    // Extract and handle image separately
+    const { profileImage, ...otherFields } = formData;
+  
+    // If image is a base64 string, convert it to a Blob
+    if (profileImage && profileImage.startsWith("data:image")) {
+      const response = await fetch(profileImage);
+      const blob = await response.blob();
+      payload.append("profileImage", blob, "profileImage.png"); // or .jpg depending on input
+    }
+  
+    // Attach the rest of the form fields as JSON
+    payload.append("team", JSON.stringify(otherFields));
+  
+    // payload.append("teamId", ); // Attach teamId too
+  
+    try {
+      await editTeamService({teamId:UserData.profileId,team:payload}); // now just send payload
+      window.location.reload(); // Reload the page to reflect changes
+      handleClose();
+    } catch (error) {
+      console.error("Error while saving and fetching team details:", error);
+    }
   };
+  
+  
+  
 
   if (!formData) {
     return null; // Render nothing until data is loaded
@@ -90,7 +122,7 @@ const EditProfileUi: React.FC<IEditProfileUiProps> = ({ open, handleClose, data 
           }}
         >
           <Avatar
-            src={formData.profileImage}
+            src={`${imagePath}/${formData.profileImage}`}
             alt="Profile Picture"
             sx={{ width: 80, height: 80 }}
           />
