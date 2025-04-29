@@ -382,83 +382,43 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
     return false;
   };
 
-  const onSubmit = async (policyForm: any, form: any) => {
-    const isIssueDateValid = dayjs(policyForm.issueDate).isValid();
-    const isRegDateValid = dayjs(policyForm.registrationDate).isValid();
-    const isEndDateValid = dayjs(policyForm.endDate).isValid();
-    const isGcv = proType === "Goods Carrying Vehicle";
-    const startDate = dayjs(policyForm.issueDate);
-    const endDate = dayjs(policyForm.endDate);
-
-    if (isGcv) {
-      const w = policyForm.weight;
-      if (w <= 0) {
-        toast.error("Weight can't be zero");
-        return;
+  const onSubmit = async (formValues: any) => {
+    try {
+      console.log("formValues", formValues);
+      // Prepare form data
+      const formData = new FormData();
+  
+      // Add form values to FormData
+      Object.keys(formValues).forEach((key) => {
+        const value = formValues[key];
+        if (value !== undefined && value !== null) {
+          formData.append(key, value);
+        }
+      });
+  
+      // Add documents to FormData
+      documents.forEach((doc) => {
+        if (doc.file) {
+          formData.append(doc.docName, doc.file);
+        }
+      });
+  
+      // Check if it's an add or edit operation
+      if (isAdd) {
+        // Call the API to add a new policy
+        await callAddPolicyAPI(formData);
+      } else {
+        // Call the API to edit an existing policy
+        await callEditPolicyAPI(formData, policyId!);
       }
-    }
-    if (!isIssueDateValid) {
-      toast.error("Invalid issue Date");
-      return;
-    }
-    if (!isEndDateValid) {
-      toast.error("Invalid end Date");
-      return;
-    }
-    if (!isRegDateValid) {
-      toast.error("Invalid Registration  Date");
-      return;
-    }
-
-    if (endDate.isBefore(startDate)) {
-      toast.error("End Date cannot be earlier than the Issue Date");
-      return;
-    }
-    if (
-      validateDateWithMfg(
-        policyForm.mfgYear as string,
-        policyForm.registrationDate as string
-      )
-    ) {
-      toast.error(
-        "Registration date cannot be earlier than the manufacturing year"
-      );
-      return;
-    }
-    if (
-      validateDateWithMfg(
-        policyForm.mfgYear as string,
-        policyForm.issueDate as string
-      )
-    ) {
-      toast.error("Issue date cannot be earlier than the manufacturing year");
-      return;
-    }
-
-    const formValid = documents.every((doc, index) =>
-      validateDocument(doc, index)
-    );
-
-    if (policyForm.policyCreatedBy.toLowerCase() === "admin") {
-      if (!selectedRMId) {
-        setRMErrorMessage("Select Partner or RM");
-      } else if (formValid) {
-        await bindValues(policyForm);
-      }
-    } else if (policyForm.policyCreatedBy !== "Direct") {
-      setPolicyErrorMessage("");
-      if (!selectedRMId) {
-        setRMErrorMessage("Select Partner or RM");
-      } else if (formValid) {
-        await bindValues(policyForm);
-      }
-    } else {
-      if (formValid) {
-        await bindValues(policyForm);
-      }
+  
+      // Navigate to the policy list page after successful submission
+      navigate(motorPolicyPath());
+    } catch (error: any) {
+      // Handle errors and display error messages
+      toast.error(error.message || "An error occurred while submitting the form.");
     }
   };
-
   const onProgress = (p: number) => {
     setProgress(p);
   };
@@ -703,7 +663,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
     // ncb: yup.string().nullable().required("NCB is required"),
     broker: yup.string().nullable().required("Broker Name is required"),
   });
-  const addValidate = validateFormValues(addValidationSchema);
+  // const addValidate = validateFormValues(addValidationSchema);
   const handleSelectPolicyCreatedBy = (event: any, newValue: any) => {
     setSelectedPolicyCreatedBy(newValue ? newValue.label : "");
   };
@@ -758,6 +718,9 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       toast.error(errData.message);
     }
   };
+  useEffect(() => {
+    console.log("isLoading changed:", isLoading);
+  }, [isLoading]);
 
   const getDocumentUrl = (file: any): string | undefined => {
     if (!file) return undefined; // null ki jagah undefined return karein
@@ -776,6 +739,8 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
     const nameB = b.productName || "";
     return predefinedOrder.indexOf(nameA) - predefinedOrder.indexOf(nameB);
   });
+  const addValidate = validateFormValues(addValidationSchema);
+
 
   return (
     <>
@@ -788,7 +753,12 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
         mt={3}
         onSubmit={onSubmit}
         initialValues={initialValues}
-        validate={addValidate}
+        validate={(values) => {
+          const errors = addValidate(values);
+          console.log("Validation errors:", errors);
+          return errors;
+        }}
+        
         render={({ handleSubmit }) => (
           <form onSubmit={handleSubmit} noValidate>
             <Grid container spacing={2}>
@@ -899,33 +869,36 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                   )}
                 </Field>
               </Grid>
-              <Grid item lg={4} md={4} sm={6} xs={12}>
-                <Field name="productType">
-                  {({ input, meta }) => (
-                    <div>
-                      <FormControl fullWidth size="small">
-                        <Autocomplete
-                          {...input}
-                          value={
-                            input.value !== undefined
+                <Grid item lg={4} md={4} sm={6} xs={12}>
+                        <Field name="productType">
+                        {({ input, meta }) => (
+                          <div>
+                          <FormControl fullWidth size="small">
+                            <Autocomplete
+                            {...input}
+                            value={
+                              input.value !== undefined
                               ? input.value
                               : initialValues.productType || null
-                          }
-                          options={product}
-                          getOptionLabel={(option) =>
-                            typeof option === "string"
+                            }
+                            options={[
+                              { productName: "Health" },
+                              { productName: "Personal Accident" },
+                            ]}
+                            getOptionLabel={(option) =>
+                              typeof option === "string"
                               ? option
                               : option.productName || ""
-                          }
-                          onChange={(event, newValue) => {
-                            input.onChange(
+                            }
+                            onChange={(event, newValue) => {
+                              input.onChange(
                               newValue ? newValue.productName : ""
-                            );
-                            setSelectedProduct(newValue);
-                            setProType(newValue?.productName);
-                          }}
-                          renderInput={(params) => (
-                            <TextField
+                              );
+                              setSelectedProduct(newValue);
+                              setProType(newValue?.productName);
+                            }}
+                            renderInput={(params) => (
+                              <TextField
                               {...params}
                               label=" Select Product"
                               className="rounded-sm w-full"
@@ -933,14 +906,15 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                               variant="outlined"
                               error={meta.touched && !!meta.error}
                               helperText={meta.touched && meta.error}
+                              />
+                            )}
                             />
-                          )}
-                        />
-                      </FormControl>
-                    </div>
-                  )}
-                </Field>
-              </Grid>
+                          </FormControl>
+                          </div>
+                        )}
+                        </Field>
+                      </Grid>
+                             
               <Grid item lg={4} md={4} sm={6} xs={12}>
                 <Field name="companyName">
                   {({ input, meta }) => (
@@ -1582,14 +1556,15 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
             </Grid>
             <Grid container spacing={2} mt={2}>
               <Grid item lg={12} md={12} sm={12} xs={12}>
-                <Button
-                  variant="contained"
-                  type="submit"
-                  disabled={isLoading}
-                  className="btnGradient text-black px-6 py-3 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
-                >
-                  {isLoading ? "Submitting..." : "Submit"}
-                </Button>
+              <Button
+  variant="contained"
+  type="submit"
+  disabled={isLoading}
+  className="btnGradient text-black px-6 py-3 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
+>
+{console.log("Submit button rendered, isLoading:", isLoading)}
+  {isLoading ? "Submitting..." : "Submit"}
+</Button>
               </Grid>
             </Grid>
           </form>

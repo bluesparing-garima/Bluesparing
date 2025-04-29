@@ -359,6 +359,10 @@ const GetMotorPolicies = () => {
     return policyPayment;
   };
 
+  useEffect(() => {
+    refreshPage();
+  }, []);
+
   const refreshPage = () => {
     const userRole = userData.role.toLowerCase();
     if (userRole === "admin" || userRole === "account") {
@@ -400,9 +404,9 @@ const GetMotorPolicies = () => {
       try {
         const newPolicy = await editPolicyService({ header, policy, policyId });
         if (newPolicy.status === "success") {
-         
+         await refreshPage();
+          window.location.reload();
           toast.success(`${key} is updated successfully`);
-          refreshPage()
         }
       } catch (err: any) {
         const errorData = await err;
