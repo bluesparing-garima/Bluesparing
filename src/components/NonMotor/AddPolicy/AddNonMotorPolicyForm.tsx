@@ -460,7 +460,9 @@ const [occupancy,setSelectedOccupancy] = useState<IOccupancy>()
     return false;
   };
 
-  const onSubmit = async (policyForm: any, form: any) => {
+  const onSubmit = async (policyForm: any) => {
+    console.log("policyForm", policyForm);
+
     const isIssueDateValid = dayjs(policyForm.issueDate).isValid();
     const isRegDateValid = dayjs(policyForm.registrationDate).isValid();
     const isEndDateValid = dayjs(policyForm.endDate).isValid();
@@ -846,7 +848,7 @@ const [occupancy,setSelectedOccupancy] = useState<IOccupancy>()
         mt={3}
         onSubmit={onSubmit}
         initialValues={initialValues}
-        validate={addValidate}
+        // validate={addValidate}
         render={({ handleSubmit }) => (
           <form onSubmit={handleSubmit} noValidate>
             <Grid container spacing={2}>
@@ -1345,48 +1347,60 @@ const [occupancy,setSelectedOccupancy] = useState<IOccupancy>()
                 </Field>
               </Grid>
               <Grid item lg={4} md={4} sm={6} xs={12}>
-                <Field name="partner">
-                  {({ input, meta }) => (
-                    <div>
-                      <FormControl fullWidth size="small">
-                        <Autocomplete
-                          {...input}
-                          id="partner"
-                          value={
-                            input.value !== undefined
-                              ? input.value
-                              : initialValues.partnerId || null
-                          }
-                          getOptionLabel={(option) =>
-                            typeof option === "string"
-                              ? option
-                              : `${option.name} - ${option.userCode}` ||
-                              ""
-                          }
-                          options={partners}
-                          onChange={(event, newValue) => {
-                            input.onChange(
-                              newValue ? newValue.partnerName : ""
-                            );
-                            setSelectedPartnerId(newValue ? newValue._id : "");
-                          }}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label=" Select Partner"
-                              className="rounded-sm w-full"
-                              size="small"
-                              variant="outlined"
-                              error={meta.touched && !!meta.error}
-                              helperText={meta.touched && meta.error}
-                            />
-                          )}
-                        />
-                      </FormControl>
-                    </div>
-                  )}
-                </Field>
-              </Grid>
+  <Field name="partner">
+    {({ input, meta }) => (
+      <div>
+        <FormControl fullWidth size="small">
+          <Autocomplete
+            {...input}
+            id="partner"
+            value={
+              partners.find((partner) => partner._id === selectedPartnerId) || null
+            }
+            getOptionLabel={(option) =>
+              typeof option === "string"
+                ? option
+                : `${option.name} - ${option.userCode}` || ""
+            }
+            options={partners}
+            onChange={(event, newValue) => {
+              if (newValue) {
+                if (Array.isArray(newValue)) {
+                  console.error("Unexpected array value for partner selection");
+                } else if (newValue && newValue._id) {
+                  setSelectedPartnerId(newValue._id);
+                }
+                if (!Array.isArray(newValue) && newValue?.name) {
+                  setSelectedPartnerName(newValue.name);
+                }
+                if (!Array.isArray(newValue) && newValue?._id) {
+                  input.onChange(newValue._id); // Update the form value
+                } else {
+                  input.onChange(""); // Clear the form value if invalid
+                }
+              } else {
+                setSelectedPartnerId("");
+                setSelectedPartnerName("");
+                input.onChange(""); // Clear the form value
+              }
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Select Partner"
+                className="rounded-sm w-full"
+                size="small"
+                variant="outlined"
+                error={meta.touched && !!meta.error}
+                helperText={meta.touched && meta.error}
+              />
+            )}
+          />
+        </FormControl>
+      </div>
+    )}
+  </Field>
+</Grid>
               <Grid item lg={4} md={4} sm={6} xs={12}>
                 <Field name="companyName">
                   {({ input, meta }) => (

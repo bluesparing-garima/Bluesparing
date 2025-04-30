@@ -141,18 +141,18 @@ const Checkout: FC = () => {
     razorpay_signature: string
   ) => {
     try {
-      const response = await VerifyPaymentService({
-        razorpay_order_id,
+      const transactionResult = await handleTransaction(
         razorpay_payment_id,
-        razorpay_signature,
-      });
+        razorpay_order_id,
+        true
+      );
 
-      if (response.success) {
-        await handleTransaction(razorpay_payment_id, razorpay_order_id, true);
-        await new Promise(resolve => setTimeout(resolve, 1000)); 
-        
-        await downloadInvoice(plan.planName, userData?.profileId || user?._id || "");
-
+      if (transactionResult === true) {
+        // Only call downloadInvoice if handleTransaction succeeds
+        await downloadInvoice(
+          plan.planName,
+          userData?.profileId || user?._id || ""
+        );
         handleNavigation();
       } else {
         toast.error("Payment verification failed");
@@ -167,21 +167,23 @@ const Checkout: FC = () => {
     tId: string,
     oId: string,
     status: boolean
-  ) => {
+  ): Promise<boolean> => {
     try {
       const amount = getTotalAmount();
       if (tId === "free") {
-        AddTransactionServices({
+        await AddTransactionServices({
           data: makePayloadForFree(),
         });
       } else {
-        AddTransactionServices({
+        await AddTransactionServices({
           data: makeTransactionPayload(tId, oId, status, amount),
         });
       }
+      return true;
     } catch (error: any) {
       const err = await error;
       toast.error(err.message);
+      return false;
     }
   };
 
