@@ -20,6 +20,13 @@ export const getPolicyByNumberEndpoint = (policyNumber: string) =>
 (
   `/api/policy/motor/validatePolicyNumber/?policyNumber=${policyNumber}`
 );
+
+export const addHealthPolicyEndpoint = () =>
+  (`/api/policy/health`);
+export const editHealthPolicyEndpoint = (policyId: string) =>
+  (`/api/policy/health/${policyId}`);
+export const deleteHealthPolicyEndpoint = (policyId: string) =>
+  (`/api/policy/health/${policyId}`);
 export const getPolicyByPartnerEndpoint = (
   partnerId: string,
   startDate: string,
