@@ -15,6 +15,7 @@ const ProfilePage = () => {
     setUserData(data);
   };
   useEffect(() => {
+    console.log("UserData:", UserData);
     fetchUserData();
     // eslint-disable-next-line
   }, []);
