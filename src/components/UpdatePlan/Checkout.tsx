@@ -25,32 +25,34 @@ import InitiatePaymentService from "../../api/Razorpay/InitiatePayment/InitiateP
 import VerifyPaymentService from "../../api/Razorpay/VerifyPayment/VerifyPaymentService";
 
 import { BASE_URL } from "../../utils/fetchInterceptor ";
+import sendWhatsAppMessage from "../services/WhatsAppService";
 interface CheckoutState {
   plan?: ISubscription;
   selectedPlan: "monthly" | "yearly";
 }
 
- 
- const downloadInvoice = async (planName: string, userId: string) => {
+const downloadInvoice = async (planName: string, userId: string) => {
   try {
-    const response = await fetch(`${BASE_URL}/api/transaction/download-invoice?planName=${planName}&userId=${userId}`, {
-      method: 'GET',
-    });
+    const response = await fetch(
+      `${BASE_URL}/api/transaction/download-invoice?planName=${planName}&userId=${userId}`,
+      {
+        method: "GET",
+      }
+    );
 
     if (!response.ok) {
-      throw new Error('Failed to download invoice');
+      throw new Error("Failed to download invoice");
     }
 
     const blob = await response.blob();
     const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = url;
-    link.setAttribute('download', `${planName}_invoice.pdf`); 
+    link.setAttribute("download", `${planName}_invoice.pdf`);
     document.body.appendChild(link);
     link.click();
     link.remove();
 
-    
     window.URL.revokeObjectURL(url);
   } catch (error) {
     toast.error("Error downloading invoice");
@@ -149,9 +151,20 @@ const Checkout: FC = () => {
 
       if (response.success) {
         await handleTransaction(razorpay_payment_id, razorpay_order_id, true);
-        await new Promise(resolve => setTimeout(resolve, 1000)); 
-        
-        await downloadInvoice(plan.planName, userData?.profileId || user?._id || "");
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        await downloadInvoice(
+          plan.planName,
+          userData?.profileId || user?._id || ""
+        );
+
+        // Send WhatsApp confirmation
+        await sendWhatsAppMessage({
+          // to: user?.phone || userData?.phoneNumber || "",
+          to: "+918058223710",
+          body: generateWhatsAppMessage(),
+          preview_url: false,
+        });
 
         handleNavigation();
       } else {
@@ -163,6 +176,7 @@ const Checkout: FC = () => {
       handleNavigation();
     }
   };
+
   const handleTransaction = async (
     tId: string,
     oId: string,
@@ -349,6 +363,56 @@ const Checkout: FC = () => {
   const { month: highestMonth, discount: highestDiscount } =
     getMaxDiscountMonth();
 
+  const generateWhatsAppMessage = () => {
+    return `
+        👋 Hi ${user?.name || userData?.name},
+    
+        ✅ Thank you for subscribing to the *${plan.planName}* plan.
+        
+        🗓 Duration: ${selectedMonths} month(s)  
+        💼 Policies: ${
+          Number(plan?.policyCount) * Number(selectedMonths) +
+          (Number(userData?.policyCount) || 0)
+        }  
+        💰 Total Paid: ₹${getTotalAmount().toFixed(2)}  
+        🕒 Start Date: ${new Date(
+          CalculateCurrentDate()
+        ).toLocaleDateString()}  
+        📆 End Date: ${new Date(calculatePlanEndDate()).toLocaleDateString()}
+        
+        Your invoice is available in your dashboard.
+    
+        🔵 BlueSparing Team
+
+        For more information, visit: [Blue Sparing Website](https://iim.bluesparing.com/)
+    
+        **Hindi Version:**
+    
+        👋 नमस्ते ${user?.name || userData?.name},
+    
+        ✅ ${plan.planName} प्लान के लिए धन्यवाद। 
+    
+        🗓 अवधि: ${selectedMonths} महीना(ओ)  
+        💼 पॉलिसियां: ${
+          Number(plan?.policyCount) * Number(selectedMonths) +
+          (Number(userData?.policyCount) || 0)
+        }  
+        💰 कुल भुगतान: ₹${getTotalAmount().toFixed(2)}  
+        🕒 शुरुआत तिथि: ${new Date(
+          CalculateCurrentDate()
+        ).toLocaleDateString()}  
+        📆 समाप्ति तिथि: ${new Date(
+          calculatePlanEndDate()
+        ).toLocaleDateString()}
+        
+        आपका इनवॉइस आपके डैशबोर्ड में उपलब्ध है।
+    
+        🔵 BlueSparing Team
+    
+        For more information, visit: [Blue Sparing Website](https://iim.bluesparing.com/)
+      `;
+  };
+
   return (
     <div className="w-full min-h-screen bg-blue-200 flex flex-col items-center p-3">
       {}
@@ -415,7 +479,7 @@ const Checkout: FC = () => {
               className="ml-2 w-32 sm:w-40 h-10 text-sm sm:text-base font-semibold"
               IconComponent={KeyboardArrowDownIcon}
             >
-              {[1,3,6,12,24].map((ele, index) => {
+              {[1, 3, 6, 12, 24].map((ele, index) => {
                 const month = ele;
                 return (
                   <MenuItem key={`${month}-month`} value={month}>

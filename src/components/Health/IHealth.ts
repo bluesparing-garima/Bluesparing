@@ -37,49 +37,34 @@ export interface IHealthVM extends IHealth {
 
 export interface IAddEditHealthForm {
   id?: string;
-  bookingId?: string; //bookingrequestId
-  leadId?: string; //leadId
-  category: string; //motor
-  policyType: string; //Package
-  caseType: string; //new ,renewal
-  productType: string; //two wheeler
-  subCategory?: string; //
-  companyName: string; //TATA
+  policyNumber: string;
+  policyType: string;
+  caseType: string; 
+  productType: string; 
+  companyName: string;
   broker: string;
   brokerId: string;
   brokerCode?: string;
-  make: string; //company of vehicle
-  model: string; //company vechicle model
-  fuelType: string; //LPG
-  rto: string; //
-  vehicleNumber: string;
-  seatingCapacity?: number;
-  cc: number;
-  weight?: number; //100o,2500
-  ncb: string; //
-  policyNumber: string;
+  issueDate: string;
+  endDate: string;
+  totalSumInsured: number;
+  netPremium: number;
+  finalPremium: number;
+  firstPurchaseDate: string;
+  renewalYear: number;
+  accumulatedBonus : number;
+  accumulativeBonus : number;
   fullName: string;
   emailId: string;
   phoneNumber: number;
-  vehicleAge?: string; //matter
-  mfgYear: number;
-  tenure: number;
-  registrationDate: string;
-  endDate: string;
-  issueDate: string;
-  idv: number|undefined;
-  od: number;
-  tp: number;
-  netPremium: number;
-  finalPremium: number;
   paymentMode: string;
-  policyCreatedBy: string;
-  policyStatus?: string; //booked
-  paymentDetails?: string;
-  partnerId?: string;
-  partnerName?: string;
-  relationshipManagerId?: string;
-  relationshipManagerName?: string;
+  // policyCreatedBy: string;
+  // policyStatus?: string; //booked
+  // paymentDetails?: string;
+  // partnerId?: string;
+  // partnerName?: string;
+  // relationshipManagerId?: string;
+  // relationshipManagerName?: string;
   rcFront?: string;
   rcBack?: string;
   previousPolicy?: string;
@@ -89,7 +74,7 @@ export interface IAddEditHealthForm {
   proposal?: string;
   currentPolicy?: string;
   other?: string;
-  policyCompletedBy: string; /// booking person id
+  policyCompletedBy: string;
   updatedOn?: any;
   createdOn?: string;
   createdBy?: any;

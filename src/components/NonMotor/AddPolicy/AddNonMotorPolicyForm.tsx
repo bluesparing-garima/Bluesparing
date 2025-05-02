@@ -67,7 +67,9 @@ import {
   policyCreatedBy,
   policyCreatedByAdmin,
 } from "../../Policy/IPolicyData";
-import useGetOccupancy, { IOccupancy } from "../../../Hooks/Occupancy/useGetOccupancy";
+import useGetOccupancy, {
+  IOccupancy,
+} from "../../../Hooks/Occupancy/useGetOccupancy";
 
 export interface AddPolicyFormProps {
   initialValues: IAddEditPolicyForm;
@@ -112,7 +114,7 @@ const AddNonMotorPolicyForm = (props: AddPolicyFormProps) => {
 
   const accidentalPercentages = [10, 15, 20, 25];
 
-const [occupancy,setSelectedOccupancy] = useState<IOccupancy>()
+  const [occupancy, setSelectedOccupancy] = useState<IOccupancy>();
   const [commodity, setCommodity] = useState("");
   const [annualTurnover, setAnnualTurnover] = useState<number>(0);
   const [accidentalPercent, setAccidentalPercent] = useState<number>(0);
@@ -134,7 +136,7 @@ const [occupancy,setSelectedOccupancy] = useState<IOccupancy>()
     role: "Relationship Manager",
   });
   let [occupancyData] = useGetOccupancy();
-  let [partners] = useGetPartners({ header: header, role: "partner" });
+  let [partners = []] = useGetPartners({ header, role: "partner" });
   let [makes] = useGetMakes({ header: header });
   let [models] = useGetModels({ header: header });
 
@@ -461,80 +463,85 @@ const [occupancy,setSelectedOccupancy] = useState<IOccupancy>()
   };
 
   const onSubmit = async (policyForm: any, form: any) => {
-    const isIssueDateValid = dayjs(policyForm.issueDate).isValid();
-    const isRegDateValid = dayjs(policyForm.registrationDate).isValid();
-    const isEndDateValid = dayjs(policyForm.endDate).isValid();
-    const isGcv = proType === "Goods Carrying Vehicle";
-    const startDate = dayjs(policyForm.issueDate);
-    const endDate = dayjs(policyForm.endDate);
+    console.log("Full Submitted Values:", policyForm);
+    console.log("Partner Object:", policyForm.partner); // Full object
+    console.log("Partner Name:", policyForm.partner?.name); // Readable
+    console.log("Partner ID:", policyForm.partner?._id); // ID
+    console.log("Non Motor Date policyForm : ", policyForm);
+    // const isIssueDateValid = dayjs(policyForm.issueDate).isValid();
+    // const isRegDateValid = dayjs(policyForm.registrationDate).isValid();
+    // const isEndDateValid = dayjs(policyForm.endDate).isValid();
+    // const isGcv = proType === "Goods Carrying Vehicle";
+    // const startDate = dayjs(policyForm.issueDate);
+    // const endDate = dayjs(policyForm.endDate);
 
-    if (isGcv) {
-      const w = policyForm.weight;
-      if (w <= 0) {
-        toast.error("Weight can't be zero");
-        return;
-      }
-    }
-    if (!isIssueDateValid) {
-      toast.error("Invalid issue Date");
-      return;
-    }
-    if (!isEndDateValid) {
-      toast.error("Invalid end Date");
-      return;
-    }
-    if (!isRegDateValid) {
-      toast.error("Invalid Registration  Date");
-      return;
-    }
+    // if (isGcv) {
+    //   const w = policyForm.weight;
+    //   if (w <= 0) {
+    //     toast.error("Weight can't be zero");
+    //     return;
+    //   }
+    // }
+    // if (!isIssueDateValid) {
+    //   toast.error("Invalid issue Date");
+    //   return;
+    // }
+    // if (!isEndDateValid) {
+    //   toast.error("Invalid end Date");
+    //   return;
+    // }
+    // if (!isRegDateValid) {
+    //   toast.error("Invalid Registration  Date");
+    //   return;
+    // }
 
-    if (endDate.isBefore(startDate)) {
-      toast.error("End Date cannot be earlier than the Issue Date");
-      return;
-    }
-    if (
-      validateDateWithMfg(
-        policyForm.mfgYear as string,
-        policyForm.registrationDate as string
-      )
-    ) {
-      toast.error(
-        "Registration date cannot be earlier than the manufacturing year"
-      );
-      return;
-    }
-    if (
-      validateDateWithMfg(
-        policyForm.mfgYear as string,
-        policyForm.issueDate as string
-      )
-    ) {
-      toast.error("Issue date cannot be earlier than the manufacturing year");
-      return;
-    }
+    // if (endDate.isBefore(startDate)) {
+    //   toast.error("End Date cannot be earlier than the Issue Date");
+    //   return;
+    // }
+    // if (
+    //   validateDateWithMfg(
+    //     policyForm.mfgYear as string,
+    //     policyForm.registrationDate as string
+    //   )
+    // ) {
+    //   toast.error(
+    //     "Registration date cannot be earlier than the manufacturing year"
+    //   );
+    //   return;
+    // }
+    // if (
+    //   validateDateWithMfg(
+    //     policyForm.mfgYear as string,
+    //     policyForm.issueDate as string
+    //   )
+    // ) {
+    //   toast.error("Issue date cannot be earlier than the manufacturing year");
+    //   return;
+    // }
 
-    const formValid = documents.every((doc, index) =>
-      validateDocument(doc, index)
-    );
+    // const formValid = documents.every((doc, index) =>
+    //   validateDocument(doc, index)
+    // );
 
-    if (policyForm.policyCreatedBy.toLowerCase() === "admin") {
-      if (!selectedRMId) {
-        setRMErrorMessage("Select Partner or RM");
-      } else if (formValid) {
-        await bindValues(policyForm);
-      }
-    } else if (policyForm.policyCreatedBy !== "Direct") {
-      setPolicyErrorMessage("");
-      if (!selectedRMId) {
-        setRMErrorMessage("Select Partner or RM");
-      } else if (formValid) {
-        await bindValues(policyForm);
-      }
-    } else {
-      if (formValid) {
-        await bindValues(policyForm);
-      }
-    }
+    // if (policyForm.policyCreatedBy.toLowerCase() === "admin") {
+    //   if (!selectedRMId) {
+    //     setRMErrorMessage("Select Partner or RM");
+    //   } else if (formValid) {
+    //     await bindValues(policyForm);
+    //   }
+    // } else if (policyForm.policyCreatedBy !== "Direct") {
+    //   setPolicyErrorMessage("");
+    //   if (!selectedRMId) {
+    //     setRMErrorMessage("Select Partner or RM");
+    //   } else if (formValid) {
+    //     await bindValues(policyForm);
+    //   }
+    // } else {
+    //   if (formValid) {
+    //     await bindValues(policyForm);
+    //   }
+    // }
   };
 
   const onProgress = (p: number) => {
@@ -791,7 +798,7 @@ const [occupancy,setSelectedOccupancy] = useState<IOccupancy>()
       } else {
         setPolicyErrorMessage("");
       }
-    } catch { }
+    } catch {}
   };
   const validateVehicleNumber = async (e: any) => {
     if (selectedCaseType.toLowerCase().trim() === "new") {
@@ -846,7 +853,7 @@ const [occupancy,setSelectedOccupancy] = useState<IOccupancy>()
         mt={3}
         onSubmit={onSubmit}
         initialValues={initialValues}
-        validate={addValidate}
+        // validate={addValidate}
         render={({ handleSubmit }) => (
           <form onSubmit={handleSubmit} noValidate>
             <Grid container spacing={2}>
@@ -920,8 +927,42 @@ const [occupancy,setSelectedOccupancy] = useState<IOccupancy>()
 
               {policyType === "Fire" && (
                 <>
-                  {/* Product Dropdown */}
                   <Grid item lg={4} md={4} sm={6} xs={12}>
+                    <Field name="productType">
+                      {({ input, meta }) => (
+                        <div>
+                          <FormControl fullWidth size="small">
+                            <Autocomplete
+                              options={fireProducts}
+                              getOptionLabel={(option) => option.product}
+                              value={
+                                typeof input.value === "object"
+                                  ? input.value
+                                  : fireProducts.find(
+                                      (p) => p.product === input.value
+                                    ) || null
+                              }
+                              onChange={(e, value) => {
+                                input.onChange(value); // update Final Form state
+                                console.log("Product selected:", value); // log value
+                              }}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  label="Product Type"
+                                  size="small"
+                                  error={meta.touched && !!meta.error}
+                                  helperText={meta.touched && meta.error}
+                                />
+                              )}
+                            />
+                          </FormControl>
+                        </div>
+                      )}
+                    </Field>
+                  </Grid>
+                  {/* Product Dropdown */}
+                  {/* <Grid item lg={4} md={4} sm={6} xs={12}>
                     <FormControl fullWidth size="small">
                       <Autocomplete
                         options={fireProducts}
@@ -938,7 +979,7 @@ const [occupancy,setSelectedOccupancy] = useState<IOccupancy>()
                         )}
                       />
                     </FormControl>
-                  </Grid>
+                  </Grid> */}
 
                   {/* Terrorism Cover */}
                   <Grid item lg={4} md={4} sm={6} xs={12}>
@@ -986,7 +1027,6 @@ const [occupancy,setSelectedOccupancy] = useState<IOccupancy>()
                     </Grid>
                   )}
 
-
                   <Grid item lg={4} md={4} sm={6} xs={12}>
                     <FormControl fullWidth size="small">
                       <Autocomplete
@@ -1024,7 +1064,7 @@ const [occupancy,setSelectedOccupancy] = useState<IOccupancy>()
                         },
                       }}
                     >
-                      <DialogTitle>Add  Burglary Policy</DialogTitle>
+                      <DialogTitle>Add Burglary Policy</DialogTitle>
                       <DialogContent>
                         <TextField
                           label="Policy Number"
@@ -1280,11 +1320,16 @@ const [occupancy,setSelectedOccupancy] = useState<IOccupancy>()
                           getOptionLabel={(option) =>
                             typeof option === "string"
                               ? option
-                              : `${option.occupancyDescription}-${option.occupancyCode}` || ""
+                              : `${option.occupancyDescription}-${option.occupancyCode}` ||
+                                ""
                           }
                           onChange={(event, newValue) => {
-                            input.onChange(newValue ? newValue._id : "");
-                            setSelectedOccupancy(newValue._id);
+                            input.onChange(
+                              newValue
+                                ? `${newValue.occupancyDescription}-${newValue.occupancyCode}`
+                                : ""
+                            );
+                            setSelectedOccupancy(newValue?._id);
                           }}
                           renderInput={(params) => (
                             <TextField
@@ -1320,7 +1365,7 @@ const [occupancy,setSelectedOccupancy] = useState<IOccupancy>()
                             typeof option === "string"
                               ? option
                               : `${option.brokerName} - ${option.brokerCode}` ||
-                              ""
+                                ""
                           }
                           options={brokers}
                           onChange={(event, newValue) => {
@@ -1353,23 +1398,22 @@ const [occupancy,setSelectedOccupancy] = useState<IOccupancy>()
                           {...input}
                           id="partner"
                           value={
-                            input.value !== undefined
+                            typeof input.value === "object"
                               ? input.value
-                              : initialValues.partnerId || null
+                              : (partners || []).find(
+                                  (p) => p._id === input.value
+                                ) || null
                           }
+                          onChange={(event, newValue) => {
+                            input.onChange(newValue); // Store full object in form
+                            setSelectedPartnerId(newValue?._id || "");
+                          }}
                           getOptionLabel={(option) =>
                             typeof option === "string"
                               ? option
-                              : `${option.name} - ${option.userCode}` ||
-                              ""
+                              : `${option.name} - ${option.userCode}` || ""
                           }
-                          options={partners}
-                          onChange={(event, newValue) => {
-                            input.onChange(
-                              newValue ? newValue.partnerName : ""
-                            );
-                            setSelectedPartnerId(newValue ? newValue._id : "");
-                          }}
+                          options={partners || []}
                           renderInput={(params) => (
                             <TextField
                               {...params}

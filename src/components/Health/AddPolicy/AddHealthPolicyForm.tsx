@@ -118,9 +118,8 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   const [selectedProduct, setSelectedProduct] = useState<IProducts>();
   const foundMake = () => {
     return makes?.find((ele) => {
-      const val = initialValues.make?.toLowerCase();
       const arg = ele.makeName?.toLowerCase();
-      return arg === val;
+      // return arg === val;
     });
   };
   const [selectedMake, setSelectedMake] = useState<IMakes | undefined>();
@@ -149,20 +148,10 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   const [policyCount, setPolicyCount] = useState<number>(0);
   useEffect(() => {
     if (!isAdd) {
-      setOd(initialValues.od ?? 0);
-      setTp(initialValues.tp ?? 0);
       setNetPremium(initialValues.netPremium ?? 0);
       setSelectedBrokerId(initialValues.brokerId!);
-      setSelectedPartnerId(initialValues.partnerId!);
-      setSelectedPolicyCreatedBy(initialValues.policyCreatedBy);
-      setSelectedPartnerName(initialValues.partnerName!);
-      setSelectedRMId(initialValues.relationshipManagerId!);
-      setSelectedRMName(initialValues.relationshipManagerName!);
       setPolicyType(initialValues.policyType);
       setProType(initialValues.productType);
-      setCC(initialValues.cc ?? 0);
-      setIdv(initialValues.idv ?? 0);
-      setTenure(initialValues.tenure ?? 1);
       setSelectedCaseType(initialValues.caseType ?? "");
       const updatedDocuments: Document[] = [];
       // if (initialValues.rcBack) {
@@ -222,12 +211,12 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       setDocuments(updatedDocuments);
     }
   }, [isAdd, initialValues]);
-  useEffect(() => {
-    if (initialValues.make) {
-      setSelectedMake(foundMake());
-    }
-    // eslint-disable-next-line
-  }, [initialValues]);
+  // useEffect(() => {
+  //   if (initialValues.make) {
+  //     setSelectedMake(foundMake());
+  //   }
+  //   // eslint-disable-next-line
+  // }, [initialValues]);
   const handleFileInputChange = (event: any, index: any) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
@@ -261,14 +250,11 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
 
   useEffect(() => {
     if (policyType.toLowerCase().trim() === "third party only/ tp") {
-      setTp(initialValues.tp ?? 0);
       setOd(0);
       setIdv(undefined);
     }
     if (policyType === "Own Damage Only/ OD") {
       setTp(0);
-      setOd(initialValues.od ?? 0);
-      setIdv(initialValues.idv ?? undefined);
     }
     // eslint-disable-next-line
   }, [policyType]);
@@ -383,41 +369,44 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   };
 
   const onSubmit = async (formValues: any) => {
-    try {
-      console.log("formValues", formValues);
-      // Prepare form data
-      const formData = new FormData();
-  
-      // Add form values to FormData
-      Object.keys(formValues).forEach((key) => {
-        const value = formValues[key];
-        if (value !== undefined && value !== null) {
-          formData.append(key, value);
-        }
-      });
-  
-      // Add documents to FormData
-      documents.forEach((doc) => {
-        if (doc.file) {
-          formData.append(doc.docName, doc.file);
-        }
-      });
-  
-      // Check if it's an add or edit operation
-      if (isAdd) {
-        // Call the API to add a new policy
-        await callAddPolicyAPI(formData);
-      } else {
-        // Call the API to edit an existing policy
-        await callEditPolicyAPI(formData, policyId!);
-      }
-  
-      // Navigate to the policy list page after successful submission
-      navigate(motorPolicyPath());
-    } catch (error: any) {
-      // Handle errors and display error messages
-      toast.error(error.message || "An error occurred while submitting the form.");
-    }
+    console.log("formValues", formValues);
+    // try {
+    //   console.log("formValues", formValues);
+    //   // Prepare form data
+    //   const formData = new FormData();
+
+    //   // Add form values to FormData
+    //   Object.keys(formValues).forEach((key) => {
+    //     const value = formValues[key];
+    //     if (value !== undefined && value !== null) {
+    //       formData.append(key, value);
+    //     }
+    //   });
+
+    //   // Add documents to FormData
+    //   documents.forEach((doc) => {
+    //     if (doc.file) {
+    //       formData.append(doc.docName, doc.file);
+    //     }
+    //   });
+
+    //   // Check if it's an add or edit operation
+    //   if (isAdd) {
+    //     // Call the API to add a new policy
+    //     await callAddPolicyAPI(formData);
+    //   } else {
+    //     // Call the API to edit an existing policy
+    //     await callEditPolicyAPI(formData, policyId!);
+    //   }
+
+    //   // Navigate to the policy list page after successful submission
+    //   navigate(motorPolicyPath());
+    // } catch (error: any) {
+    //   // Handle errors and display error messages
+    //   toast.error(
+    //     error.message || "An error occurred while submitting the form."
+    //   );
+    // }
   };
   const onProgress = (p: number) => {
     setProgress(p);
@@ -577,15 +566,35 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       )
       .transform((value) =>
         value ? value.replace(/\s+/g, " ").trim() : value
-      ),
-
-    netPremium: yup.number().required("Net Premium is required").nullable(),
-    finalPremium: yup.number().required("Final Premium is required").nullable(),
+    ),
+    
+    policyType: yup.string().required("Policy Type is required").nullable(),
+    caseType: yup.string().nullable().required("Case Type is required"),
+    productType: yup.string().nullable().required("Product Type is required"),
+    companyName: yup.string().nullable().required("Company Name is required"),
+    issueDate: yup.string().required("Issue Date is required").nullable(),
+    EndDate: yup.string().required("Issue Date is required").nullable(),
     sumInsured: yup
       .number()
       .required("Total Sum Insured is required")
       .nullable(),
-
+      netPremium: yup.number().required("Net Premium is required").nullable(),
+      finalPremium: yup.number().required("Final Premium is required").nullable(),
+      firstPurchasedDate: yup
+      .string()
+      .required("First Purchased Date is required")
+      .nullable(),
+      renewalYear: yup.string().required("Renewal Year is required").nullable(),
+      accumulatedBonus: yup
+        .string()
+        .nullable()
+        .required("Accumulated Bonus is required"),
+      accumulativeBonus: yup
+        .string()
+        .nullable()
+        .required("Accumulative Bonus is required"),
+      paymentMode: yup.string().nullable().required("Payment Mode is required"),
+      
     fullName: yup
       .string()
       .trim()
@@ -606,62 +615,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
       .required("Phone Number is required")
       .min(1, "Phone Number must be at least 1 character")
       .max(10, "Phone Number must be at least 10 character"),
-    firstPurchasedDate: yup
-      .string()
-      .required("First Purchased Date is required")
-      .nullable(),
-    renewalYear: yup.string().required("Renewal Year is required").nullable(),
-    accumulatedBonus: yup
-      .string()
-      .nullable()
-      .required("Accumulated Bonus is required"),
-    accumulativeBonus: yup
-      .string()
-      .nullable()
-      .required("Accumulative Bonus is required"),
-    issueDate: yup.string().required("Issue Date is required").nullable(),
-    EndDate: yup.string().required("Issue Date is required").nullable(),
-    policyType: yup.string().required("Policy Type is required").nullable(),
-    caseType: yup.string().nullable().required("Case Type is required"),
-    productType: yup.string().nullable().required("Product Type is required"),
-    companyName: yup.string().nullable().required("Company Name is required"),
-    paymentMode: yup.string().nullable().required("Payment Mode is required"),
-
-    // policyCreatedBy: yup
-    // .string()
-    // .nullable()
-    // .required("Policy Created By is required"),
-
-    // registrationDate: yup
-    //   .string()
-    //   .required("Registration Date is required")
-    //   .nullable(),
-
-    // mfgYear: yup.number().required("MFG Year is required").nullable(),
-    // tenure: yup.number().required("Tenure is required").nullable(),
-    // cc: yup.string().required("CC is required").nullable(),
-    // tp: yup.number().required("TP is required").nullable(),
-    // od: yup.number().required("OD is required").nullable(),
-    // idv: yup
-    //   .number()
-    //   .nullable()
-    //   .when([], {
-    //     is: () => policyType.toLowerCase().trim() === "third party only/ tp",
-    //     then: yup.number().nullable(),
-    //     otherwise: yup.number().required("IDV is required").nullable(),
-    //   }),
-
-    // vehicleNumber: yup
-    //   .string()
-    //   .required("Vehicle Number is required")
-    //   .min(1, "Vehicle Number must be at least 1 character")
-    //   .max(12, "Vehicle Number must can be 12 character"),
-    // endDate: yup.string().required("End Date is required").nullable(),
-    // make: yup.string().required("Make is required").nullable(),
-    // model: yup.string().nullable().required("Model is required"),
-    // fuelType: yup.string().nullable().required("Fuel Type is required"),
-    // ncb: yup.string().nullable().required("NCB is required"),
-    broker: yup.string().nullable().required("Broker Name is required"),
+    // broker: yup.string().nullable().required("Broker Name is required"),
   });
   // const addValidate = validateFormValues(addValidationSchema);
   const handleSelectPolicyCreatedBy = (event: any, newValue: any) => {
@@ -741,7 +695,6 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
   });
   const addValidate = validateFormValues(addValidationSchema);
 
-
   return (
     <>
       <UpgradePlanPopup
@@ -753,11 +706,6 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
         mt={3}
         onSubmit={onSubmit}
         initialValues={initialValues}
-        validate={(values) => {
-          const errors = addValidate(values);
-          console.log("Validation errors:", errors);
-          return errors;
-        }}
         
         render={({ handleSubmit }) => (
           <form onSubmit={handleSubmit} noValidate>
@@ -869,36 +817,36 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                   )}
                 </Field>
               </Grid>
-                <Grid item lg={4} md={4} sm={6} xs={12}>
-                        <Field name="productType">
-                        {({ input, meta }) => (
-                          <div>
-                          <FormControl fullWidth size="small">
-                            <Autocomplete
-                            {...input}
-                            value={
-                              input.value !== undefined
+              <Grid item lg={4} md={4} sm={6} xs={12}>
+                <Field name="productType">
+                  {({ input, meta }) => (
+                    <div>
+                      <FormControl fullWidth size="small">
+                        <Autocomplete
+                          {...input}
+                          value={
+                            input.value !== undefined
                               ? input.value
                               : initialValues.productType || null
-                            }
-                            options={[
-                              { productName: "Health" },
-                              { productName: "Personal Accident" },
-                            ]}
-                            getOptionLabel={(option) =>
-                              typeof option === "string"
+                          }
+                          options={[
+                            { productName: "Health" },
+                            { productName: "Personal Accident" },
+                          ]}
+                          getOptionLabel={(option) =>
+                            typeof option === "string"
                               ? option
                               : option.productName || ""
-                            }
-                            onChange={(event, newValue) => {
-                              input.onChange(
+                          }
+                          onChange={(event, newValue) => {
+                            input.onChange(
                               newValue ? newValue.productName : ""
-                              );
-                              setSelectedProduct(newValue);
-                              setProType(newValue?.productName);
-                            }}
-                            renderInput={(params) => (
-                              <TextField
+                            );
+                            setSelectedProduct(newValue);
+                            setProType(newValue?.productName);
+                          }}
+                          renderInput={(params) => (
+                            <TextField
                               {...params}
                               label=" Select Product"
                               className="rounded-sm w-full"
@@ -906,15 +854,15 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                               variant="outlined"
                               error={meta.touched && !!meta.error}
                               helperText={meta.touched && meta.error}
-                              />
-                            )}
                             />
-                          </FormControl>
-                          </div>
-                        )}
-                        </Field>
-                      </Grid>
-                             
+                          )}
+                        />
+                      </FormControl>
+                    </div>
+                  )}
+                </Field>
+              </Grid>
+
               <Grid item lg={4} md={4} sm={6} xs={12}>
                 <Field name="companyName">
                   {({ input, meta }) => (
@@ -1310,101 +1258,7 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
                     </Field>
                   </Grid>
                 )}
-                {selectedPolicyCreatedBy &&
-                  selectedPolicyCreatedBy === "Partner" && (
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field name="partnerName">
-                        {({ input, meta }) => (
-                          <div>
-                            <FormControl fullWidth size="small">
-                              <Autocomplete
-                                {...input}
-                                id="partnerName"
-                                value={
-                                  input.value !== undefined
-                                    ? input.value
-                                    : initialValues.partnerName || null
-                                }
-                                getOptionLabel={(option) =>
-                                  typeof option === "string"
-                                    ? option
-                                    : `${option.name} - ${option.userCode}` ||
-                                      ""
-                                }
-                                options={partners}
-                                onChange={(event, newValue) => {
-                                  input.onChange(
-                                    newValue
-                                      ? `${newValue.name}-${newValue.userCode}`
-                                      : ""
-                                  );
-                                  handleSelectPartnerChange(newValue);
-                                }}
-                                renderInput={(params) => (
-                                  <TextField
-                                    {...params}
-                                    className="rounded-sm w-full"
-                                    size="small"
-                                    label="Select Partners"
-                                    variant="outlined"
-                                    error={meta.touched && !!meta.error}
-                                    helperText={meta.touched && meta.error}
-                                  />
-                                )}
-                              />
-                            </FormControl>
-                          </div>
-                        )}
-                      </Field>
-                    </Grid>
-                  )}
-                {selectedPolicyCreatedBy &&
-                  selectedPolicyCreatedBy === "Direct" && (
-                    <Grid item lg={4} md={4} sm={6} xs={12}>
-                      <Field name="relationshipManagerName">
-                        {({ input, meta }) => (
-                          <div>
-                            <FormControl fullWidth size="small">
-                              <Autocomplete
-                                {...input}
-                                id="relationshipManagerName"
-                                getOptionLabel={(option) =>
-                                  typeof option === "string"
-                                    ? option
-                                    : `${option.name} - ${option.userCode}` ||
-                                      ""
-                                }
-                                value={
-                                  input.value !== undefined
-                                    ? input.value
-                                    : initialValues.relationshipManagerName ||
-                                      null
-                                }
-                                options={relationshipManagers}
-                                onChange={(event, newValue) => {
-                                  input.onChange(
-                                    newValue ? newValue.fullName : ""
-                                  );
-                                  handleSelectRMChange(newValue);
-                                }}
-                                renderInput={(params) => (
-                                  <TextField
-                                    {...params}
-                                    className="rounded-sm w-full"
-                                    size="small"
-                                    label="Select Relationship Manager"
-                                    variant="outlined"
-                                    error={meta.touched && !!meta.error}
-                                    helperText={meta.touched && meta.error}
-                                  />
-                                )}
-                              />
-                            </FormControl>
-                          </div>
-                        )}
-                      </Field>
-                    </Grid>
-                  )}
+
                 <Grid item md={12} mt={2}>
                   {rmErrorMessage && (
                     <div style={{ color: "red" }}>{rmErrorMessage}</div>
@@ -1556,15 +1410,15 @@ const AddPolicyForm = (props: AddPolicyFormProps) => {
             </Grid>
             <Grid container spacing={2} mt={2}>
               <Grid item lg={12} md={12} sm={12} xs={12}>
-              <Button
-  variant="contained"
-  type="submit"
-  disabled={isLoading}
-  className="btnGradient text-black px-6 py-3 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
->
-{console.log("Submit button rendered, isLoading:", isLoading)}
-  {isLoading ? "Submitting..." : "Submit"}
-</Button>
+                <Button
+                  variant="contained"
+                  type="submit"
+                  disabled={isLoading}
+                  className="btnGradient text-black px-6 py-3 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
+                >
+                  {console.log("Submit button rendered, isLoading:", isLoading)}
+                  {isLoading ? "Submitting..." : "Submit"}
+                </Button>
               </Grid>
             </Grid>
           </form>

@@ -30,12 +30,13 @@ const AddNonMotorPolicyFormCard = () => {
       <AddPolicyForm
         initialValues={{
           id: isAdd ? "0" : editPolicyDetails?.id || "",
+          policyNumber: isAdd ? "" : editPolicyDetails?.policyNumber!,
           policyType: isAdd ? "" : editPolicyDetails?.policyType || "",
           caseType: isAdd ? "" : editPolicyDetails?.caseType!,
+          productType: isAdd ? "" : editPolicyDetails?.productType!,
           category: "motor",
           subCategory: isAdd ? "" : editPolicyDetails?.subCategory!,
           companyName: isAdd ? "" : editPolicyDetails?.companyName!,
-          productType: isAdd ? "" : editPolicyDetails?.productType!,
           broker: isAdd ? "" : editPolicyDetails?.broker!,
           brokerId: isAdd ? "" : editPolicyDetails?.brokerId!,
           make: isAdd ? "" : editPolicyDetails?.make!,
@@ -47,7 +48,6 @@ const AddNonMotorPolicyFormCard = () => {
           weight: isAdd ? 0 : editPolicyDetails?.weight!,
           ncb: isAdd ? "" : editPolicyDetails?.ncb!,
           vehicleNumber: isAdd ? "" : editPolicyDetails?.vehicleNumber!,
-          policyNumber: isAdd ? "" : editPolicyDetails?.policyNumber!,
           fullName: isAdd ? "" : editPolicyDetails?.fullName!,
           emailId: isAdd ? "" : editPolicyDetails?.emailId!,
           phoneNumber: isAdd ? 0 : editPolicyDetails?.phoneNumber!,

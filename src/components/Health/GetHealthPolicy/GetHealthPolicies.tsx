@@ -2,12 +2,14 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   MaterialReactTable,
   MRT_Cell,
+  MRT_ColumnFiltersState,
+  MRT_PaginationState,
+  MRT_SortingState,
   type MRT_ColumnDef,
 } from "material-react-table";
 import {
   DAYJS_DISPLAY_FORMAT,
   DAY_FORMAT,
-  MOTOR_POLICY_STORAGE_KEY,
   SafeKaroUser,
   header,
   imagePath,
@@ -29,24 +31,9 @@ import {
 } from "@mui/material";
 import toast, { Toaster } from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
-import {
-    healthPolicyAddPath,
-  motorPolicyAddPath,
-  motorPolicyEditCommissionPath,
-  motorPolicyEditPath,
-  motorPolicyPath,
-  motorPolicyViewDetailsPath,
-  motorPolicyViewPath,
-} from "../../../sitemap";
+import { healthPolicyAddPath } from "../../../sitemap";
 import dayjs from "dayjs";
-import getCalculatePayinService from "../../../api/CalcualtePayouts/GetCalculatePayin/getCalculatePayinService";
 import ConfirmationDialogBox from "../../../context/ConfirmationDialogBox";
-import getCalculatePayOutService from "../../../api/CalcualtePayouts/GetCalculatePayOut/getCalculatePayOutService";
-import getMotorPolicyService from "../../../api/Policies/GetMotorPolicy/getMotorPolicyService";
-import getPolicyByPartnerIdService from "../../../api/Policies/GetPolicyByPartnerId/getPolicyByPartnerIdService";
-import editMotorPolicyPaymentService from "../../../api/MotorPolicyPayment/EditMotorPolicyPayment/editMotorPolicyPaymentService";
-import getPolicyCompletedByIdService from "../../../api/Policies/GetPolicyCompletedById/getPolicyCompletedByIdService";
-import getPolicyWithPaymentService from "../../../api/Policies/GetPolicyWithPayment/getPolicyWithPaymentService";
 import { MoreVertical } from "react-feather";
 import { endOfMonth, format, startOfMonth } from "date-fns";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
@@ -63,13 +50,8 @@ import editPolicyService from "../../../api/Policies/EditPolicy/editPolicyServic
 import useGetBrokers from "../../../Hooks/Broker/useGetBrokers";
 import { IBroker } from "../../Admin/Broker/IBroker";
 import EditPublishStatusService from "../../../api/Policies/EditPublishStatus/EditPublishStatusService";
-
-import {
-  getPaginationState,
-  savePaginationState,
-} from "../../../utils/PaginationHandler";
 import { IPolicyPayment } from "../../Policy/IPolicy";
-import AddRemarksModal from "../../Policy/GetMotorPolicies/AddRemarksModal";
+
 interface MenuIconButtonProps {
   row: { original: IViewPolicy };
   isAdmin?: boolean;
@@ -86,16 +68,35 @@ interface MenuIconButtonProps {
   onPublish?: () => void;
   addRemark?: () => void;
 }
+// type UserApiResponse = {
+//   data: Array<User>;
+//   meta: {
+//     totalRowCount: number;
+//   };
+// };
 interface IViewPolicy {
   [key: string]: any;
 }
 const GetHealthPolicies = () => {
-  let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
-  let userData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
+  const [data, setData] = useState<IViewPolicy[]>([]);
+  const [isError, setIsError] = useState(false);
+  const [isRefetching, setIsRefetching] = useState(false);
+  const [rowCount, setRowCount] = useState(0);
+
+  //table state
+  const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>(
+    []
+  );
+  const [sorting, setSorting] = useState<MRT_SortingState>([]);
+  const [pagination, setPagination] = useState<MRT_PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  });
+
   const startTime = sessionStorage.getItem("startDate");
   const endTime = sessionStorage.getItem("endDate");
   const [isLoading, setIsLoading] = useState(false);
-  const [motorPolicies, setMotorPolicies] = useState<IViewPolicy[]>([]);
+  const [healthPolicies, setHealthPolicies] = useState<IViewPolicy[]>([]);
   const [DialogTitle, setDialogTitle] = useState("Title");
   const [calculationData, setCalculationData] = useState<IPolicyPayment>();
   const [stDate, setStDate] = useState(startTime || "");
@@ -104,14 +105,10 @@ const GetHealthPolicies = () => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [selectedPolicyId, setSelectedPolicyId] = useState("");
-  const handleClickAddMotorPolicy = () => {
-    savePaginationState(pagination, MOTOR_POLICY_STORAGE_KEY);
+  const handleClickAddHealthPolicy = () => {
+    // savePaginationState(pagination, MOTOR_POLICY_STORAGE_KEY);
     navigate(healthPolicyAddPath());
   };
-  const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: 10,
-  });
   let [partners] = useGetPartners({ header: header, role: "partner" });
   let [brokers] = useGetBrokers({ header: header });
   const handleOpen = () => {
@@ -120,6 +117,50 @@ const GetHealthPolicies = () => {
   const handleClose = () => {
     setOpen(false);
   };
+
+  //! start here new api fetching
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!data.length) {
+        setIsLoading(true);
+      } else {
+        setIsRefetching(true);
+      }
+
+      // const url = new URL("/api/data", location.origin);
+      // url.searchParams.set(
+      //   "start",
+      //   `${pagination.pageIndex * pagination.pageSize}`
+      // );
+      // url.searchParams.set("size", `${pagination.pageSize}`);
+      // url.searchParams.set("filters", JSON.stringify(columnFilters ?? []));
+      // url.searchParams.set("globalFilter", globalFilter ?? "");
+      // url.searchParams.set("sorting", JSON.stringify(sorting ?? []));
+
+      // try {
+      //   const response = await fetch(url.href);
+      //   const json = (await response.json()) as UserApiResponse;
+      //   setData(json.data);
+      //   setRowCount(json.meta.totalRowCount);
+      // } catch (error) {
+      //   setIsError(true);
+      //   console.error(error);
+      //   return;
+      // }
+      setIsError(false);
+      setIsLoading(false);
+      setIsRefetching(false);
+    };
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    columnFilters, //re-fetch when column filters change
+    globalFilter, //re-fetch when global filter changes
+    pagination.pageIndex, //re-fetch when page index changes
+    pagination.pageSize, //re-fetch when page size changes
+    sorting, //re-fetch when sorting changes
+  ]);
+
   useEffect(() => {
     if (stDate) {
       sessionStorage.setItem("startDate", stDate);
@@ -130,10 +171,6 @@ const GetHealthPolicies = () => {
       sessionStorage.setItem("endDate", eDate);
     }
   }, [eDate]);
-  useEffect(() => {
-    const p = getPaginationState(MOTOR_POLICY_STORAGE_KEY);
-    setPagination(p);
-  }, []);
   const onSubmit = async (filterForm: any) => {
     if (!stDate || !eDate) {
       toast.error("Both start date and end date are required.");
@@ -156,35 +193,35 @@ const GetHealthPolicies = () => {
     const newStartDate = startDate.format(DAY_FORMAT);
     const newEndDate = endDate.format(DAY_FORMAT);
 
-    try {
-      const userRole = userData.role.toLowerCase();
+    // try {
+    //   const userRole = userData.role.toLowerCase();
 
-      if (userRole === "admin" || userRole === "account") {
-        await GetPolicies(newStartDate, newEndDate);
-      } else if (userRole === "booking") {
-        await GetPoliciesByPolicyCompletedById(newStartDate, newEndDate);
-      } else if (userRole === "partner") {
-        await GetPoliciesById(newStartDate, newEndDate);
-      }
-    } catch (error) {
-      toast.error("Failed to fetch policies. Please try again.");
-    }
+    //   if (userRole === "admin" || userRole === "account") {
+    //     await GetPolicies(newStartDate, newEndDate);
+    //   } else if (userRole === "booking") {
+    //     await GetPoliciesByPolicyCompletedById(newStartDate, newEndDate);
+    //   } else if (userRole === "partner") {
+    //     await GetPoliciesById(newStartDate, newEndDate);
+    //   }
+    // } catch (error) {
+    //   toast.error("Failed to fetch policies. Please try again.");
+    // }
   };
-  const GetPolicies = useCallback((startDate, endDate) => {
-    setIsLoading(true);
-    getMotorPolicyService({ header, startDate, endDate })
-      .then((motorPolicy) => {
-        const res = motorPolicy.data;
-        // setMotorPolicies([...res]);
-      })
-      .catch(async (error: any) => {
-        const err = await error;
-        toast.error(err.message);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  }, []);
+  // const GetPolicies = useCallback((startDate, endDate) => {
+  //   setIsLoading(true);
+  //   getMotorPolicyService({ header, startDate, endDate })
+  //     .then((motorPolicy) => {
+  //       const res = motorPolicy.data;
+  //       // setMotorPolicies([...res]);
+  //     })
+  //     .catch(async (error: any) => {
+  //       const err = await error;
+  //       toast.error(err.message);
+  //     })
+  //     .finally(() => {
+  //       setIsLoading(false);
+  //     });
+  // }, []);
   const handlePublishPolicy = async (row: IViewPolicy) => {
     const payload = {
       policyNumber: row.policyNumber,
@@ -202,81 +239,81 @@ const GetHealthPolicies = () => {
     setSelectedPolicyId(row.id);
     handleOpen();
   };
-  const GetPoliciesById = useCallback(
-    (startDate, endDate) => {
-      setIsLoading(true);
-      getPolicyByPartnerIdService({
-        header,
-        partnerId: userData.profileId,
-        startDate,
-        endDate,
-      })
-        .then((bookingRequestDetails) => {
-          // setMotorPolicies(bookingRequestDetails.data);
-        })
-        .catch(async (error) => {
-          const err = await error;
-          toast.error(err.message);
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
-    },
-    [userData.profileId]
-  );
-  const GetPoliciesByPolicyCompletedById = useCallback(
-    (startDate, endDate) => {
-      setIsLoading(true);
-      getPolicyCompletedByIdService({
-        header,
-        policyCompletedById: userData.profileId,
-        startDate,
-        endDate,
-      })
-        .then((bookingRequestDetails) => {
-          // setMotorPolicies(bookingRequestDetails.data);
-        })
-        .catch(async (error) => {
-          const err = await error;
-          toast.error(err.message);
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
-    },
-    [userData.profileId]
-  );
-  useEffect(() => {
-    const currentDate = new Date();
-    const firstDayOfMonth = startOfMonth(currentDate);
-    const lastDayOfMonth = endOfMonth(currentDate);
-    let formattedFirstDay = format(firstDayOfMonth, "yyyy-MM-dd");
-    let formattedLastDay = format(lastDayOfMonth, "yyyy-MM-dd");
-    if (stDate) {
-      formattedFirstDay = stDate;
-    }
-    if (eDate) {
-      formattedLastDay = eDate;
-    }
-    if (
-      userData.role.toLowerCase() === "admin" ||
-      userData.role.toLowerCase() === "account"
-    ) {
-      GetPolicies(formattedFirstDay, formattedLastDay);
-    } else if (userData.role.toLowerCase() === "booking") {
-      GetPoliciesByPolicyCompletedById(formattedFirstDay, formattedLastDay);
-    } else if (userData.role.toLowerCase() === "partner") {
-      GetPoliciesById(formattedFirstDay, formattedLastDay);
-    }
-  }, [
-    userData.role,
-    stDate,
-    eDate,
-    GetPolicies,
-    GetPoliciesById,
-    GetPoliciesByPolicyCompletedById,
-    open,
-  ]);
+  // const GetPoliciesById = useCallback(
+  //   (startDate, endDate) => {
+  //     setIsLoading(true);
+  //     getPolicyByPartnerIdService({
+  //       header,
+  //       partnerId: userData.profileId,
+  //       startDate,
+  //       endDate,
+  //     })
+  //       .then((bookingRequestDetails) => {
+  //         // setMotorPolicies(bookingRequestDetails.data);
+  //       })
+  //       .catch(async (error) => {
+  //         const err = await error;
+  //         toast.error(err.message);
+  //       })
+  //       .finally(() => {
+  //         setIsLoading(false);
+  //       });
+  //   },
+  //   [userData.profileId]
+  // );
+  // const GetPoliciesByPolicyCompletedById = useCallback(
+  //   (startDate, endDate) => {
+  //     setIsLoading(true);
+  //     getPolicyCompletedByIdService({
+  //       header,
+  //       policyCompletedById: userData.profileId,
+  //       startDate,
+  //       endDate,
+  //     })
+  //       .then((bookingRequestDetails) => {
+  //         // setMotorPolicies(bookingRequestDetails.data);
+  //       })
+  //       .catch(async (error) => {
+  //         const err = await error;
+  //         toast.error(err.message);
+  //       })
+  //       .finally(() => {
+  //         setIsLoading(false);
+  //       });
+  //   },
+  //   [userData.profileId]
+  // );
+  // useEffect(() => {
+  //   const currentDate = new Date();
+  //   const firstDayOfMonth = startOfMonth(currentDate);
+  //   const lastDayOfMonth = endOfMonth(currentDate);
+  //   let formattedFirstDay = format(firstDayOfMonth, "yyyy-MM-dd");
+  //   let formattedLastDay = format(lastDayOfMonth, "yyyy-MM-dd");
+  //   if (stDate) {
+  //     formattedFirstDay = stDate;
+  //   }
+  //   if (eDate) {
+  //     formattedLastDay = eDate;
+  //   }
+  //   if (
+  //     userData.role.toLowerCase() === "admin" ||
+  //     userData.role.toLowerCase() === "account"
+  //   ) {
+  //     GetPolicies(formattedFirstDay, formattedLastDay);
+  //   } else if (userData.role.toLowerCase() === "booking") {
+  //     GetPoliciesByPolicyCompletedById(formattedFirstDay, formattedLastDay);
+  //   } else if (userData.role.toLowerCase() === "partner") {
+  //     GetPoliciesById(formattedFirstDay, formattedLastDay);
+  //   }
+  // }, [
+  //   userData.role,
+  //   stDate,
+  //   eDate,
+  //   GetPolicies,
+  //   GetPoliciesById,
+  //   GetPoliciesByPolicyCompletedById,
+  //   open,
+  // ]);
   const downloadCsv = (filename: string, csv: string) => {
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const link = document.createElement("a");
@@ -318,8 +355,8 @@ const GetHealthPolicies = () => {
       });
       return modifiedRow;
     });
-    const csv = Papa.unparse(rowData, { header: true });
-    downloadCsv("motor-policy.csv", csv);
+    // const csv = Papa.unparse(rowData, { header: true });
+    // downloadCsv("motor-policy.csv", csv);
   };
   const payloadMaker = (row: IViewPolicy): IPolicyPayment => {
     let {
@@ -413,7 +450,7 @@ const GetHealthPolicies = () => {
       // motorPolicies[cell.row.index]["broker"] = value.brokerName;
     } else {
       let policyForm = payloadMaker(cell.row.original);
-      motorPolicies[cell.row.index][key] = Number(value);
+      healthPolicies[cell.row.index][key] = Number(value);
       policyForm[key] = Number(value);
       const ODAmount = policyForm.od;
       const TPAmount = policyForm.tp;
@@ -426,16 +463,16 @@ const GetHealthPolicies = () => {
       calculatedPayInODPercentage = Math.round(calculatedPayInODPercentage);
       calculatedPayInTPPercentage = Math.round(calculatedPayInTPPercentage);
       policyForm.payInODAmount = calculatedPayInODPercentage;
-      motorPolicies[cell.row.index]["payInODAmount"] =
+      healthPolicies[cell.row.index]["payInODAmount"] =
         calculatedPayInODPercentage;
       policyForm.payInTPAmount = calculatedPayInTPPercentage;
-      motorPolicies[cell.row.index]["payInTPAmount"] =
+      healthPolicies[cell.row.index]["payInTPAmount"] =
         calculatedPayInTPPercentage;
       let payInCommission =
         calculatedPayInODPercentage + calculatedPayInTPPercentage;
       payInCommission = Math.round(payInCommission);
       policyForm.payInCommission = payInCommission;
-      motorPolicies[cell.row.index]["payInCommission"] = payInCommission;
+      healthPolicies[cell.row.index]["payInCommission"] = payInCommission;
       const payOutODPercentage = policyForm.payOutODPercentage;
       const payOutTPPercentage = policyForm.payOutTPPercentage;
       let calculatedPayOutODPercentage: number =
@@ -446,395 +483,199 @@ const GetHealthPolicies = () => {
       calculatedPayOutTPPercentage = Math.round(calculatedPayOutTPPercentage);
       policyForm.payOutODAmount = calculatedPayOutODPercentage;
       policyForm.payOutTPAmount = calculatedPayOutTPPercentage;
-      motorPolicies[cell.row.index]["payOutODAmount"] =
+      healthPolicies[cell.row.index]["payOutODAmount"] =
         calculatedPayOutODPercentage;
-      motorPolicies[cell.row.index]["payOutTPAmount"] =
+      healthPolicies[cell.row.index]["payOutTPAmount"] =
         calculatedPayOutTPPercentage;
       let payOutCommission =
         calculatedPayOutODPercentage + calculatedPayOutTPPercentage;
       payOutCommission = Math.round(payOutCommission);
       policyForm.payOutCommission = payOutCommission;
-      motorPolicies[cell.row.index]["payOutCommission"] = payOutCommission;
-      try {
-        const newPayment = await editMotorPolicyPaymentService({
-          header,
-          policyPayment: policyForm,
-        });
-        motorPolicies[cell.row.index][cell.column.id as keyof IViewPolicy] =
-          value;
-        if (newPayment.status === "success") {
-          toast.success(`${key} is updated successfully`);
-        }
-      } catch (error: any) {
-        const err = await error;
-        toast.error(err.message);
-      }
+      healthPolicies[cell.row.index]["payOutCommission"] = payOutCommission;
     }
     // setMotorPolicies([...motorPolicies]);
   };
   const columns = useMemo<MRT_ColumnDef<IViewPolicy>[]>(
-    () =>
-      [
-        {
-          accessorKey: "isPublished",
-          header: "Publish",
-          size: 100,
-          visible:
-            userData.role.toLowerCase() === "admin" ||
-            userData.role.toLowerCase() === "account" ||
-            userData.role.toLowerCase() === "booking",
-          Cell: ({ cell }: any) => {
-            const publish = cell.getValue();
-            return <span>{publish ? "Yes" : "NO"}</span>;
-          },
-        },
-        // {
-        //   accessorKey: "category",
-        //   header: "Category",
-        //   size: 100,
-        //   visible: userData.role === "admin",
-        // },
-        // {
-        //   accessorKey: "vehicleNumber",
-        //   header: "Vehicle Number",
-        //   size: 100,
-        // },
-        {
-          accessorKey: "policyNumber",
-          header: "Policy Number",
-          size: 100,
-        },
-        {
-          accessorKey: "policyType",
-          header: "Policy Type",
-          size: 100,
-        },
-        {
-          accessorKey: "fullName",
-          header: "Full Name",
-          size: 100,
-        },
-        {
-          accessorKey: "emailId",
-          header: "Email",
-          size: 100,
-        },
-        {
-          accessorKey: "phoneNumber",
-          header: "Phone Number",
-          size: 100,
-        },
-        {
-          accessorKey: "caseType",
-          header: "Case Type",
-          size: 100,
-        },
-        {
-          accessorKey: "productType",
-          header: "Product",
-          size: 100,
-        },
-        
-        // {
-        //   accessorKey: "companyName",
-        //   header: "Company Name",
-        //   size: 100,
-        // },
-        
-        // {
-        //   accessorKey: "mfgYear",
-        //   header: "MFG Year",
-        //   size: 100,
-        // },
-        
-        // {
-        //   accessorKey: "netPremium",
-        //   header: "Net Premium",
-        //   size: 100,
-        // },
-        // {
-        //   accessorKey: "finalPremium",
-        //   header: "Final Premium",
-        //   size: 100,
-        // },
-        
-        // {
-        //   accessorKey: "issueDate",
-        //   header: "Issue Date",
-        //   size: 100,
-        // },
-        // {
-        //   header: "Created On",
-        //   accessorKey: "createdOn",
-        //   size: 50,
-        // },
-        // {
-        //   header: "Remarks",
-        //   accessorKey: "policyRemarks",
-        //   size: 50,
-        // },
-      ].filter((column) => column.visible !== false),
-    [userData.role]
+    () => [
+      {
+        accessorKey: "policyNumber",
+        header: "Policy Number",
+        size: 100,
+      },
+      {
+        accessorKey: "policyType",
+        header: "Policy Type",
+        size: 100,
+      },
+      {
+        accessorKey: "fullName",
+        header: "Full Name",
+        size: 100,
+      },
+      {
+        accessorKey: "emailId",
+        header: "Email",
+        size: 100,
+      },
+      {
+        accessorKey: "phoneNumber",
+        header: "Phone Number",
+        size: 100,
+      },
+      {
+        accessorKey: "caseType",
+        header: "Case Type",
+        size: 100,
+      },
+      {
+        accessorKey: "productType",
+        header: "Product",
+        size: 100,
+      },
+
+      // {
+      //   accessorKey: "companyName",
+      //   header: "Company Name",
+      //   size: 100,
+      // },
+
+      // {
+      //   accessorKey: "mfgYear",
+      //   header: "MFG Year",
+      //   size: 100,
+      // },
+
+      // {
+      //   accessorKey: "netPremium",
+      //   header: "Net Premium",
+      //   size: 100,
+      // },
+      // {
+      //   accessorKey: "finalPremium",
+      //   header: "Final Premium",
+      //   size: 100,
+      // },
+
+      // {
+      //   accessorKey: "issueDate",
+      //   header: "Issue Date",
+      //   size: 100,
+      // },
+      // {
+      //   header: "Created On",
+      //   accessorKey: "createdOn",
+      //   size: 50,
+      // },
+      // {
+      //   header: "Remarks",
+      //   accessorKey: "policyRemarks",
+      //   size: 50,
+      // },
+    ],
+    []
   );
-  const parsedData = useMemo(
-    () =>
-      motorPolicies?.map(
-        (motorPolicy: IViewPolicy) =>
-          ({
-            id: motorPolicy._id,
-            policyId: motorPolicy.policyId,
-            fullName: motorPolicy.fullName,
-            productType: motorPolicy.productType,
-            emailId: motorPolicy.emailId,
-            weight: motorPolicy.weight,
-            broker: motorPolicy.broker,
-            brokerCode: motorPolicy.brokerCode,
-            policyType: motorPolicy.policyType,
-            caseType: motorPolicy.caseType,
-            category: motorPolicy.category,
-            subCategory: motorPolicy.subCategory,
-            companyName: motorPolicy.companyName,
-            make: motorPolicy.make,
-            model: motorPolicy.model,
-            fuelType: motorPolicy.fuelType,
-            rto: motorPolicy.rto,
-            vehicleNumber: motorPolicy.vehicleNumber,
-            seatingCapacity: motorPolicy.seatingCapacity,
-            vehicleAge: motorPolicy.vehicleAge,
-            ncb: motorPolicy.ncb,
-            policyNumber: motorPolicy.policyNumber,
-            phoneNumber: motorPolicy.phoneNumber,
-            mfgYear: motorPolicy.mfgYear,
-            registrationDate: dayjs(motorPolicy.registrationDate).format(
-              DAYJS_DISPLAY_FORMAT
-            ),
-            endDate: dayjs(motorPolicy.endDate).format(DAYJS_DISPLAY_FORMAT),
-            issueDate: dayjs(motorPolicy.issueDate).format(
-              DAYJS_DISPLAY_FORMAT
-            ),
-            tenure: motorPolicy.tenure,
-            idv: motorPolicy.idv,
-            od: motorPolicy.od,
-            tp: motorPolicy.tp,
-            netPremium: motorPolicy.netPremium,
-            finalPremium: parseInt(motorPolicy.finalPremium),
-            cc: motorPolicy.cc,
-            paymentMode: motorPolicy.paymentMode,
-            policyCreatedBy: motorPolicy.policyCreatedBy,
-            createdOn: dayjs(motorPolicy.createdOn).format(
-              DAYJS_DISPLAY_FORMAT
-            ),
-            paymentDetails: motorPolicy.paymentDetails,
-            policyStatus: motorPolicy.policyStatus,
-            partnerCode: motorPolicy.partnerCode,
-            partnerId: motorPolicy.partnerId,
-            partnerName: motorPolicy.partnerName,
-            relationshipManagerName: motorPolicy.relationshipManagerName,
-            relationshipManagerId: motorPolicy.relationshipManagerId,
-            rcFront: motorPolicy.rcFront,
-            rcBack: motorPolicy.rcBack,
-            previousPolicy: motorPolicy.previousPolicy,
-            policyCompletedByName: motorPolicy.policyCompletedByName,
-            policyCompletedByCode: motorPolicy.policyCompletedByCode,
-            survey: motorPolicy.survey,
-            puc: motorPolicy.puc,
-            fitness: motorPolicy.fitness,
-            proposal: motorPolicy.proposal,
-            currentPolicy: motorPolicy.currentPolicy,
-            payInPaymentStatus: motorPolicy.payInPaymentStatus,
-            payInODAmount: motorPolicy.payInODAmount,
-            payInODPercentage: motorPolicy.payInODPercentage,
-            payInTPPercentage: motorPolicy.payInTPPercentage,
-            payInTPAmount: motorPolicy.payInTPAmount,
-            payInBalance: motorPolicy.payInBalance,
-            payInCommission: motorPolicy.payInCommission,
-            payOutODPercentage: motorPolicy.payOutODPercentage,
-            payOutTPPercentage: motorPolicy.payOutTPPercentage,
-            payOutODAmount: motorPolicy.payOutODAmount,
-            payOutTPAmount: motorPolicy.payOutTPAmount,
-            payOutBalance: motorPolicy.payOutBalance,
-            payOutCommission: motorPolicy.payOutCommission,
-            payInAmount: motorPolicy.payInAmount,
-            payOutAmount: motorPolicy.payOutAmount,
-            payOutPaymentStatus: motorPolicy.payOutPaymentStatus,
-            other: motorPolicy.other,
-            isPublished: motorPolicy.isPublished || false,
-            policyRemarks: motorPolicy.policyRemarks || "",
-            isDispute: motorPolicy.isDispute,
-          } as unknown as IViewPolicy)
-      ) ?? [],
-    [motorPolicies]
-  );
+  // const parsedData = useMemo(
+  //   () =>
+  //     healthPolicies?.map(
+  //       (motorPolicy: IViewPolicy) =>
+  //         ({
+  //           id: motorPolicy._id,
+  //           policyId: motorPolicy.policyId,
+  //           fullName: motorPolicy.fullName,
+  //           productType: motorPolicy.productType,
+  //           emailId: motorPolicy.emailId,
+  //           weight: motorPolicy.weight,
+  //           broker: motorPolicy.broker,
+  //           brokerCode: motorPolicy.brokerCode,
+  //           policyType: motorPolicy.policyType,
+  //           caseType: motorPolicy.caseType,
+  //           category: motorPolicy.category,
+  //           subCategory: motorPolicy.subCategory,
+  //           companyName: motorPolicy.companyName,
+  //           make: motorPolicy.make,
+  //           model: motorPolicy.model,
+  //           fuelType: motorPolicy.fuelType,
+  //           rto: motorPolicy.rto,
+  //           vehicleNumber: motorPolicy.vehicleNumber,
+  //           seatingCapacity: motorPolicy.seatingCapacity,
+  //           vehicleAge: motorPolicy.vehicleAge,
+  //           ncb: motorPolicy.ncb,
+  //           policyNumber: motorPolicy.policyNumber,
+  //           phoneNumber: motorPolicy.phoneNumber,
+  //           mfgYear: motorPolicy.mfgYear,
+  //           registrationDate: dayjs(motorPolicy.registrationDate).format(
+  //             DAYJS_DISPLAY_FORMAT
+  //           ),
+  //           endDate: dayjs(motorPolicy.endDate).format(DAYJS_DISPLAY_FORMAT),
+  //           issueDate: dayjs(motorPolicy.issueDate).format(
+  //             DAYJS_DISPLAY_FORMAT
+  //           ),
+  //           tenure: motorPolicy.tenure,
+  //           idv: motorPolicy.idv,
+  //           od: motorPolicy.od,
+  //           tp: motorPolicy.tp,
+  //           netPremium: motorPolicy.netPremium,
+  //           finalPremium: parseInt(motorPolicy.finalPremium),
+  //           cc: motorPolicy.cc,
+  //           paymentMode: motorPolicy.paymentMode,
+  //           policyCreatedBy: motorPolicy.policyCreatedBy,
+  //           createdOn: dayjs(motorPolicy.createdOn).format(
+  //             DAYJS_DISPLAY_FORMAT
+  //           ),
+  //           paymentDetails: motorPolicy.paymentDetails,
+  //           policyStatus: motorPolicy.policyStatus,
+  //           partnerCode: motorPolicy.partnerCode,
+  //           partnerId: motorPolicy.partnerId,
+  //           partnerName: motorPolicy.partnerName,
+  //           relationshipManagerName: motorPolicy.relationshipManagerName,
+  //           relationshipManagerId: motorPolicy.relationshipManagerId,
+  //           rcFront: motorPolicy.rcFront,
+  //           rcBack: motorPolicy.rcBack,
+  //           previousPolicy: motorPolicy.previousPolicy,
+  //           policyCompletedByName: motorPolicy.policyCompletedByName,
+  //           policyCompletedByCode: motorPolicy.policyCompletedByCode,
+  //           survey: motorPolicy.survey,
+  //           puc: motorPolicy.puc,
+  //           fitness: motorPolicy.fitness,
+  //           proposal: motorPolicy.proposal,
+  //           currentPolicy: motorPolicy.currentPolicy,
+  //           payInPaymentStatus: motorPolicy.payInPaymentStatus,
+  //           payInODAmount: motorPolicy.payInODAmount,
+  //           payInODPercentage: motorPolicy.payInODPercentage,
+  //           payInTPPercentage: motorPolicy.payInTPPercentage,
+  //           payInTPAmount: motorPolicy.payInTPAmount,
+  //           payInBalance: motorPolicy.payInBalance,
+  //           payInCommission: motorPolicy.payInCommission,
+  //           payOutODPercentage: motorPolicy.payOutODPercentage,
+  //           payOutTPPercentage: motorPolicy.payOutTPPercentage,
+  //           payOutODAmount: motorPolicy.payOutODAmount,
+  //           payOutTPAmount: motorPolicy.payOutTPAmount,
+  //           payOutBalance: motorPolicy.payOutBalance,
+  //           payOutCommission: motorPolicy.payOutCommission,
+  //           payInAmount: motorPolicy.payInAmount,
+  //           payOutAmount: motorPolicy.payOutAmount,
+  //           payOutPaymentStatus: motorPolicy.payOutPaymentStatus,
+  //           other: motorPolicy.other,
+  //           isPublished: motorPolicy.isPublished || false,
+  //           policyRemarks: motorPolicy.policyRemarks || "",
+  //           isDispute: motorPolicy.isDispute,
+  //         } as unknown as IViewPolicy)
+  //     ) ?? [],
+  //   [healthPolicies]
+  // );
   const updateLoading = useCallback(async () => {
-    setIsLoading(motorPolicies.length >= 0 ? false : true);
-  }, [motorPolicies]);
+    setIsLoading(healthPolicies.length >= 0 ? false : true);
+  }, [healthPolicies]);
   useEffect(() => {
     updateLoading();
   }, [updateLoading]);
   const [dataToPass, setdataToPass] = useState<any>();
-  const handleClickCalculatePayIn = async (policy: IViewPolicy) => {
-    setDialogOpen(true);
-    setDialogTitle("PayIn Calculation");
-    try {
-      const newPolicy = await getCalculatePayinService({
-        header,
-        fuelType: policy.fuelType!,
-        policyType: policy.policyType!,
-        companyName: policy.companyName!,
-        productType: policy.productType!,
-        subCategory: policy.subCategory!,
-        engine: policy.cc!,
-        weight: policy.weight === undefined ? null : policy.weight!,
-        ncb: policy.ncb!,
-        rto: policy.rto!,
-        vehicleAge: policy.vehicleAge!,
-        caseType: policy.caseType!,
-        make: policy.make!,
-        model: policy.model!,
-      });
-      const ODAmount = policy?.od!;
-      const TPAmount = policy?.tp!;
-      const payInODPercentage = newPolicy.data.od;
-      const payInTPPercentage = newPolicy.data.tp;
-      const calculatedPayInODAmount: number =
-        (ODAmount * payInODPercentage) / 100;
-      const calculatedPayInTPAmount: number =
-        (TPAmount * payInTPPercentage) / 100;
-      const payInCommission = calculatedPayInODAmount + calculatedPayInTPAmount;
-      const data = `
-       OD Percentage: ${newPolicy.data.od} %
-       TP Percentage: ${newPolicy.data.tp} %
-       OD Commission: ${calculatedPayInODAmount}
-       TP Commission: ${calculatedPayInTPAmount}
-       Total Commission: ${payInCommission}
-      `;
-      setdataToPass(data);
-      const calcuation = {
-        od: ODAmount,
-        tp: TPAmount,
-        policyNumber: policy.policyNumber,
-        partnerId: policy.partnerId,
-        policyId: policy.id,
-        bookingId: policy.bookingId,
-        netPremium: policy.netPremium,
-        finalPremium: policy.finalPremium,
-        payInODPercentage: payInODPercentage,
-        payInTPPercentage: payInTPPercentage,
-        payInODAmount: calculatedPayInODAmount,
-        payInTPAmount: calculatedPayInTPAmount,
-        payInCommission: payInCommission,
-        payOutODPercentage: 0,
-        payOutTPPercentage: 0,
-        payOutODAmount: 0,
-        payOutTPAmount: 0,
-        payOutCommission: 0,
-      };
-      setCalculationData(calcuation);
-    } catch (error: any) {
-      const err = await error;
-      toast.error(err.message);
-    }
-  };
-  const handleClickCalculatePayOut = async (policy: IViewPolicy) => {
-    setDialogOpen(true);
-    setDialogTitle("PayOut Calculation");
-    try {
-      const newPolicy = await getCalculatePayOutService({
-        header,
-        fuelType: policy.fuelType!,
-        policyType: policy.policyType!,
-        companyName: policy.companyName!,
-        productType: policy.productType!,
-        subCategory: policy.subCategory!,
-        engine: policy.cc!,
-        weight: policy.weight === undefined ? null : policy.weight!,
-        ncb: policy.ncb!,
-        rto: policy.rto!,
-        vehicleAge: policy.vehicleAge!,
-        caseType: policy.caseType!,
-        make: policy.make!,
-        model: policy.model!,
-      });
-      const ODAmount = policy?.od!;
-      const TPAmount = policy?.tp!;
-      const payOutODPercentage = newPolicy.data.od;
-      const payOutTPPercentage = newPolicy.data.tp;
-      const calculatedPayOutODAmount: number =
-        (ODAmount * payOutODPercentage) / 100;
-      const calculatedPayOutTPAmount: number =
-        (TPAmount * payOutTPPercentage) / 100;
-      const payOutCommission =
-        calculatedPayOutODAmount + calculatedPayOutTPAmount;
-      const data = `
-       OD Percentage: ${newPolicy.data.od} %
-       TP Percentage: ${newPolicy.data.tp} %
-       OD Commission: ${calculatedPayOutODAmount}
-      TP Commission: ${calculatedPayOutTPAmount}
-       Total Commission: ${payOutCommission}
-      `;
-      setdataToPass(data);
-      const calcuation = {
-        od: ODAmount,
-        tp: TPAmount,
-        policyNumber: policy.policyNumber,
-        partnerId: policy.partnerId,
-        policyId: policy.id,
-        bookingId: policy.bookingId,
-        netPremium: policy.netPremium,
-        finalPremium: policy.finalPremium,
-        payOutODPercentage: payOutODPercentage,
-        payOutTPPercentage: payOutTPPercentage,
-        payOutODAmount: calculatedPayOutODAmount,
-        payOutTPAmount: calculatedPayOutTPAmount,
-        payOutCommission: payOutCommission,
-        payInODPercentage: 0,
-        payInTPPercentage: 0,
-        payInODAmount: 0,
-        payInTPAmount: 0,
-        payInCommission: 0,
-      };
-      setCalculationData(calcuation);
-      if (newPolicy.status === "success") {
-        savePaginationState(pagination, MOTOR_POLICY_STORAGE_KEY);
-        navigate("");
-      }
-    } catch (error: any) {
-      const err = await error;
-      toast.error(err.message);
-    }
-  };
-  const handleClickViewAdminPolicy = async (policy: IViewPolicy) => {
-    savePaginationState(pagination, MOTOR_POLICY_STORAGE_KEY);
-    navigate(motorPolicyViewPath(policy?.id!));
-  };
-  const handleClickViewPolicy = async (policy: IViewPolicy) => {
-    savePaginationState(pagination, MOTOR_POLICY_STORAGE_KEY);
-    navigate(motorPolicyViewDetailsPath(policy?.id!));
-  };
-  const handleClickPolicyEditCommission = async (policy: IViewPolicy) => {
-    savePaginationState(pagination, MOTOR_POLICY_STORAGE_KEY);
-    navigate(motorPolicyEditCommissionPath(policy?.id!));
-  };
   const [dialogOpen, setDialogOpen] = useState(false);
   const handleCloseDialog = () => {
     setDialogOpen(false);
     setDialogTitle("");
   };
-  const handleDialogAction = async () => {
-    try {
-      const newPayment = await editMotorPolicyPaymentService({
-        header,
-        policyPayment: calculationData!,
-      });
-      if (newPayment.status === "success") {
-        savePaginationState(pagination, MOTOR_POLICY_STORAGE_KEY);
-        navigate(motorPolicyPath());
-      }
-    } catch (error: any) {
-      const err = await error;
-      toast.error(err.message);
-    }
-  };
+
   const downloadFile = (url: string, fileName: string) => {
     const urlFileName = url.substring(url.lastIndexOf("/") + 1);
     const fileExtension = urlFileName.split(".").pop()?.toLowerCase();
@@ -922,41 +763,12 @@ const GetHealthPolicies = () => {
     input.onChange(date);
     setEdate(newDate);
   };
-  const handleClickViewPaymentDetails = async (policy: IViewPolicy) => {
-    setDialogOpen(true);
-    setDialogTitle("Payment Details");
-    getPolicyWithPaymentService({ header, policyId: policy.id! })
-      .then((policyDetails) => {
-        const data = `
-        OD Amount: ${policyDetails.data.od}
-        TP TPAmount: ${policyDetails.data.tp}
-        PayIn ODPercentage: ${policyDetails.data.payInODPercentage} %
-        PayIn TPPercentage: ${policyDetails.data.payInTPPercentage} %
-        PayIn ODAmount: ${policyDetails.data.payInODAmount}
-        PayIn TPAmount: ${policyDetails.data.payInTPAmount}
-        Total PayIn Commission: ${policyDetails.data.payInCommission}
-        PayOut ODPercentage: ${policyDetails.data.payOutODPercentage} %
-        PayOut TPPercentage: ${policyDetails.data.payOutTPPercentage} %
-        PayOut ODAmount: ${policyDetails.data.payOutODAmount}
-        PayOut TPAmount: ${policyDetails.data.payOutTPAmount}
-        Total Payout Commission: ${policyDetails.data.payOutCommission}
-       `;
-        setdataToPass(data);
-      })
-      .catch(async (error: any) => {
-        const err = await error;
-        toast.error(err.message);
-      });
-  };
-  const handleClickEditPolicy = async (policy: IViewPolicy) => {
-    savePaginationState(pagination, MOTOR_POLICY_STORAGE_KEY);
-    navigate(motorPolicyEditPath(policy.id!));
-  };
+
   const handleClickDeletePolicy = async (policy: IViewPolicy) => {
     deletePolicyService({
       header,
       policyId: policy.id,
-      policies: motorPolicies,
+      policies: healthPolicies,
     })
       .then((bookingRequestDetails) => {
         toast.success("policy deleted successfully");
@@ -968,15 +780,6 @@ const GetHealthPolicies = () => {
       });
   };
   const handleClickDownloadDocuments = async (policy: IViewPolicy) => {
-    if (policy.rcBack) {
-      downloadFile(`${imagePath}${policy?.rcBack!}`, "rcBack");
-    }
-    if (policy.rcFront) {
-      downloadFile(`${imagePath}${policy?.rcFront!}`, "rcFront");
-    }
-    if (policy.puc) {
-      downloadFile(`${imagePath}${policy?.puc!}`, "puc");
-    }
     if (policy.currentPolicy) {
       downloadFile(`${imagePath}${policy?.currentPolicy!}`, "currentPolicy");
     }
@@ -1234,22 +1037,22 @@ const GetHealthPolicies = () => {
                 </Link>
                 <span className="text-grey-600 text-sm"> Health Policies</span>
               </div>
-              {userData.role.toLowerCase() === "admin" ||
+              {/* {userData.role.toLowerCase() === "admin" ||
               userData.role.toLowerCase() === "booking" ||
-              userData.role.toLowerCase() === "account" ? (
-                <Button
-                  type="button"
-                  size="small"
-                  onClick={handleClickAddMotorPolicy}
-                  className="btnGradient text-black px-4 py-3 rounded-md w-full sm:w-auto"
-                >
-                  <span className="text-[10px] md:text-xs">
-                    Add Health Policies
-                  </span>
-                </Button>
-              ) : (
-                ""
-              )}
+              userData.role.toLowerCase() === "account" ? ( */}
+              <Button
+                type="button"
+                size="small"
+                onClick={handleClickAddHealthPolicy}
+                className="btnGradient text-black px-4 py-3 rounded-md w-full sm:w-auto"
+              >
+                <span className="text-[10px] md:text-xs">
+                  Add Health Policies
+                </span>
+              </Button>
+              {/* ) : ( */}
+              {/* "" */}
+              {/* )} */}
             </div>
             {}
             <hr
@@ -1274,12 +1077,12 @@ const GetHealthPolicies = () => {
                                 label="Start Date"
                                 inputFormat="DD/MM/YYYY"
                                 value={dayjs(stDate)}
-                                minDate={
-                                  userData.role.toLowerCase().trim() ===
-                                  "partner"
-                                    ? new Date(2025, 0, 1)
-                                    : undefined
-                                }
+                                // minDate={
+                                //   userData.role.toLowerCase().trim() ===
+                                //   "partner"
+                                //     ? new Date(2025, 0, 1)
+                                //     : undefined
+                                // }
                                 onChange={(date) => {
                                   handleStartDateChange(date, input);
                                 }}
@@ -1309,12 +1112,12 @@ const GetHealthPolicies = () => {
                                 label="End Date"
                                 inputFormat="DD/MM/YYYY"
                                 value={dayjs(eDate)}
-                                minDate={
-                                  userData.role.toLowerCase().trim() ===
-                                  "partner"
-                                    ? new Date(2025, 0, 1)
-                                    : undefined
-                                }
+                                // minDate={
+                                //   userData.role.toLowerCase().trim() ===
+                                //   "partner"
+                                //     ? new Date(2025, 0, 1)
+                                //     : undefined
+                                // }
                                 onChange={(date) =>
                                   handleEndDateChange(date, input)
                                 }
@@ -1350,6 +1153,9 @@ const GetHealthPolicies = () => {
               )}
             />
           </React.Fragment>
+
+          {/* //! react table start from here */}
+
           <MaterialReactTable
             muiTablePaperProps={{
               sx: {
@@ -1364,100 +1170,117 @@ const GetHealthPolicies = () => {
               },
             }}
             state={{
-              isLoading,
+              columnFilters,
               globalFilter: globalFilter.trim(),
+              isLoading,
               pagination,
+              showAlertBanner: isError,
+              showProgressBars: isRefetching,
+              sorting,
             }}
-            onPaginationChange={setPagination}
             columns={columns}
-            data={parsedData}
+            data={data}
+            enableRowSelection={true}
+            getRowId={(row) => row.phoneNumber}
+            initialState={{ showColumnFilters: true }}
+            manualFiltering={true}
+            manualPagination={true}
+            manualSorting={true}
+            muiToolbarAlertBannerProps={
+              isError
+                ? {
+                    color: "error",
+                    children: "Error loading data",
+                  }
+                : undefined
+            }
+            onColumnFiltersChange={setColumnFilters}
+            onGlobalFilterChange={setGlobalFilter}
+            onSortingChange={setSorting}
+            rowCount={rowCount}
+            onPaginationChange={setPagination}
             autoResetPageIndex={false}
             paginateExpandedRows={false}
             enableRowActions
             editingMode="cell"
             enableGlobalFilter
             globalFilterFn="fuzzy"
-            onGlobalFilterChange={(value) => setGlobalFilter(value || "")}
-            enableEditing={
-              userData.role?.toLowerCase().trim() === "admin" ||
-              userData.role?.toLowerCase().trim() === "account"
-            }
-            muiTableBodyCellEditTextFieldProps={({ cell }) => {
-              const editableColumns = isPaid(cell.row.original);
-              const isEditable = editableColumns.includes(cell.column.id);
-              if (cell.column.id === "partnerName") {
-                return {
-                  select: true,
-                  children: (
-                    <Autocomplete
-                      sx={{ width: "200px", margin: "3px" }}
-                      options={partners.sort()}
-                      getOptionLabel={(option) =>
-                        `${option.name} - ${option.userCode}`
-                      }
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="Select Partner"
-                          variant="outlined"
-                          size="small"
-                        />
-                      )}
-                      onChange={(event, newValue) => {
-                        handleSaveCell(cell, newValue);
-                      }}
-                      value={
-                        partners.find((p) => p._id === cell.getValue()) || null
-                      }
-                      isOptionEqualToValue={(option, value) =>
-                        option._id === value._id
-                      }
-                    />
-                  ),
-                };
-              }
-              if (cell.column.id === "broker") {
-                return {
-                  select: true,
-                  children: (
-                    <Autocomplete
-                      sx={{ width: "200px", margin: "3px" }}
-                      options={brokers.sort()}
-                      getOptionLabel={(option) =>
-                        `${option.brokerName} - ${option.brokerCode}`
-                      }
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="Select Broker"
-                          variant="outlined"
-                          size="small"
-                        />
-                      )}
-                      onChange={(event, newValue) => {
-                        handleSaveCell(cell, newValue);
-                      }}
-                      value={
-                        brokers.find((b) => b._id === cell.getValue()) || null
-                      }
-                      isOptionEqualToValue={(option, value) =>
-                        option._id === value._id
-                      }
-                    />
-                  ),
-                };
-              }
-              return isEditable
-                ? {
-                    onBlur: (event) => {
-                      const newValue = event.target.value;
-                      handleSaveCell(cell, newValue);
-                    },
-                  }
-                : {
-                    disabled: true,
-                  };
-            }}
+            // muiTableBodyCellEditTextFieldProps={({ cell }) => {
+            //   const editableColumns = isPaid(cell.row.original);
+            //   const isEditable = editableColumns.includes(cell.column.id);
+            //   if (cell.column.id === "partnerName") {
+            //     return {
+            //       select: true,
+            //       children: (
+            //         <Autocomplete
+            //           sx={{ width: "200px", margin: "3px" }}
+            //           options={partners.sort()}
+            //           getOptionLabel={(option) =>
+            //             `${option.name} - ${option.userCode}`
+            //           }
+            //           renderInput={(params) => (
+            //             <TextField
+            //               {...params}
+            //               label="Select Partner"
+            //               variant="outlined"
+            //               size="small"
+            //             />
+            //           )}
+            //           onChange={(event, newValue) => {
+            //             handleSaveCell(cell, newValue);
+            //           }}
+            //           value={
+            //             partners.find((p) => p._id === cell.getValue()) || null
+            //           }
+            //           isOptionEqualToValue={(option, value) =>
+            //             option._id === value._id
+            //           }
+            //         />
+            //       ),
+            //     };
+            //   }
+            //   if (cell.column.id === "broker") {
+            //     return {
+            //       select: true,
+            //       children: (
+            //         <Autocomplete
+            //           sx={{ width: "200px", margin: "3px" }}
+            //           options={brokers.sort()}
+            //           getOptionLabel={(option) =>
+            //             `${option.brokerName} - ${option.brokerCode}`
+            //           }
+            //           renderInput={(params) => (
+            //             <TextField
+            //               {...params}
+            //               label="Select Broker"
+            //               variant="outlined"
+            //               size="small"
+            //             />
+            //           )}
+            //           onChange={(event, newValue) => {
+            //             handleSaveCell(cell, newValue);
+            //           }}
+            //           value={
+            //             brokers.find((b) => b._id === cell.getValue()) || null
+            //           }
+            //           isOptionEqualToValue={(option, value) =>
+            //             option._id === value._id
+            //           }
+            //         />
+            //       ),
+            //     };
+            //   }
+            //   return isEditable
+            //     ? {
+            //         onBlur: (event) => {
+            //           const newValue = event.target.value;
+            //           handleSaveCell(cell, newValue);
+            //         },
+            //       }
+            //     : {
+            //         disabled: true,
+            //       };
+            // }}
             renderTopToolbarCustomActions={({ table }) => (
               <>
                 <Button
@@ -1471,150 +1294,146 @@ const GetHealthPolicies = () => {
                 </Button>
               </>
             )}
-            renderRowActions={({ row }) => {
-              return (
-                <div className="flex justify-center items-center">
-                  {(userData.role.toLowerCase() === "admin" ||
-                    userData.role.toLowerCase() === "account" ||
-                    userData.role.toLowerCase() === "partner") && (
-                    <Tooltip title={"Policy Dispute"}>
-                      <IconButton
-                        color="primary"
-                        aria-label={"Dispute"}
-                        component="span"
-                        onClick={() => {
-                          savePaginationState(
-                            pagination,
-                            MOTOR_POLICY_STORAGE_KEY
-                          );
-                          navigate(`/policy/policy-dispute`, {
-                            state: row.original,
-                          });
-                        }}
-                      >
-                        {row.original.isDispute && (
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                            className="size-6"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.501 48.172 48.172 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
-                            />
-                          </svg>
-                        )}
-                        {row.original.isDispute === false && (
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                            className="size-6"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
-                            />
-                          </svg>
-                        )}
-                      </IconButton>
-                    </Tooltip>
-                  )}
-                  <MenuIconButton
-                    row={row}
-                    isAdmin={
-                      userData.role.toLowerCase() === "admin" ||
-                      userData.role.toLowerCase() === "account" ||
-                      userData.role.toLowerCase().trim() === "booking"
-                        ? true
-                        : false
-                    }
-                    isAdminAction={
-                      row.original.payInPaymentStatus! === "UnPaid" &&
-                      row.original.payOutPaymentStatus! === "UnPaid"
-                        ? true
-                        : false
-                    }
-                    onPublish={
-                      (userData.role.toLowerCase() === "admin" ||
-                        userData?.role?.toLowerCase().trim() === "booking" ||
-                        userData?.role?.toLowerCase().trim() === "account") &&
-                      row.original.isPublished === false
-                        ? () => handlePublishPolicy(row.original)
-                        : undefined
-                    }
-                    addRemark={
-                      userData?.role.toLowerCase() === "admin" ||
-                      userData?.role?.toLowerCase().trim() === "account" ||
-                      userData?.role.toLowerCase() === "partner"
-                        ? () => handleAddRemarks(row.original)
-                        : undefined
-                    }
-                    onEdit={() => handleClickEditPolicy(row.original)}
-                    onDelete={() => handleClickDeletePolicy(row.original)}
-                    onDownload={() =>
-                      handleClickDownloadDocuments(row.original)
-                    }
-                    onAdminView={
-                      userData.role.toLowerCase() === "admin" ||
-                      userData?.role?.toLowerCase().trim() === "account"
-                        ? () => handleClickViewAdminPolicy(row.original)
-                        : undefined
-                    }
-                    onView={() => handleClickViewPolicy(row.original)}
-                    onEditCommission={
-                      userData.role.toLowerCase() === "admin" ||
-                      userData?.role?.toLowerCase().trim() === "account"
-                        ? () => handleClickPolicyEditCommission(row.original)
-                        : undefined
-                    }
-                    onViewCommission={
-                      userData.role.toLowerCase() === "admin" ||
-                      userData?.role?.toLowerCase().trim() === "account"
-                        ? () => handleClickViewPaymentDetails(row.original)
-                        : undefined
-                    }
-                    onPayIn={
-                      userData.role.toLowerCase() === "admin" ||
-                      userData?.role?.toLowerCase().trim() === "account"
-                        ? () => handleClickCalculatePayIn(row.original)
-                        : undefined
-                    }
-                    onPayOut={
-                      userData.role.toLowerCase() === "admin" ||
-                      userData?.role?.toLowerCase().trim() === "account"
-                        ? () => handleClickCalculatePayOut(row.original)
-                        : undefined
-                    }
-                  />
-                </div>
-              );
-            }}
+            // renderRowActions={({ row }) => {
+            //   return (
+            //     <div className="flex justify-center items-center">
+            //       {(userData.role.toLowerCase() === "admin" ||
+            //         userData.role.toLowerCase() === "account" ||
+            //         userData.role.toLowerCase() === "partner") && (
+            //         <Tooltip title={"Policy Dispute"}>
+            //           <IconButton
+            //             color="primary"
+            //             aria-label={"Dispute"}
+            //             component="span"
+            //             onClick={() => {
+            //               savePaginationState(
+            //                 pagination,
+            //                 MOTOR_POLICY_STORAGE_KEY
+            //               );
+            //               navigate(`/policy/policy-dispute`, {
+            //                 state: row.original,
+            //               });
+            //             }}
+            //           >
+            //             {row.original.isDispute && (
+            //               <svg
+            //                 xmlns="http://www.w3.org/2000/svg"
+            //                 fill="none"
+            //                 viewBox="0 0 24 24"
+            //                 strokeWidth={1.5}
+            //                 stroke="currentColor"
+            //                 className="size-6"
+            //               >
+            //                 <path
+            //                   strokeLinecap="round"
+            //                   strokeLinejoin="round"
+            //                   d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.501 48.172 48.172 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
+            //                 />
+            //               </svg>
+            //             )}
+            //             {row.original.isDispute === false && (
+            //               <svg
+            //                 xmlns="http://www.w3.org/2000/svg"
+            //                 fill="none"
+            //                 viewBox="0 0 24 24"
+            //                 strokeWidth={1.5}
+            //                 stroke="currentColor"
+            //                 className="size-6"
+            //               >
+            //                 <path
+            //                   strokeLinecap="round"
+            //                   strokeLinejoin="round"
+            //                   d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
+            //                 />
+            //               </svg>
+            //             )}
+            //           </IconButton>
+            //         </Tooltip>
+            //       )}
+            //       {/* <MenuIconButton row={row}
+            //         isAdmin={
+            //           userData.role.toLowerCase() === "admin" ||
+            //           userData.role.toLowerCase() === "account" ||
+            //           userData.role.toLowerCase().trim() === "booking"
+            //             ? true
+            //             : false
+            //         }
+            //         isAdminAction={
+            //           row.original.payInPaymentStatus! === "UnPaid" &&
+            //           row.original.payOutPaymentStatus! === "UnPaid"
+            //             ? true
+            //             : false
+            //         }
+            //         onPublish={
+            //           (userData.role.toLowerCase() === "admin" ||
+            //             userData?.role?.toLowerCase().trim() === "booking" ||
+            //             userData?.role?.toLowerCase().trim() === "account") &&
+            //           row.original.isPublished === false
+            //             ? () => handlePublishPolicy(row.original)
+            //             : undefined
+            //         }
+            //         addRemark={
+            //           userData?.role.toLowerCase() === "admin" ||
+            //           userData?.role?.toLowerCase().trim() === "account" ||
+            //           userData?.role.toLowerCase() === "partner"
+            //             ? () => handleAddRemarks(row.original)
+            //             : undefined
+            //         }
+            //         onEdit={() => handleClickEditPolicy(row.original)}
+            //         onDelete={() => handleClickDeletePolicy(row.original)}
+            //         onDownload={() =>
+            //           handleClickDownloadDocuments(row.original)
+            //         }
+            //         onAdminView={
+            //           userData.role.toLowerCase() === "admin" ||
+            //           userData?.role?.toLowerCase().trim() === "account"
+            //             ? () => handleClickViewAdminPolicy(row.original)
+            //             : undefined
+            //         }
+            //         onView={() => handleClickViewPolicy(row.original)}
+            //         onEditCommission={
+            //           userData.role.toLowerCase() === "admin" ||
+            //           userData?.role?.toLowerCase().trim() === "account"
+            //             ? () => handleClickPolicyEditCommission(row.original)
+            //             : undefined
+            //         }
+            //         onPayIn={
+            //           userData.role.toLowerCase() === "admin" ||
+            //           userData?.role?.toLowerCase().trim() === "account"
+            //             ? () => handleClickCalculatePayIn(row.original)
+            //             : undefined
+            //         }
+            //         onPayOut={
+            //           userData.role.toLowerCase() === "admin" ||
+            //           userData?.role?.toLowerCase().trim() === "account"
+            //             ? () => handleClickCalculatePayOut(row.original)
+            //             : undefined
+            //         }
+            //       /> */}
+            //     </div>
+            //   );
+            // }}
           />
-          <ConfirmationDialogBox
+
+          {/* //! react table start from here */}
+
+          {/* <ConfirmationDialogBox
             open={dialogOpen}
             onClose={handleCloseDialog}
             title={DialogTitle}
             content=""
             data={dataToPass}
             onAction={handleDialogAction}
-          />
+          /> */}
         </Paper>
       </div>
       <Toaster position="bottom-center" reverseOrder={false} />
-      <AddRemarksModal
+      {/* <AddRemarksModal
         handleClose={handleClose}
         handleOpen={handleOpen}
         open={open}
         policyId={selectedPolicyId}
-      />
+      /> */}
     </>
   );
 };
