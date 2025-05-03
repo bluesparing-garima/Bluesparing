@@ -4,6 +4,7 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Field } from "react-final-form";
+import { Dayjs } from "dayjs";
 
 interface DynamicDateFieldProps {
   name: string;
@@ -15,13 +16,14 @@ interface DynamicDateFieldProps {
     sm?: number;
     xs?: number;
   };
+  onChangeDate?: (date: Dayjs | null) => void;
 }
 
 const DynamicDateField: React.FC<DynamicDateFieldProps> = ({
   name,
   label,
   disableFuture = false,
-  gridProps = { lg: 4, md: 4, sm: 6, xs: 12 },
+  gridProps = { lg: 4, md: 4, sm: 6, xs: 12 },onChangeDate
 }) => {
   return (
     <Grid item {...gridProps}>
@@ -32,8 +34,12 @@ const DynamicDateField: React.FC<DynamicDateFieldProps> = ({
               disableFuture={disableFuture}
               label={label}
               value={input.value || null} 
-              onChange={(date) => input.onChange(date)}
+             
               inputFormat="DD/MM/YYYY"
+              onChange={(date) => {
+                input.onChange(date);
+                onChangeDate?.(date); 
+              }}
               renderInput={(params: any) => (
                 <TextField
                   {...params}
