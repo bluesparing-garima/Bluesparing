@@ -1,357 +1,166 @@
+import { useState, useEffect } from "react";
+import { IAddEditNonMotorPolicyForm } from "../iNonMotorPolicy";
+import { useFormState } from "react-final-form";
+import { Close as CloseIcon, Edit as EditIcon } from "@mui/icons-material";
 import {
   Autocomplete,
-  TextField,
   Button,
+  FormControl,
   Grid,
+  IconButton,
+  TextField,
+  Tooltip,
   Typography,
-  Card,
-  CardContent,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Box,
+  Paper,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
 } from "@mui/material";
-import { FormControl } from "@mui/material";
-import { useState, useEffect } from "react";
-import * as yup from "yup";
 import { Field, Form } from "react-final-form";
-import { setIn } from "final-form";
-import { IconButton, Tooltip } from "@mui/material";
-import addPolicyService from "../../../api/Policies/AddPolicy/addPolicyService";
-import toast, { Toaster } from "react-hot-toast";
+import DynamicTextField from "../../../utils/ui/DynamicTextField";
+import FormAutocompleteField from "../../../utils/ui/FormAutocompleteField";
 import {
-  MAX_FILE_SIZE,
-  SafeKaroUser,
+  addHealthPolicyDocumentsOptions,
+  ALLOWED_FILE_TYPES,
   Document,
   header,
-  ALLOWED_FILE_TYPES,
   imagePath,
-  ADD,
-  DAY_FORMAT,
-  addPolicyDocumentsOptions,
+  MAX_FILE_SIZE,
   addNonMotorPolicyDocumentsOptions,
 } from "../../../context/constant";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { motorPolicyPath } from "../../../sitemap";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { FORM_ERROR } from "final-form";
-import useGetProductSubTypes from "../../../Hooks/Product/useGetProductSubTypes";
-import useGetPolicyTypes from "../../../Hooks/Policy/useGetPolicyTypes";
-import useGetCaseTypes from "../../../Hooks/CaseType/useGetCaseTypes";
-import useGetProducts from "../../../Hooks/Product/useGetProducts";
-import useGetBrokers from "../../../Hooks/Broker/useGetBrokers";
 import useGetCompanies from "../../../Hooks/Company/useGetCompanies";
-import useGetFuelTypes from "../../../Hooks/FuelType/useGetFuelTypes";
-import useGetMakes from "../../../Hooks/Make/useGetMakes";
-import useGetModels from "../../../Hooks/Model/useGetModels";
+import useGetBrokers from "../../../Hooks/Broker/useGetBrokers";
 import useGetPartners from "../../../Hooks/Partner/useGetPartners";
-import { IProducts } from "../../Admin/Product/IProduct";
-import { IProductSubTypes } from "../../Admin/ProductSubType/IProductSubTypes";
-import { IModels } from "../../Admin/Model/IModel";
-import { IMakes } from "../../Admin/Make/IMake";
-import getPolicyByNumberService from "../../../api/Policies/GetPolicyByNumber/getPolicyByNumberService";
-import dayjs from "dayjs";
-import editPolicyService from "../../../api/Policies/EditPolicy/editPolicyService";
-import getVechicleNumberService from "../../../api/Policies/GetVehicleNumber/getVechicleNumberService";
-import FileView from "../../../utils/FileView";
-import { formatFilename } from "../../../utils/convertLocaleStringToNumber";
-import { updateLocalStorage } from "../../../utils/HandleStore";
-import UpgradePlanPopup from "../../UpdatePlan/UpgradeExistingPlan";
-import LoadingOverlay from "../../../utils/ui/LoadingOverlay";
-import getPolicyCountAPI from "../../../api/Policies/getPolicyCount/getPolicyCountAPI";
-import { IAddEditPolicyForm } from "../../Policy/IPolicy";
-import {
-  paymentModes,
-  policyCreatedBy,
-  policyCreatedByAdmin,
-} from "../../Policy/IPolicyData";
+import DynamicDateField from "../../../utils/ui/DynamicDateField";
+import { fi } from "date-fns/locale";
+import dayjs, { Dayjs } from "dayjs";
 import useGetOccupancy, {
   IOccupancy,
 } from "../../../Hooks/Occupancy/useGetOccupancy";
+import { IProducts } from "../../Admin/Product/IProduct";
+import useGetPolicyTypes from "../../../Hooks/Policy/useGetPolicyTypes";
 
 export interface AddPolicyFormProps {
-  initialValues: IAddEditPolicyForm;
+  initialValues: IAddEditNonMotorPolicyForm;
 }
 
-const AddNonMotorPolicyForm = (props: AddPolicyFormProps) => {
-  const { policyId } = useParams();
-  const { initialValues } = props;
-  let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
-  let userData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
-  const [documents, setDocuments] = useState<Document[]>([
-    { docName: "currentPolicy", file: "" },
-  ]);
-  const [errors, setErrors] = useState<{ docName: string; file: string }[]>([
-    { docName: "", file: "" },
-  ]);
-  // let [policyTypes] = useGetPolicyTypes({ header: header });
-  const policyTypes = [
-    { policyType: "Fire" },
-    { policyType: "Marine" },
-    { policyType: "Miscellaneous" },
-  ];
+export interface DocumentUploaderProps {
+  selectedDoc: string[];
+  setSelectedDoc: React.Dispatch<React.SetStateAction<string[]>>;
+  files: {
+    [key: string]: File | null;
+  };
+  setFiles: React.Dispatch<
+    React.SetStateAction<{
+      [key: string]: File | null;
+    }>
+  >;
+}
 
-  const caseTypes = [
-    { caseType: "New" },
-    { caseType: "Renewal" },
-    { caseType: "Rollover" },
-  ];
+const policyTypes = ["Fire", "Marine", "Miscellaneous"];
 
-  const marineProducts = [
-    { label: "Marine Specific Policy (Single Voyage)" },
-    { label: "Marine Open Policy (MOP)" },
-    { label: "Sales Turnover Policy (STOP)" },
-  ];
+const caseTypes = ["New", "Renewal", "Rollover"];
 
-  const marineSubCategories = [
-    { label: "Import" },
-    { label: "Export" },
-    { label: "Domestic" },
-    { label: "Import + Export + Domestic" },
-  ];
+const marineProducts = [
+  "Marine Specific Policy (Single Voyage)",
+  "Marine Open Policy (MOP)",
+  "Sales Turnover Policy (STOP)",
+];
 
-  const accidentalPercentages = [10, 15, 20, 25];
+const marineSubCategories = [
+  "Import",
+  "Export",
+  "Domestic",
+  "Import + Export + Domestic",
+];
 
-  const [occupancy, setSelectedOccupancy] = useState<IOccupancy>();
-  const [commodity, setCommodity] = useState("");
-  const [annualTurnover, setAnnualTurnover] = useState<number>(0);
-  const [accidentalPercent, setAccidentalPercent] = useState<number>(0);
-  const [accidentalAmount, setAccidentalAmount] = useState<number>(0);
+const paymentMode = ["Cash", "Check", "online"];
 
-  const [miscProduct, setMiscProduct] = useState("");
-  const [customProduct, setCustomProduct] = useState("");
-  const [limitOfLiability, setLimitOfLiability] = useState("");
+const fireProducts = ["Sukah", "Laghu", "Standard Fire", "Residential Fire"];
 
-  const miscProductOptions = [
-    { label: "3D Liability (Premises)" },
-    { label: "Commercial General Liability (CGL)" },
-    { label: "Public Liability Policy (PLI Act)" },
-    { label: "Other" },
-  ];
+const subCategories = [
+  "Import",
+  "Export",
+  "Domestic",
+  "Import + Export + Domestic",
+];
 
-  let [relationshipManagers] = useGetPartners({
-    header: header,
-    role: "Relationship Manager",
-  });
-  let [occupancyData] = useGetOccupancy();
-  let [partners = []] = useGetPartners({ header, role: "partner" });
-  let [makes] = useGetMakes({ header: header });
-  let [models] = useGetModels({ header: header });
+const miscProductOptions = [
+  "3D Liability (Premises)",
+  "Commercial General Liability (CGL)",
+  "Public Liability Policy (PLI Act)",
+  "Other",
+];
 
-  let [brokers] = useGetBrokers({ header: header });
+const accidentalPercentages = [10, 15, 20, 25];
+
+const predefinedOrder = ["Marine Specific Policy(Single Voyage)"];
+const product = [
+  "Marine Specific Policy(single Voyage)",
+  "Marine Open Policy(MOP)",
+  "Sales Turnover Policy(STOP)",
+];
+
+const AddNonMotorPolicyForm = () => {
+  const { values } = useFormState();
+const policyType = values.policyType;
   let [companies] = useGetCompanies({ header: header });
-  let [products] = useGetProducts({ header: header, category: "motor" });
-  let [productSubTypes] = useGetProductSubTypes({ header: header });
-  const [selectedPartnerName, setSelectedPartnerName] = useState("");
-  const [selectedPartnerId, setSelectedPartnerId] = useState("");
+  let [brokers] = useGetBrokers({ header: header });
+  let [partners] = useGetPartners({ header: header, role: "partner" });
+  let [occupancyData] = useGetOccupancy();
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(product[0]);
   const [selectedBrokerId, setSelectedBrokerId] = useState("");
-  const [selectedRMName, setSelectedRMName] = useState("");
-  const [selectedRMId, setSelectedRMId] = useState("");
-  const [selectedCaseType, setSelectedCaseType] = useState(
-    initialValues.caseType || ""
-  );
+  const [selectedCaseType, setSelectedCaseType] = useState(caseTypes[0]);
+  const [selectedPartnerId, setSelectedPartnerId] = useState("");
   const [openBurglaryPopup, setOpenBurglaryPopup] = useState(false);
   const [firstLossBasis, setFirstLossBasis] = useState("");
   const [sumInsured, setSumInsured] = useState("");
   const fireSumInsured = "500000"; // example, fetch from fire data
   const [terrorismCover, setTerrorismCover] = useState(""); // "Yes" / "No"
-
-  const fireProducts = [
-    { product: "Sukah" },
-    { product: "Laghu" },
-    { product: "Standard Fire" },
-    { product: "Residential Fire" },
-  ];
-
-  const yesNoOptions = [{ label: "Yes" }, { label: "No" }];
-
-  const navigate = useNavigate();
-  const [selectedPaymentMode, setSelectedPaymentMode] = useState();
+  const [selectedCompany, setSelectedCompany] = useState(companies[0]);
+  const [selectedPaymentMode, setSelectedPaymentMode] = useState("");
   const [selectedPolicyCreatedBy, setSelectedPolicyCreatedBy] = useState<
     string | undefined
   >();
-  const [selectedProduct, setSelectedProduct] = useState<IProducts>();
-  const foundMake = () => {
-    return makes?.find((ele) => {
-      const val = initialValues.make?.toLowerCase();
-      const arg = ele.makeName?.toLowerCase();
-      return arg === val;
-    });
-  };
-
-  const subCategories = [
-    { subTypeName: "Import" },
-    { subTypeName: "Export" },
-    { subTypeName: "Domestic" },
-    { subTypeName: "Import + Export + Domestic" },
-  ];
-
-  // Convert subTypeName to productSubType (matching IProductSubTypes interface)
-  const convertedSubCategories: IProductSubTypes[] = subCategories.map(
-    (item) => ({
-      productSubType: item.subTypeName,
-    })
-  );
-
-  const [filteredSubcategories, setFilteredSubcategories] = useState<
-    IProductSubTypes[]
-  >(convertedSubCategories);
-
-  const [selectedMake, setSelectedMake] = useState<IMakes | undefined>();
-  // const [filteredSubcategories, setFilteredSubcategories] = useState<
-  //   IProductSubTypes[]
-  // >([]);
-
-  const [policyType, setPolicyType] = useState(initialValues.policyType || "");
+  const [occupancy, setSelectedOccupancy] = useState<IOccupancy>();
+  const [commodity, setCommodity] = useState("");
+  const [annualTurnover, setAnnualTurnover] = useState<number>(0);
+  const [accidentalPercent, setAccidentalPercent] = useState<number>(0);
+  const [accidentalAmount, setAccidentalAmount] = useState<number>(0);
+  const [miscProduct, setMiscProduct] = useState("");
+  const [customProduct, setCustomProduct] = useState("");
+  const [limitOfLiability, setLimitOfLiability] = useState("");
   const [od, setOd] = useState(0);
   const [tp, setTp] = useState(0);
-  const [filteredSubModels, setFilteredSubModels] = useState<IModels[]>([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [policyErrorMessage, setPolicyErrorMessage] = useState("");
   const [vehicleErr, setVehicleErr] = useState("");
   const [rmErrorMessage, setRMErrorMessage] = useState("");
-  const location = useLocation();
-  const pathName = location.pathname.split("/");
-  const isAdd = pathName[pathName.length - 1] === ADD;
   const [netPremium, setNetPremium] = useState(Number(od) + Number(tp));
-  const [proType, setProType] = useState(initialValues.productType || "");
-  const [cc, setCC] = useState<number>();
-  const [idv, setIdv] = useState<number>();
-  const [tenure, setTenure] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
-  const [showUpgradePopup, setShowUpgradePopup] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [policyCount, setPolicyCount] = useState<number>(0);
+  const [selectedPolicyType, setSelectedPolicyType] = useState(policyTypes[0]);
   const [marineProduct, setMarineProduct] = useState("");
   const [marineSubCategory, setMarineSubCategory] = useState("");
 
-  useEffect(() => {
-    if (!isAdd) {
-      setOd(initialValues.od ?? 0);
-      setTp(initialValues.tp ?? 0);
-      setNetPremium(initialValues.netPremium ?? 0);
-      setSelectedBrokerId(initialValues.brokerId!);
-      setSelectedPartnerId(initialValues.partnerId!);
-      setSelectedPolicyCreatedBy(initialValues.policyCreatedBy);
-      setSelectedPartnerName(initialValues.partnerName!);
-      setSelectedRMId(initialValues.relationshipManagerId!);
-      setSelectedRMName(initialValues.relationshipManagerName!);
-      setPolicyType(initialValues.policyType);
-      setProType(initialValues.productType);
-      setCC(initialValues.cc ?? 0);
-      setIdv(initialValues.idv ?? 0);
-      setTenure(initialValues.tenure ?? 1);
-      setSelectedCaseType(initialValues.caseType ?? "");
-      const updatedDocuments: Document[] = [];
-      if (initialValues.rcBack) {
-        updatedDocuments.push({
-          docName: "rcBack",
-          file: initialValues.rcBack,
-        });
-      }
-      if (initialValues.rcFront) {
-        updatedDocuments.push({
-          docName: "rcFront",
-          file: initialValues.rcFront,
-        });
-      }
-      if (initialValues.previousPolicy) {
-        updatedDocuments.push({
-          docName: "previousPolicy",
-          file: initialValues.previousPolicy,
-        });
-      }
-      if (initialValues.survey) {
-        updatedDocuments.push({
-          docName: "survey",
-          file: initialValues.survey,
-        });
-      }
-      if (initialValues.puc) {
-        updatedDocuments.push({
-          docName: "puc",
-          file: initialValues.puc,
-        });
-      }
-      if (initialValues.fitness) {
-        updatedDocuments.push({
-          docName: "fitness",
-          file: initialValues.fitness,
-        });
-      }
-      if (initialValues.proposal) {
-        updatedDocuments.push({
-          docName: "proposal",
-          file: initialValues.proposal,
-        });
-      }
-      if (initialValues.currentPolicy) {
-        updatedDocuments.push({
-          docName: "currentPolicy",
-          file: initialValues.currentPolicy,
-        });
-      }
-      if (initialValues.other) {
-        updatedDocuments.push({
-          docName: "other",
-          file: initialValues.other,
-        });
-      }
-      setDocuments(updatedDocuments);
-    }
-  }, [isAdd, initialValues]);
-  useEffect(() => {
-    if (initialValues.make) {
-      setSelectedMake(foundMake());
-    }
-    // eslint-disable-next-line
-  }, [initialValues]);
-  const handleFileInputChange = (event: any, index: any) => {
-    if (event.target.files && event.target.files[0]) {
-      const file = event.target.files[0];
-      const fileType = file.type;
-      const fileSize = file.size;
-      const newErrors = [...errors];
-      if (!ALLOWED_FILE_TYPES.includes(fileType)) {
-        newErrors[index] = {
-          ...newErrors[index],
-          file: "Invalid file type. Please upload an image or a PDF.",
-        };
-        setErrors(newErrors);
-      } else if (fileSize > MAX_FILE_SIZE) {
-        newErrors[index] = {
-          ...newErrors[index],
-          file: "File size exceeds the maximum limit",
-        };
-        setErrors(newErrors);
-      } else {
-        setErrorMessage("");
-        const newDocuments = [...documents];
-        newDocuments[index] = { ...newDocuments[index], file: file };
-        setDocuments(newDocuments);
-        if (newErrors[index]) {
-          newErrors[index].file = "";
-        }
-        setErrors(newErrors);
-      }
-    }
-  };
+  const defaultDoc = addNonMotorPolicyDocumentsOptions[0].value;
+  const [selectedDoc, setSelectedDoc] = useState<string[]>([defaultDoc]);
+  const [files, setFiles] = useState<{ [key: string]: File | null }>({
+    [defaultDoc]: null,
+  });
 
-  useEffect(() => {
-    if (policyType.toLowerCase().trim() === "third party only/ tp") {
-      setTp(initialValues.tp ?? 0);
-      setOd(0);
-      setIdv(undefined);
+  const getDocumentUrl = (file: any): string | undefined => {
+    if (!file) return undefined;
+    if (file instanceof File) {
+      return URL.createObjectURL(file);
     }
-    if (policyType === "Own Damage Only/ OD") {
-      setTp(0);
-      setOd(initialValues.od ?? 0);
-      setIdv(initialValues.idv ?? undefined);
-    }
-    // eslint-disable-next-line
-  }, [policyType]);
+    return `${imagePath}${encodeURIComponent(file)}`;
+  };
 
   const calculateYearDifference = (
     startDate: dayjs.Dayjs | string,
@@ -369,598 +178,47 @@ const AddNonMotorPolicyForm = (props: AddPolicyFormProps) => {
     }
     return yearsDifference;
   };
-  const validateDocument = (document: Document, index: number) => {
-    const isValidDocName = document.docName.trim() !== "";
-    const isValidFile = document.file;
-    validateField(index, "docName", document.docName);
-    validateField(index, "file", document.file);
-    return isValidDocName && isValidFile;
-  };
 
-  const validateField = (index: number, name: string, value: string) => {
-    const newErrors = [...errors];
-    if (name === "docName" || name === "file") {
-      newErrors[index] = {
-        ...newErrors[index],
-        [name]: value === "" ? `${name} cannot be empty` : "",
-      };
-    }
-    setErrors(newErrors);
+  const onSubmit = async (data: any) => {
+    console.log("Full Submitted Values : ", data);
+    console.log("files : ", files); // Full object
   };
-
-  const bindValues = async (policyForm: any) => {
-    if (policyType.toLowerCase().trim() === "third party only/ tp") {
-      policyForm["idv"] = 0;
-    }
-    policyForm.issueDate = dayjs(policyForm.issueDate).format(DAY_FORMAT);
-    policyForm.registrationDate = dayjs(policyForm.registrationDate).format(
-      DAY_FORMAT
-    );
-    policyForm.endDate = dayjs(policyForm.endDate).format(DAY_FORMAT);
-    const yearDifference = calculateYearDifference(
-      policyForm.registrationDate,
-      policyForm.issueDate
-    );
-    if (yearDifference <= 0) {
-      policyForm.vehicleAge = "0 year";
-    } else if (yearDifference >= 1 && yearDifference <= 2) {
-      policyForm.vehicleAge = "1-2 year";
-    } else if (yearDifference >= 3 && yearDifference <= 5) {
-      policyForm.vehicleAge = "3-5 year";
-    } else if (yearDifference > 5) {
-      policyForm.vehicleAge = ">5 year";
-    } else {
-      policyForm.vehicleAge = null;
-    }
-    if (userData.role.toLowerCase() === "admin") {
-      policyForm.partnerId = selectedPartnerId;
-      policyForm.partnerName = selectedPartnerName;
-    } else if (policyForm.policyCreatedBy === "Direct") {
-      policyForm.partnerId = "Direct";
-      policyForm.partnerName = "Direct";
-    } else {
-      policyForm.partnerId = selectedPartnerId;
-      policyForm.partnerName = selectedPartnerName;
-    }
-
-    policyForm.relationshipManagerId = selectedRMId;
-    policyForm.relationshipManagerName = selectedRMName;
-    policyForm.createdBy = userData.name;
-    policyForm.vehicleNumber = policyForm.vehicleNumber.toUpperCase();
-    policyForm.rto = policyForm.vehicleNumber.substring(0, 4);
-    policyForm.policyCompletedBy = userData.profileId;
-    policyForm.netPremium = netPremium;
-    policyForm.brokerId = selectedBrokerId;
-    const formData = new FormData();
-    const addedKeys = new Map<string, string>();
-    Object.keys(policyForm).forEach((key) => {
-      const value = policyForm[key as keyof IAddEditPolicyForm];
-      if (value !== undefined) {
-        addedKeys.set(key, value);
-      }
-    });
-    documents.forEach((doc: Document) => {
-      if (doc.file) {
-        addedKeys.set(doc.docName, doc.file);
-      }
-    });
-    addedKeys.forEach((file, key) => {
-      formData.append(key, file);
-    });
-    if (isAdd) {
-      callAddPolicyAPI(formData);
-    } else {
-      callEditPolicyAPI(formData, policyId!);
-    }
-  };
-
-  const validateDateWithMfg = (mgfYear: string, valueStr: string) => {
-    const yearValue = dayjs(valueStr).year();
-    if (Number(mgfYear) > Number(yearValue)) {
-      return true;
-    }
-    return false;
-  };
-
-  const onSubmit = async (policyForm: any, form: any) => {
-    console.log("Full Submitted Values:", policyForm);
-    console.log("Partner Object:", policyForm.partner); // Full object
-    console.log("Partner Name:", policyForm.partner?.name); // Readable
-    console.log("Partner ID:", policyForm.partner?._id); // ID
-    console.log("Non Motor Date policyForm : ", policyForm);
-    // const isIssueDateValid = dayjs(policyForm.issueDate).isValid();
-    // const isRegDateValid = dayjs(policyForm.registrationDate).isValid();
-    // const isEndDateValid = dayjs(policyForm.endDate).isValid();
-    // const isGcv = proType === "Goods Carrying Vehicle";
-    // const startDate = dayjs(policyForm.issueDate);
-    // const endDate = dayjs(policyForm.endDate);
-
-    // if (isGcv) {
-    //   const w = policyForm.weight;
-    //   if (w <= 0) {
-    //     toast.error("Weight can't be zero");
-    //     return;
-    //   }
-    // }
-    // if (!isIssueDateValid) {
-    //   toast.error("Invalid issue Date");
-    //   return;
-    // }
-    // if (!isEndDateValid) {
-    //   toast.error("Invalid end Date");
-    //   return;
-    // }
-    // if (!isRegDateValid) {
-    //   toast.error("Invalid Registration  Date");
-    //   return;
-    // }
-
-    // if (endDate.isBefore(startDate)) {
-    //   toast.error("End Date cannot be earlier than the Issue Date");
-    //   return;
-    // }
-    // if (
-    //   validateDateWithMfg(
-    //     policyForm.mfgYear as string,
-    //     policyForm.registrationDate as string
-    //   )
-    // ) {
-    //   toast.error(
-    //     "Registration date cannot be earlier than the manufacturing year"
-    //   );
-    //   return;
-    // }
-    // if (
-    //   validateDateWithMfg(
-    //     policyForm.mfgYear as string,
-    //     policyForm.issueDate as string
-    //   )
-    // ) {
-    //   toast.error("Issue date cannot be earlier than the manufacturing year");
-    //   return;
-    // }
-
-    // const formValid = documents.every((doc, index) =>
-    //   validateDocument(doc, index)
-    // );
-
-    // if (policyForm.policyCreatedBy.toLowerCase() === "admin") {
-    //   if (!selectedRMId) {
-    //     setRMErrorMessage("Select Partner or RM");
-    //   } else if (formValid) {
-    //     await bindValues(policyForm);
-    //   }
-    // } else if (policyForm.policyCreatedBy !== "Direct") {
-    //   setPolicyErrorMessage("");
-    //   if (!selectedRMId) {
-    //     setRMErrorMessage("Select Partner or RM");
-    //   } else if (formValid) {
-    //     await bindValues(policyForm);
-    //   }
-    // } else {
-    //   if (formValid) {
-    //     await bindValues(policyForm);
-    //   }
-    // }
-  };
-
-  const onProgress = (p: number) => {
-    setProgress(p);
-  };
-
-  const callAddPolicyAPI = async (policy: any) => {
-    try {
-      setIsLoading(true);
-
-      if (policyCount <= 0) {
-        setShowUpgradePopup(true);
-        return;
-      }
-
-      const newPolicy = await addPolicyService({ header, policy, onProgress });
-      if (newPolicy.status === "success") {
-        if (policyCount > 0) {
-          setPolicyCount((prevCount) => {
-            const updatedCount = prevCount - 1;
-            updateLocalStorage({ policyCount: updatedCount });
-            return updatedCount;
-          });
-        }
-
-        navigate(motorPolicyPath());
-        return;
-      } else {
-        return { [FORM_ERROR]: `${newPolicy.message}` };
-      }
-    } catch (err: any) {
-      let errData = await err;
-      toast.error(errData.message);
-      return { [FORM_ERROR]: `${"message"}` };
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const callEditPolicyAPI = async (policy: any, policyId: string) => {
-    try {
-      setIsLoading(true);
-      const newPolicy = await editPolicyService({ header, policy, policyId });
-      if (newPolicy.status === "success") {
-        navigate(motorPolicyPath());
-      } else {
-        return { [FORM_ERROR]: `${newPolicy.message}` };
-      }
-    } catch (err: any) {
-      const errorData = await err;
-      toast.error(errorData.message);
-      return { [FORM_ERROR]: `${"message"}` };
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  const handleChangeDocumentName = (newValue: any, index: any) => {
-    const updatedDocuments = documents.map((doc, i) =>
-      i === index ? { ...doc, docName: newValue?.value! } : doc
-    );
-    setDocuments(updatedDocuments);
-  };
-  const handleClickAddDocument = () => {
-    setDocuments([...documents, { docName: "", file: "" }]);
-  };
-  const handleClickDeleteDocument = (index: any) => {
-    setDocuments((prevDocuments) =>
-      prevDocuments.filter((_, i) => i !== index)
-    );
-  };
-  const fetchPolicyCount = async () => {
-    setIsLoading(true);
-    try {
-      const response = await getPolicyCountAPI({ userId: userData.profileId });
-      if (response?.remainingPolicyCount <= 0) {
-        updateLocalStorage({ policyCount: policyCount });
-        setShowUpgradePopup(true);
-      }
-      setPolicyCount(response.remainingPolicyCount);
-    } catch (err) {
-      setErrors((prevErrors) => [
-        ...prevErrors,
-        { docName: "Error", file: "Failed to fetch policy count" },
-      ]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  useEffect(() => {
-    if (userData.profileId) {
-      fetchPolicyCount();
-    }
-  }, [userData.profileId]);
-
-  useEffect(() => {
-    if (isAdd) {
-      setNetPremium(Number(od) + Number(tp));
-    }
-  }, [od, tp, isAdd]);
-  const handleNetPremiumChange = (event: any) => {
-    const value = event.target.value;
-    setNetPremium(value);
-  };
-  useEffect(() => {
-    if (selectedMake) {
-      const MakeId = selectedMake._id;
-      const filterModel = models.filter((sub) => sub.makeId === MakeId);
-      setFilteredSubModels(filterModel);
-    } else {
-      setFilteredSubModels([]);
-    }
-  }, [selectedMake, models]);
-  useEffect(() => {
-    if (selectedProduct) {
-      const ProductId = selectedProduct._id;
-      setFilteredSubcategories(
-        productSubTypes.filter((sub) => sub.productId === ProductId)
-      );
-    } else {
-      setFilteredSubcategories(productSubTypes);
-    }
-  }, [selectedProduct, productSubTypes]);
-  const validateFormValues = (schema: any) => async (values: any) => {
-    if (typeof schema === "function") {
-      schema = schema();
-    }
-    try {
-      await schema.validate(values, { abortEarly: false });
-    } catch (err: any) {
-      const errors = err.inner.reduce((formError: any, innerError: any) => {
-        return setIn(formError, innerError.path, innerError.message);
-      }, {}) as any;
-      return errors;
-    }
-  };
-  const addValidationSchema = yup.object({
-    policyNumber: yup
-      .string()
-      .required("Policy Number is required")
-      .min(1, "Policy Number must be at least 1 character")
-      .max(100, "Policy Number cannot exceed 100 characters")
-      .test(
-        "no-invalid-characters",
-        "Policy Number contains invalid characters.",
-        (value) => {
-          if (!value) return false;
-          return !/[^a-zA-Z0-9\/\-\s]/.test(value);
-        }
-      )
-      .test(
-        "no-whitespace-between-numbers",
-        "Whitespace is not allowed between numbers.",
-        (value) => {
-          if (!value) return false; // Required validation will handle this
-          // Disallow spaces between numbers
-          return !/\d\s+\d/.test(value);
-        }
-      )
-      .transform((value) =>
-        value ? value.replace(/\s+/g, " ").trim() : value
-      ),
-    mfgYear: yup.number().required("MFG Year is required").nullable(),
-    tenure: yup.number().required("Tenure is required").nullable(),
-    cc: yup.string().required("CC is required").nullable(),
-    tp: yup.number().required("TP is required").nullable(),
-    od: yup.number().required("OD is required").nullable(),
-    idv: yup
-      .number()
-      .nullable()
-      .when([], {
-        is: () => policyType.toLowerCase().trim() === "third party only/ tp",
-        then: yup.number().nullable(),
-        otherwise: yup.number().required("IDV is required").nullable(),
-      }),
-
-    netPremium: yup.number().required("Net Premium is required").nullable(),
-    finalPremium: yup.number().required("Final Premium is required").nullable(),
-    fullName: yup
-      .string()
-      .trim()
-      .nullable()
-      .required("Full Name is required")
-      .min(1, "Full Name must be at least 1 character")
-      .max(100, "Full Name cannot exceed 100 characters"),
-    emailId: yup
-      .string()
-      .trim()
-      .nullable()
-      .required("Email Id is required")
-      .min(1, "Email Id must be at least 1 character")
-      .email("Must be a valid email address"),
-    phoneNumber: yup
-      .string()
-      .matches(/^\d{10}$/, "Phone Number must be exactly 10 digits long")
-      .required("Phone Number is required")
-      .min(1, "Phone Number must be at least 1 character")
-      .max(10, "Phone Number must be at least 10 character"),
-    vehicleNumber: yup
-      .string()
-      .required("Vehicle Number is required")
-      .min(1, "Vehicle Number must be at least 1 character")
-      .max(12, "Vehicle Number must can be 12 character"),
-    registrationDate: yup
-      .string()
-      .required("Registration Date is required")
-      .nullable(),
-    // endDate: yup.string().required("End Date is required").nullable(),
-    issueDate: yup.string().required("Issue Date is required").nullable(),
-    policyType: yup.string().required("Policy Type is required").nullable(),
-    caseType: yup.string().nullable().required("Case Type is required"),
-    productType: yup.string().nullable().required("Product Type is required"),
-    companyName: yup.string().nullable().required("Company Name is required"),
-    make: yup.string().required("Make is required").nullable(),
-    model: yup.string().nullable().required("Model is required"),
-    fuelType: yup.string().nullable().required("Fuel Type is required"),
-    paymentMode: yup.string().nullable().required("Payment Mode is required"),
-    ncb: yup.string().nullable().required("NCB is required"),
-    broker: yup.string().nullable().required("Broker Name is required"),
-    policyCreatedBy: yup
-      .string()
-      .nullable()
-      .required("Policy Created By is required"),
-  });
-  const addValidate = validateFormValues(addValidationSchema);
-  const handleSelectPolicyCreatedBy = (event: any, newValue: any) => {
-    setSelectedPolicyCreatedBy(newValue ? newValue.label : "");
-  };
-  const handleSelectPaymentMode = (event: any, newValue: any) => {
-    setSelectedPaymentMode(newValue ? newValue.label : "");
-  };
-  const handleSelectPartnerChange = async (e: any) => {
-    if (e._id) {
-      setSelectedPartnerId(e._id!);
-      setSelectedPartnerName(e.name!);
-      setSelectedRMId(e.headRMId!);
-      setSelectedRMName(e.headRM!);
-      setRMErrorMessage("");
-    }
-  };
-
-  const handleSelectRMChange = async (e: any) => {
-    setSelectedRMId(e._id!);
-    setSelectedRMName(e.fullName!);
-  };
-  const handleChangePolicyNumber = async (e: any) => {
-    const policyNumber = e.target.value;
-    try {
-      const newPolicy = await getPolicyByNumberService({
-        header,
-        policyNumber,
-      });
-      if (newPolicy.exist === true) {
-        setPolicyErrorMessage(newPolicy.message);
-      } else {
-        setPolicyErrorMessage("");
-      }
-    } catch {}
-  };
-  const validateVehicleNumber = async (e: any) => {
-    if (selectedCaseType.toLowerCase().trim() === "new") {
-      return;
-    }
-    const vehicleNumber = e.target.value;
-    try {
-      const res = await getVechicleNumberService({
-        header,
-        vehicleNumber,
-      });
-      if (res.exist) {
-        setVehicleErr(`${vehicleNumber} is already exist`);
-      } else {
-        setVehicleErr("");
-      }
-    } catch (error: any) {
-      let errData = await error;
-      toast.error(errData.message);
-    }
-  };
-
-  const getDocumentUrl = (file: any): string | undefined => {
-    if (!file) return undefined; // null ki jagah undefined return karein
-    if (file instanceof File) {
-      return URL.createObjectURL(file); // Naya upload hua file
-    }
-    return `${imagePath}${encodeURIComponent(file)}`; // API se aayi purani file
-  };
-
-  const predefinedOrder = ["Marine Specific Policy(Single Voyage)"];
-  const product = [
-    "Marine Specific Policy(single Voyage)",
-    "Marine Open Policy(MOP)",
-    "Sales Turnover Policy(STOP)",
-  ];
-
-  const sortedProducts = [...products].sort((a, b) => {
-    const nameA = a.productName || "";
-    const nameB = b.productName || "";
-    return predefinedOrder.indexOf(nameA) - predefinedOrder.indexOf(nameB);
-  });
 
   return (
     <>
-      <UpgradePlanPopup
-        open={showUpgradePopup}
-        onClose={() => setShowUpgradePopup(false)}
-      />
-
       <Form
         mt={3}
         onSubmit={onSubmit}
-        initialValues={initialValues}
-        // validate={addValidate}
-        render={({ handleSubmit }) => (
+        render={({ handleSubmit, submitError, submitting }) => (
           <form onSubmit={handleSubmit} noValidate>
             <Grid container spacing={2}>
+              <DynamicTextField
+                name="policyNumber"
+                label="Enter Policy Number"
+                gridProps={{ lg: 4, md: 4, sm: 12, xs: 12 }}
+              />
               <Grid item lg={4} md={4} sm={6} xs={12}>
-                <Field name="policyNumber">
-                  {({ input, meta }) => (
-                    <TextField
-                      {...input}
-                      size="small"
-                      fullWidth
-                      label="Enter Policy Number"
-                      variant="outlined"
-                      disabled={isAdd ? false : true}
-                      onChange={(e) => {
-                        const value = e.target.value.replace(/\s/g, "");
-                        input.onChange(value);
-                        handleChangePolicyNumber(e);
-                      }}
-                      error={meta.touched && Boolean(meta.error)}
-                      helperText={meta.touched && meta.error}
-                    />
-                  )}
-                </Field>
-                {policyErrorMessage && (
-                  <div style={{ color: "red" }}>{policyErrorMessage}</div>
-                )}
-              </Grid>
-              <Grid item lg={4} md={4} sm={6} xs={12}>
-                <Field name="policyType">
-                  {({ input, meta }) => (
-                    <div>
-                      <FormControl fullWidth size="small">
-                        <Autocomplete
-                          {...input}
-                          id="policyType"
-                          value={
-                            input.value !== undefined
-                              ? input.value
-                              : initialValues.policyType || null
-                          }
-                          options={policyTypes}
-                          getOptionLabel={(option) =>
-                            typeof option === "string"
-                              ? option
-                              : option.policyType || ""
-                          }
-                          onChange={(event, newValue) => {
-                            if (newValue && newValue.policyType) {
-                              setPolicyType(newValue.policyType);
-                            }
-                            input.onChange(newValue ? newValue.policyType : "");
-                          }}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label=" Select Policy Type"
-                              value={policyType}
-                              className="rounded-sm w-full"
-                              size="small"
-                              variant="outlined"
-                              error={meta.touched && !!meta.error}
-                              helperText={meta.touched && meta.error}
-                            />
-                          )}
-                        />
-                      </FormControl>
-                    </div>
-                  )}
-                </Field>
+                <FormAutocompleteField
+                  name="policyType"
+                  label="Select Policy Type"
+                  options={policyTypes}
+                  onChangeExtra={setSelectedPolicyType}
+                />
               </Grid>
 
               {policyType === "Fire" && (
                 <>
                   <Grid item lg={4} md={4} sm={6} xs={12}>
-                    <Field name="productType">
-                      {({ input, meta }) => (
-                        <div>
-                          <FormControl fullWidth size="small">
-                            <Autocomplete
-                              options={fireProducts}
-                              getOptionLabel={(option) => option.product}
-                              value={
-                                typeof input.value === "object"
-                                  ? input.value
-                                  : fireProducts.find(
-                                      (p) => p.product === input.value
-                                    ) || null
-                              }
-                              onChange={(e, value) => {
-                                input.onChange(value); // update Final Form state
-                                console.log("Product selected:", value); // log value
-                              }}
-                              renderInput={(params) => (
-                                <TextField
-                                  {...params}
-                                  label="Product Type"
-                                  size="small"
-                                  error={meta.touched && !!meta.error}
-                                  helperText={meta.touched && meta.error}
-                                />
-                              )}
-                            />
-                          </FormControl>
-                        </div>
-                      )}
-                    </Field>
-                  </Grid>
+    <FormAutocompleteField
+  name="product"
+  label="Select Product"
+  options={fireProducts} // ✅ fireProducts is already a string[]
+  onChangeExtra={(val) => {
+    setSelectedProduct(val || ""); // val is a string if options are strings
+    setMiscProduct(val || "");
+  }}
+/>
+    </Grid>
                   {/* Product Dropdown */}
                   {/* <Grid item lg={4} md={4} sm={6} xs={12}>
                     <FormControl fullWidth size="small">
@@ -1219,20 +477,11 @@ const AddNonMotorPolicyForm = (props: AddPolicyFormProps) => {
                 <>
                   {/* Product Dropdown */}
                   <Grid item lg={4} md={4} sm={6} xs={12}>
-                    <Autocomplete
-                      options={miscProductOptions}
-                      getOptionLabel={(option) => option.label}
-                      onChange={(e, value) =>
-                        setMiscProduct(value?.label || "")
-                      }
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="Select Product Type"
-                          fullWidth
-                          size="small"
-                        />
-                      )}
+                    <FormAutocompleteField
+                      name="product"
+                      label="Select Product"
+                      options={product}
+                      onChangeExtra={setSelectedProduct}
                     />
                   </Grid>
 
@@ -1265,44 +514,12 @@ const AddNonMotorPolicyForm = (props: AddPolicyFormProps) => {
               )}
 
               <Grid item lg={4} md={4} sm={6} xs={12}>
-                <Field name="caseType">
-                  {({ input, meta }) => (
-                    <div>
-                      <FormControl fullWidth size="small">
-                        <Autocomplete
-                          {...input}
-                          id="caseType"
-                          options={caseTypes}
-                          value={
-                            input.value !== undefined
-                              ? input.value
-                              : initialValues.caseType || null
-                          }
-                          getOptionLabel={(option) =>
-                            typeof option === "string"
-                              ? option
-                              : option.caseType || ""
-                          }
-                          onChange={(event, newValue) => {
-                            input.onChange(newValue ? newValue.caseType : "");
-                            setSelectedCaseType(newValue.caseType);
-                          }}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label=" Select Case Type"
-                              className="rounded-sm w-full"
-                              size="small"
-                              variant="outlined"
-                              error={meta.touched && !!meta.error}
-                              helperText={meta.touched && meta.error}
-                            />
-                          )}
-                        />
-                      </FormControl>
-                    </div>
-                  )}
-                </Field>
+                <FormAutocompleteField
+                  name="caseType"
+                  label="Select Case Type"
+                  options={caseTypes}
+                  onChangeExtra={setSelectedCaseType}
+                />
               </Grid>
               <Grid item lg={4} md={4} sm={6} xs={12}>
                 <Field name="occupancy">
@@ -1349,18 +566,14 @@ const AddNonMotorPolicyForm = (props: AddPolicyFormProps) => {
                 </Field>
               </Grid>
               <Grid item lg={4} md={4} sm={6} xs={12}>
-                <Field name="broker">
+                <Field name="brokerId">
                   {({ input, meta }) => (
                     <div>
                       <FormControl fullWidth size="small">
                         <Autocomplete
                           {...input}
                           id="broker"
-                          value={
-                            input.value !== undefined
-                              ? input.value
-                              : initialValues.broker || null
-                          }
+                          value={input.value !== undefined ? input.value : null}
                           getOptionLabel={(option) =>
                             typeof option === "string"
                               ? option
@@ -1369,7 +582,11 @@ const AddNonMotorPolicyForm = (props: AddPolicyFormProps) => {
                           }
                           options={brokers}
                           onChange={(event, newValue) => {
-                            input.onChange(newValue ? newValue.brokerName : "");
+                            input.onChange(
+                              newValue
+                                ? `${newValue.brokerName} - ${newValue.brokerCode}`
+                                : ""
+                            );
                             setSelectedBrokerId(newValue ? newValue._id : "");
                           }}
                           renderInput={(params) => (
@@ -1390,36 +607,32 @@ const AddNonMotorPolicyForm = (props: AddPolicyFormProps) => {
                 </Field>
               </Grid>
               <Grid item lg={4} md={4} sm={6} xs={12}>
-                <Field name="partner">
+                <Field name="partnerId">
                   {({ input, meta }) => (
                     <div>
                       <FormControl fullWidth size="small">
                         <Autocomplete
                           {...input}
                           id="partner"
-                          value={
-                            typeof input.value === "object"
-                              ? input.value
-                              : (partners || []).find(
-                                  (p) => p._id === input.value
-                                ) || null
-                          }
-                          onChange={(event, newValue) => {
-                            input.onChange(newValue); // Store full object in form
-                            setSelectedPartnerId(newValue?._id || "");
-                          }}
+                          value={input.value !== undefined ? input.value : null}
                           getOptionLabel={(option) =>
                             typeof option === "string"
                               ? option
                               : `${option.name} - ${option.userCode}` || ""
                           }
-                          options={partners || []}
+                          options={partners}
+                          onChange={(event, newValue) => {
+                            input.onChange(
+                              `${newValue.name} - ${newValue.userCode}`
+                            );
+                            setSelectedPartnerId(newValue._id);
+                          }}
                           renderInput={(params) => (
                             <TextField
                               {...params}
-                              label=" Select Partner"
                               className="rounded-sm w-full"
                               size="small"
+                              label="Select Partners"
                               variant="outlined"
                               error={meta.touched && !!meta.error}
                               helperText={meta.touched && meta.error}
@@ -1432,18 +645,14 @@ const AddNonMotorPolicyForm = (props: AddPolicyFormProps) => {
                 </Field>
               </Grid>
               <Grid item lg={4} md={4} sm={6} xs={12}>
-                <Field name="companyName">
+                <Field name="companyId">
                   {({ input, meta }) => (
                     <div>
                       <FormControl fullWidth size="small">
                         <Autocomplete
                           {...input}
-                          id="companyName"
-                          value={
-                            input.value !== undefined
-                              ? input.value
-                              : initialValues.companyName || null
-                          }
+                          id="companyId"
+                          value={input.value !== undefined ? input.value : null}
                           getOptionLabel={(option) =>
                             typeof option === "string"
                               ? option
@@ -1454,6 +663,7 @@ const AddNonMotorPolicyForm = (props: AddPolicyFormProps) => {
                             input.onChange(
                               newValue ? newValue.companyName : ""
                             );
+                            setSelectedCompany(newValue._id);
                           }}
                           renderInput={(params) => (
                             <TextField
@@ -1472,397 +682,109 @@ const AddNonMotorPolicyForm = (props: AddPolicyFormProps) => {
                   )}
                 </Field>
               </Grid>
-              <Grid item lg={4} md={4} sm={6} xs={12}>
-                <Field name="issueDate">
-                  {({ input, meta }) => (
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DatePicker
-                        disableFuture
-                        label="Issue Date"
-                        inputFormat="DD/MM/YYYY"
-                        value={input.value || null}
-                        onChange={(date) => {
-                          input.onChange(date);
-                        }}
-                        renderInput={(params: any) => (
-                          <TextField
-                            variant="outlined"
-                            size="small"
-                            fullWidth
-                            {...params}
-                            error={meta.touched && !!meta.error}
-                            helperText={meta.touched && meta.error}
-                          />
-                        )}
-                      />
-                    </LocalizationProvider>
-                  )}
-                </Field>
-              </Grid>
-              <Grid item lg={4} md={4} sm={6} xs={12}>
-                <Field name="endDate">
-                  {({ input, meta }) => (
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DatePicker
-                        disablePast
-                        label="End Date"
-                        value={input.value}
-                        inputFormat="DD/MM/YYYY"
-                        onChange={(date) => input.onChange(date)}
-                        renderInput={(params: any) => (
-                          <TextField
-                            variant="outlined"
-                            size="small"
-                            fullWidth
-                            {...params}
-                            error={meta.touched && !!meta.error}
-                            helperText={meta.touched && meta.error}
-                          />
-                        )}
-                      />
-                    </LocalizationProvider>
-                  )}
-                </Field>
-              </Grid>
-              <Grid item lg={4} md={4} sm={6} xs={12}>
-                <Field name="totalSumInsured">
-                  {({ input, meta }) => (
-                    <TextField
-                      {...input}
-                      size="small"
-                      fullWidth
-                      value={netPremium}
-                      onChange={(event) => {
-                        input.onChange(event);
-                        handleNetPremiumChange(event);
-                      }}
-                      type="number"
-                      label="Total Sum Insured"
-                      variant="outlined"
-                      error={meta.touched && Boolean(meta.error)}
-                      helperText={meta.touched && meta.error}
-                    />
-                  )}
-                </Field>
-              </Grid>
-              <Grid item lg={4} md={4} sm={6} xs={12}>
-                <Field name="netPremium">
-                  {({ input, meta }) => (
-                    <TextField
-                      {...input}
-                      size="small"
-                      fullWidth
-                      value={netPremium}
-                      onChange={(event) => {
-                        input.onChange(event);
-                        handleNetPremiumChange(event);
-                      }}
-                      type="number"
-                      label="Enter Net Premium"
-                      variant="outlined"
-                      error={meta.touched && Boolean(meta.error)}
-                      helperText={meta.touched && meta.error}
-                    />
-                  )}
-                </Field>
-              </Grid>
-              <Grid item lg={4} md={4} sm={6} xs={12}>
-                <Field name="finalPremium">
-                  {({ input, meta }) => (
-                    <TextField
-                      {...input}
-                      size="small"
-                      type="number"
-                      label="Enter Final Premium"
-                      fullWidth
-                      variant="outlined"
-                      error={meta.touched && Boolean(meta.error)}
-                      helperText={meta.touched && meta.error}
-                    />
-                  )}
-                </Field>
-              </Grid>
-              <>
-                <Grid item lg={4} md={4} sm={6} xs={12}>
-                  <Field name="fullName">
-                    {({ input, meta }) => (
-                      <TextField
-                        {...input}
-                        size="small"
-                        label="Enter Full Name"
-                        className="rounded-sm w-full"
-                        variant="outlined"
-                        error={meta.touched && Boolean(meta.error)}
-                        helperText={meta.touched && meta.error}
-                      />
-                    )}
-                  </Field>
-                </Grid>
-                <Grid item lg={4} md={4} sm={6} xs={12}>
-                  <Field name="emailId">
-                    {({ input, meta }) => (
-                      <TextField
-                        {...input}
-                        size="small"
-                        fullWidth
-                        label="Enter Email Id"
-                        className="rounded-sm w-full"
-                        variant="outlined"
-                        error={meta.touched && Boolean(meta.error)}
-                        helperText={meta.touched && meta.error}
-                      />
-                    )}
-                  </Field>
-                </Grid>
-                <Grid item lg={4} md={4} sm={6} xs={12}>
-                  <Field name="phoneNumber">
-                    {({ input, meta }) => (
-                      <TextField
-                        {...input}
-                        fullWidth
-                        type="text"
-                        size="small"
-                        label="Enter Phone Number"
-                        className="rounded-sm w-full"
-                        variant="outlined"
-                        inputProps={{ maxLength: 10 }}
-                        error={meta.touched && Boolean(meta.error)}
-                        helperText={meta.touched && meta.error}
-                      />
-                    )}
-                  </Field>
-                </Grid>
-                <Grid item lg={4} md={4} sm={6} xs={12}>
-                  <Field name="pincode">
-                    {({ input, meta }) => (
-                      <TextField
-                        {...input}
-                        fullWidth
-                        type="text"
-                        size="small"
-                        label="Pincode of Risk Location"
-                        className="rounded-sm w-full"
-                        variant="outlined"
-                        inputProps={{ maxLength: 10 }}
-                        error={meta.touched && Boolean(meta.error)}
-                        helperText={meta.touched && meta.error}
-                      />
-                    )}
-                  </Field>
-                </Grid>
-                <Grid item lg={4} md={4} sm={6} xs={12}>
-                  <Field name="paymentMode">
-                    {({ input, meta }) => (
-                      <div>
-                        <FormControl fullWidth size="small">
-                          <Autocomplete
-                            {...input}
-                            id="paymentMode"
-                            value={
-                              input.value !== undefined
-                                ? input.value
-                                : initialValues.paymentMode || null
-                            }
-                            getOptionLabel={(option) =>
-                              typeof option === "string"
-                                ? option
-                                : option.label || null
-                            }
-                            onChange={(event, newValue) => {
-                              input.onChange(newValue ? newValue.value : null);
-                              handleSelectPaymentMode(event, newValue);
-                            }}
-                            options={paymentModes}
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                className="rounded-sm w-full"
-                                size="small"
-                                label=" Select Payment Mode"
-                                variant="outlined"
-                                error={meta.touched && !!meta.error}
-                                helperText={meta.touched && meta.error}
-                              />
-                            )}
-                          />
-                        </FormControl>
-                      </div>
-                    )}
-                  </Field>
-                </Grid>
-                {selectedPaymentMode && selectedPaymentMode !== "Cash" && (
-                  <Grid item lg={4} md={4} sm={6} xs={12}>
-                    <Field name="paymentDetails">
-                      {({ input, meta }) => (
-                        <TextField
-                          {...input}
-                          size="small"
-                          fullWidth
-                          label="Enter Payment Details"
-                          variant="outlined"
-                          error={meta.touched && Boolean(meta.error)}
-                          helperText={meta.touched && meta.error}
-                        />
-                      )}
-                    </Field>
-                  </Grid>
-                )}
-                <Grid item md={12} mt={2}>
-                  {rmErrorMessage && (
-                    <div style={{ color: "red" }}>{rmErrorMessage}</div>
-                  )}
-                  <Button variant="outlined" onClick={handleClickAddDocument}>
-                    Add More Document
-                  </Button>
-                  <Typography variant="body1" gutterBottom mr={4}>
-                    {"Image or PDF should be <= 4MB."}
-                  </Typography>
-                </Grid>
-                <Grid item md={12}>
-                  <Grid item lg={12} md={12} sm={12} xs={12}>
-                    <span style={{ color: "red" }}>{errorMessage}</span>
-                  </Grid>
-                  {documents.map((doc, index) => (
-                    <Grid item key={index} md={12} xs={12}>
-                      <Grid container spacing={2} mt={1}>
-                        <Grid item lg={4} md={4} sm={4} xs={12}>
-                          <Autocomplete
-                            value={
-                              addPolicyDocumentsOptions.find(
-                                (option) => option.value === doc.docName
-                              ) || null
-                            }
-                            onChange={(e, newValue) =>
-                              handleChangeDocumentName(newValue!, index)
-                            }
-                            options={addNonMotorPolicyDocumentsOptions}
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                className="rounded-sm w-full"
-                                size="small"
-                                label="Select Document"
-                                fullWidth
-                                variant="outlined"
-                              />
-                            )}
-                          />
-                          {errors[index]?.docName && (
-                            <span>{errors[index].docName}</span>
-                          )}
-                        </Grid>
-                        <Grid item lg={4} md={4} sm={4} xs={12}>
-                          <FileView
-                            fileName={formatFilename(doc.file)}
-                            index={index}
-                          >
-                            <input
-                              id={`file-${index}`}
-                              type="file"
-                              onChange={(e) => handleFileInputChange(e, index)}
-                              style={{
-                                position: "absolute",
-                                opacity: 0,
-                                width: "100%",
-                                height: "100%",
-                                top: 0,
-                                left: 0,
-                                cursor: "pointer",
-                              }}
-                            />
-                          </FileView>
+              <DynamicDateField
+                name="issueDate"
+                label="Start Date"
+                disableFuture
+                gridProps={{ lg: 4, md: 4, sm: 6, xs: 12 }}
+              />
+              <DynamicDateField
+                name="endDate"
+                label="End Date"
+                gridProps={{ lg: 4, md: 4, sm: 6, xs: 12 }}
+              />
+              <DynamicTextField
+                name="totalSumInsured"
+                label="Enter Total Sum Insured "
+                type="number"
+                gridProps={{ lg: 4, md: 4, sm: 12, xs: 12 }}
+              />
+              <DynamicTextField
+                name="netPremium"
+                label="Enter Net Premium"
+                type="number"
+                gridProps={{ lg: 4, md: 4, sm: 12, xs: 12 }}
+              />
+              <DynamicTextField
+                name="finalPremium"
+                label="Enter Final Premium"
+                type="number"
+                gridProps={{ lg: 4, md: 4, sm: 12, xs: 12 }}
+              />
 
-                          {errors[index]?.file && (
-                            <span style={{ color: "red" }}>
-                              {errors[index].file}
-                            </span>
-                          )}
-                        </Grid>
-                        <Grid item lg={4} md={4} sm={4} xs={4}>
-                          {doc.file ? (
-                            <>
-                              <Tooltip
-                                title={
-                                  typeof doc.file === "string"
-                                    ? doc.file
-                                    : "View Document"
-                                }
-                              >
-                                <IconButton
-                                  color="primary"
-                                  aria-label={`${doc.file}`}
-                                  component="span"
-                                  onClick={() =>
-                                    window.open(
-                                      getDocumentUrl(doc.file),
-                                      "_blank"
-                                    )
-                                  }
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    strokeWidth="1.5"
-                                    stroke="currentColor"
-                                    className="size-6 text-safekaroDarkOrange"
-                                  >
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
-                                    />
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-                                    />
-                                  </svg>
-                                </IconButton>
-                              </Tooltip>
-                            </>
-                          ) : (
-                            <></>
-                          )}
-                          {documents.length !== 1 && (
-                            <Tooltip title={"Delete Image"}>
-                              <IconButton
-                                color="primary"
-                                aria-label={"Delete Image"}
-                                component="span"
-                                onClick={() => handleClickDeleteDocument(index)}
-                              >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  strokeWidth="1.5"
-                                  stroke="currentColor"
-                                  className="size-6"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-                                  />
-                                </svg>
-                              </IconButton>
-                            </Tooltip>
-                          )}
-                        </Grid>
-                      </Grid>
-                    </Grid>
-                  ))}
-                </Grid>
-              </>
+              <DynamicTextField
+                name="fullName"
+                label="Enter Full Name"
+                gridProps={{ lg: 4, md: 4, sm: 12, xs: 12 }}
+              />
+              <DynamicTextField
+                name="emailId"
+                label="Enter email"
+                type="email"
+                gridProps={{ lg: 4, md: 4, sm: 12, xs: 12 }}
+              />
+              <DynamicTextField
+                name="phoneNumber"
+                label="Enter Phone Number"
+                type="number"
+                gridProps={{ lg: 4, md: 4, sm: 12, xs: 12 }}
+              />
+              <Grid item lg={4} md={4} sm={6} xs={12}>
+                <Field name="pincode">
+                  {({ input, meta }) => (
+                    <TextField
+                      {...input}
+                      fullWidth
+                      type="text"
+                      size="small"
+                      label="Pincode of Risk Location"
+                      className="rounded-sm w-full"
+                      variant="outlined"
+                      inputProps={{ maxLength: 10 }}
+                      error={meta.touched && Boolean(meta.error)}
+                      helperText={meta.touched && meta.error}
+                    />
+                  )}
+                </Field>
+              </Grid>
+              <Grid item lg={4} md={4} sm={6} xs={12}>
+                <FormAutocompleteField
+                  name="paymentMode"
+                  label="Select Payment Mode"
+                  options={paymentMode}
+                  onChangeExtra={setSelectedPaymentMode}
+                />
+              </Grid>
+              {(selectedPaymentMode.toLowerCase() === "online" ||
+                selectedPaymentMode.toLowerCase() === "check") && (
+                <DynamicTextField
+                  name="paymentDetails"
+                  label="Enter Payment Details"
+                  type="number"
+                  gridProps={{ lg: 4, md: 4, sm: 12, xs: 12 }}
+                />
+              )}
+
+              <Grid item lg={12} md={12} sm={6} xs={12}>
+                <DocumentUploader
+                  selectedDoc={selectedDoc}
+                  files={files}
+                  setFiles={setFiles}
+                  setSelectedDoc={setSelectedDoc}
+                />
+              </Grid>
             </Grid>
             <Grid container spacing={2} mt={2}>
               <Grid item lg={12} md={12} sm={12} xs={12}>
+                {submitError && (
+                  <div className="error text-safekaroDarkOrange">
+                    {submitError}
+                  </div>
+                )}
                 <Button
-                  variant="contained"
-                  type="submit"
                   disabled={isLoading}
-                  className="btnGradient text-black px-6 py-3 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
+                  type="submit"
+                  className="btnGradient text-black px-4 py-3 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
                 >
                   {isLoading ? "Submitting..." : "Submit"}
                 </Button>
@@ -1871,13 +793,198 @@ const AddNonMotorPolicyForm = (props: AddPolicyFormProps) => {
           </form>
         )}
       />
-
-      <Toaster position="bottom-center" reverseOrder={false} />
-      <LoadingOverlay
-        loading={progress > 0 && progress < 100}
-        message={progress}
-      />
     </>
   );
 };
+
+const DocumentUploader: React.FC<DocumentUploaderProps> = ({
+  selectedDoc,
+  setFiles,
+  setSelectedDoc,
+  files,
+}) => {
+  const [showSelect, setShowSelect] = useState<boolean>(false);
+
+  const handleSelectDoc = (event: SelectChangeEvent<string[]>) => {
+    const value = event.target.value as string[];
+    setSelectedDoc(value);
+
+    const updatedFiles: { [key: string]: File | null } = { ...files };
+    value.forEach((doc) => {
+      if (!(doc in updatedFiles)) {
+        updatedFiles[doc] = null;
+      }
+    });
+
+    // Remove deselected docs
+    Object.keys(updatedFiles).forEach((key) => {
+      if (!value.includes(key)) {
+        delete updatedFiles[key];
+      }
+    });
+
+    setFiles(updatedFiles);
+    setShowSelect(false); // Hide after selection
+  };
+
+  const handleFileChange = (docKey: string, file: File | null) => {
+    setFiles((prev) => ({ ...prev, [docKey]: file }));
+  };
+
+  const handleDelete = (docKey: string) => {
+    setSelectedDoc((prev) => prev.filter((key) => key !== docKey));
+    setFiles((prev) => {
+      const updated = { ...prev };
+      delete updated[docKey];
+      return updated;
+    });
+  };
+
+  return (
+    <Box p={1}>
+      <Typography variant="h6" mb={2} fontWeight={600}>
+        Upload Documents
+      </Typography>
+
+      {/* Add More Button */}
+      {!showSelect && (
+        <Button
+          variant="outlined"
+          onClick={() => setShowSelect(true)}
+          sx={{ mb: 3 }}
+        >
+          Add More Document
+        </Button>
+      )}
+
+      {/* Select Dropdown */}
+      {showSelect && (
+        <Grid container spacing={2} mb={3}>
+          <Grid item xs={12} md={6} lg={4}>
+            <FormControl fullWidth size="small">
+              <InputLabel id="doc-select-label">Select Documents</InputLabel>
+              <Select
+                labelId="doc-select-label"
+                multiple
+                value={selectedDoc}
+                onChange={handleSelectDoc}
+                label="Select Documents"
+                renderValue={(selected) =>
+                  selected
+                    .map(
+                      (val) =>
+                        addHealthPolicyDocumentsOptions.find(
+                          (o) => o.value === val
+                        )?.label
+                    )
+                    .join(", ")
+                }
+              >
+                {addHealthPolicyDocumentsOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+        </Grid>
+      )}
+
+      {/* Uploaded Document Cards */}
+      <Grid container spacing={3}>
+        {selectedDoc.map((docKey) => {
+          const label = addHealthPolicyDocumentsOptions.find(
+            (o) => o.value === docKey
+          )?.label;
+          const file = files[docKey];
+
+          return (
+            <Grid key={docKey} item xs={12} md={6} lg={4}>
+              <Paper
+                variant="outlined"
+                sx={{
+                  p: 2,
+                  borderRadius: 2,
+                  boxShadow: 2,
+                }}
+              >
+                <Typography variant="subtitle2" fontWeight={600} mb={1}>
+                  {label}
+                </Typography>
+
+                <Box display="flex" alignItems="center" gap={2}>
+                  <input
+                    type="file"
+                    id={`file-input-${docKey}`}
+                    style={{ display: "none" }}
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+
+                      if (file) {
+                        const maxSizeBytes = MAX_FILE_SIZE * 1024 * 1024;
+
+                        if (file.size > maxSizeBytes) {
+                          alert(
+                            `File size exceeds ${MAX_FILE_SIZE}MB. Please select a smaller file.`
+                          );
+                          e.target.value = "";
+                          return;
+                        }
+
+                        handleFileChange(docKey, file);
+                      } else {
+                        handleFileChange(docKey, null);
+                      }
+                    }}
+                  />
+
+                  <TextField
+                    size="small"
+                    fullWidth
+                    variant="outlined"
+                    disabled
+                    placeholder="No file chosen"
+                    value={file ? file.name : ""}
+                  />
+
+                  {file ? (
+                    <>
+                      <Typography variant="body2" noWrap maxWidth={150}>
+                        {file.name}
+                      </Typography>
+                      <IconButton
+                        color="primary"
+                        component="label"
+                        htmlFor={`file-input-${docKey}`}
+                        sx={{ p: 0.5 }}
+                      >
+                        <EditIcon fontSize="small" />
+                      </IconButton>
+                    </>
+                  ) : (
+                    <label htmlFor={`file-input-${docKey}`}>
+                      <Button variant="contained" component="span">
+                        Upload
+                      </Button>
+                    </label>
+                  )}
+
+                  <IconButton
+                    color="error"
+                    onClick={() => handleDelete(docKey)}
+                  >
+                    <CloseIcon />
+                  </IconButton>
+                </Box>
+              </Paper>
+            </Grid>
+          );
+        })}
+      </Grid>
+    </Box>
+  );
+};
+
 export default AddNonMotorPolicyForm;

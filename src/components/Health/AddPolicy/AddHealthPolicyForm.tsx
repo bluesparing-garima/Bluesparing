@@ -61,7 +61,8 @@ const policyTypes = [
 const caseTypes = ["New", "ReNewal", "Port"];
 const product = ["Health", " Personal Accident"];
 const paymentMode = ["Cash", "Check", "online"];
-const AddHealthPolicyForm = (props: AddPolicyFormProps) => {
+
+const AddHealthPolicyForm = () => {
   let [companies] = useGetCompanies({ header: header });
   let [brokers] = useGetBrokers({ header: header });
   let [partners] = useGetPartners({ header: header, role: "partner" });

@@ -1,4 +1,5 @@
-export interface NonMotorPolicy {
+export interface IAddEditNonMotorPolicyForm {
+  id?: string;
   // Common Fields
   policyNumber: string;
   policyType: string; // e.g., "Fire", "Marine", "Miscellaneous"
