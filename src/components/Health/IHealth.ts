@@ -35,65 +35,30 @@ export interface IHealthVM extends IHealth {
   tpaCompanyName?: string;
 }
 
+
 export interface IAddEditHealthForm {
-  id?: string;
-  bookingId?: string; //bookingrequestId
-  leadId?: string; //leadId
-  category: string; //motor
-  policyType: string; //Package
-  caseType: string; //new ,renewal
-  productType: string; //two wheeler
-  subCategory?: string; //
-  companyName: string; //TATA
-  broker: string;
-  brokerId: string;
-  brokerCode?: string;
-  make: string; //company of vehicle
-  model: string; //company vechicle model
-  fuelType: string; //LPG
-  rto: string; //
-  vehicleNumber: string;
-  seatingCapacity?: number;
-  cc: number;
-  weight?: number; //100o,2500
-  ncb: string; //
+  _id?:string;
   policyNumber: string;
+  policyType: string;
+  caseType: string;
+  product: string;
+  companyId: string;
+  brokerId: string;
+  partnerId: string;
+  issueDate: string; 
+  endDate: string;  
+  relationshipManagerId:string;
+  firstPurchasedDate: string; 
+  totalSumInsured: string;
+  netPremium: string;
+  finalPremium: string;
+  cumulativeBonus: string;
+  accumulativeBonus: string;
   fullName: string;
   emailId: string;
-  phoneNumber: number;
-  vehicleAge?: string; //matter
-  mfgYear: number;
-  tenure: number;
-  registrationDate: string;
-  endDate: string;
-  issueDate: string;
-  idv: number|undefined;
-  od: number;
-  tp: number;
-  netPremium: number;
-  finalPremium: number;
+  phoneNumber: string;
   paymentMode: string;
-  policyCreatedBy: string;
-  policyStatus?: string; //booked
-  paymentDetails?: string;
-  partnerId?: string;
-  partnerName?: string;
-  relationshipManagerId?: string;
-  relationshipManagerName?: string;
-  rcFront?: string;
-  rcBack?: string;
-  previousPolicy?: string;
-  survey?: string;
-  puc?: string;
-  fitness?: string;
-  proposal?: string;
-  currentPolicy?: string;
-  other?: string;
-  policyCompletedBy: string; /// booking person id
-  updatedOn?: any;
-  createdOn?: string;
-  createdBy?: any;
-  updatedBy?: any;
+  paymentDetails: string;
 }
 
 export interface IPDFHealthForm {
@@ -127,6 +92,65 @@ export interface IHealthPayments {
   active?: boolean;
 }
 
-export interface IViewHealthVM extends IHealthVM {
-  payments: IHealthPayments[];
+
+export interface ICompany {
+  _id: string;
+  companyName: string;
+}
+
+export interface IBroker {
+  _id: string;
+  brokerCode: string;
+  brokerName: string;
+}
+
+export interface IPartner {
+  _id: string;
+  name: string;
+  userCode: string;
+}
+
+export interface IRelationshipManager {
+  _id: string;
+  name: string;
+  userCode: string;
+}
+
+export interface IHealthPolicy {
+  _id: string;
+  policyNumber: string;
+  policyType: string;
+  caseType: string;
+  productType: string;
+  companyId: ICompany;
+  brokerId: IBroker;
+  issueDate: string; 
+  endDate: string;
+  totalSumInsured: number;
+  netPremium: number;
+  finalPremium: number;
+  firstPurchasedDate: string;
+  renewalYear: string;
+  accumulativeBonus: number;
+  cumulativeBonus: number;
+  fullName: string;
+  emailId: string;
+  phoneNumber: string;
+  paymentMode: string;
+  partnerId: IPartner;
+  relationshipManagerId: IRelationshipManager;
+  previousPolicy: string;
+  createdAt: string;
+  updatedAt: string;
+ 
+}
+
+export interface IHealthPolicyResponse{
+  status:string;
+  total:number;
+  page:number;
+  totalPages:number;
+  count:number;
+  data:IHealthPolicy[];
+  
 }

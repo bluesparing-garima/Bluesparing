@@ -371,16 +371,16 @@ const GetMotorPolicies = () => {
       const lastDayOfMonth = endOfMonth(currentDate);
       let formattedFirstDay = format(firstDayOfMonth, "yyyy-MM-dd");
       let formattedLastDay = format(lastDayOfMonth, "yyyy-MM-dd");
-      getMotorPolicyService({ header, startDate:formattedFirstDay, endDate:formattedLastDay })
-      .then((motorPolicy) => {
-        const res = motorPolicy.data
-        setMotorPolicies([...res]);
-      })
-      .catch(async (error: any) => {
-        const err = await error;
-        toast.error(err.message);
-      })
-     
+      getMotorPolicyService({ header, startDate: formattedFirstDay, endDate: formattedLastDay })
+        .then((motorPolicy) => {
+          const res = motorPolicy.data
+          setMotorPolicies([...res]);
+        })
+        .catch(async (error: any) => {
+          const err = await error;
+          toast.error(err.message);
+        })
+
     }
 
   }
@@ -404,7 +404,7 @@ const GetMotorPolicies = () => {
       try {
         const newPolicy = await editPolicyService({ header, policy, policyId });
         if (newPolicy.status === "success") {
-         await refreshPage();
+          await refreshPage();
           window.location.reload();
           toast.success(`${key} is updated successfully`);
         }
@@ -851,7 +851,7 @@ const GetMotorPolicies = () => {
           size: 50,
         },
       ].filter((column) => column.visible !== false),
-    [userData.role,motorPolicies]
+    [userData.role, motorPolicies]
   );
   const parsedData = useMemo(
     () =>
