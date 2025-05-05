@@ -7,6 +7,7 @@ import {
   type MRT_ColumnDef,
 } from "material-react-table";
 import * as yup from "yup";
+import Papa from "papaparse";
 import {
 
   SafeKaroUser,
@@ -29,6 +30,7 @@ import DynamicDateField from "../../../utils/ui/DynamicDateField";
 import { Form } from "react-final-form";
 import { setIn } from "final-form";
 import dayjs from "dayjs";
+import GetAllFilteredPolicyService from "../../../api/Health/GetAllFilteredPolicy/GetAllFilteredPolicyService";
 
 
 
@@ -86,7 +88,30 @@ const GetHealthPolicies = () => {
       return errors;
     }
   };
+  const downloadCsv = (filename: string, csv: string) => {
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    if (link.download !== undefined) {
+      const url = URL.createObjectURL(blob);
+      link.setAttribute("href", url);
+      link.setAttribute("download", filename);
+      link.style.visibility = "hidden";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
+  const handleExportRows = async () => {
+    const startOfMonth = dayjs().startOf('month').format('YYYY-MM-DD');
+    const endOfMonth = dayjs().endOf('month').format('YYYY-MM-DD');
+    const res = await GetAllFilteredPolicyService(startDate ?? startOfMonth, endDate ?? endOfMonth);
+    if (res.status === "success") {
 
+      const csv = Papa.unparse(res.data, { header: true });
+      downloadCsv("health-policy.csv", csv);
+    }
+
+  };
 
   const validationSchema = yup.object().shape({
     startDate: yup.string().nullable().required("Start Date is required"),
@@ -159,12 +184,12 @@ const GetHealthPolicies = () => {
   const handleEndDateChange = (endDate: any) => {
     setEndDate(endDate);
   }
-  const handleClearDateFilter = (form:any) => {
+  const handleClearDateFilter = (form: any) => {
     form.change('startDate', undefined);
     form.change('endDate', undefined);
-   fetchData({})
+    fetchData({})
   };
-  
+
   return (
     <>
       <div className=" md:p-7 p-2">
@@ -186,16 +211,17 @@ const GetHealthPolicies = () => {
               {userData.role.toLowerCase() === "admin" ||
                 userData.role.toLowerCase() === "booking" ||
                 userData.role.toLowerCase() === "account" ? (
-                <Button
+                <Link
+                to={"/policy/health/add"}
                   type="button"
-                  size="small"
+                
 
                   className="btnGradient text-black px-4 py-3 rounded-md w-full sm:w-auto"
                 >
                   <span className="text-[10px] md:text-xs ">
                     Add Health Policies
                   </span>
-                </Button>
+                </Link>
               ) : (
                 ""
               )}
@@ -203,7 +229,7 @@ const GetHealthPolicies = () => {
             <Form
               validate={validate}
               onSubmit={onSubmit}
-              render={({ handleSubmit ,form}) => (
+              render={({ handleSubmit, form }) => (
                 <form onSubmit={handleSubmit} noValidate>
                   <Grid container spacing={2}>
                     <DynamicDateField
@@ -243,7 +269,7 @@ const GetHealthPolicies = () => {
                         color="primary"
                         className="btnGradient text-black px-4 py-2.5 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
                       >
-                      Clear Filter
+                        Clear Filter
                       </Button>
 
                     </Grid>
@@ -272,16 +298,16 @@ const GetHealthPolicies = () => {
             onGlobalFilterChange={setGlobalFilter}
             onSortingChange={setSorting}
             renderTopToolbarCustomActions={({ table }) => (
-                          <>
-                            <Button
-                              className="btnGradient text-black px-4 py-2.5 m-2 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
-                              disabled={table.getRowModel().rows.length === 0}
-                              // onClick={() => handleExportRows(table.getFilteredRowModel().rows)}
-                            >
-                              Export Filter Data
-                            </Button>
-                          </>
-                        )}
+              <>
+                <Button
+                  className="btnGradient text-black px-4 py-2.5 m-2 rounded-md w-full sm:w-auto text-[10px] md:text-xs"
+                  disabled={table.getRowModel().rows.length === 0}
+                  onClick={() => handleExportRows()}
+                >
+                  Export Filter Data
+                </Button>
+              </>
+            )}
           />
         </Paper>
       </div>

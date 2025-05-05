@@ -38,3 +38,7 @@ export const GHealthEp = (
 export const searchHealthEp = (q:string)=>{
     return `/api/health/search?query=${q}`
 }
+
+export const filteredEp = (startDate:string,endDate:string)=>{
+    return `/api/health/filtered?issueDate=${startDate}&endDate=${endDate}`
+}

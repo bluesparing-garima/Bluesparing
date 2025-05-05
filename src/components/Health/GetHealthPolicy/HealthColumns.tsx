@@ -84,6 +84,11 @@ export  const HealthColumns = [
         size: 100,
     },
     {
+        accessorKey: "totalSumInsured",
+        header: "Total Sum Insured",
+        size: 100,
+    },
+    {
         accessorKey: "issueDate",
         header: "Start Date",
         size: 100,
