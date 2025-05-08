@@ -153,6 +153,7 @@ export interface IPartners {
   isActive?: boolean;
   userCode?:string;
   name?:string;
+  headRMId?:string;
   createdBy?: string;
   createdOn?: string;
   updatedOn?: string;

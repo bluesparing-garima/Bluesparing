@@ -17,11 +17,17 @@ import useGetCompanies from '../../../Hooks/Company/useGetCompanies';
 import useGetBrokers from '../../../Hooks/Broker/useGetBrokers';
 import useGetPartners from '../../../Hooks/Partner/useGetPartners';
 import DynamicDateField from '../../../utils/ui/DynamicDateField';
-import { fi } from 'date-fns/locale';
 import dayjs, { Dayjs } from 'dayjs';
+import generateFormData from '../../../utils/generateFromData';
+import toast from 'react-hot-toast';
+import { addValidationSchema, validateFormValues } from './VaildateForm';
+import AddHealthService from '../../../api/Health/AddHealthPolicy/AddHealthService';
+import { useNavigate } from 'react-router-dom';
+import { IAddHealth } from '../../../api/Health/IHealth';
+import { MRT_ColumnFiltersState, MRT_PaginationState, MRT_SortingState } from 'material-react-table';
 
 export interface AddPolicyFormProps {
-  initialValues: IAddEditHealthForm;
+  initialValues?: IAddEditHealthForm;
 }
 export interface DocumentUploaderProps {
   selectedDoc: string[];
@@ -45,19 +51,31 @@ const policyTypes = [
 const caseTypes = ["New", "ReNewal", "Port"];
 const product = ["Health", " Personal Accident"];
 const paymentMode = ["Cash", "Check", "online"]
-const AddHealthPolicyForm = (props: AddPolicyFormProps) => {
+const AddHealthPolicyForm = ({ initialValues }: AddPolicyFormProps) => {
   let [companies] = useGetCompanies({ header: header });
   let [brokers] = useGetBrokers({ header: header });
   let [partners] = useGetPartners({ header: header, role: "partner" });
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedPolicyType, setSelectedPolicyType] = useState(policyTypes[0]);
-  const [selectedCaseType, setSelectedCaseType] = useState(caseTypes[0]);
-  const [selectedProduct, setSelectedProduct] = useState(product[0]);
-  const [selectedCompany, setSelectedCompany] = useState(companies[0]);
-  const [selectedBrokerId, setSelectedBrokerId] = useState("");
-  const [selectedPartnerId, setSelectedPartnerId] = useState("");
-  const [selectedPaymentMode, setSelectedPaymentMode] = useState("");
+  const navigate = useNavigate();
+  const [selectedPolicyType, setSelectedPolicyType] = useState(initialValues?.policyType ?? policyTypes[0]);
+  const [selectedCaseType, setSelectedCaseType] = useState(initialValues?.caseType ?? caseTypes[0]);
+  const [selectedProduct, setSelectedProduct] = useState(initialValues?.policyType ?? product[0]);
+  const [selectedCompany, setSelectedCompany] = useState(initialValues?.companyId ?? companies[0]);
+  const [selectedBrokerId, setSelectedBrokerId] = useState(initialValues?.brokerId ?? "");
+  const [selectedPartnerId, setSelectedPartnerId] = useState(initialValues?.partnerId ?? "");
+  const [selectedRelationshipManagerId, setSelectedRelationshipManagerId] = useState(initialValues?.relationshipManagerId ?? "");
+  const [selectedPaymentMode, setSelectedPaymentMode] = useState(initialValues?.paymentMode ?? "");
   const [renewalYear, setRenewalYear] = useState(0);
+    const [rowCount, setRowCount] = useState(0);
+    const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>(
+      [],
+    );
+    const [globalFilter, setGlobalFilter] = useState('');
+    const [sorting, setSorting] = useState<MRT_SortingState>([]);
+    const [pagination, setPagination] = useState<MRT_PaginationState>({
+      pageIndex: 0,
+      pageSize: 10,
+    });
   const defaultDoc = addHealthPolicyDocumentsOptions[0].value;
 
   const [selectedDoc, setSelectedDoc] = useState<string[]>([defaultDoc]);
@@ -65,13 +83,7 @@ const AddHealthPolicyForm = (props: AddPolicyFormProps) => {
     [defaultDoc]: null,
   });
 
-  const getDocumentUrl = (file: any): string | undefined => {
-    if (!file) return undefined;
-    if (file instanceof File) {
-      return URL.createObjectURL(file);
-    }
-    return `${imagePath}${encodeURIComponent(file)}`;
-  };
+
 
 
   const handleFirstPurchasedDate = (d: Dayjs | null) => {
@@ -82,14 +94,62 @@ const AddHealthPolicyForm = (props: AddPolicyFormProps) => {
       setRenewalYear(diffInYears)
     }
   }
+  const addValidate = validateFormValues(addValidationSchema);
   const onSubmit = async (data: any) => {
-    console.log(data)
-    console.log(files)
+    const { policyNumber, issueDate, endDate, totalSumInsured, netPremium, finalPremium, firstPurchasedDate, cumulativeBonus, accumulativeBonus, fullName, emailId, phoneNumber, paymentMode, paymentDetails } = data;
+    const policyType = selectedPolicyType;
+    const caseType = selectedCaseType;
+    const productType = selectedProduct;
+    const companyId = selectedCompany;
+    const brokerId = selectedBrokerId;
+    const partnerId = selectedPartnerId;
+    const relationshipManagerId = selectedRelationshipManagerId;
+    const payload = { policyNumber, issueDate, endDate, totalSumInsured, netPremium, finalPremium, firstPurchasedDate, cumulativeBonus, accumulativeBonus, fullName, emailId, phoneNumber, paymentMode, paymentDetails, policyType, productType, caseType, companyId, brokerId, partnerId, relationshipManagerId,renewalYear,category:"health", ...files }
+    const isIssueDateValid = dayjs(issueDate).isValid();
+    const isEndDateValid = dayjs(endDate).isValid();
+    const newStartDate = dayjs(issueDate);
+    const newEndDate = dayjs(endDate);
+
+    if (!isIssueDateValid) {
+      toast.error("Invalid Issue Date");
+      return;
+    }
+    if (!isEndDateValid) {
+      toast.error("Invalid End Date");
+      return;
+    }
+    if (newEndDate.isBefore(newStartDate)) {
+      toast.error("End Date cannot be earlier than the Issue Date");
+      return;
+    }
+    const healthData = generateFormData(payload);
+    if (initialValues?._id) {
+
+    } else {
+      callAddPolicyApi({healthData})
+    }
+
+
+  }
+  const callAddPolicyApi = async (data: IAddHealth) => {
+    try {
+      setIsLoading(true)
+    
+      const res = await AddHealthService(data);
+      if (res.status === "success") {
+        navigate(-1)
+      }
+    } catch (error: any) {
+      toast.error(error.message || "something ")
+    } finally {
+      setIsLoading(false);
+    }
   }
   return (
     <>
       <Form
         mt={3}
+        validate={addValidate}
         onSubmit={onSubmit}
         render={({ handleSubmit, submitError, submitting }) => (
           <form onSubmit={handleSubmit} noValidate>
@@ -232,6 +292,7 @@ const AddHealthPolicyForm = (props: AddPolicyFormProps) => {
                               `${newValue.name} - ${newValue.userCode}`
                             );
                             setSelectedPartnerId(newValue._id)
+                            setSelectedRelationshipManagerId(newValue?.headRMId)
                           }}
                           renderInput={(params) => (
                             <TextField
@@ -253,6 +314,7 @@ const AddHealthPolicyForm = (props: AddPolicyFormProps) => {
               <DynamicDateField
                 name="issueDate"
                 label="Start Date"
+
                 disableFuture
                 gridProps={{ lg: 4, md: 4, sm: 6, xs: 12 }}
               />
@@ -269,17 +331,17 @@ const AddHealthPolicyForm = (props: AddPolicyFormProps) => {
                 onChangeDate={handleFirstPurchasedDate}
                 gridProps={{ lg: 4, md: 4, sm: 6, xs: 12 }}
               />
-               <Grid item lg={4} md={4} sm={6} xs={12}>
+              <Grid item lg={4} md={4} sm={6} xs={12}>
 
-              <TextField
-                label="Enter Renewal Year"
-                variant="outlined"
-                size="small"
-                value={renewalYear}
-                fullWidth
-                InputProps={{ readOnly: true }}
-              />
-               </Grid>
+                <TextField
+                  label="Enter Renewal Year"
+                  variant="outlined"
+                  size="small"
+                  value={renewalYear}
+                  fullWidth
+                  InputProps={{ readOnly: true }}
+                />
+              </Grid>
 
               <DynamicTextField
                 name="totalSumInsured"
@@ -300,8 +362,8 @@ const AddHealthPolicyForm = (props: AddPolicyFormProps) => {
                 gridProps={{ lg: 4, md: 4, sm: 12, xs: 12 }}
               />
               <DynamicTextField
-                name="accumulatedBonus"
-                label="Enter Accumulated Bonus"
+                name="cumulativeBonus"
+                label="Enter CumulativeBonus Bonus"
                 type="number"
                 gridProps={{ lg: 4, md: 4, sm: 12, xs: 12 }}
               />
@@ -348,13 +410,9 @@ const AddHealthPolicyForm = (props: AddPolicyFormProps) => {
 
                 />
               }
-
               <Grid item lg={12} md={12} sm={6} xs={12}>
-
                 <DocumentUploader selectedDoc={selectedDoc} files={files} setFiles={setFiles} setSelectedDoc={setSelectedDoc} />
               </Grid>
-
-
             </Grid>
 
 
