@@ -66,7 +66,10 @@ const Checkout: FC = () => {
   let storedTheme: any = localStorage.getItem("user") as SafeKaroUser | null;
   let userData = storedTheme ? JSON.parse(storedTheme) : storedTheme;
   const [selectedMonths, setSelectedMonths] = useState<number>(1);
+  const [wantWhatsapp, setWantWhatsapp] = useState(false);
+  const [whatsappMessages, setWhatsappMessages] = useState(0);
 
+    
   if (!plan) {
     toast.error("No plan selected. Redirecting to plans page...");
     navigate("/plans");
@@ -99,8 +102,13 @@ const Checkout: FC = () => {
     return monthlyDiscount * selectedMonths;
   };
 
+  // const getTotalAmount = () => {
+  //   return getAmount() - getDiscount();
+  // };
   const getTotalAmount = () => {
-    return getAmount() - getDiscount();
+    const baseAmount = getAmount() - getDiscount();
+    const whatsappAmount = whatsappMessages * 0.5;
+    return baseAmount + whatsappAmount;
   };
 
   const handleUpdateMonth = (event: SelectChangeEvent<number>) => {
@@ -438,11 +446,48 @@ const Checkout: FC = () => {
               ({plan.planName})
             </Typography>
           </div>
+          <Box className="flex items-center mt-4">
+  <input
+    type="checkbox"
+    checked={wantWhatsapp}
+    onChange={(e) => {
+      setWantWhatsapp(e.target.checked);
+      if (!e.target.checked) setWhatsappMessages(0); // Reset if unchecked
+    }}
+    className="mr-2 scale-125"
+  />
+  <label className="font-semibold">Add WhatsApp Messaging to Your Subscription?</label>
+</Box>
+
+{wantWhatsapp && (
+  <Box className="mt-4">
+    <Typography className="text-sm font-satoshi mb-2">
+    
+      <span className="text-[#027AAE] font-semibold">Select Number of Messages: </span>{" "}
+  
+  <span className="font-semibold">{whatsappMessages} </span>
+    </Typography>
+    <input
+      type="range"
+      min={0}
+      max={10000}
+      value={whatsappMessages}
+      onChange={(e) => setWhatsappMessages(Number(e.target.value))}
+      className="w-full"
+    />
+
+  </Box>
+)}
 
           <Typography className="font-satoshi mt-4 text-sm sm:text-base">
             <span className="text-[#027AAE] font-semibold">Amount:</span>{" "}
+  
             <span className="font-semibold">₹{getAmount()}</span>
           </Typography>
+          <Typography className="text-sm font-satoshi  mt-2">
+          <span className="text-[#027AAE] font-semibold">  Additional Amount: </span>{" "}
+          <span className="font-semibold">₹{(whatsappMessages * 0.5).toFixed(2)}</span>
+    </Typography>
 
           {getNearestDiscount(selectedMonths) > 0 && (
             <Typography className="font-satoshi mt-3 text-sm sm:text-base">
